@@ -10,7 +10,6 @@ use App\Http\Controllers\ShowController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
-Route::get('/', [HomeController::class, "index"])->name('home');
 
 Route::get('/movies', [MovieController::class, "index"])->name("movies.index");
 Route::get('/movies/{movie:slug}', [MovieController::class, "detail"])->name("movies.detail");

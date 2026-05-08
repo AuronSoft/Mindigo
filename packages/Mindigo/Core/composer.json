@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/core",
+    "description": "Mindigo Core Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\Core\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\Core\\Providers\\CoreServiceProvider"
+            ]
+        }
+    }
+}

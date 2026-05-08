@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f8a3ccf574a654bd21e10f7b4b1ac5b7",
+    "content-hash": "acf92b3d3f9b335825e45faf0c137a04",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2155,6 +2155,36 @@
                 }
             ],
             "time": "2024-12-08T08:18:47+00:00"
+        },
+        {
+            "name": "mindigo/core",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/Core",
+                "reference": "9ec4a5a5318e41454894df2045497d6cfdd9fd4b"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\Core\\Providers\\CoreServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\Core\\": "src/"
+                }
+            },
+            "description": "Mindigo Core Package",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "monolog/monolog",
@@ -8241,7 +8271,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
