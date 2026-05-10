@@ -139,7 +139,7 @@ The system is built following modern Laravel architecture principles, ensuring m
 
 ```bash
 git clone https://github.com/scoppy9201/Mindigo
-cd quizbox
+cd mindigo
 ```
 
 ---

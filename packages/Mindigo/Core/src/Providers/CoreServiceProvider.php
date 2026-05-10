@@ -25,7 +25,6 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'core');
 
-        // Thêm dòng này
         $this->callAfterResolving(\Illuminate\View\Compilers\BladeCompiler::class, function ($blade) {
             $blade->anonymousComponentNamespace('core::components', 'core');
         });
