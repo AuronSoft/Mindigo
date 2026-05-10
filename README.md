@@ -2,7 +2,7 @@
   <img src="screenshots/logo.png" style="max-width: 200px; height: auto;" alt="QuizBox — Online Quiz Platform">
 </p>
 
-<h1 align="center">QuizBox</h1>
+<h1 align="center">Mindigo</h1>
 
 <p align="center">
   <strong>Open-source quiz and learning platform built with Laravel</strong><br>
@@ -138,7 +138,7 @@ The system is built following modern Laravel architecture principles, ensuring m
 **1. Clone the repository**
 
 ```bash
-git clone https://github.com/scoppy9201/Quizbox
+git clone https://github.com/scoppy9201/Mindigo
 cd quizbox
 ```
 
