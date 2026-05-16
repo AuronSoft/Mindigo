@@ -14,7 +14,7 @@ const NID = (() => {
     function dom() {
         if (_form) return;
         _form          = document.getElementById('nid-form');
-        _overlay       = document.getElementById('novaIdOverlay');
+        _overlay       = document.getElementById('MindigoIdOverlay');
         _emailInput    = document.getElementById('nid-email-input');
         _emailBtn      = document.getElementById('nid-email-btn');
         _emailError    = document.getElementById('nid-email-error');
@@ -153,7 +153,7 @@ const NID = (() => {
         setEmailBtn(false);
         _emailBtn.textContent = 'Đang gửi...';
 
-        const { ok, data } = await post(window.__routes.novaIdSend, {
+        const { ok, data } = await post(window.__routes.MindigoIdSend, {
             email, type: 'magic_link',
         });
 
@@ -181,7 +181,7 @@ const NID = (() => {
         dom();
         _mlResend.disabled = true;
 
-        await post(window.__routes.novaIdSend, {
+        await post(window.__routes.MindigoIdSend, {
             email: state.email, type: 'magic_link',
         });
 
@@ -194,12 +194,12 @@ const NID = (() => {
         dom();
         clearInterval(state.mlTimer);
 
-        const { ok, data } = await post(window.__routes.novaIdSend, {
+        const { ok, data } = await post(window.__routes.MindigoIdSend, {
             email: state.email, type: 'otp',
         });
 
         if (!ok) {
-            novaToast?.(data.message ?? 'Có lỗi xảy ra.', 'error');
+            MindigoToast?.(data.message ?? 'Có lỗi xảy ra.', 'error');
             return;
         }
 
@@ -218,7 +218,7 @@ const NID = (() => {
         _otpResend.className = 'nid-resend-disabled';
         _otpResend.style.pointerEvents = 'none';
 
-        await post(window.__routes.novaIdSend, {
+        await post(window.__routes.MindigoIdSend, {
             email: state.email, type: 'otp',
         });
 
@@ -243,7 +243,7 @@ const NID = (() => {
         _otpError.style.display = 'none';
         _otpInputs.forEach(i => i.classList.remove('nid-otp-error'));
 
-        const { ok, data } = await post(window.__routes.novaIdVerifyOtp, {
+        const { ok, data } = await post(window.__routes.MindigoIdVerifyOtp, {
             email: state.email, otp,
         });
 
@@ -307,11 +307,11 @@ const NID = (() => {
 
     // Global key / click 
     function initEvents() {
-        document.getElementById('novaIdOverlay')?.addEventListener('click', e => {
+        document.getElementById('MindigoIdOverlay')?.addEventListener('click', e => {
             if (e.target === e.currentTarget) close();
         });
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && document.getElementById('novaIdOverlay')?.style.display === 'block') close();
+            if (e.key === 'Escape' && document.getElementById('MindigoIdOverlay')?.style.display === 'block') close();
         });
     }
 
