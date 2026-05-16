@@ -54,11 +54,19 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.addEventListener('click', () => {
             const target = tab.dataset.tab;
 
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
+            tabs.forEach(t => {
+                t.classList.remove('text-green-600', 'border-green-500');
+                t.classList.add('text-gray-400', 'border-transparent');
+            });
+            tab.classList.add('text-green-600', 'border-green-500');
+            tab.classList.remove('text-gray-400', 'border-transparent');
 
             panels.forEach(panel => {
-                panel.classList.toggle('active', panel.id === 'panel-' + target);
+                if (panel.id === 'panel-' + target) {
+                    panel.classList.remove('hidden');
+                } else {
+                    panel.classList.add('hidden');
+                }
             });
 
             const saveBtn = document.querySelector('.btn-profile-save[form="profile-form"]');
