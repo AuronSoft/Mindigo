@@ -3,25 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding: 40px 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0fdf4; margin: 0; padding: 40px 0; }
         .wrap { max-width: 480px; margin: 0 auto; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
-        .header { background: linear-gradient(135deg, #1565C0, #2196F3); padding: 32px; text-align: center; }
-        .header svg { width: 48px; height: 48px; fill: #fff; }
-        .header h1 { color: #fff; font-size: 22px; margin: 12px 0 0; font-weight: 800; }
+        .header { background: linear-gradient(135deg, #15803d, #22c55e); padding: 32px; text-align: center; }
+        .header h1 { color: #fff; font-size: 22px; margin: 12px 0 0; font-weight: 900; letter-spacing: -0.5px; }
         .body { padding: 32px; }
-        .body p { color: #475569; font-size: 14px; line-height: 1.7; margin: 0 0 20px; }
-        .otp-box { background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0; }
-        .otp-code { font-size: 40px; font-weight: 900; letter-spacing: 12px; color: #1d4ed8; font-family: monospace; }
+        .body p { color: #475569; font-size: 14px; line-height: 1.7; margin: 0 0 16px; }
+        .body strong { color: #14532d; }
+        .otp-box { background: #f0fdf4; border: 2px dashed #22c55e; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0; }
+        .otp-code { font-size: 40px; font-weight: 900; letter-spacing: 12px; color: #15803d; font-family: monospace; }
         .otp-note { font-size: 12px; color: #94a3b8; margin-top: 8px; }
+        .otp-note strong { color: #16a34a; }
+        .notice { background: #fefce8; border-left: 3px solid #eab308; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #713f12; margin-top: 8px; }
         .footer { background: #f8fafc; padding: 20px 32px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; }
+        .footer strong { color: #16a34a; }
     </style>
 </head>
 <body>
     <div class="wrap">
+        {{-- Header --}}
         <div class="header">
-            <svg viewBox="0 0 16 16"><path d="M8 1L14 4V8C14 11.3 11.3 13.8 8 15C4.7 13.8 2 11.3 2 8V4L8 1Z"/></svg>
-            <h1>Mindigo</h1>
+            <svg width="56" height="56" viewBox="0 0 200 220" fill="none">
+                <path d="M48 160 L22 148 L38 158 L16 152 L35 164" fill="#15803d" stroke="#14532d" stroke-width="1"/>
+                <circle cx="105" cy="145" r="90" fill="white" opacity="0.15" stroke="white" stroke-width="3"/>
+                <ellipse cx="115" cy="185" rx="55" ry="38" fill="white" opacity="0.1"/>
+                <path d="M95 58 Q85 20 105 8 Q118 22 112 58" fill="white" opacity="0.8" stroke="white" stroke-width="2.5"/>
+                <path d="M108 55 Q100 18 118 10 Q128 26 120 56" fill="white" opacity="0.6" stroke="white" stroke-width="2"/>
+                <path d="M52 118 L95 108 L88 128 Z" fill="white" opacity="0.5"/>
+                <path d="M148 118 L108 108 L114 128 Z" fill="white" opacity="0.5"/>
+                <circle cx="82" cy="135" r="20" fill="white"/>
+                <circle cx="86" cy="138" r="12" fill="#14532d"/>
+                <circle cx="91" cy="132" r="5" fill="white"/>
+                <circle cx="128" cy="135" r="20" fill="white"/>
+                <circle cx="132" cy="138" r="12" fill="#14532d"/>
+                <circle cx="137" cy="132" r="5" fill="white"/>
+                <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b"/>
+                <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706"/>
+            </svg>
+            <h1>mindigo</h1>
         </div>
+
+        {{-- Body --}}
         <div class="body">
             <p>Xin chào,</p>
 
@@ -40,13 +62,29 @@
             </div>
 
             @if(($type ?? 'login') === 'forgot_password')
-                <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
+                <div class="notice flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-800 text-sm leading-relaxed">
+                    <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div>
+                        Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này và kiểm tra lại bảo mật tài khoản.
+                    </div>
+                </div>
             @else
-                <p>Nếu bạn không yêu cầu đăng nhập, vui lòng bỏ qua email này và bảo mật tài khoản của bạn.</p>
+                <div class="notice flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-800 text-sm leading-relaxed">
+                    <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div>
+                        Nếu bạn không yêu cầu đăng nhập, vui lòng bỏ qua email này và bảo mật tài khoản của bạn.
+                    </div>
+                </div>
             @endif
         </div>
+
+        {{-- Footer --}}
         <div class="footer">
-            © {{ date('Y') }} Mindigo. Hệ thống ôn thi trắc nghiệm.
+            © {{ date('Y') }} <strong>mindigo</strong>. Nền tảng thi trắc nghiệm online tốt nhất.
         </div>
     </div>
 </body>
