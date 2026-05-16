@@ -79,8 +79,10 @@ return [
     'hero' => [
         'badge'          => '#1 Best Online Multiple Choice Exam Platform',
         'heading_1'      => 'There is a simpler way to',
-        'heading_2'      => 'study and practice',
-        'heading_3'      => 'multiple choice exams online',
+        'heading_2' => 'study and review',
+        'heading_3' => 'online multiple choice',
+        'heading_4' => 'auto-generate questions',
+        'heading_5' => 'create exams quickly',
         'desc'           => 'Create questions and exams quickly with smart solutions. mindigo leverages the power of technology to elevate your learning.',
         'customers'      => 'Over <strong class="text-green-600">200,000+</strong> customers love using it',
         'cta_create'     => 'Create Exam Now',
@@ -296,7 +298,9 @@ return [
     ],
  
     'cta' => [
-        'heading'        => 'Quickly create multiple-choice exams with powerful features',
+        'heading_1'      => 'Quickly create',
+        'heading_2'      => 'multiple-choice exams',
+        'heading_3'      => 'with powerful features',
         'btn'            => 'Get started',
         'badge_1'        => 'Fast exam creation',
         'badge_2'        => 'Smart, flexible AI',

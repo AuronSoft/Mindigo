@@ -81,6 +81,8 @@ return [
         'heading_1'      => 'Có một cách đơn giản hơn để',
         'heading_2'      => 'học tập ôn thi',
         'heading_3'      => 'trắc nghiệm online',
+        'heading_4'      => 'tự động tạo câu hỏi',  
+        'heading_5'      => 'tạo nhanh đề thi',     
         'desc'           => 'Tạo câu hỏi và đề thi nhanh với những giải pháp thông minh. mindigo tận dụng sức mạnh công nghệ để nâng cao trình độ học tập của bạn.',
         'customers'      => 'Hơn <strong class="text-green-600">200.000+</strong> khách hàng đã yêu thích sử dụng',
         'cta_create'     => 'Tạo đề thi ngay',
@@ -296,7 +298,9 @@ return [
     ],
  
     'cta' => [
-        'heading'        => 'Tạo nhanh đề thi trắc nghiệm với tính năng hoàn hảo',
+        'heading_1'      => 'Tạo nhanh',
+        'heading_2'      => 'đề thi trắc nghiệm',
+        'heading_3'      => 'với tính năng hoàn hảo',
         'btn'            => 'Bắt đầu ngay',
         'badge_1'        => 'Tạo đề thi nhanh',
         'badge_2'        => 'AI thông minh, linh hoạt',

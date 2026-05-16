@@ -35,9 +35,18 @@
 }
 </style>
 
+@php
+    $typewriterWords = [
+        __('core::app.hero.heading_2'),
+        __('core::app.hero.heading_3'),
+        __('core::app.hero.heading_4'),
+        __('core::app.hero.heading_5'),
+    ];
+@endphp
+
 <script>
 (function(){
-    const words = ['học tập ôn thi', 'tổ chức kỳ thi', 'tự động tạo câu hỏi', 'tạo nhanh đề thi'];
+    const words = @json($typewriterWords);
     let wordIndex = 0;
     let charIndex = 0;
     let deleting = false;

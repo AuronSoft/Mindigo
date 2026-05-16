@@ -5,69 +5,69 @@
             {{-- Left --}}
             <div class="flex-1 flex flex-col gap-5">
                 <h2 class="text-3xl font-black text-white leading-tight">
-                    Tạo nhanh <span class="text-green-900">đề thi trắc nghiệm</span> với tính năng hoàn hảo
+                    @lang('core::app.cta.heading_1') <span class="text-green-900">@lang('core::app.cta.heading_2')</span> @lang('core::app.cta.heading_3')
                 </h2>
                 <a href="#" class="bg-green-700 hover:bg-green-800 text-white font-black text-sm px-6 py-3 rounded-xl w-fit shadow-[0_4px_0_#14532d] hover:shadow-[0_2px_0_#14532d] hover:translate-y-0.5 transition-all">
-                    Bắt đầu ngay
+                    @lang('core::app.cta.btn')
                 </a>
                 <div class="flex items-center gap-6 flex-wrap">
                     <div class="flex items-center gap-2 text-white font-bold text-sm">
                         <div class="w-5 h-5 bg-green-700 rounded-full flex items-center justify-center">
                             <svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
-                        Tạo đề thi nhanh
+                        @lang('core::app.cta.badge_1')
                     </div>
                     <div class="flex items-center gap-2 text-white font-bold text-sm">
                         <div class="w-5 h-5 bg-green-700 rounded-full flex items-center justify-center">
                             <svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
-                        AI thông minh, linh hoạt
+                        @lang('core::app.cta.badge_2')
                     </div>
                 </div>
             </div>
             {{-- Right: Quiz cards --}}
             <div class="flex gap-4 items-start shrink-0">
-                {{-- Card 1 - cao hơn --}}
+                {{-- Card 1 --}}
                 <div class="bg-white rounded-2xl shadow-xl overflow-hidden w-56">
                     <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80" class="w-full h-32 object-cover" alt=""/>
                     <div class="p-4">
-                        <p class="font-black text-gray-800 text-sm mb-1">Câu hỏi 1</p>
-                        <p class="text-gray-500 text-xs mb-3 leading-relaxed">Phương pháp siêu hình thống trị triết học vào thời kì nào?</p>
+                        <p class="font-black text-gray-800 text-sm mb-1">@lang('core::app.cta.card_1_question')</p>
+                        <p class="text-gray-500 text-xs mb-3 leading-relaxed">@lang('core::app.cta.card_1_text')</p>
                         <div class="space-y-1.5">
                             <div class="flex items-center gap-2 text-xs text-green-600 font-bold bg-green-50 rounded-lg px-2 py-1.5">
                                 <div class="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center shrink-0"><svg width="8" height="8" fill="none" viewBox="0 0 8 8"><path d="M1.5 4l1.5 1.5 3.5-3" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-                                A. Thế kỷ XVII – XVIII
+                                @lang('core::app.cta.card_1_a')
                             </div>
                             <div class="flex items-center gap-2 text-xs text-gray-400 px-2 py-1">
                                 <div class="w-4 h-4 border border-gray-300 rounded-full shrink-0"></div>
-                                B. Thế kỷ XV – XVI
+                                @lang('core::app.cta.card_1_b')
                             </div>
                             <div class="flex items-center gap-2 text-xs text-gray-400 px-2 py-1">
                                 <div class="w-4 h-4 border border-gray-300 rounded-full shrink-0"></div>
-                                C. Thế kỷ XIX – XX
+                                @lang('core::app.cta.card_1_c')
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- Card 2 - thấp hơn, lệch xuống --}}
+                {{-- Card 2 --}}
                 <div class="bg-white rounded-2xl shadow-xl overflow-hidden w-56 mt-10">
                     <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&q=80" class="w-full h-32 object-cover" alt=""/>
                     <div class="p-4">
-                        <p class="font-black text-gray-800 text-sm mb-1">Câu hỏi 2</p>
-                        <p class="text-gray-500 text-xs mb-3 leading-relaxed">Trong chính sách kinh tế mới ở nước Nga Xô Viết, Nhà nước tập trung vào lĩnh vực nào?</p>
+                        <p class="font-black text-gray-800 text-sm mb-1">@lang('core::app.cta.card_2_question')</p>
+                        <p class="text-gray-500 text-xs mb-3 leading-relaxed">@lang('core::app.cta.card_2_text')</p>
                         <div class="space-y-1.5">
                             <div class="flex items-center gap-2 text-xs text-gray-400 px-2 py-1">
                                 <div class="w-4 h-4 border border-gray-300 rounded-full shrink-0"></div>
-                                A. Nông nghiệp
+                                @lang('core::app.cta.card_2_a')
                             </div>
                             <div class="flex items-center gap-2 text-xs text-blue-600 font-bold bg-blue-50 rounded-lg px-2 py-1.5">
                                 <div class="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center shrink-0"><svg width="8" height="8" fill="none" viewBox="0 0 8 8"><path d="M1.5 4l1.5 1.5 3.5-3" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-                                B. Công nghiệp nặng
+                                @lang('core::app.cta.card_2_b')
                             </div>
                             <div class="flex items-center gap-2 text-xs text-gray-400 px-2 py-1">
                                 <div class="w-4 h-4 border border-gray-300 rounded-full shrink-0"></div>
-                                C. Thương mại quốc tế
+                                @lang('core::app.cta.card_2_c')
                             </div>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                     </svg>
                     <span class="text-xl font-black text-green-600 tracking-tight">mindigo</span>
                 </a>
-                <p class="text-gray-400 text-sm leading-relaxed">Nền tảng thi trắc nghiệm<br>online tốt nhất</p>
+                <p class="text-gray-400 text-sm leading-relaxed">@lang('core::app.footer.tagline')</p>
                 <div class="flex items-center gap-3">
                     <a href="#" class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-500 transition">
                         <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
@@ -118,37 +118,41 @@
                     </a>
                 </div>
             </div>
+
             {{-- Sản phẩm --}}
             <div>
-                <p class="text-white font-black text-sm mb-5">Sản phẩm dịch vụ</p>
+                <p class="text-white font-black text-sm mb-5">@lang('core::app.footer.col_product')</p>
                 <div class="flex flex-col gap-3">
-                    @foreach(['Ôn thi sinh viên','Tổ chức thi','Luyện thi THPT Quốc Gia'] as $item)
-                    <a href="#" class="text-gray-400 text-sm hover:text-green-400 transition">{{ $item }}</a>
+                    @foreach(['footer.product_1', 'footer.product_2', 'footer.product_3'] as $item)
+                    <a href="#" class="text-gray-400 text-sm hover:text-green-400 transition">@lang('core::app.' . $item)</a>
                     @endforeach
                 </div>
             </div>
+
             {{-- Tài nguyên --}}
             <div>
-                <p class="text-white font-black text-sm mb-5">Tài nguyên</p>
+                <p class="text-white font-black text-sm mb-5">@lang('core::app.footer.col_resource')</p>
                 <div class="flex flex-col gap-3">
-                    @foreach(['Tin tức','Kinh nghiệm ôn thi','Công cụ học tập','Tổng hợp đề thi','Cẩm nang ôn thi THPTQG','Hoạt động cộng đồng'] as $item)
-                    <a href="#" class="text-gray-400 text-sm hover:text-green-400 transition">{{ $item }}</a>
+                    @foreach(['footer.resource_1', 'footer.resource_2', 'footer.resource_3', 'footer.resource_4', 'footer.resource_5', 'footer.resource_6'] as $item)
+                    <a href="#" class="text-gray-400 text-sm hover:text-green-400 transition">@lang('core::app.' . $item)</a>
                     @endforeach
                 </div>
             </div>
+
             {{-- Điều khoản --}}
             <div>
-                <p class="text-white font-black text-sm mb-5">Điều khoản & Chính sách</p>
+                <p class="text-white font-black text-sm mb-5">@lang('core::app.footer.col_legal')</p>
                 <div class="flex flex-col gap-3">
-                    @foreach(['Điều khoản sử dụng','Điều khoản bảo mật','Điều khoản hỗ trợ kỹ thuật','Chính sách sử dụng "Trợ lý AI"','Chính sách hoàn tiền'] as $item)
-                    <a href="#" class="text-gray-400 text-sm hover:text-green-400 transition">{{ $item }}</a>
+                    @foreach(['footer.legal_1', 'footer.legal_2', 'footer.legal_3', 'footer.legal_4', 'footer.legal_5'] as $item)
+                    <a href="#" class="text-gray-400 text-sm hover:text-green-400 transition">@lang('core::app.' . $item)</a>
                     @endforeach
                 </div>
             </div>
         </div>
+
         <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
-            <p class="text-gray-500 text-xs">© 2026 Mindigo. All rights reserved.</p>
-            <p class="text-gray-600 text-xs">Được xây dựng với ❤️ tại Việt Nam</p>
+            <p class="text-gray-500 text-xs">@lang('core::app.footer.copyright')</p>
+            <p class="text-gray-600 text-xs">@lang('core::app.footer.built_with')</p>
         </div>
     </div>
 </footer>
