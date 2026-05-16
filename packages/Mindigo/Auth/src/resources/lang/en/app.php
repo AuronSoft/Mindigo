@@ -4,20 +4,20 @@ return [
 
     'brand' => [
         'name' => 'MindigoID',
-        'powered_by' => 'Powered by Mindigo Inc.',
+        'powered_by' => 'Powered by Mindigo Education',
     ],
 
     'auth' => [
         'login_title' => 'Sign in',
         'login_subtitle' => 'to continue to :platform',
-        'platform' => 'Mindigo Platform',
+        'platform' => 'Mindigo Exam Platform',
 
         'email' => 'Email',
-        'email_placeholder' => 'employee@example.com',
+        'email_placeholder' => 'student@example.com',
         'email_invalid' => 'Please enter a valid email address.',
 
         'password' => 'Password',
-        'password_placeholder' => 'Your password',
+        'password_placeholder' => 'Enter your password',
         'forgot_password' => 'Forgot password?',
 
         'remember_me' => 'Keep me signed in',
@@ -30,8 +30,8 @@ return [
 
         'login_with_Mindigo_id' => 'Sign in with Mindigo ID',
 
-        'magic_link_sent' => 'Mindigo ID has sent a sign-in link to',
-        'magic_link_check' => 'Please check your email to continue signing in.',
+        'magic_link_sent' => 'A sign-in link has been sent to',
+        'magic_link_check' => 'Please check your email to continue.',
         'resend' => 'Resend',
         'resend_otp' => 'Resend OTP',
 
@@ -39,8 +39,8 @@ return [
         'otp_invalid' => 'Invalid OTP code.',
         'otp_not_received' => 'Didn’t receive the OTP?',
 
-        'incognito_notice' => 'If this is not your computer, sign in using',
-        'incognito_highlight' => 'a private browsing window',
+        'incognito_notice' => 'If this is not your device, sign in using',
+        'incognito_highlight' => 'private browsing mode',
         'incognito_suffix' => 'to protect your account.',
     ],
 
@@ -59,41 +59,41 @@ return [
     ],
 
     'dashboard' => [
-        'employees_active' => 'Active employees',
+        'employees_active' => 'Active users',
         'today_up' => '↑ +12 today',
 
         'system_status' => 'System status',
-        'system_online' => 'Running normally',
+        'system_online' => 'Running smoothly',
 
-        'today_approval' => 'Today approvals',
+        'today_approval' => 'Today submissions',
         'approved' => '✓ 24 approved',
         'pending' => '⏳ 6 pending',
 
-        'salary_this_month' => 'Payroll this month',
-        'salary_processed' => '↑ Processed',
+        'salary_this_month' => 'Progress this month',
+        'salary_processed' => '↑ Completed',
 
-        'recruitment' => 'Recruitment',
-        'candidates' => '12 candidates',
-        'offers' => '3 offers',
+        'recruitment' => 'Question bank',
+        'candidates' => '12 tests',
+        'offers' => '3 sets',
 
-        'attendance_today' => 'Attendance today',
+        'attendance_today' => 'Today activity',
         'attendance_ontime' => '● On time',
 
-        'training' => 'Training',
+        'training' => 'Practice courses',
         'courses' => '8 courses',
         'training_running' => 'In progress',
     ],
 
     'hero' => [
-        'title_line_1' => 'Complete HR',
-        'title_line_2' => 'management',
+        'title_line_1' => 'Modern',
+        'title_line_2' => 'exam practice',
         'title_highlight' => 'platform',
 
-        'description' => 'Automate HR workflows, process payroll accurately, and grow talent with MindigoHRM.',
+        'description' => 'Smart testing system with automatic grading and learning progress tracking.',
 
-        'businesses' => 'Businesses',
+        'businesses' => 'Users',
         'uptime' => 'Uptime',
-        'employees' => 'Employees',
+        'employees' => 'Students',
     ],
 
     'footer' => [
@@ -122,7 +122,7 @@ return [
 
         'otp' => [
             'title' => 'Enter OTP',
-            'description' => 'We sent a 6-digit code to',
+            'description' => 'We sent a 6-digit code to your email',
             'not_received' => 'Didn’t receive the code?',
             'resend' => 'Resend',
             'confirm' => 'Confirm',
@@ -133,13 +133,13 @@ return [
 
         'reset' => [
             'title' => 'Reset Password',
-            'description' => 'Enter a new password for your account.',
+            'description' => 'Set a new password to continue.',
 
             'new_password' => 'New Password',
             'new_password_placeholder' => 'Minimum 8 characters',
 
             'confirm_password' => 'Confirm Password',
-            'confirm_password_placeholder' => 'Re-enter your password',
+            'confirm_password_placeholder' => 'Re-enter password',
 
             'submit' => 'Reset Password',
 

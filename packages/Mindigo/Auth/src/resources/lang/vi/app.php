@@ -4,34 +4,34 @@ return [
 
     'brand' => [
         'name' => 'MindigoID',
-        'powered_by' => 'Powered by Mindigo Inc.',
+        'powered_by' => 'Powered by Mindigo Education',
     ],
 
     'auth' => [
         'login_title' => 'Đăng nhập',
         'login_subtitle' => 'để tiếp tục với :platform',
-        'platform' => 'Mindigo Platform',
+        'platform' => 'Mindigo Exam Platform',
 
         'email' => 'Email',
-        'email_placeholder' => 'employee@example.com',
+        'email_placeholder' => 'student@example.com',
         'email_invalid' => 'Vui lòng nhập email hợp lệ.',
 
         'password' => 'Mật khẩu',
-        'password_placeholder' => 'Mật khẩu của bạn',
+        'password_placeholder' => 'Nhập mật khẩu của bạn',
         'forgot_password' => 'Quên mật khẩu?',
 
-        'remember_me' => 'Giữ tôi luôn đăng nhập',
+        'remember_me' => 'Ghi nhớ đăng nhập',
         'login_button' => 'Đăng nhập',
 
-        'continue' => 'Tiếp theo',
-        'try_other_method' => 'Thử cách khác',
+        'continue' => 'Tiếp tục',
+        'try_other_method' => 'Thử phương thức khác',
         'confirm' => 'Xác nhận',
         'back' => 'Quay lại',
 
         'login_with_Mindigo_id' => 'Đăng nhập bằng Mindigo ID',
 
         'magic_link_sent' => 'Mindigo ID đã gửi một liên kết đến',
-        'magic_link_check' => 'Vui lòng kiểm tra và thực hiện đăng nhập.',
+        'magic_link_check' => 'Vui lòng kiểm tra email để đăng nhập.',
         'resend' => 'Gửi lại',
         'resend_otp' => 'Gửi lại OTP',
 
@@ -39,13 +39,14 @@ return [
         'otp_invalid' => 'Mã OTP không chính xác.',
         'otp_not_received' => 'Không nhận được mã OTP?',
 
-        'incognito_notice' => 'Nếu đây không phải máy tính của bạn, hãy đăng nhập bằng',
-        'incognito_highlight' => 'trình duyệt ẩn danh',
+        'incognito_notice' => 'Nếu đây không phải thiết bị của bạn, hãy đăng nhập bằng',
+        'incognito_highlight' => 'chế độ ẩn danh',
         'incognito_suffix' => 'để bảo vệ tài khoản.',
+
     ],
 
     'sso' => [
-        'divider' => 'Hoặc đăng nhập thông qua SSO',
+        'divider' => 'Hoặc đăng nhập bằng SSO',
 
         'google' => 'Đăng nhập bằng Google',
         'microsoft' => 'Đăng nhập bằng Microsoft',
@@ -59,41 +60,41 @@ return [
     ],
 
     'dashboard' => [
-        'employees_active' => 'Nhân viên hoạt động',
+        'employees_active' => 'Thí sinh đang hoạt động',
         'today_up' => '↑ +12 hôm nay',
 
         'system_status' => 'Trạng thái hệ thống',
         'system_online' => 'Hoạt động ổn định',
 
-        'today_approval' => 'Phê duyệt hôm nay',
-        'approved' => '✓ 24 đã duyệt',
-        'pending' => '⏳ 6 chờ',
+        'today_approval' => 'Bài làm hôm nay',
+        'approved' => '✓ 24 đã nộp',
+        'pending' => '⏳ 6 đang làm',
 
-        'salary_this_month' => 'Lương tháng này',
-        'salary_processed' => '↑ Đã xử lý',
+        'salary_this_month' => 'Tiến độ học tháng này',
+        'salary_processed' => '↑ Đã hoàn thành',
 
-        'recruitment' => 'Tuyển dụng',
-        'candidates' => '12 ứng viên',
-        'offers' => '3 offer',
+        'recruitment' => 'Ngân hàng đề thi',
+        'candidates' => '12 đề thi',
+        'offers' => '3 bộ đề',
 
-        'attendance_today' => 'Chấm công hôm nay',
+        'attendance_today' => 'Lượt thi hôm nay',
         'attendance_ontime' => '● Đúng giờ',
 
-        'training' => 'Đào tạo',
+        'training' => 'Khóa luyện thi',
         'courses' => '8 khóa',
         'training_running' => 'Đang diễn ra',
     ],
 
     'hero' => [
-        'title_line_1' => 'Nền tảng quản lý',
-        'title_line_2' => 'nhân sự',
-        'title_highlight' => 'toàn diện',
+        'title_line_1' => 'Nền tảng',
+        'title_line_2' => 'ôn thi trắc nghiệm',
+        'title_highlight' => 'hiện đại',
 
-        'description' => 'Tự động hoá quy trình HR, tính lương chính xác, và phát triển nhân tài cùng MindigoHRM.',
+        'description' => 'Hệ thống luyện thi thông minh, chấm điểm tự động và theo dõi tiến độ học tập hiệu quả.',
 
-        'businesses' => 'Doanh nghiệp',
+        'businesses' => 'Người dùng',
         'uptime' => 'Uptime',
-        'employees' => 'Nhân viên',
+        'employees' => 'Học viên',
     ],
 
     'footer' => [
@@ -122,7 +123,7 @@ return [
 
         'otp' => [
             'title' => 'Nhập mã OTP',
-            'description' => 'Chúng tôi đã gửi mã 6 số đến',
+            'description' => 'Chúng tôi đã gửi mã 6 số đến email của bạn',
             'not_received' => 'Không nhận được mã?',
             'resend' => 'Gửi lại',
             'confirm' => 'Xác nhận',
@@ -133,7 +134,7 @@ return [
 
         'reset' => [
             'title' => 'Đặt lại mật khẩu',
-            'description' => 'Nhập mật khẩu mới cho tài khoản của bạn.',
+            'description' => 'Nhập mật khẩu mới để tiếp tục sử dụng hệ thống.',
 
             'new_password' => 'Mật khẩu mới',
             'new_password_placeholder' => 'Tối thiểu 8 ký tự',
@@ -157,17 +158,18 @@ return [
     ],
 
     'toast' => [
-        'login_success' => 'Đăng nhập thành công! Chào mừng trở lại.',
-        'logout_success' => 'Đăng xuất thành công. Hẹn gặp lại!',
+        'login_success' => 'Đăng nhập thành công! Chào mừng bạn.',
+        'logout_success' => 'Đăng xuất thành công.',
         'logging_out' => 'Đang đăng xuất...',
     ],
 
     'confirm' => [
         'logout' => [
             'title' => 'Đăng xuất',
-            'message' => 'Bạn có chắc chắn muốn đăng xuất không?',
+            'message' => 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
             'confirm_text' => 'Đăng xuất',
             'cancel_text' => 'Huỷ',
         ],
     ],
+
 ];
