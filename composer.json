@@ -15,6 +15,8 @@
         "laravel/tinker": "^2.10.1",
         "mindigo/auth": "*",
         "mindigo/core": "*",
+        "mindigo/dashboard": "*",
+        "mindigo/profile": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.4"
     },
     "require-dev": {
@@ -31,8 +33,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
+            "Mindigo\\Auth\\": "packages/Mindigo/Auth/src/",
             "Mindigo\\Core\\": "packages/Mindigo/Core/src/",
-            "Mindigo\\Auth\\": "packages/Mindigo/Auth/src/"
+            "Mindigo\\Dashboard\\": "packages/Mindigo/Dashboard/src/",
+            "Mindigo\\Profile\\": "packages/Mindigo/Profile/src/"
         }
     },
     "autoload-dev": {
@@ -43,11 +47,19 @@
     "repositories": [
         {
             "type": "path",
+            "url": "packages/Mindigo/Auth"
+        },
+        {
+            "type": "path",
             "url": "packages/Mindigo/Core"
         },
         {
             "type": "path",
-            "url": "packages/Mindigo/Auth"
+            "url": "packages/Mindigo/Dashboard"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/Profile"
         }
     ],
     "scripts": {

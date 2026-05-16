@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8074b63a763c45839c9e7502a5a1cfdf",
+    "content-hash": "47e89d899ad3e164839011254dac8701",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2172,7 +2172,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2208,7 +2208,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2232,6 +2232,66 @@
                 }
             },
             "description": "Mindigo Core Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/dashboard",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/Dashboard",
+                "reference": "59966160b20063fdff283ad7d29b1ccbfb4a80f3"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\Dashboard\\Providers\\DashboardServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\Dashboard\\": "src/"
+                }
+            },
+            "description": "Mindigo Dashboard Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/profile",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/Profile",
+                "reference": "21c63841c13e7351ba64f7263a7cb612fb31adf6"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\Profile\\Providers\\ProfileServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\Profile\\": "src/"
+                }
+            },
+            "description": "Mindigo Profile Package",
             "transport-options": {
                 "relative": true
             }
