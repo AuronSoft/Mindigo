@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="screenshots/logo.png" style="max-width: 200px; height: auto;" alt="QuizBox — Online Quiz Platform">
+  <img src="screenshots/logo.png" style="max-width: 200px; height: auto;" alt="Mindigo — Online Quiz Platform">
 </p>
 
 <h1 align="center">Mindigo</h1>
@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=flat&logo=laravel" alt="Laravel">
   <img src="https://img.shields.io/badge/PHP-8.3-777BB4?style=flat&logo=php" alt="PHP">
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat" alt="License">
-  <img src="https://img.shields.io/github/stars/your-username/quizbox?style=flat" alt="Stars">
+  <img src="https://img.shields.io/github/stars/your-username/Mindigo?style=flat" alt="Stars">
 </p>
 
 ---
@@ -35,7 +35,7 @@
 
 ## Overview
 
-**QuizBox** is a self-hosted, open-source web application designed for quiz-based learning and knowledge evaluation.
+**Mindigo** is a self-hosted, open-source web application designed for quiz-based learning and knowledge evaluation.
 
 It provides users with a structured environment to practice multiple-choice questions, track performance, and improve learning efficiency without relying on external platforms.
 

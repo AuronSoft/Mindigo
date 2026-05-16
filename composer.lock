@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "369deb31e33f0a60a8d02d90be117e46",
+    "content-hash": "8074b63a763c45839c9e7502a5a1cfdf",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2172,11 +2172,11 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
-                "reference": "200d9e4da6234f4fe8f3d79ab28f6187e5030a1a"
+                "reference": "ea3679a30ba67a5b32e4ef5185ebe101c086c8c6"
             },
             "require": {
                 "illuminate/auth": "^12.0",
@@ -2208,7 +2208,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
