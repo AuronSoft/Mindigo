@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'NovaHRM')</title>
+    <title>@yield('title', 'MindigoHRM')</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700,800,900" rel="stylesheet"/>
     @yield('styles')
@@ -20,11 +20,11 @@
 
             <div class="logo-text">
                 <span class="logo-eyebrow">
-                    @lang('nova-dashboard::app.platform')
+                    @lang('Mindigo-dashboard::app.platform')
                 </span>
 
                 <span class="logo-name">
-                    Nova<span>HRM</span>
+                    Mindigo<span>HRM</span>
                 </span>
             </div>
         </div>
@@ -38,7 +38,7 @@
             <input
                 id="sidebar-search-input"
                 type="text"
-                placeholder="@lang('nova-dashboard::app.search_placeholder')"
+                placeholder="@lang('Mindigo-dashboard::app.search_placeholder')"
                 autocomplete="off"
             />
         </div>
@@ -46,14 +46,14 @@
         <div class="sidebar-nav-wrap">
             <nav class="sidebar-nav">
 
-                {{-- Nova HRM+ --}}
+                {{-- Mindigo HRM+ --}}
                 <div class="sidebar-group is-active"
                      data-sidebar-group
-                     data-group-name="@lang('nova-dashboard::app.core_hrm')">
+                     data-group-name="@lang('Mindigo-dashboard::app.core_hrm')">
 
                     <button class="sidebar-group-trigger"
                             type="button"
-                            title="@lang('nova-dashboard::app.core_hrm')">
+                            title="@lang('Mindigo-dashboard::app.core_hrm')">
 
                         <span class="sidebar-group-icon">
                             <svg viewBox="0 0 24 24">
@@ -66,11 +66,11 @@
 
                         <span class="sidebar-group-text">
                             <span class="sidebar-group-title">
-                                @lang('nova-dashboard::app.core_hrm')
+                                @lang('Mindigo-dashboard::app.core_hrm')
                             </span>
 
                             <span class="sidebar-group-subtitle">
-                                @lang('nova-dashboard::app.core_hrm_desc')
+                                @lang('Mindigo-dashboard::app.core_hrm_desc')
                             </span>
                         </span>
                     </button>
@@ -80,60 +80,60 @@
                         <a href="{{ route('dashboard') }}"
                            class="sidebar-submenu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.dashboard')">
+                           data-search-label="@lang('Mindigo-dashboard::app.dashboard')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.dashboard')
+                                @lang('Mindigo-dashboard::app.dashboard')
                             </span>
                         </a>
 
                         <a href="{{ route('hr.employees.index') }}"
                            class="sidebar-submenu-item"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.employees')">
+                           data-search-label="@lang('Mindigo-dashboard::app.employees')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.employees')
+                                @lang('Mindigo-dashboard::app.employees')
                             </span>
                         </a>
 
                         <a href="{{ route('org-chart.index') }}"
                            class="sidebar-submenu-item"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.org_chart')">
+                           data-search-label="@lang('Mindigo-dashboard::app.org_chart')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.org_chart')
+                                @lang('Mindigo-dashboard::app.org_chart')
                             </span>
                         </a>
 
                         <a href="{{ route('hr.departments.index') }}"
                            class="sidebar-submenu-item"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.departments_positions')">
+                           data-search-label="@lang('Mindigo-dashboard::app.departments_positions')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.departments_positions')
+                                @lang('Mindigo-dashboard::app.departments_positions')
                             </span>
                         </a>
 
                         <a href="{{ route('documents.index') }}"
                            class="sidebar-submenu-item {{ request()->routeIs('documents.*') ? 'active' : '' }}"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.documents')">
+                           data-search-label="@lang('Mindigo-dashboard::app.documents')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.documents')
+                                @lang('Mindigo-dashboard::app.documents')
                             </span>
                         </a>
 
@@ -143,11 +143,11 @@
                 {{-- Development --}}
                 <div class="sidebar-group"
                      data-sidebar-group
-                     data-group-name="@lang('nova-dashboard::app.development')">
+                     data-group-name="@lang('Mindigo-dashboard::app.development')">
 
                     <button class="sidebar-group-trigger"
                             type="button"
-                            title="@lang('nova-dashboard::app.development')">
+                            title="@lang('Mindigo-dashboard::app.development')">
 
                         <span class="sidebar-group-icon accent-purple">
                             <svg viewBox="0 0 24 24">
@@ -160,11 +160,11 @@
 
                         <span class="sidebar-group-text">
                             <span class="sidebar-group-title">
-                                @lang('nova-dashboard::app.development')
+                                @lang('Mindigo-dashboard::app.development')
                             </span>
 
                             <span class="sidebar-group-subtitle">
-                                @lang('nova-dashboard::app.development_desc')
+                                @lang('Mindigo-dashboard::app.development_desc')
                             </span>
                         </span>
                     </button>
@@ -174,36 +174,36 @@
                         <a href="#"
                            class="sidebar-submenu-item"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.recruitment')">
+                           data-search-label="@lang('Mindigo-dashboard::app.recruitment')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.recruitment')
+                                @lang('Mindigo-dashboard::app.recruitment')
                             </span>
                         </a>
 
                         <a href="#"
                            class="sidebar-submenu-item"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.training')">
+                           data-search-label="@lang('Mindigo-dashboard::app.training')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.training')
+                                @lang('Mindigo-dashboard::app.training')
                             </span>
                         </a>
 
                         <a href="#"
                            class="sidebar-submenu-item"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.policies')">
+                           data-search-label="@lang('Mindigo-dashboard::app.policies')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.policies')
+                                @lang('Mindigo-dashboard::app.policies')
                             </span>
                         </a>
 
@@ -213,11 +213,11 @@
                 {{-- Operations --}}
                 <div class="sidebar-group"
                      data-sidebar-group
-                     data-group-name="@lang('nova-dashboard::app.operations')">
+                     data-group-name="@lang('Mindigo-dashboard::app.operations')">
 
                     <button class="sidebar-group-trigger"
                             type="button"
-                            title="@lang('nova-dashboard::app.operations')">
+                            title="@lang('Mindigo-dashboard::app.operations')">
 
                         <span class="sidebar-group-icon accent-amber">
                             <svg viewBox="0 0 24 24">
@@ -227,11 +227,11 @@
 
                         <span class="sidebar-group-text">
                             <span class="sidebar-group-title">
-                                @lang('nova-dashboard::app.operations')
+                                @lang('Mindigo-dashboard::app.operations')
                             </span>
 
                             <span class="sidebar-group-subtitle">
-                                @lang('nova-dashboard::app.operations_desc')
+                                @lang('Mindigo-dashboard::app.operations_desc')
                             </span>
                         </span>
                     </button>
@@ -241,24 +241,24 @@
                         <a href="#"
                            class="sidebar-submenu-item"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.attendance')">
+                           data-search-label="@lang('Mindigo-dashboard::app.attendance')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.attendance')
+                                @lang('Mindigo-dashboard::app.attendance')
                             </span>
                         </a>
                         
                         <a href="#"
                            class="sidebar-submenu-item"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.payroll')">
+                           data-search-label="@lang('Mindigo-dashboard::app.payroll')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.payroll')
+                                @lang('Mindigo-dashboard::app.payroll')
                             </span>
                         </a>
 
@@ -268,11 +268,11 @@
                 {{-- Settings --}}
                 <div class="sidebar-group sidebar-group-settings"
                      data-sidebar-group
-                     data-group-name="@lang('nova-dashboard::app.settings')">
+                     data-group-name="@lang('Mindigo-dashboard::app.settings')">
 
                     <button class="sidebar-group-trigger"
                             type="button"
-                            title="@lang('nova-dashboard::app.settings')">
+                            title="@lang('Mindigo-dashboard::app.settings')">
 
                         <span class="sidebar-group-icon accent-slate">
                             <svg viewBox="0 0 24 24">
@@ -283,11 +283,11 @@
 
                         <span class="sidebar-group-text">
                             <span class="sidebar-group-title">
-                                @lang('nova-dashboard::app.settings')
+                                @lang('Mindigo-dashboard::app.settings')
                             </span>
 
                             <span class="sidebar-group-subtitle">
-                                @lang('nova-dashboard::app.settings_desc')
+                                @lang('Mindigo-dashboard::app.settings_desc')
                             </span>
                         </span>
                     </button>
@@ -297,24 +297,24 @@
                         <a href="{{ route('profile.index') }}"
                            class="sidebar-submenu-item {{ request()->routeIs('profile.*') ? 'active' : '' }}"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::app.my_account')">
+                           data-search-label="@lang('Mindigo-dashboard::app.my_account')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.my_account')
+                                @lang('Mindigo-dashboard::app.my_account')
                             </span>
                         </a>
 
                         <a href="#"
                            class="sidebar-submenu-item"
                            data-sidebar-search-item
-                           data-search-label="@lang('nova-dashboard::sidebar.system_settings')">
+                           data-search-label="@lang('Mindigo-dashboard::sidebar.system_settings')">
 
                             <span class="submenu-bullet"></span>
 
                             <span class="sidebar-submenu-label">
-                                @lang('nova-dashboard::app.system_settings')
+                                @lang('Mindigo-dashboard::app.system_settings')
                             </span>
                         </a>
 
@@ -336,7 +336,7 @@
                 <div class="av-name">{{ Auth::user()->name }}</div>
 
                 <div class="av-role">
-                    {{ Auth::user()->role ?? __('nova-dashboard::sidebar.administrator') }}
+                    {{ Auth::user()->role ?? __('Mindigo-dashboard::sidebar.administrator') }}
                 </div>
             </div>
         </div>
@@ -351,7 +351,7 @@
                     <circle cx="12" cy="7" r="4"/>
                 </svg>
 
-                @lang('nova-dashboard::app.my_account')
+                @lang('Mindigo-dashboard::app.my_account')
             </a>
 
             <a href="#"
@@ -365,7 +365,7 @@
                     <line x1="21" y1="12" x2="9" y2="12"/>
                 </svg>
 
-                @lang('nova-dashboard::app.logout')
+                @lang('Mindigo-dashboard::app.logout')
             </a>
         </div>
 
@@ -376,7 +376,7 @@
         <button class="sidebar-toggle"
                 id="sidebar-toggle"
                 type="button"
-                aria-label="@lang('nova-dashboard::app.expand_sidebar')">
+                aria-label="@lang('Mindigo-dashboard::app.expand_sidebar')">
 
             <svg viewBox="0 0 24 24">
                 <polyline points="9 18 15 12 9 6"/>

@@ -1,4 +1,4 @@
-import '../../../../Core/src/resources/js/nova-ui.js';
+import '../../../../Core/src/resources/js/Mindigo-ui.js';
 
 const chartDefaults = {
     responsive: true,
@@ -245,7 +245,7 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
     link.addEventListener('click', async (event) => {
         event.preventDefault();
 
-        const confirmed = await novaConfirm({
+        const confirmed = await MindigoConfirm({
             title: 'Đăng xuất',
             message: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
             confirmText: 'Đăng xuất',
@@ -257,7 +257,7 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
             return;
         }
 
-        novaToast('Đang đăng xuất...', 'info', 1200);
+        MindigoToast('Đang đăng xuất...', 'info', 1200);
 
         const formId = link.dataset.logoutForm;
         const form = formId ? document.getElementById(formId) : null;
