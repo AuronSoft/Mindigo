@@ -1,76 +1,96 @@
 <?php
 
-namespace Nova\Profile\Services;
+namespace Mindigo\Profile\Services;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use Nova\Auth\Models\Employee;
-use Nova\Profile\Http\Requests\UpdatePasswordRequest;
-use Nova\Profile\Http\Requests\UpdateNotificationsRequest;
-use Nova\Profile\Http\Requests\UpdateProfileRequest;
-use Nova\Profile\Models\NotificationPreference;
+use Mindigo\Auth\Models\User;
+use Mindigo\Profile\Http\Requests\UpdatePasswordRequest;
+use Mindigo\Profile\Http\Requests\UpdateNotificationsRequest;
+use Mindigo\Profile\Http\Requests\UpdateProfileRequest;
+use Mindigo\Profile\Models\NotificationPreference;
 
 class ProfileService
 {
-    public function updatePassword(UpdatePasswordRequest $request, Employee $employee): void
+    /**
+     * Cập nhật mật khẩu người dùng.
+     */
+    public function updatePassword(UpdatePasswordRequest $request, User $user): void
     {
-        if (!Hash::check($request->current_password, $employee->getAuthPassword())) {
+        if (!Hash::check($request->current_password, $user->getAuthPassword())) {
             throw ValidationException::withMessages([
                 'current_password' => 'Mật khẩu hiện tại không đúng.',
             ]);
         }
 
-        if (Hash::check($request->password, $employee->getAuthPassword())) {
+        if (Hash::check($request->password, $user->getAuthPassword())) {
             throw ValidationException::withMessages([
                 'password' => 'Mật khẩu mới không được trùng với mật khẩu hiện tại.',
             ]);
         }
 
-        $employee->password = $request->password;
-        $employee->save();
+        // Tự động Hash mật khẩu khi lưu (hoặc dùng thuộc tính hashed trong Model Laravel 10+)
+        $user->password = Hash::needsRehash($request->password) ? Hash::make($request->password) : $request->password;
+        $user->save();
     }
 
-    public function suspend(Employee $employee): void
+    /**
+     * Tạm khóa tài khoản người dùng.
+     */
+    public function suspend(User $user): void
     {
-        $employee->is_active = false;
-        $employee->save();
+        $user->is_active = false;
+        $user->save();
     }
 
-    public function destroy(Employee $employee): void
+    /**
+     * Xóa vĩnh viễn tài khoản người dùng.
+     */
+    public function destroy(User $user): void
     {
-        $employee->delete();
+        // Xóa avatar cũ của user nếu có trước khi xóa tài khoản
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+        
+        $user->delete();
     }
 
-    public function updateNotifications(UpdateNotificationsRequest $request, Employee $employee): void
+    /**
+     * Cập nhật cấu hình nhận thông báo của người dùng.
+     */
+    public function updateNotifications(UpdateNotificationsRequest $request, User $user): void
     {
         NotificationPreference::updateOrCreate(
-            ['employee_id' => $employee->id],
+            ['user_id' => $user->id], 
             [
-                'notif_attendance' => $request->notif_attendance,
-                'notif_payroll'    => $request->notif_payroll,
+                'notif_new_quiz'     => $request->notif_new_quiz,     
+                'notif_system_news'  => $request->notif_system_news,  
             ]
         );
     }
 
-    public function update(UpdateProfileRequest $request, Employee $employee): void
+    /**
+     * Cập nhật thông tin hồ sơ cá nhân (Profile).
+     */
+    public function update(UpdateProfileRequest $request, User $user): void
     {
+        // Lọc các trường dữ liệu cá nhân sạch sẽ của Mindigo ID
         $data = $request->only([
             'first_name', 'last_name', 'phone', 'date_of_birth',
-            'gender', 'address', 'language', 'job_title', 'occupation',
-            'hire_date', 'department_id', 'office_id', 'position_id',
-            'manager_id', 'email_personal', 'bio',
+            'gender', 'address', 'language', 'bio'
         ]);
 
+        // Xử lý Upload Avatar
         if ($request->hasFile('avatar')) {
-            if ($employee->avatar) {
-                Storage::disk('public')->delete($employee->avatar);
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
             }
             $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
-        $employee->fill($data);
-        $employee->save();
+        $user->fill($data);
+        $user->save();
     }
 }

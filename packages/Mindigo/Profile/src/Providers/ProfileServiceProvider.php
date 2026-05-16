@@ -1,6 +1,6 @@
 <?php
 
-namespace Nova\Profile\Providers;
+namespace Mindigo\Profile\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +17,6 @@ class ProfileServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'profile');
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang','nova-profile');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang','Mindigo-profile');
     }
 }

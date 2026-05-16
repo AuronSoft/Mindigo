@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'page_title' => 'Tài khoản của tôi — NovaHRM',
+    'page_title' => 'Tài khoản của tôi — MindigoHRM',
 
     'dashboard' => 'Dashboard',
     'my_account' => 'Tài khoản của tôi',

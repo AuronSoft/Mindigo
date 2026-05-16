@@ -1,14 +1,16 @@
 <?php
 
-namespace Nova\Profile\Http\Controllers;
+namespace Mindigo\Profile\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Nova\Profile\Http\Requests\UpdatePasswordRequest;
-use Nova\Profile\Http\Requests\UpdateNotificationsRequest;
-use Nova\Profile\Http\Requests\UpdateProfileRequest;
-use Nova\Profile\Services\ProfileService;
+use Illuminate\View\View;
+use Mindigo\Profile\Http\Requests\UpdatePasswordRequest;
+use Mindigo\Profile\Http\Requests\UpdateNotificationsRequest;
+use Mindigo\Profile\Http\Requests\UpdateProfileRequest;
+use Mindigo\Profile\Services\ProfileService;
 
 class ProfileController extends Controller
 {
@@ -16,16 +18,22 @@ class ProfileController extends Controller
         private readonly ProfileService $service
     ) {}
 
-    public function index()
+    /**
+     * Hiển thị trang hồ sơ cá nhân.
+     */
+    public function index(): View
     {
-        /** @var \Nova\Auth\Models\Employee $employee */
-        $employee = Auth::user();
-        $employee->load('notificationPreference');
+        /** @var \Mindigo\Auth\Models\User $user */
+        $user = Auth::user();
+        $user->load('notificationPreference');
 
-        return view('profile::profile', compact('employee'));
+        return view('profile::profile', compact('user')); 
     }
 
-    public function updatePassword(UpdatePasswordRequest $request)
+    /**
+     * Cập nhật mật khẩu người dùng.
+     */
+    public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
     {
         $this->service->updatePassword($request, Auth::user());
 
@@ -34,12 +42,17 @@ class ProfileController extends Controller
             ->with('success', 'Mật khẩu đã được cập nhật thành công.');
     }
 
-    public function suspend(Request $request)
+    /**
+     * Tạm khóa/Đình chỉ tài khoản.
+     */
+    public function suspend(Request $request): RedirectResponse
     {
-        $employee = Auth::user();
+        $user = Auth::user();
 
-        $this->service->suspend($employee);
+        // Gọi service xử lý cập nhật trạng thái trước
+        $this->service->suspend($user);
 
+        // Đăng xuất và xóa session an toàn
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -49,22 +62,30 @@ class ProfileController extends Controller
             ->with('warning', 'Tài khoản của bạn đã bị đình chỉ.');
     }
 
-    public function destroy(Request $request)
+    /**
+     * Xóa vĩnh viễn tài khoản.
+     */
+    public function destroy(Request $request): RedirectResponse
     {
-        $employee = Auth::user();
+        $user = Auth::user();
 
+        // Đăng xuất và xóa session trước khi thực hiện xóa bản ghi trong DB
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        $this->service->destroy($employee);
+        // Tiến hành xóa user thông qua service
+        $this->service->destroy($user);
 
         return redirect()
             ->route('login')
-            ->with('info', 'Tài khoản của bạn đã được xoá.');
+            ->with('info', 'Tài khoản của bạn đã được xoá vĩnh viễn.');
     }
 
-    public function updateNotifications(UpdateNotificationsRequest $request)
+    /**
+     * Cập nhật cấu hình nhận email thông báo.
+     */
+    public function updateNotifications(UpdateNotificationsRequest $request): RedirectResponse
     {
         $this->service->updateNotifications($request, Auth::user());
 
@@ -73,7 +94,10 @@ class ProfileController extends Controller
             ->with('success', 'Cài đặt thông báo đã được cập nhật.');
     }
 
-    public function update(UpdateProfileRequest $request)
+    /**
+     * Cập nhật thông tin chi tiết hồ sơ cá nhân.
+     */
+    public function update(UpdateProfileRequest $request): RedirectResponse
     {
         $this->service->update($request, Auth::user());
 

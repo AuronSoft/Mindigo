@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Nova\Profile\Http\Controllers\ProfileController;
+use Mindigo\Profile\Http\Controllers\ProfileController;
 
 Route::middleware(['web', 'auth'])->prefix('profile')->name('profile.')->group(function () {
     Route::get('/',          [ProfileController::class, 'index'])->name('index');

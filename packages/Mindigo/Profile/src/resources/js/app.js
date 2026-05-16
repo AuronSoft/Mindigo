@@ -1,4 +1,4 @@
-import '../../../../Core/src/resources/js/nova-ui.js';
+import '../../../../Core/src/resources/js/Mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const hash = window.location.hash?.replace('#', '');
@@ -8,13 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (window.__profileSuccess) {
-        novaToast(window.__profileSuccess, 'success');
+        MindigoToast(window.__profileSuccess, 'success');
     }
 
     if (Array.isArray(window.__profileErrors)) {
         window.__profileErrors.forEach((message, index) => {
             if (!message) return;
-            setTimeout(() => novaToast(message, 'error', 4200), index * 180);
+            setTimeout(() => MindigoToast(message, 'error', 4200), index * 180);
         });
     }
 
@@ -77,13 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!file) return;
 
             if (!file.type.startsWith('image/')) {
-                novaToast('Vui lòng chọn file ảnh hợp lệ.', 'error');
+                MindigoToast('Vui lòng chọn file ảnh hợp lệ.', 'error');
                 avatarInput.value = '';
                 return;
             }
 
             if (file.size > 2 * 1024 * 1024) {
-                novaToast('Ảnh không được vượt quá 2MB.', 'warning');
+                MindigoToast('Ảnh không được vượt quá 2MB.', 'warning');
                 avatarInput.value = '';
                 return;
             }
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnDelete = document.getElementById('btn-delete-account');
     if (btnDelete) {
         btnDelete.addEventListener('click', async () => {
-            const confirmed = await novaConfirm({
+            const confirmed = await MindigoConfirm({
                 title: 'Xoá tài khoản?',
                 message: 'Hành động này không thể hoàn tác. Toàn bộ dữ liệu của tài khoản sẽ bị xoá vĩnh viễn.',
                 confirmText: 'Xoá ngay',
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!confirmed) return;
 
-            novaToast('Đang xử lý yêu cầu xoá tài khoản...', 'warning', 1200);
+            MindigoToast('Đang xử lý yêu cầu xoá tài khoản...', 'warning', 1200);
 
             const form = document.createElement('form');
             form.method = 'POST';
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', async (e) => {
             e.preventDefault();
 
-            const confirmed = await novaConfirm({
+            const confirmed = await MindigoConfirm({
                 title: 'Đăng xuất',
                 message: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
                 confirmText: 'Đăng xuất',
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!confirmed) return;
 
-            novaToast('Đang đăng xuất...', 'info', 1200);
+            MindigoToast('Đang đăng xuất...', 'info', 1200);
 
             const formId = link.dataset.logoutForm;
             const form = formId ? document.getElementById(formId) : null;
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSuspend = document.getElementById('btn-suspend-account');
     if (btnSuspend) {
         btnSuspend.addEventListener('click', async () => {
-            const confirmed = await novaConfirm({
+            const confirmed = await MindigoConfirm({
                 title: 'Đình chỉ tài khoản?',
                 message: 'Tài khoản sẽ bị tạm khoá. Bạn sẽ bị đăng xuất ngay lập tức.',
                 confirmText: 'Đình chỉ',
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!confirmed) return;
 
-            novaToast('Đang xử lý...', 'warning', 1200);
+            MindigoToast('Đang xử lý...', 'warning', 1200);
 
             const form = document.createElement('form');
             form.method = 'POST';

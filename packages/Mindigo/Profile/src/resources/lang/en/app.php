@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'page_title' => 'My Account — NovaHRM',
+    'page_title' => 'My Account — MindigoHRM',
 
     'dashboard' => 'Dashboard',
     'my_account' => 'My Account',
