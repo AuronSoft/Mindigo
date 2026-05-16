@@ -17,9 +17,24 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default('user');
+            $table->enum('role', [
+                'admin',
+                'teacher',
+                'student'
+            ])->default('student');
+            $table->string('phone')->nullable();
+            $table->string('avatar')->nullable();
+            $table->enum('gender', [
+                'male',
+                'female',
+                'other'
+            ])->nullable();
             $table->date('date_of_birth')->nullable();
+            $table->text('address')->nullable();
+            $table->text('bio')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 

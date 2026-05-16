@@ -1,9 +1,9 @@
 <?php
 
-namespace Nova\Auth\Services;
+namespace Mindigo\Auth\Services;
 
-use Nova\Auth\Mail\NovaIdOtpMail;
-use Nova\Auth\Models\Employee;
+use Mindigo\Auth\Mail\MindigoIdOtpMail;
+use Mindigo\Auth\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -18,7 +18,7 @@ class ForgotPasswordService
         Cache::put($key, $otp, now()->addMinutes(10));
 
         Mail::to($data['email'])->send(
-            new NovaIdOtpMail($otp, $data['email'], 'forgot_password')
+            new MindigoIdOtpMail($otp, $data['email'], 'forgot_password')
         );
     }
 
@@ -48,7 +48,7 @@ class ForgotPasswordService
             return false;
         }
 
-        $employee = Employee::where('email', $data['email'])->firstOrFail();
+        $employee = User::where('email', $data['email'])->firstOrFail();
         $employee->update(['password' => Hash::make($data['password'])]);
 
         Cache::forget('otp_' . md5($data['email']));

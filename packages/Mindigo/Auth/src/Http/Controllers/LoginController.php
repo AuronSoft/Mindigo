@@ -1,9 +1,9 @@
 <?php
 
-namespace Nova\Auth\Http\Controllers;
+namespace Mindigo\Auth\Http\Controllers;
 
-use Nova\Auth\Http\Requests\LoginRequest;
-use Nova\Auth\Services\LoginService;
+use Mindigo\Auth\Http\Requests\LoginRequest;
+use Mindigo\Auth\Services\LoginService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -15,7 +15,7 @@ class LoginController extends Controller
 
     public function index()
     {
-        return view('nova-auth::login');
+        return view('Mindigo-auth::login');
     }
 
     public function store(LoginRequest $request)

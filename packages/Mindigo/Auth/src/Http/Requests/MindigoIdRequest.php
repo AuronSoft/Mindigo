@@ -1,10 +1,10 @@
 <?php
 
-namespace Nova\Auth\Http\Requests;
+namespace Mindigo\Auth\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class NovaIdRequest extends FormRequest
+class MindigoIdRequest extends FormRequest
 {
     public function authorize(): bool
     {

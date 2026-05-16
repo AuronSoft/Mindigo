@@ -1,29 +1,29 @@
 <?php
 
-namespace Nova\Auth\Services;
+namespace Mindigo\Auth\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use Nova\Auth\Mail\NovaIdMagicLinkMail;
-use Nova\Auth\Mail\NovaIdOtpMail;
-use Nova\Auth\Models\Employee;
-use Nova\Auth\Models\NovaIdToken;
+use Mindigo\Auth\Mail\MindigoIdMagicLinkMail;
+use Mindigo\Auth\Mail\MindigoIdOtpMail;
+use Mindigo\Auth\Models\User;
+use Mindigo\Auth\Models\MindigoIdToken;
 
-class NovaIdService
+class MindigoIdService
 {
     private const EXPIRES_MINUTES = 15;
 
-    public function findUser(string $email): ?Employee
+    public function findUser(string $email): ?User
     {
-        return Employee::where('email', strtolower($email))->first();
+        return User::where('email', strtolower($email))->first();
     }
 
     public function clearOldTokens(string $email, string $type): void
     {
-        NovaIdToken::where('email', $email)
+        MindigoIdToken::where('email', $email)
             ->where('type', $type)
             ->where('used', false)
             ->delete();
@@ -33,7 +33,7 @@ class NovaIdService
     {
         $plainToken = Str::random(64);
 
-        NovaIdToken::create([
+        MindigoIdToken::create([
             'email'      => $email,
             'token'      => hash('sha256', $plainToken),
             'type'       => 'magic_link',
@@ -41,19 +41,19 @@ class NovaIdService
         ]);
 
         $link = URL::temporarySignedRoute(
-            'nova-id.verify',
+            'Mindigo-id.verify',
             now()->addMinutes(self::EXPIRES_MINUTES),
             ['token' => $plainToken]
         );
 
-        Mail::to($email)->send(new NovaIdMagicLinkMail($link));
+        Mail::to($email)->send(new MindigoIdMagicLinkMail($link));
     }
 
     public function sendOtp(string $email): void
     {
         $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        NovaIdToken::create([
+        MindigoIdToken::create([
             'email'      => $email,
             'token'      => Str::random(64),
             'otp'        => $otp,
@@ -61,21 +61,21 @@ class NovaIdService
             'expires_at' => now()->addMinutes(self::EXPIRES_MINUTES),
         ]);
 
-        Mail::to($email)->send(new NovaIdOtpMail($otp, $email, 'login'));
+        Mail::to($email)->send(new MindigoIdOtpMail($otp, $email, 'login'));
     }
 
-    public function verifyMagicLinkToken(string $tokenStr): ?NovaIdToken
+    public function verifyMagicLinkToken(string $tokenStr): ?MindigoIdToken
     {
-        $record = NovaIdToken::where('token', hash('sha256', $tokenStr))
+        $record = MindigoIdToken::where('token', hash('sha256', $tokenStr))
             ->where('type', 'magic_link')
             ->first();
 
         return ($record && $record->isValid()) ? $record : null;
     }
 
-    public function verifyOtpToken(string $email, string $otp): ?NovaIdToken
+    public function verifyOtpToken(string $email, string $otp): ?MindigoIdToken
     {
-        $record = NovaIdToken::where('email', strtolower($email))
+        $record = MindigoIdToken::where('email', strtolower($email))
             ->where('type', 'otp')
             ->where('used', false)
             ->latest('created_at')
@@ -88,7 +88,7 @@ class NovaIdService
         return hash_equals($record->otp, $otp) ? $record : null;
     }
 
-    public function loginUser(Request $request, Employee $user): void
+    public function loginUser(Request $request, User $user): void
     {
         Auth::login($user, remember: true);
         $request->session()->regenerate();

@@ -7,7 +7,7 @@
 .phpunit.result.cache
 /.fleet
 /.idea
-/.nova
+/.Mindigo
 /.phpunit.cache
 /.vscode
 /.zed

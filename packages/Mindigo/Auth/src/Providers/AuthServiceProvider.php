@@ -22,8 +22,8 @@ class AuthServiceProvider extends ServiceProvider
         Route::middleware(['web'])->group(__DIR__ . '/../routes/web.php');
 
         // Đăng ký views
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'nova-auth');
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang','nova-auth');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'mindigo-auth');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang','mindigo-auth');
 
         // Đăng ký rate limiters
         $this->registerRateLimiters();
@@ -32,7 +32,7 @@ class AuthServiceProvider extends ServiceProvider
     protected function registerRateLimiters(): void
     {
         // Gửi Magic Link / OTP: tối đa 5 lần / 10 phút / per email+IP
-        RateLimiter::for('nova-id-send', function ($request) {
+        RateLimiter::for('mindigo-id-send', function ($request) {
             return Limit::perMinutes(10, 5)
                 ->by(strtolower($request->input('email')) . '|' . $request->ip())
                 ->response(fn () => response()->json([
@@ -41,7 +41,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         // Verify OTP: tối đa 10 lần / 10 phút / per email+IP
-        RateLimiter::for('nova-id-otp', function ($request) {
+        RateLimiter::for('mindigo-id-otp', function ($request) {
             return Limit::perMinutes(10, 10)
                 ->by(strtolower($request->input('email')) . '|' . $request->ip())
                 ->response(fn () => response()->json([

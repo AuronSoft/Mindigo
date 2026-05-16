@@ -1,6 +1,6 @@
 <?php
 
-namespace Nova\Auth\Mail;
+namespace Mindigo\Auth\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NovaIdMagicLinkMail extends Mailable
+class MindigoIdMagicLinkMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -16,13 +16,13 @@ class NovaIdMagicLinkMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Liên kết đăng nhập Nova ID');
+        return new Envelope(subject: 'Liên kết đăng nhập MindigoID');
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'nova-auth::magic-link',  
+            view: 'Mindigo-auth::magic-link',  
             with: ['link' => $this->link],
         );
     }

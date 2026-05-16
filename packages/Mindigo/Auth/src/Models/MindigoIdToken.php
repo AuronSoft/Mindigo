@@ -1,14 +1,14 @@
 <?php
 
-namespace Nova\Auth\Models;
+namespace Mindigo\Auth\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class NovaIdToken extends Model
+class MindigoIdToken extends Model
 {
     public $timestamps = false;
 
-    protected $table = 'nova_id_tokens';
+    protected $table = 'Mindigo_id_tokens';
 
     protected $fillable = [
         'email',

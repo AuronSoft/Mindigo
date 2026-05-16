@@ -1,22 +1,22 @@
 <?php
 
-namespace Nova\Auth\Http\Controllers;
+namespace Mindigo\Auth\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Nova\Auth\Http\Requests\NovaIdRequest;
-use Nova\Auth\Http\Requests\VerifyOtpRequest;
-use Nova\Auth\Services\NovaIdService;
+use Mindigo\Auth\Http\Requests\MindigoIdRequest;
+use Mindigo\Auth\Http\Requests\VerifyOtpRequest;
+use Mindigo\Auth\Services\MindigoIdService;
 
 class MindigoIdController extends Controller
 {
     public function __construct(
-        private readonly NovaIdService $service
+        private readonly MindigoIdService $service
     ) {}
 
-    public function send(NovaIdRequest $request): JsonResponse
+    public function send(MindigoIdRequest $request): JsonResponse
     {
         $email = strtolower($request->email);
         $type  = $request->type;
@@ -45,14 +45,14 @@ class MindigoIdController extends Controller
 
         if (!$record) {
             return redirect()->route('login')
-                ->withErrors(['nova_id' => 'Liên kết không hợp lệ hoặc đã hết hạn.']);
+                ->withErrors(['Mindigo_id' => 'Liên kết không hợp lệ hoặc đã hết hạn.']);
         }
 
         $user = $this->service->findUser($record->email);
 
         if (!$user) {
             return redirect()->route('login')
-                ->withErrors(['nova_id' => 'Tài khoản không tồn tại.']);
+                ->withErrors(['Mindigo_id' => 'Tài khoản không tồn tại.']);
         }
 
         $record->update(['used' => true]);

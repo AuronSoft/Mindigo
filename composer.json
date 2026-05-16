@@ -13,7 +13,8 @@
         "blade-ui-kit/blade-heroicons": "^2.7",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "mindigo/core": "*"
+        "mindigo/core": "*",
+        "mindigo/auth": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -29,7 +30,8 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Mindigo\\Core\\": "packages/Mindigo/Core/src/"
+            "Mindigo\\Core\\": "packages/Mindigo/Core/src/",
+            "Mindigo\\Auth\\": "packages/Mindigo/Auth/src/"
         }
     },
     "autoload-dev": {
@@ -41,6 +43,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/Core"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/Auth"
         }
     ],
     "scripts": {

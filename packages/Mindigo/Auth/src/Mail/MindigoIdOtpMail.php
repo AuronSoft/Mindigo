@@ -1,6 +1,6 @@
 <?php
 
-namespace Nova\Auth\Mail;
+namespace Mindigo\Auth\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NovaIdOtpMail extends Mailable
+class MindigoIdOtpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -21,8 +21,8 @@ class NovaIdOtpMail extends Mailable
     public function envelope(): Envelope
     {
         $subject = $this->type === 'forgot_password'
-            ? 'Mã OTP đặt lại mật khẩu — NovaHRM'
-            : 'Mã OTP đăng nhập Nova ID — NovaHRM';
+            ? 'Mã OTP đặt lại mật khẩu — MindigoHRM'
+            : 'Mã OTP đăng nhập MindigoID — MindigoHRM';
 
         return new Envelope(subject: $subject);
     }
@@ -30,7 +30,7 @@ class NovaIdOtpMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'nova-auth::otp',
+            view: 'Mindigo-auth::otp',
             with: [
                 'otp'   => $this->otp,
                 'email' => $this->email,

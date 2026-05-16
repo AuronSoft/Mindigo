@@ -1,6 +1,6 @@
 <?php
 
-namespace Nova\Auth\Http\Requests;
+namespace Mindigo\Auth\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

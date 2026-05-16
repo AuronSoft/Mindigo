@@ -1,6 +1,6 @@
 <?php
 
-namespace Nova\Auth\Services;
+namespace Mindigo\Auth\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

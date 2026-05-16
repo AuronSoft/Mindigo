@@ -1,6 +1,6 @@
 <?php
 
-namespace Nova\Auth\Http\Middleware;
+namespace Mindigo\Auth\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
