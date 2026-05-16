@@ -21,22 +21,22 @@ document.getElementById('loginForm')?.addEventListener('submit', () => {
 });
 
 if (window.__loginSuccess) {
-    novaToast('Đăng nhập thành công! Chào mừng trở lại.', 'success');
+    MindigoToast('Đăng nhập thành công! Chào mừng trở lại.', 'success');
 }
 
 if (window.__logoutSuccess) {
-    novaToast('Đăng xuất thành công. Hẹn gặp lại!', 'success');
+    MindigoToast('Đăng xuất thành công. Hẹn gặp lại!', 'success');
 }
 
 if (window.__loginError) {
-    novaToast(window.__loginError, 'error', 4500);
+    MindigoToast(window.__loginError, 'error', 4500);
 }
 
 document.querySelectorAll('[data-logout]').forEach(btn => {
     btn.addEventListener('click', async (e) => {
         e.preventDefault();
 
-        const confirmed = await novaConfirm({
+        const confirmed = await MindigoConfirm({
             title: 'Đăng xuất',
             message: 'Bạn có chắc chắn muốn đăng xuất không?',
             confirmText: 'Đăng xuất',
@@ -46,7 +46,7 @@ document.querySelectorAll('[data-logout]').forEach(btn => {
 
         if (!confirmed) return;
 
-        novaToast('Đang đăng xuất...', 'info', 1500);
+        MindigoToast('Đang đăng xuất...', 'info', 1500);
         setTimeout(() => document.getElementById('logoutForm')?.submit(), 1000);
     });
 });
