@@ -95,6 +95,7 @@ return [
         'save'           => '✓ Save Exam',
         'section_list'   => 'Section List',
         'part_1'         => 'Part 1',
+        'part_2' => 'Part 2: Advanced',
         'question_index' => 'Question Index (10)',
         'progress'       => 'Progress',
         'progress_done'  => '3/10 questions completed',

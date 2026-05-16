@@ -95,6 +95,7 @@ return [
         'save'           => '✓ Lưu đề thi',
         'section_list'   => 'Danh sách phần thi',
         'part_1'         => 'Phần 1',
+        'part_2'         => 'Phần 2: Nâng cao',
         'question_index' => 'Mục lục câu hỏi (10)',
         'progress'       => 'Tiến độ',
         'progress_done'  => '3/10 câu hoàn thành',
