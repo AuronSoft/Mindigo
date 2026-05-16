@@ -22,8 +22,8 @@ class AuthServiceProvider extends ServiceProvider
         Route::middleware(['web'])->group(__DIR__ . '/../routes/web.php');
 
         // Đăng ký views
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'mindigo-auth');
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang','mindigo-auth');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'Mindigo-auth');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'Mindigo-auth');
 
         // Đăng ký rate limiters
         $this->registerRateLimiters();

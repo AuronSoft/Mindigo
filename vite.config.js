@@ -6,9 +6,9 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                "resources/css/app.css",
                 "packages/Mindigo/Core/src/resources/css/home.css",
-                "resources/js/app.js"
+                "packages/Mindigo/Auth/src/resources/css/app.css",
+                "packages/Mindigo/Auth/src/resources/js/app.js",
             ],
             refresh: true,
         }),

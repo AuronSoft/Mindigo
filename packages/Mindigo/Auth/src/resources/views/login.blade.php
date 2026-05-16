@@ -18,10 +18,14 @@
         'packages/Mindigo/Auth/src/resources/js/app.js',
     ])
 </head>
-<body class="bg-green-50 min-h-screen font-[Be_Vietnam_Pro]">
+<body class="min-h-screen bg-white" style="font-family:'Be Vietnam Pro',sans-serif;">
+
 <div class="min-h-screen flex">
+
+    {{-- ── LEFT: Form ── --}}
     <div class="w-full lg:w-1/2 flex flex-col min-h-screen bg-white">
-        {{-- Logo navbar --}}
+
+        {{-- Logo --}}
         <div class="px-10 py-5 border-b border-gray-100">
             <a href="/" class="flex items-center gap-2">
                 <svg width="36" height="36" viewBox="0 0 200 220" fill="none">
@@ -60,16 +64,10 @@
                     <div class="flex flex-col gap-1.5">
                         <label class="text-sm font-black text-gray-700" for="email">@lang('Mindigo-auth::app.auth.email')</label>
                         <div class="relative">
-                            <input
-                                id="email"
-                                type="email"
-                                name="email"
+                            <input id="email" type="email" name="email"
                                 class="w-full border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
                                 placeholder="@lang('Mindigo-auth::app.auth.email_placeholder')"
-                                value="{{ old('email') }}"
-                                autocomplete="email"
-                                required
-                            >
+                                value="{{ old('email') }}" autocomplete="email" required>
                             <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                                 <polyline points="22,6 12,13 2,6"/>
@@ -88,20 +86,11 @@
                             @endif
                         </div>
                         <div class="relative">
-                            <input
-                                id="password"
-                                type="password"
-                                name="password"
-                                class="w-full border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
+                            <input id="password" type="password" name="password"
+                                class="w-full border border-gray-200 rounded-xl px-4 py-3 pr-16 text-sm font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
                                 placeholder="@lang('Mindigo-auth::app.auth.password_placeholder')"
-                                autocomplete="current-password"
-                                required
-                            >
-                            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                            </svg>
-                            <button type="button" id="pwToggle" tabindex="-1" class="absolute right-9 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-500 transition">
+                                autocomplete="current-password" required>
+                            <button type="button" id="pwToggle" tabindex="-1" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-500 transition">
                                 <svg id="eyeIcon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                     <circle cx="12" cy="12" r="3"/>
@@ -124,7 +113,7 @@
                 </form>
 
                 {{-- Mindigo ID --}}
-                <a href="#" class="mt-4 w-full flex items-center justify-center gap-2 border-2 border-green-500 text-green-600 font-black text-sm py-3 rounded-xl hover:bg-green-50 transition" onclick="event.preventDefault(); nidOpen()">
+                <a href="#" onclick="event.preventDefault(); nidOpen()" class="mt-4 w-full flex items-center justify-center gap-2 border-2 border-green-500 text-green-600 font-black text-sm py-3 rounded-xl hover:bg-green-50 transition">
                     <svg width="18" height="18" viewBox="0 0 200 220" fill="none">
                         <circle cx="105" cy="145" r="90" fill="#22c55e" stroke="#14532d" stroke-width="3"/>
                         <circle cx="82" cy="135" r="20" fill="white" stroke="#14532d" stroke-width="2"/>
@@ -145,18 +134,22 @@
                 </div>
 
                 {{-- SSO --}}
-                <div class="grid grid-cols-4 gap-2">
-                    <a href="#" class="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 hover:border-green-300 hover:bg-green-50 transition">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="#" class="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 px-3 hover:border-green-300 hover:bg-green-50 transition">
+                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                        <span class="text-xs font-bold text-gray-600">@lang('Mindigo-auth::app.sso.google')</span>
                     </a>
-                    <a href="#" class="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 hover:border-green-300 hover:bg-green-50 transition">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M11.4 0H0v11.4h11.4V0z" fill="#F25022"/><path d="M24 0H12.6v11.4H24V0z" fill="#7FBA00"/><path d="M11.4 12.6H0V24h11.4V12.6z" fill="#00A4EF"/><path d="M24 12.6H12.6V24H24V12.6z" fill="#FFB900"/></svg>
+                    <a href="#" class="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 px-3 hover:border-green-300 hover:bg-green-50 transition">
+                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none"><path d="M11.4 0H0v11.4h11.4V0z" fill="#F25022"/><path d="M24 0H12.6v11.4H24V0z" fill="#7FBA00"/><path d="M11.4 12.6H0V24h11.4V12.6z" fill="#00A4EF"/><path d="M24 12.6H12.6V24H24V12.6z" fill="#FFB900"/></svg>
+                        <span class="text-xs font-bold text-gray-600">@lang('Mindigo-auth::app.sso.microsoft')</span>
                     </a>
-                    <a href="#" class="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 hover:border-green-300 hover:bg-green-50 transition">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                    <a href="#" class="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 px-3 hover:border-green-300 hover:bg-green-50 transition">
+                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                        <span class="text-xs font-bold text-gray-600">@lang('Mindigo-auth::app.sso.apple')</span>
                     </a>
-                    <a href="#" class="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 hover:border-green-300 hover:bg-green-50 transition">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <a href="#" class="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 px-3 hover:border-green-300 hover:bg-green-50 transition">
+                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span class="text-xs font-bold text-gray-600">@lang('Mindigo-auth::app.sso.saml')</span>
                     </a>
                 </div>
 
@@ -168,61 +161,64 @@
         </div>
     </div>
 
-    <div class="login-right hidden lg:flex flex-1 relative bg-green-500 overflow-hidden">
-        <canvas id="connectorCanvas"></canvas>
+    {{-- ── RIGHT: Visual ── --}}
+    <div class="hidden lg:flex flex-1 relative bg-gradient-to-br from-green-400 via-green-500 to-green-600 overflow-hidden">
+
+        <canvas id="connectorCanvas" class="absolute inset-0 w-full h-full"></canvas>
+
         {{-- Floating cards --}}
-        <div class="float-card float-card-1" id="fc1">
-            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.employees_active')</div>
-            <div class="fc-val">1,284</div>
-            <div class="fc-tag">@lang('Mindigo-auth::app.dashboard.today_up')</div>
+        <div id="fc1" class="absolute top-16 left-8 bg-white rounded-2xl shadow-xl p-4 w-48 z-10">
+            <div class="text-xs text-gray-400 font-bold mb-1">@lang('Mindigo-auth::app.dashboard.employees_active')</div>
+            <div class="text-2xl font-black text-gray-800">1,284</div>
+            <div class="text-xs text-green-500 font-bold mt-1">@lang('Mindigo-auth::app.dashboard.today_up')</div>
         </div>
 
-        <div class="float-card float-card-2" id="fc2">
-            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.system_status')</div>
-            <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
-                <div style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e"></div>
-                <span style="font-size:12px;font-weight:700;color:#22c55e">@lang('Mindigo-auth::app.dashboard.system_online')</span>
+        <div id="fc2" class="absolute top-16 right-8 bg-white rounded-2xl shadow-xl p-4 w-48 z-10">
+            <div class="text-xs text-gray-400 font-bold mb-1">@lang('Mindigo-auth::app.dashboard.system_status')</div>
+            <div class="flex items-center gap-2 mt-1">
+                <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_6px_#22c55e]"></div>
+                <span class="text-xs font-black text-green-500">@lang('Mindigo-auth::app.dashboard.system_online')</span>
             </div>
         </div>
 
-        <div class="float-card float-card-3" id="fc3">
-            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.today_approval')</div>
-            <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
-                <span class="fc-badge fc-badge-green">@lang('Mindigo-auth::app.dashboard.approved')</span>
-                <span class="fc-badge fc-badge-blue">@lang('Mindigo-auth::app.dashboard.pending')</span>
+        <div id="fc3" class="absolute top-40 left-4 bg-white rounded-2xl shadow-xl p-4 w-48 z-10">
+            <div class="text-xs text-gray-400 font-bold mb-2">@lang('Mindigo-auth::app.dashboard.today_approval')</div>
+            <div class="flex gap-2 flex-wrap">
+                <span class="bg-green-100 text-green-700 text-xs font-black px-2 py-0.5 rounded-full">@lang('Mindigo-auth::app.dashboard.approved')</span>
+                <span class="bg-blue-100 text-blue-700 text-xs font-black px-2 py-0.5 rounded-full">@lang('Mindigo-auth::app.dashboard.pending')</span>
             </div>
         </div>
 
-        <div class="float-card float-card-4" id="fc4">
-            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.salary_this_month')</div>
-            <div class="fc-val">2.4 tỷ</div>
-            <div class="fc-tag" style="color:#FBBF24">@lang('Mindigo-auth::app.dashboard.salary_processed')</div>
+        <div id="fc4" class="absolute top-40 right-4 bg-white rounded-2xl shadow-xl p-4 w-48 z-10">
+            <div class="text-xs text-gray-400 font-bold mb-1">@lang('Mindigo-auth::app.dashboard.salary_this_month')</div>
+            <div class="text-2xl font-black text-gray-800">2.4 tỷ</div>
+            <div class="text-xs font-bold mt-1" style="color:#FBBF24">@lang('Mindigo-auth::app.dashboard.salary_processed')</div>
         </div>
 
-        <div class="float-card float-card-5" id="fc5">
-            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.recruitment')</div>
-            <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
-                <span class="fc-badge fc-badge-purple">@lang('Mindigo-auth::app.dashboard.candidates')</span>
-                <span class="fc-badge fc-badge-green">@lang('Mindigo-auth::app.dashboard.offers')</span>
+        <div id="fc5" class="absolute bottom-48 left-4 bg-white rounded-2xl shadow-xl p-4 w-48 z-10">
+            <div class="text-xs text-gray-400 font-bold mb-2">@lang('Mindigo-auth::app.dashboard.recruitment')</div>
+            <div class="flex gap-2 flex-wrap">
+                <span class="bg-purple-100 text-purple-700 text-xs font-black px-2 py-0.5 rounded-full">@lang('Mindigo-auth::app.dashboard.candidates')</span>
+                <span class="bg-green-100 text-green-700 text-xs font-black px-2 py-0.5 rounded-full">@lang('Mindigo-auth::app.dashboard.offers')</span>
             </div>
         </div>
 
-        <div class="float-card float-card-6" id="fc6">
-            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.attendance_today')</div>
-            <div class="fc-val">96.4%</div>
-            <div class="fc-tag" style="color:#34D399">@lang('Mindigo-auth::app.dashboard.attendance_ontime')</div>
+        <div id="fc6" class="absolute bottom-48 right-4 bg-white rounded-2xl shadow-xl p-4 w-48 z-10">
+            <div class="text-xs text-gray-400 font-bold mb-1">@lang('Mindigo-auth::app.dashboard.attendance_today')</div>
+            <div class="text-2xl font-black text-gray-800">96.4%</div>
+            <div class="text-xs font-bold mt-1" style="color:#34D399">@lang('Mindigo-auth::app.dashboard.attendance_ontime')</div>
         </div>
 
-        <div class="float-card float-card-7" id="fc7">
-            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.training')</div>
-            <div class="fc-val">@lang('Mindigo-auth::app.dashboard.courses')</div>
-            <div class="fc-tag" style="color:#A78BFA">@lang('Mindigo-auth::app.dashboard.training_running')</div>
+        <div id="fc7" class="absolute bottom-20 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-xl p-4 w-48 z-10">
+            <div class="text-xs text-gray-400 font-bold mb-1">@lang('Mindigo-auth::app.dashboard.training')</div>
+            <div class="text-2xl font-black text-gray-800">@lang('Mindigo-auth::app.dashboard.courses')</div>
+            <div class="text-xs font-bold mt-1" style="color:#A78BFA">@lang('Mindigo-auth::app.dashboard.training_running')</div>
         </div>
 
-        <div class="login-right-content">
-            {{-- Logo nhân vật giữa --}}
-            <div class="login-right-logo" id="centerLogo">
-                <svg width="64" height="64" viewBox="0 0 200 220" fill="none">
+        {{-- Center content --}}
+        <div class="relative z-20 flex flex-col items-center justify-center w-full px-12 text-center">
+            <div id="centerLogo" class="w-24 h-24 bg-white rounded-3xl shadow-2xl flex items-center justify-center mb-6">
+                <svg width="60" height="60" viewBox="0 0 200 220" fill="none">
                     <path d="M48 160 L22 148 L38 158 L16 152 L35 164" fill="#15803d" stroke="#14532d" stroke-width="1"/>
                     <circle cx="105" cy="145" r="90" fill="#22c55e" stroke="#14532d" stroke-width="3"/>
                     <ellipse cx="115" cy="185" rx="55" ry="38" fill="#86efac" stroke="#14532d" stroke-width="2"/>
@@ -243,26 +239,28 @@
                 </svg>
             </div>
 
-            <h2 class="login-right-title">
+            <h2 class="text-3xl font-black text-white leading-tight mb-3">
                 @lang('Mindigo-auth::app.hero.title_line_1')<br>
-                @lang('Mindigo-auth::app.hero.title_line_2') <span>@lang('Mindigo-auth::app.hero.title_highlight')</span>
+                @lang('Mindigo-auth::app.hero.title_line_2') <span class="text-green-900">@lang('Mindigo-auth::app.hero.title_highlight')</span>
             </h2>
-            <p class="login-right-desc">
+            <p class="text-green-100 text-sm leading-relaxed mb-8 max-w-xs">
                 @lang('Mindigo-auth::app.hero.description')
             </p>
 
-            <div class="login-stats">
-                <div class="login-stat">
-                    <div class="login-stat-val">10K+</div>
-                    <div class="login-stat-label">@lang('Mindigo-auth::app.hero.businesses')</div>
+            <div class="flex items-center gap-8">
+                <div class="text-center">
+                    <div class="text-2xl font-black text-white">10K+</div>
+                    <div class="text-xs text-green-200 font-bold">@lang('Mindigo-auth::app.hero.businesses')</div>
                 </div>
-                <div class="login-stat">
-                    <div class="login-stat-val">99.9%</div>
-                    <div class="login-stat-label">@lang('Mindigo-auth::app.hero.uptime')</div>
+                <div class="w-px h-8 bg-green-400"></div>
+                <div class="text-center">
+                    <div class="text-2xl font-black text-white">99.9%</div>
+                    <div class="text-xs text-green-200 font-bold">@lang('Mindigo-auth::app.hero.uptime')</div>
                 </div>
-                <div class="login-stat">
-                    <div class="login-stat-val">500K+</div>
-                    <div class="login-stat-label">@lang('Mindigo-auth::app.hero.employees')</div>
+                <div class="w-px h-8 bg-green-400"></div>
+                <div class="text-center">
+                    <div class="text-2xl font-black text-white">500K+</div>
+                    <div class="text-xs text-green-200 font-bold">@lang('Mindigo-auth::app.hero.employees')</div>
                 </div>
             </div>
         </div>
