@@ -60,7 +60,7 @@
 .nid-resend-disabled { color: #94a3b8; cursor: default; font-weight: 500; }
 </style>
 
-<div id="novaIdOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:#e8f0fb; font-family:'Be Vietnam Pro',sans-serif; overflow:hidden;">
+<div id="MindigoIdOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:#e8f0fb; font-family:'Be Vietnam Pro',sans-serif; overflow:hidden;">
 
     {{-- Background shapes --}}
     <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
@@ -74,7 +74,7 @@
             <div style="width:28px;height:28px;background:linear-gradient(135deg,#1565C0,#42A5F5);border-radius:50%;display:flex;align-items:center;justify-content:center;">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M8 1L14 4V8C14 11.3 11.3 13.8 8 15C4.7 13.8 2 11.3 2 8V4L8 1Z"/></svg>
             </div>
-            <span style="font-size:14px;font-weight:800;color:#1565C0;">Nova<span style="color:#0d1729;">ID</span></span>
+            <span style="font-size:14px;font-weight:800;color:#1565C0;">Mindigo<span style="color:#0d1729;">ID</span></span>
         </div>
         <button onclick="NID.close()" style="background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.08);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='rgba(255,255,255,.7)'">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4a6080" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -94,19 +94,19 @@
                         </svg>
                     </div>
                     <span style="font-size:16px;font-weight:800;color:#1565C0;">
-                        {{ config('app.name', 'Nova') }}
+                        {{ config('app.name', 'Mindigo') }}
                         <span style="color:#0d1729;">ID</span>
                     </span>
                 </div>
                 <h2 style="font-size:30px;font-weight:900;color:#0d1729;letter-spacing:-.8px;line-height:1.2;margin:0 0 10px;">
-                    @lang('nova-auth::app.auth.login_title')
+                    @lang('Mindigo-auth::app.auth.login_title')
                 </h2>
                 <p id="nid-left-sub" style="font-size:14px;color:#64748b;margin:0;line-height:1.6;">
-                    @lang('nova-auth::app.auth.login_subtitle', [
-                        'platform' => __('nova-auth::app.auth.platform')
+                    @lang('Mindigo-auth::app.auth.login_subtitle', [
+                        'platform' => __('Mindigo-auth::app.auth.platform')
                     ])
                     <a href="#" style="color:#1565C0;font-weight:700;text-decoration:none;">
-                        @lang('nova-auth::app.auth.platform')
+                        @lang('Mindigo-auth::app.auth.platform')
                     </a>
                 </p>
             </div>
@@ -117,13 +117,13 @@
                 <div class="nid-step nid-step-1" style="flex-direction:column;">
                     <div style="margin-bottom:1rem;">
                         <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:7px;">
-                            @lang('nova-auth::app.auth.email')
+                            @lang('Mindigo-auth::app.auth.email')
                         </label>
                         <div style="position:relative;">
                             <input
                                 id="nid-email-input"
                                 type="email"
-                                placeholder="@lang('nova-auth::app.auth.email_placeholder')"
+                                placeholder="@lang('Mindigo-auth::app.auth.email_placeholder')"
                                 style="width:100%;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;font-size:14px;color:#0d1729;font-family:'Be Vietnam Pro',sans-serif;outline:none;box-sizing:border-box;transition:border-color .2s,box-shadow .2s;"
                                 onfocus="this.style.borderColor='#1565C0';this.style.boxShadow='0 0 0 3px rgba(21,101,192,.1)'"
                                 onblur="this.style.borderColor=document.getElementById('nid-email-error').style.display!='none'?'#ef4444':'#e2e8f0';this.style.boxShadow='none'"
@@ -139,18 +139,18 @@
                             </div>
                         </div>
                         <p id="nid-email-error" style="display:none;font-size:12px;color:#ef4444;margin:6px 0 0 2px;">
-                            @lang('nova-auth::app.auth.email_invalid')
+                            @lang('Mindigo-auth::app.auth.email_invalid')
                         </p>
                     </div>
                     <p style="font-size:12.5px;color:#94a3b8;line-height:1.7;margin:0 0 1.6rem;">
-                        @lang('nova-auth::app.auth.incognito_notice')
+                        @lang('Mindigo-auth::app.auth.incognito_notice')
                         <strong style="color:#64748b;font-weight:600;">
-                            @lang('nova-auth::app.auth.incognito_highlight')
+                            @lang('Mindigo-auth::app.auth.incognito_highlight')
                         </strong>
-                        @lang('nova-auth::app.auth.incognito_suffix')
+                        @lang('Mindigo-auth::app.auth.incognito_suffix')
                     </p>
                     <button id="nid-email-btn" onclick="NID.submitEmail()" class="nid-btn-primary" disabled>
-                        @lang('nova-auth::app.auth.continue')
+                        @lang('Mindigo-auth::app.auth.continue')
                     </button>
                 </div>
 
@@ -163,25 +163,25 @@
                         </svg>
                     </div>
                     <p style="font-size:14px;color:#374151;line-height:1.7;margin:0 0 1.6rem;">
-                        <strong style="color:#0d1729;">Nova ID</strong>
-                        @lang('nova-auth::app.auth.magic_link_sent')
+                        <strong style="color:#0d1729;">Mindigo ID</strong>
+                        @lang('Mindigo-auth::app.auth.magic_link_sent')
                         <br>
 
                         <strong id="nid-ml-email" style="color:#1565C0;"></strong>.
                         <br>
 
                         <span style="color:#64748b;font-size:13px;">
-                            @lang('nova-auth::app.auth.magic_link_check')
+                            @lang('Mindigo-auth::app.auth.magic_link_check')
                         </span>
                     </p>
                     <div style="display:flex;gap:10px;width:100%;">
                         <button onclick="NID.switchToOtp()" class="nid-btn-outline">
-                            @lang('nova-auth::app.auth.try_other_method')
+                            @lang('Mindigo-auth::app.auth.try_other_method')
                         </button>
 
                         <button id="nid-ml-resend" onclick="NID.resendMagicLink()" class="nid-btn-outline" disabled>
                             <span id="nid-ml-resend-text">
-                                @lang('nova-auth::app.auth.resend')
+                                @lang('Mindigo-auth::app.auth.resend')
                                 (<span id="nid-ml-countdown">60</span>s)
                             </span>
                         </button>
@@ -190,7 +190,7 @@
                 {{-- ══ STEP 3: OTP ══ --}}
                 <div class="nid-step nid-step-3" style="flex-direction:column;">
                     <p style="font-size:13.5px;color:#64748b;margin:0 0 1.4rem;text-align:center;">
-                        @lang('nova-auth::app.auth.otp_title')
+                        @lang('Mindigo-auth::app.auth.otp_title')
                     </p>
                     {{-- OTP --}}
                     <div id="nid-otp-wrap" style="display:flex;gap:8px;justify-content:center;margin-bottom:.6rem;">
@@ -202,18 +202,18 @@
                         <input class="nid-otp-input" type="text" inputmode="numeric" maxlength="1" data-idx="5">
                     </div>
                     <p id="nid-otp-error" style="display:none;font-size:12px;color:#ef4444;text-align:center;margin:0 0 .8rem;">
-                        @lang('nova-auth::app.auth.otp_invalid')
+                        @lang('Mindigo-auth::app.auth.otp_invalid')
                     </p>
                     <p style="font-size:12.5px;color:#94a3b8;text-align:center;margin:0 0 1.4rem;">
-                        @lang('nova-auth::app.auth.otp_not_received')&nbsp;
+                        @lang('Mindigo-auth::app.auth.otp_not_received')&nbsp;
 
                         <span id="nid-otp-resend" class="nid-resend-disabled" onclick="NID.resendOtp()">
-                            @lang('nova-auth::app.auth.resend_otp')
+                            @lang('Mindigo-auth::app.auth.resend_otp')
                             (<span id="nid-otp-countdown">60</span>s)
                         </span>
                     </p>
                     <button id="nid-otp-btn" onclick="NID.submitOtp()" class="nid-btn-primary" disabled>
-                        @lang('nova-auth::app.auth.confirm')
+                        @lang('Mindigo-auth::app.auth.confirm')
                     </button>
                     <button onclick="NID.goStep(1)"
                         style="background:none;border:none;color:#94a3b8;font-size:12.5px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;margin-top:.9rem;"
@@ -221,30 +221,30 @@
                         onmouseout="this.style.color='#94a3b8'">
 
                         <i class="fa-solid fa-arrow-left"></i>
-                        @lang('nova-auth::app.auth.back')
+                        @lang('Mindigo-auth::app.auth.back')
                     </button>
                 </div>
 
                 {{-- Footer --}}
                 <div style="margin-top:1.5rem;text-align:center;display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
                     <span style="font-size:11.5px;color:#94a3b8;">
-                        @lang('nova-auth::app.footer.protected_by')
+                        @lang('Mindigo-auth::app.footer.protected_by')
                     </span>
-                    <span style="font-size:11.5px;font-weight:800;color:#1565C0;">Nova</span>
+                    <span style="font-size:11.5px;font-weight:800;color:#1565C0;">Mindigo</span>
                     <span style="font-size:11.5px;font-weight:800;color:#0d1729;">ID</span>
                     <span style="color:#d1d5db;font-size:11.5px;">·</span>
                     <a href="#"
                         style="font-size:11.5px;color:#94a3b8;text-decoration:none;"
                         onmouseover="this.style.color='#1565C0'"
                         onmouseout="this.style.color='#94a3b8'">
-                        @lang('nova-auth::app.footer.terms')
+                        @lang('Mindigo-auth::app.footer.terms')
                     </a>
                     <span style="color:#d1d5db;font-size:11.5px;">·</span>
                     <a href="#"
                         style="font-size:11.5px;color:#94a3b8;text-decoration:none;"
                         onmouseover="this.style.color='#1565C0'"
                         onmouseout="this.style.color='#94a3b8'">
-                        @lang('nova-auth::app.footer.privacy')
+                        @lang('Mindigo-auth::app.footer.privacy')
                     </a>
                 </div>
             </div>
@@ -255,11 +255,11 @@
     <div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;z-index:2;">
         <select style="background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:5px 10px;font-size:12px;color:#4a6080;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;">
             <option value="vi">
-                @lang('nova-auth::app.language.vi')
+                @lang('Mindigo-auth::app.language.vi')
             </option>
 
             <option value="en">
-                @lang('nova-auth::app.language.en')
+                @lang('Mindigo-auth::app.language.en')
             </option>
         </select>
 
@@ -270,7 +270,7 @@
                 </svg>
             </div>
             <span style="font-size:12px;color:#94a3b8;">
-                @lang('nova-auth::app.brand.powered_by')
+                @lang('Mindigo-auth::app.brand.powered_by')
             </span>
         </div>
 
@@ -279,20 +279,20 @@
                 style="font-size:12px;color:#94a3b8;text-decoration:none;"
                 onmouseover="this.style.color='#1565C0'"
                 onmouseout="this.style.color='#94a3b8'">
-                @lang('nova-auth::app.footer.help')
+                @lang('Mindigo-auth::app.footer.help')
             </a>
             <a href="#"
                 style="font-size:12px;color:#94a3b8;text-decoration:none;"
                 onmouseover="this.style.color='#1565C0'"
                 onmouseout="this.style.color='#94a3b8'">
-                @lang('nova-auth::app.footer.privacy')
+                @lang('Mindigo-auth::app.footer.privacy')
             </a>
             <a href="#"
                 style="font-size:12px;color:#94a3b8;text-decoration:none;"
                 onmouseover="this.style.color='#1565C0'"
                 onmouseout="this.style.color='#94a3b8'">
 
-                @lang('nova-auth::app.footer.terms')
+                @lang('Mindigo-auth::app.footer.terms')
             </a>
         </div>
     </div>

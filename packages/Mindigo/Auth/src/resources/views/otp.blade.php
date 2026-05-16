@@ -20,7 +20,7 @@
     <div class="wrap">
         <div class="header">
             <svg viewBox="0 0 16 16"><path d="M8 1L14 4V8C14 11.3 11.3 13.8 8 15C4.7 13.8 2 11.3 2 8V4L8 1Z"/></svg>
-            <h1>NovaHRM</h1>
+            <h1>MindigoHRM</h1>
         </div>
         <div class="body">
             <p>Xin chào,</p>
@@ -28,7 +28,7 @@
             @if(($type ?? 'login') === 'forgot_password')
                 <p>Bạn vừa yêu cầu <strong>đặt lại mật khẩu</strong> cho tài khoản <strong>{{ $email }}</strong>. Sử dụng mã OTP bên dưới để tiếp tục:</p>
             @else
-                <p>Bạn vừa yêu cầu <strong>đăng nhập</strong> vào NovaHRM bằng Nova ID với tài khoản <strong>{{ $email }}</strong>. Sử dụng mã OTP bên dưới để tiếp tục:</p>
+                <p>Bạn vừa yêu cầu <strong>đăng nhập</strong> vào MindigoHRM bằng Mindigo ID với tài khoản <strong>{{ $email }}</strong>. Sử dụng mã OTP bên dưới để tiếp tục:</p>
             @endif
 
             <div class="otp-box">
@@ -46,7 +46,7 @@
             @endif
         </div>
         <div class="footer">
-            © {{ date('Y') }} NovaHRM. Hệ thống quản lý nhân sự.
+            © {{ date('Y') }} MindigoHRM. Hệ thống quản lý nhân sự.
         </div>
     </div>
 </body>

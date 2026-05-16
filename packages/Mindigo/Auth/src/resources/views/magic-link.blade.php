@@ -21,20 +21,20 @@
     <div class="wrap">
         <div class="header">
             <svg viewBox="0 0 16 16"><path d="M8 1L14 4V8C14 11.3 11.3 13.8 8 15C4.7 13.8 2 11.3 2 8V4L8 1Z"/></svg>
-            <h1>NovaHRM</h1>
+            <h1>MindigoHRM</h1>
         </div>
         <div class="body">
             <p>Xin chào,</p>
-            <p>Bạn vừa yêu cầu <strong>đăng nhập</strong> vào NovaHRM bằng Nova ID. Nhấn vào nút bên dưới để đăng nhập ngay — không cần mật khẩu.</p>
+            <p>Bạn vừa yêu cầu <strong>đăng nhập</strong> vào MindigoHRM bằng Mindigo ID. Nhấn vào nút bên dưới để đăng nhập ngay — không cần mật khẩu.</p>
             <div class="btn-wrap">
-                <a href="{{ $link }}" class="btn">Đăng nhập vào NovaHRM</a>
+                <a href="{{ $link }}" class="btn">Đăng nhập vào MindigoHRM</a>
             </div>
             <p class="expire-note">Liên kết có hiệu lực trong <strong>15 phút</strong> và chỉ dùng được 1 lần.</p>
             <div class="link-box">{{ $link }}</div>
             <p style="margin-top:20px">Nếu bạn không yêu cầu đăng nhập, vui lòng bỏ qua email này.</p>
         </div>
         <div class="footer">
-            © {{ date('Y') }} NovaHRM. Hệ thống quản lý nhân sự.
+            © {{ date('Y') }} MindigoHRM. Hệ thống quản lý nhân sự.
         </div>
     </div>
 </body>

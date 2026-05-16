@@ -4,18 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@lang('nova-auth::app.auth.login_title') — NovaHRM</title>
+    <title>@lang('Mindigo-auth::app.auth.login_title') — MindigoHRM</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=be-vietnam-pro:300,400,500,600,700,800,900" rel="stylesheet"/>
     <script>
         window.__routes = {
-            novaIdSend:      "{{ route('nova-id.send') }}",
-            novaIdVerifyOtp: "{{ route('nova-id.verify-otp') }}",
+            MindigoIdSend:      "{{ route('Mindigo-id.send') }}",
+            MindigoIdVerifyOtp: "{{ route('Mindigo-id.verify-otp') }}",
         };
     </script>
     @vite([
-        'packages/Nova/Auth/src/resources/css/app.css',
-        'packages/Nova/Auth/src/resources/js/app.js',
+        'packages/Mindigo/Auth/src/resources/css/app.css',
+        'packages/Mindigo/Auth/src/resources/js/app.js',
     ])
 </head>
 <body>
@@ -28,26 +28,26 @@
             <div class="login-logo-icon">
                 <svg viewBox="0 0 16 16"><path d="M8 1L14 4V8C14 11.3 11.3 13.8 8 15C4.7 13.8 2 11.3 2 8V4L8 1Z"/></svg>
             </div>
-            <span class="login-logo-text">Nova<span>HRM</span></span>
+            <span class="login-logo-text">Mindigo<span>HRM</span></span>
         </a>
 
         <div class="login-form-wrap">
-            <h1 class="login-heading">@lang('nova-auth::app.auth.login_title')</h1>
-            <p class="login-subheading">@lang('nova-auth::app.auth.login_subtitle', ['platform' => __('nova-auth::app.auth.platform')])</p>
+            <h1 class="login-heading">@lang('Mindigo-auth::app.auth.login_title')</h1>
+            <p class="login-subheading">@lang('Mindigo-auth::app.auth.login_subtitle', ['platform' => __('Mindigo-auth::app.auth.platform')])</p>
 
             <form method="POST" action="{{ route('login.store') }}" id="loginForm">
                 @csrf
 
                 {{-- Email --}}
                 <div class="form-group">
-                    <label class="form-label" for="email">@lang('nova-auth::app.auth.email')</label>
+                    <label class="form-label" for="email">@lang('Mindigo-auth::app.auth.email')</label>
                     <div class="form-input-wrap">
                         <input
                             id="email"
                             type="email"
                             name="email"
                             class="form-input"
-                            placeholder="@lang('nova-auth::app.auth.email_placeholder')"
+                            placeholder="@lang('Mindigo-auth::app.auth.email_placeholder')"
                             value="{{ old('email') }}"
                             autocomplete="email"
                             required
@@ -62,10 +62,10 @@
                 {{-- Password --}}
                 <div class="form-group">
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:7px;">
-                        <label class="form-label" style="margin:0;" for="password">@lang('nova-auth::app.auth.password')</label>
+                        <label class="form-label" style="margin:0;" for="password">@lang('Mindigo-auth::app.auth.password')</label>
                         @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}" style="font-size:12px; color:var(--accent); text-decoration:underline; font-weight:600;">
-                                @lang('nova-auth::app.auth.forgot_password')
+                                @lang('Mindigo-auth::app.auth.forgot_password')
                             </a>
                         @endif
                     </div>
@@ -75,7 +75,7 @@
                             type="password"
                             name="password"
                             class="form-input"
-                            placeholder="@lang('nova-auth::app.auth.password_placeholder')"
+                            placeholder="@lang('Mindigo-auth::app.auth.password_placeholder')"
                             autocomplete="current-password"
                             required
                         >
@@ -96,29 +96,29 @@
                 <div class="form-row-between">
                     <label class="form-checkbox-wrap">
                         <input type="checkbox" name="remember" class="form-checkbox" {{ old('remember') ? 'checked' : '' }}>
-                        <span class="form-checkbox-label">@lang('nova-auth::app.auth.remember_me')</span>
+                        <span class="form-checkbox-label">@lang('Mindigo-auth::app.auth.remember_me')</span>
                     </label>
                 </div>
 
                 {{-- Submit --}}
                 <button type="submit" class="btn-login" id="loginBtn">
-                    <span class="btn-text">@lang('nova-auth::app.auth.login_button')</span>
+                    <span class="btn-text">@lang('Mindigo-auth::app.auth.login_button')</span>
                     <div class="spinner"></div>
                 </button>
             </form>
 
-            {{-- Nova ID --}}
-            <a href="#" class="btn-nova-sso" onclick="event.preventDefault(); nidOpen()">
+            {{-- Mindigo ID --}}
+            <a href="#" class="btn-Mindigo-sso" onclick="event.preventDefault(); nidOpen()">
                 <div class="login-logo-icon">
                     <svg viewBox="0 0 16 16"><path d="M8 1L14 4V8C14 11.3 11.3 13.8 8 15C4.7 13.8 2 11.3 2 8V4L8 1Z"/></svg>
                 </div>
-                @lang('nova-auth::app.auth.login_with_nova_id')
+                @lang('Mindigo-auth::app.auth.login_with_Mindigo_id')
             </a>
 
             {{-- Divider --}}
             <div class="login-divider">
                 <div class="login-divider-line"></div>
-                <span class="login-divider-text">@lang('nova-auth::app.sso.divider')</span>
+                <span class="login-divider-text">@lang('Mindigo-auth::app.sso.divider')</span>
                 <div class="login-divider-line"></div>
             </div>
 
@@ -131,7 +131,7 @@
                         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                     </svg>
-                    @lang('nova-auth::app.sso.google')
+                    @lang('Mindigo-auth::app.sso.google')
                 </a>
                 <a href="#" class="btn-sso">
                     <svg viewBox="0 0 24 24" fill="none">
@@ -140,25 +140,25 @@
                         <path d="M11.4 12.6H0V24h11.4V12.6z" fill="#00A4EF"/>
                         <path d="M24 12.6H12.6V24H24V12.6z" fill="#FFB900"/>
                     </svg>
-                    @lang('nova-auth::app.sso.microsoft')
+                    @lang('Mindigo-auth::app.sso.microsoft')
                 </a>
                 <a href="#" class="btn-sso">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                     </svg>
-                    @lang('nova-auth::app.sso.apple')
+                    @lang('Mindigo-auth::app.sso.apple')
                 </a>
                 <a href="#" class="btn-sso">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
-                    @lang('nova-auth::app.sso.saml')
+                    @lang('Mindigo-auth::app.sso.saml')
                 </a>
             </div>
 
             <div class="login-bottom-note">
-                @lang('nova-auth::app.support.need_help')
-                <a href="#">@lang('nova-auth::app.support.contact_admin')</a>
+                @lang('Mindigo-auth::app.support.need_help')
+                <a href="#">@lang('Mindigo-auth::app.support.contact_admin')</a>
             </div>
         </div>
     </div>
@@ -170,51 +170,51 @@
 
         {{-- Floating cards --}}
         <div class="float-card float-card-1" id="fc1">
-            <div class="fc-label">@lang('nova-auth::app.dashboard.employees_active')</div>
+            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.employees_active')</div>
             <div class="fc-val">1,284</div>
-            <div class="fc-tag">@lang('nova-auth::app.dashboard.today_up')</div>
+            <div class="fc-tag">@lang('Mindigo-auth::app.dashboard.today_up')</div>
         </div>
 
         <div class="float-card float-card-2" id="fc2">
-            <div class="fc-label">@lang('nova-auth::app.dashboard.system_status')</div>
+            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.system_status')</div>
             <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
                 <div style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e"></div>
-                <span style="font-size:12px;font-weight:700;color:#22c55e">@lang('nova-auth::app.dashboard.system_online')</span>
+                <span style="font-size:12px;font-weight:700;color:#22c55e">@lang('Mindigo-auth::app.dashboard.system_online')</span>
             </div>
         </div>
 
         <div class="float-card float-card-3" id="fc3">
-            <div class="fc-label">@lang('nova-auth::app.dashboard.today_approval')</div>
+            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.today_approval')</div>
             <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
-                <span class="fc-badge fc-badge-green">@lang('nova-auth::app.dashboard.approved')</span>
-                <span class="fc-badge fc-badge-blue">@lang('nova-auth::app.dashboard.pending')</span>
+                <span class="fc-badge fc-badge-green">@lang('Mindigo-auth::app.dashboard.approved')</span>
+                <span class="fc-badge fc-badge-blue">@lang('Mindigo-auth::app.dashboard.pending')</span>
             </div>
         </div>
 
         <div class="float-card float-card-4" id="fc4">
-            <div class="fc-label">@lang('nova-auth::app.dashboard.salary_this_month')</div>
+            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.salary_this_month')</div>
             <div class="fc-val">2.4 tỷ</div>
-            <div class="fc-tag" style="color:#FBBF24">@lang('nova-auth::app.dashboard.salary_processed')</div>
+            <div class="fc-tag" style="color:#FBBF24">@lang('Mindigo-auth::app.dashboard.salary_processed')</div>
         </div>
 
         <div class="float-card float-card-5" id="fc5">
-            <div class="fc-label">@lang('nova-auth::app.dashboard.recruitment')</div>
+            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.recruitment')</div>
             <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
-                <span class="fc-badge fc-badge-purple">@lang('nova-auth::app.dashboard.candidates')</span>
-                <span class="fc-badge fc-badge-green">@lang('nova-auth::app.dashboard.offers')</span>
+                <span class="fc-badge fc-badge-purple">@lang('Mindigo-auth::app.dashboard.candidates')</span>
+                <span class="fc-badge fc-badge-green">@lang('Mindigo-auth::app.dashboard.offers')</span>
             </div>
         </div>
 
         <div class="float-card float-card-6" id="fc6">
-            <div class="fc-label">@lang('nova-auth::app.dashboard.attendance_today')</div>
+            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.attendance_today')</div>
             <div class="fc-val">96.4%</div>
-            <div class="fc-tag" style="color:#34D399">@lang('nova-auth::app.dashboard.attendance_ontime')</div>
+            <div class="fc-tag" style="color:#34D399">@lang('Mindigo-auth::app.dashboard.attendance_ontime')</div>
         </div>
 
         <div class="float-card float-card-7" id="fc7">
-            <div class="fc-label">@lang('nova-auth::app.dashboard.training')</div>
-            <div class="fc-val">@lang('nova-auth::app.dashboard.courses')</div>
-            <div class="fc-tag" style="color:#A78BFA">@lang('nova-auth::app.dashboard.training_running')</div>
+            <div class="fc-label">@lang('Mindigo-auth::app.dashboard.training')</div>
+            <div class="fc-val">@lang('Mindigo-auth::app.dashboard.courses')</div>
+            <div class="fc-tag" style="color:#A78BFA">@lang('Mindigo-auth::app.dashboard.training_running')</div>
         </div>
 
         <div class="login-right-content">
@@ -223,25 +223,25 @@
             </div>
 
             <h2 class="login-right-title">
-                @lang('nova-auth::app.hero.title_line_1')<br>
-                @lang('nova-auth::app.hero.title_line_2') <span>@lang('nova-auth::app.hero.title_highlight')</span>
+                @lang('Mindigo-auth::app.hero.title_line_1')<br>
+                @lang('Mindigo-auth::app.hero.title_line_2') <span>@lang('Mindigo-auth::app.hero.title_highlight')</span>
             </h2>
             <p class="login-right-desc">
-                @lang('nova-auth::app.hero.description')
+                @lang('Mindigo-auth::app.hero.description')
             </p>
 
             <div class="login-stats">
                 <div class="login-stat">
                     <div class="login-stat-val">10K+</div>
-                    <div class="login-stat-label">@lang('nova-auth::app.hero.businesses')</div>
+                    <div class="login-stat-label">@lang('Mindigo-auth::app.hero.businesses')</div>
                 </div>
                 <div class="login-stat">
                     <div class="login-stat-val">99.9%</div>
-                    <div class="login-stat-label">@lang('nova-auth::app.hero.uptime')</div>
+                    <div class="login-stat-label">@lang('Mindigo-auth::app.hero.uptime')</div>
                 </div>
                 <div class="login-stat">
                     <div class="login-stat-val">500K+</div>
-                    <div class="login-stat-label">@lang('nova-auth::app.hero.employees')</div>
+                    <div class="login-stat-label">@lang('Mindigo-auth::app.hero.employees')</div>
                 </div>
             </div>
         </div>
@@ -266,6 +266,6 @@
     @csrf
 </form>
 
-@include('nova-auth::nova-id-modal')
+@include('Mindigo-auth::Mindigo-id-modal')
 </body>
 </html>

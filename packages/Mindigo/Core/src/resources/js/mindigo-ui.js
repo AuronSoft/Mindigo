@@ -1,7 +1,7 @@
 // mindigo-ui.js - Global UI helpers
 
 // TOAST NOTIFICATION 
-window.novaToast = function(msg, type = 'success', duration = 3500) {
+window.MindigoToast = function(msg, type = 'success', duration = 3500) {
     const icons = {
         success: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
         error:   `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
@@ -16,10 +16,10 @@ window.novaToast = function(msg, type = 'success', duration = 3500) {
     };
 
     // Tạo container nếu chưa có
-    let container = document.getElementById('nova-toast-container');
+    let container = document.getElementById('Mindigo-toast-container');
     if (!container) {
         container = document.createElement('div');
-        container.id = 'nova-toast-container';
+        container.id = 'Mindigo-toast-container';
         container.style.cssText = `
             position: fixed;
             bottom: 28px;
@@ -74,38 +74,38 @@ window.novaToast = function(msg, type = 'success', duration = 3500) {
     toast.addEventListener('click', () => { clearTimeout(timer); remove(); });
 };
 
-function processNovaToastNodes(root = document) {
-    root.querySelectorAll('[data-nova-toast-message]:not([data-nova-toast-bound])').forEach((node) => {
-        node.dataset.novaToastBound = '1';
+function processMindigoToastNodes(root = document) {
+    root.querySelectorAll('[data-Mindigo-toast-message]:not([data-Mindigo-toast-bound])').forEach((node) => {
+        node.dataset.MindigoToastBound = '1';
 
-        const message = node.dataset.novaToastMessage || node.textContent?.trim();
+        const message = node.dataset.MindigoToastMessage || node.textContent?.trim();
         if (!message) {
             return;
         }
 
-        const type = node.dataset.novaToastType || 'info';
-        const duration = Number(node.dataset.novaToastDuration || 3500);
-        window.novaToast(message, type, Number.isFinite(duration) ? duration : 3500);
+        const type = node.dataset.MindigoToastType || 'info';
+        const duration = Number(node.dataset.MindigoToastDuration || 3500);
+        window.MindigoToast(message, type, Number.isFinite(duration) ? duration : 3500);
         node.remove();
     });
 }
 
-function getNovaConfirmConfig(form) {
+function getMindigoConfirmConfig(form) {
     return {
-        title: form.dataset.novaConfirmTitle || 'XÃ¡c nháº­n',
-        message: form.dataset.novaConfirmMessage || 'Báº¡n cÃ³ cháº¯c cháº¯n khÃ´ng?',
-        confirmText: form.dataset.novaConfirmText || 'XÃ¡c nháº­n',
-        cancelText: form.dataset.novaConfirmCancel || 'Huá»·',
-        type: form.dataset.novaConfirmType || 'warning',
+        title: form.dataset.MindigoConfirmTitle || 'XÃ¡c nháº­n',
+        message: form.dataset.MindigoConfirmMessage || 'Báº¡n cÃ³ cháº¯c cháº¯n khÃ´ng?',
+        confirmText: form.dataset.MindigoConfirmText || 'XÃ¡c nháº­n',
+        cancelText: form.dataset.MindigoConfirmCancel || 'Huá»·',
+        type: form.dataset.MindigoConfirmType || 'warning',
     };
 }
 
-function bindNovaConfirmForms() {
-    if (document.__novaConfirmFormsBound) {
+function bindMindigoConfirmForms() {
+    if (document.__MindigoConfirmFormsBound) {
         return;
     }
 
-    document.__novaConfirmFormsBound = true;
+    document.__MindigoConfirmFormsBound = true;
 
     document.addEventListener('submit', async (event) => {
         const form = event.target;
@@ -114,23 +114,23 @@ function bindNovaConfirmForms() {
             return;
         }
 
-        if (!form.dataset.novaConfirmMessage) {
+        if (!form.dataset.MindigoConfirmMessage) {
             return;
         }
 
-        if (form.dataset.novaConfirmApproved === '1') {
-            delete form.dataset.novaConfirmApproved;
+        if (form.dataset.MindigoConfirmApproved === '1') {
+            delete form.dataset.MindigoConfirmApproved;
             return;
         }
 
         event.preventDefault();
 
-        const confirmed = await window.novaConfirm(getNovaConfirmConfig(form));
+        const confirmed = await window.MindigoConfirm(getMindigoConfirmConfig(form));
         if (!confirmed) {
             return;
         }
 
-        form.dataset.novaConfirmApproved = '1';
+        form.dataset.MindigoConfirmApproved = '1';
 
         if (typeof form.requestSubmit === 'function') {
             form.requestSubmit(event.submitter || undefined);
@@ -141,22 +141,22 @@ function bindNovaConfirmForms() {
     }, true);
 }
 
-function initNovaUi() {
-    bindNovaConfirmForms();
+function initMindigoUi() {
+    bindMindigoConfirmForms();
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => processNovaToastNodes(), { once: true });
+        document.addEventListener('DOMContentLoaded', () => processMindigoToastNodes(), { once: true });
         return;
     }
 
-    processNovaToastNodes();
+    processMindigoToastNodes();
 }
 
-window.novaProcessToastNodes = processNovaToastNodes;
-window.novaBindConfirmForms = bindNovaConfirmForms;
+window.MindigoProcessToastNodes = processMindigoToastNodes;
+window.MindigoBindConfirmForms = bindMindigoConfirmForms;
 
 // CONFIRM DIALOG 
-window.novaConfirm = function({ 
+window.MindigoConfirm = function({ 
     title = 'Xác nhận', 
     message = 'Bạn có chắc chắn không?',
     confirmText = 'Xác nhận',
@@ -222,7 +222,7 @@ window.novaConfirm = function({
                 </div>
 
                 <div style="display:flex; gap:10px; justify-content:center;">
-                    <button id="nova-confirm-cancel" style="
+                    <button id="Mindigo-confirm-cancel" style="
                         padding: 10px 24px;
                         background: rgba(255,255,255,0.05);
                         border: 1px solid rgba(255,255,255,0.1);
@@ -234,7 +234,7 @@ window.novaConfirm = function({
                         transition: all 0.2s;
                     ">${cancelText}</button>
 
-                    <button id="nova-confirm-ok" style="
+                    <button id="Mindigo-confirm-ok" style="
                         padding: 10px 24px;
                         background: ${c.btn};
                         border: none;
@@ -263,8 +263,8 @@ window.novaConfirm = function({
             setTimeout(() => { overlay.remove(); resolve(result); }, 250);
         };
 
-        overlay.querySelector('#nova-confirm-ok').addEventListener('click', () => close(true));
-        overlay.querySelector('#nova-confirm-cancel').addEventListener('click', () => close(false));
+        overlay.querySelector('#Mindigo-confirm-ok').addEventListener('click', () => close(true));
+        overlay.querySelector('#Mindigo-confirm-cancel').addEventListener('click', () => close(false));
         overlay.addEventListener('click', (e) => { if (e.target === overlay) close(false); });
         document.addEventListener('keydown', function handler(e) {
             if (e.key === 'Escape') { close(false); document.removeEventListener('keydown', handler); }
@@ -273,4 +273,4 @@ window.novaConfirm = function({
     });
 };
 
-initNovaUi();
+initMindigoUi();
