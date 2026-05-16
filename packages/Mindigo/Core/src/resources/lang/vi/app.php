@@ -268,7 +268,8 @@ return [
     'feature' => [
         'section_title' => 'Nền tảng học tập linh hoạt và dễ sử dụng',
         'badge'         => 'NHANH',
-        'heading'       => 'Tự động tạo câu hỏi và đề thi trắc nghiệm',
+        'heading_highlight' => 'Tự động',
+        'heading_rest'      => 'tạo câu hỏi và đề thi trắc nghiệm',
         'feature_1'     => 'Tạo đề nhanh với vài cú nhấp chuột. Bằng cách nhập file tài liệu định dạng WORD hoặc PDF, AI sẽ giúp bạn tạo đề chính xác 100% trong vài phút.',
         'feature_2'     => 'Tối ưu trải nghiệm, tiết kiệm thời gian, công sức, đảm bảo tính khách quan và có thêm thời gian nghiên cứu, học tập.',
         'cta'           => 'Bắt đầu ngay',

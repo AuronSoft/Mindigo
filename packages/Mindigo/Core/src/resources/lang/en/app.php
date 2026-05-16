@@ -268,7 +268,8 @@ return [
     'feature' => [
         'section_title' => 'A flexible and easy-to-use learning platform',
         'badge'         => 'FAST',
-        'heading'       => 'Automatically generate questions and multiple-choice exams',
+        'heading_highlight' => 'Automatically generate',
+        'heading_rest'      => 'questions and multiple-choice exams',
         'feature_1'     => 'Create exams quickly with just a few clicks. By uploading a WORD or PDF document, AI will help you generate 100% accurate exams in minutes.',
         'feature_2'     => 'Optimise the experience, save time and effort, ensure objectivity, and free up more time for research and studying.',
         'cta'           => 'Get started',
