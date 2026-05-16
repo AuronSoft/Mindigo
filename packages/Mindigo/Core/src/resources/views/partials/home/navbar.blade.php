@@ -24,7 +24,7 @@
             <span class="text-xl font-black text-green-600 tracking-tight">mindigo</span>
         </a>
         <div class="hidden md:flex items-center gap-1">
-            <a href="#" class="text-green-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 transition">Tính năng</a>
+            <a href="#" class="text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">Tính năng</a>
             <a href="#" class="text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">Khám phá đề thi</a>
             <a href="#" class="text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">Luyện thi THPT</a>
             <a href="#" class="text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">Quản lý lớp học</a>
