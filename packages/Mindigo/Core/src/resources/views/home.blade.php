@@ -32,6 +32,7 @@
 .animate-marquee {
     display: flex;
     width: max-content;
+    animation: marquee 30s linear infinite;
 }
 </style>
 
