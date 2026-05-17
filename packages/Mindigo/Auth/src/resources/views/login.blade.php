@@ -222,11 +222,11 @@
     function rand(a, b) { return a + Math.random() * (b - a); }
 
     const POSITIONS = [
-        { x: 0.15, y: 0.14 },   /* top-left */
-        { x: 0.72, y: 0.10 },   /* top-right */
-        { x: 0.15, y: 0.58 },   /* mid-left */
-        { x: 0.78, y: 0.55 },   /* mid-right */
-        { x: 0.42, y: 0.80 },  /* ← điện thoại 5: dưới logo center */
+        { x: 0.15, y: 0.14 },   
+        { x: 0.72, y: 0.10 },  
+        { x: 0.15, y: 0.58 },   
+        { x: 0.78, y: 0.55 },   
+        { x: 0.42, y: 0.80 },  
     ];
 
     const CUBE_POS = [
@@ -245,7 +245,6 @@
         { x: 0.72, y: 0.85 },
     ];
 
-    /* ─── makePhone: div style giống hệt code mẫu của bạn ─── */
     function makePhone(rot, contents) {
         const wrap = document.createElement('div');
         wrap.style.cssText = `position:absolute; width:110px; filter:drop-shadow(0 20px 32px rgba(0,0,0,0.30));`;
@@ -311,7 +310,6 @@
         return wrap;
     }
 
-    /* ─── Nội dung 4 màn hình khác nhau ─── */
     function screenExam() {
         const c = document.createElement('div');
         c.innerHTML = `
@@ -364,8 +362,17 @@
         const c = document.createElement('div');
         c.innerHTML = `
             <div style="background:#16a34a;padding:7px 10px 6px;">
-                <p style="color:white;font-size:7px;font-weight:900;margin:0;font-family:'Be Vietnam Pro',sans-serif;">Hi, Nguyen Van A 👋</p>
-                <p style="color:#bbf7d0;font-size:6px;margin:2px 0 0;">Keep learning today!</p>
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <div style="width:14px;height:14px;background:#ffffff22;border:1px solid #bbf7d0;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+                        <div style="width:6px;height:6px;background:#bbf7d0;border-radius:999px;"></div>
+                    </div>
+                    <p style="color:white;font-size:7px;font-weight:900;margin:0;font-family:'Be Vietnam Pro',sans-serif;">
+                        Hi, Nguyen Van A
+                    </p>
+                </div>
+                <p style="color:#bbf7d0;font-size:6px;margin:4px 0 0 20px;">
+                    Keep learning today!
+                </p>
             </div>
             <div style="padding:8px 8px 4px;display:flex;flex-direction:column;gap:5px;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
@@ -373,9 +380,12 @@
                         <p style="font-size:6px;color:#6b7280;margin:0 0 2px;">Score</p>
                         <p style="font-size:11px;font-weight:900;color:#15803d;margin:0;font-family:'Be Vietnam Pro',sans-serif;">87<span style="font-size:6px;">/100</span></p>
                     </div>
-                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:6px;">
-                        <p style="font-size:6px;color:#6b7280;margin:0 0 2px;">Streak</p>
-                        <p style="font-size:11px;font-weight:900;color:#1d4ed8;margin:0;font-family:'Be Vietnam Pro',sans-serif;">12🔥</p>
+                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:6px">
+                        <p style="font-size:6px;color:#6b7280;margin:0">Streak</p>
+                        <div style="display:flex;align-items:center;gap:3px">
+                            <p style="font-size:11px;font-weight:900;color:#1d4ed8;margin:0">12</p>
+                            <div style="width:7px;height:7px;background:#2563eb;border-radius:999px"></div>
+                        </div>
                     </div>
                 </div>
                 <div style="background:#f9fafb;border:1px solid #f3f4f6;border-radius:8px;padding:6px;">
@@ -452,9 +462,16 @@
     function screenResult() {
         const c = document.createElement('div');
         c.innerHTML = `
-            <div style="background:linear-gradient(135deg,#fbbf24,#f59e0b);padding:7px 10px 6px;">
-                <p style="color:white;font-size:7px;font-weight:900;margin:0;font-family:'Be Vietnam Pro',sans-serif;">Test Complete! 🎉</p>
-                <p style="color:#fef3c7;font-size:6px;margin:2px 0 0;">Great performance!</p>
+            <div style="background:linear-gradient(135deg,#fbbf24,#f59e0b);padding:7px 10px 6px">
+                <div style="display:flex;align-items:center;gap:5px">
+                    <div style="width:8px;height:8px;border:2px solid #fff;border-radius:999px"></div>
+                    <p style="color:#fff;font-size:7px;font-weight:900;margin:0">
+                        Test Complete!
+                    </p>
+                </div>
+                <p style="color:#fef3c7;font-size:6px;margin:2px 0 0 13px">
+                    Great performance!
+                </p>
             </div>
             <div style="padding:8px 8px 4px;display:flex;flex-direction:column;gap:5px;">
                 <div style="text-align:center;padding:6px 0;">
@@ -504,9 +521,16 @@
                         <p style="font-size:10px;font-weight:900;color:#15803d;margin:0;line-height:1.1;font-family:'Be Vietnam Pro',sans-serif;">42</p>
                         <p style="font-size:5px;color:#6b7280;margin:0;">Tests done</p>
                     </div>
-                    <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:5px;text-align:center;">
-                        <p style="font-size:10px;font-weight:900;color:#d97706;margin:0;line-height:1.1;font-family:'Be Vietnam Pro',sans-serif;">21🔥</p>
-                        <p style="font-size:5px;color:#6b7280;margin:0;">Day streak</p>
+                    <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:5px;text-align:center">
+                        <div style="display:flex;align-items:center;justify-content:center;gap:3px">
+                            <p style="font-size:10px;font-weight:900;color:#d97706;margin:0;line-height:1.1">
+                                21
+                            </p>
+                            <div style="width:6px;height:6px;background:#f59e0b;border-radius:999px"></div>
+                        </div>ss
+                        <p style="font-size:5px;color:#6b7280;margin:0">
+                            Day streak
+                        </p>
                     </div>
                 </div>
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:6px;">
