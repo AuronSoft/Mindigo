@@ -27,6 +27,9 @@
     @endphp
     @include('blog::news')
 
+    {{-- Section pricing --}}
+    @include('core::partials.home.pricing')
+
     {{-- CTA + Footer luôn hiển thị --}}
     @include('core::partials.home.cta-banner')
 </div>
@@ -76,6 +79,34 @@
             newsSection.classList.remove('hidden');
             this.classList.add('bg-green-50', 'text-green-600');
             if (btnContact) btnContact.classList.remove('bg-green-50', 'text-green-600');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+
+    // Pricing section toggle
+    document.getElementById('btn-pricing').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const homeSections = document.getElementById('home-sections');
+        const pricingSection = document.getElementById('section-pricing');
+        const contactSection = document.getElementById('section-contact');
+        const newsSection = document.getElementById('section-news');
+        const btnContact = document.getElementById('btn-contact');
+        const btnNews = document.getElementById('btn-news');
+        const isPricing = !pricingSection.classList.contains('hidden');
+
+        if (isPricing) {
+            pricingSection.classList.add('hidden');
+            homeSections.classList.remove('hidden');
+            this.classList.remove('bg-green-50', 'text-green-600');
+        } else {
+            homeSections.classList.add('hidden');
+            contactSection.classList.add('hidden');
+            newsSection.classList.add('hidden');
+            pricingSection.classList.remove('hidden');
+            this.classList.add('bg-green-50', 'text-green-600');
+            if (btnContact) btnContact.classList.remove('bg-green-50', 'text-green-600');
+            if (btnNews) btnNews.classList.remove('bg-green-50', 'text-green-600');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
