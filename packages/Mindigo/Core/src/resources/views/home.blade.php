@@ -42,7 +42,9 @@
         const homeSections = document.getElementById('home-sections');
         const contactSection = document.getElementById('section-contact');
         const newsSection = document.getElementById('section-news');
+        const pricingSection = document.getElementById('section-pricing'); 
         const btnNews = document.getElementById('btn-news');
+        const btnPricing = document.getElementById('btn-pricing'); 
         const isContact = !contactSection.classList.contains('hidden');
 
         if (isContact) {
@@ -52,9 +54,11 @@
         } else {
             homeSections.classList.add('hidden');
             newsSection.classList.add('hidden');
+            pricingSection.classList.add('hidden');
             contactSection.classList.remove('hidden');
             this.classList.add('bg-green-50', 'text-green-600');
             if (btnNews) btnNews.classList.remove('bg-green-50', 'text-green-600');
+            if (btnPricing) btnPricing.classList.remove('bg-green-50', 'text-green-600'); 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
@@ -66,7 +70,9 @@
         const homeSections = document.getElementById('home-sections');
         const newsSection = document.getElementById('section-news');
         const contactSection = document.getElementById('section-contact');
+        const pricingSection = document.getElementById('section-pricing'); 
         const btnContact = document.getElementById('btn-contact');
+        const btnPricing = document.getElementById('btn-pricing'); 
         const isNews = !newsSection.classList.contains('hidden');
 
         if (isNews) {
@@ -76,9 +82,11 @@
         } else {
             homeSections.classList.add('hidden');
             contactSection.classList.add('hidden');
+            pricingSection.classList.add('hidden'); 
             newsSection.classList.remove('hidden');
             this.classList.add('bg-green-50', 'text-green-600');
             if (btnContact) btnContact.classList.remove('bg-green-50', 'text-green-600');
+            if (btnPricing) btnPricing.classList.remove('bg-green-50', 'text-green-600'); 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });

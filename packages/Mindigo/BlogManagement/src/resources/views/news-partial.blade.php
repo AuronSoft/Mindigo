@@ -12,14 +12,14 @@
         @endif
         <div class="p-8 flex flex-col justify-center gap-4">
             <div class="flex items-center gap-2 flex-wrap">
-                <span class="bg-green-50 text-green-700 text-xs font-bold px-3 py-1 rounded-full">Nổi bật</span>
+                <span class="bg-green-50 text-green-700 text-xs font-bold px-3 py-1 rounded-full">@lang('blog::app.news.featured_badge')</span>
                 <span class="bg-gray-100 text-gray-500 text-xs font-bold px-3 py-1 rounded-full">{{ $newsfeatured->source }}</span>
             </div>
             <h2 class="text-2xl font-black text-gray-900 leading-tight group-hover:text-green-600 transition">{{ $newsfeatured->title }}</h2>
             <p class="text-gray-500 text-sm leading-relaxed line-clamp-3">{{ $newsfeatured->description }}</p>
             <div class="flex items-center justify-between">
                 <span class="text-xs text-gray-400">{{ $newsfeatured->published_at?->diffForHumans() }}</span>
-                <span class="text-green-500 text-sm font-bold group-hover:underline">Đọc tiếp →</span>
+                <span class="text-green-500 text-sm font-bold group-hover:underline">@lang('blog::app.news.read_more')</span>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@
             </div>
             <h3 class="font-black text-gray-800 text-sm leading-snug line-clamp-2 group-hover:text-green-600 transition">{{ $article->title }}</h3>
             <p class="text-gray-400 text-xs leading-relaxed line-clamp-2 flex-1">{{ $article->description }}</p>
-            <span class="text-green-500 text-xs font-bold group-hover:underline">Đọc tiếp →</span>
+            <span class="text-green-500 text-xs font-bold group-hover:underline">@lang('blog::app.news.read_more')</span>
         </div>
     </a>
     @endforeach
@@ -56,6 +56,6 @@
 @else
 <div class="text-center py-20 text-gray-400">
     <svg class="w-12 h-12 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/></svg>
-    <p class="text-sm">Chưa có bài viết nào.</p>
+    <p class="text-sm">@lang('blog::app.news.no_articles')</p>
 </div>
 @endif

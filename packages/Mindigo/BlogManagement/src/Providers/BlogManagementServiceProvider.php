@@ -20,8 +20,8 @@ class BlogManagementServiceProvider extends ServiceProvider
         // Views
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'blog');
 
-        // Migrations
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        // Lang
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'blog');
 
         // Commands
         if ($this->app->runningInConsole()) {
