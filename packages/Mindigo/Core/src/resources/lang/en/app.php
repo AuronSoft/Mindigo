@@ -385,4 +385,109 @@ return [
         'faq_title'              => 'FAQ',
         'faq_heading'            => 'Frequently Asked Questions',
     ],
+
+    'pricing' => [
+        'section_title'          => 'Pricing',
+        'header_badge'           => 'PRICING',
+        'header_title'           => 'Service plans that suit you',
+        'header_title_highlight' => 'suit you',
+        'header_description'     => 'Start for free, upgrade when you\'re ready. No contracts, cancel anytime.',
+
+        'toggle_monthly'         => 'Monthly',
+        'toggle_yearly'          => 'Yearly',
+        'save_percent'           => '-20%',
+
+        // Pricing Cards
+        'free' => [
+            'plan_name'     => 'Free',
+            'price'         => '0đ',
+            'period'        => 'Forever free',
+            'cta'           => 'Start for free',
+        ],
+        'pro' => [
+            'plan_name'     => 'Pro',
+            'badge'         => 'MOST POPULAR',
+            'price_monthly' => '199,000đ',
+            'price_yearly'  => '159,000đ',
+            'period'        => '/month',
+            'yearly_note'   => 'Pay 1,908,000đ/year — save 480,000đ',
+            'monthly_note'  => 'Billed monthly, cancel anytime',
+            'cta'           => 'Start 7-day free trial',
+        ],
+        'enterprise' => [
+            'plan_name'     => 'Enterprise',
+            'price'         => 'Contact us',
+            'period'        => 'Custom pricing for organizations',
+            'cta'           => 'Contact Sales',
+        ],
+
+        // Features
+        'features' => [
+            'unlimited_exams'       => 'Unlimited exam creation',
+            'unlimited_questions'   => 'Unlimited questions',
+            'unlimited_practice'    => 'Unlimited practice attempts',
+            'ai_generate'           => 'AI Exam Generation (GPT-4)',
+            'upload_document'       => 'Upload Word/PDF → AI generates exam',
+            'virtual_exam'          => 'Unlimited virtual exam rooms',
+            'class_management'      => 'Classroom management',
+            'priority_support'      => 'Priority 24/7 support',
+        ],
+
+        'free_features' => [
+            'max_5_exams'       => 'Up to 5 exams per month',
+            'max_30_questions'  => 'Up to 30 questions per exam',
+            'max_10_practice'   => '10 practice attempts per month',
+            'basic_quiz'        => 'Basic quiz support',
+        ],
+
+        // Comparison Table
+        'comparison' => [
+            'title'             => 'DETAILED COMPARISON',
+            'heading'           => 'Features by Plan',
+            'feature'           => 'Feature',
+            'free_plan'         => 'Free',
+            'pro_plan'          => 'Pro',
+            'enterprise_plan'   => 'Enterprise',
+        ],
+
+        // Trust Badges
+        'trust' => [
+            'ssl'               => 'SSL Security',
+            'ssl_sub'           => '256-bit encryption',
+            'cancel_anytime'    => 'Cancel Anytime',
+            'cancel_sub'        => 'No commitments',
+            'secure_payment'    => 'Secure Payment',
+            'secure_sub'        => 'VNPay, MoMo, Cards',
+            'support_247'       => '24/7 Support',
+            'support_sub'       => 'Pro & Enterprise plans',
+        ],
+
+        // FAQ
+        'faq' => [
+            'title'     => 'FAQ',
+            'heading'   => 'Frequently Asked Questions',
+            'items' => [
+                [
+                    'q' => 'Can I try before purchasing?',
+                    'a' => 'Yes! Pro plan includes a 7-day free trial, no credit card required. You can experience all features and decide later.'
+                ],
+                [
+                    'q' => 'What are the benefits of annual payment?',
+                    'a' => 'Annual payment saves you 20% compared to monthly. With Pro plan, you save 480,000đ per year.'
+                ],
+                [
+                    'q' => 'Can I upgrade or downgrade anytime?',
+                    'a' => 'Yes. You can upgrade immediately. Downgrading will take effect at the next billing cycle.'
+                ],
+                [
+                    'q' => 'Does Mindigo support VAT invoices?',
+                    'a' => 'Yes. After payment, you can request a VAT e-invoice via support@mindigo.vn within 5 working days.'
+                ],
+                [
+                    'q' => 'Who is the Enterprise plan suitable for?',
+                    'a' => 'Enterprise plan is suitable for universities, training centers, and businesses with 50+ users that need SSO, custom API, or white-label solutions.'
+                ],
+            ]
+        ],
+    ],
 ];

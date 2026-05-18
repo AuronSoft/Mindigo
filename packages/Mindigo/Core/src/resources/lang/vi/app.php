@@ -385,4 +385,109 @@ return [
         'faq_title'              => 'FAQ',
         'faq_heading'            => 'Câu hỏi thường gặp',
     ],
+
+    'pricing' => [
+        'section_title'     => 'Bảng giá',
+        'header_badge'      => 'BẢNG GIÁ',
+        'header_title'      => 'Gói dịch vụ phù hợp với bạn',
+        'header_title_highlight' => 'phù hợp với bạn',
+        'header_description'=> 'Bắt đầu miễn phí, nâng cấp khi bạn sẵn sàng. Không ràng buộc hợp đồng, hủy bất kỳ lúc nào.',
+
+        'toggle_monthly'    => 'Hàng tháng',
+        'toggle_yearly'     => 'Hàng năm',
+        'save_percent'      => '-20%',
+
+        // Pricing Cards
+        'free' => [
+            'plan_name'     => 'Miễn phí',
+            'price'         => '0đ',
+            'period'        => 'Mãi mãi miễn phí',
+            'cta'           => 'Bắt đầu miễn phí',
+        ],
+        'pro' => [
+            'plan_name'     => 'Pro',
+            'badge'         => 'PHỔ BIẾN NHẤT',
+            'price_monthly' => '199,000đ',
+            'price_yearly'  => '159,000đ',
+            'period'        => '/tháng',
+            'yearly_note'   => 'Thanh toán 1,908,000đ/năm — tiết kiệm 480,000đ',
+            'monthly_note'  => 'Thanh toán hàng tháng, hủy bất kỳ lúc nào',
+            'cta'           => 'Dùng thử 7 ngày miễn phí',
+        ],
+        'enterprise' => [
+            'plan_name'     => 'Enterprise',
+            'price'         => 'Liên hệ',
+            'period'        => 'Báo giá theo quy mô tổ chức',
+            'cta'           => 'Liên hệ tư vấn',
+        ],
+
+        // Features
+        'features' => [
+            'unlimited_exams'       => 'Tạo không giới hạn đề thi',
+            'unlimited_questions'   => 'Không giới hạn câu hỏi',
+            'unlimited_practice'    => 'Không giới hạn lượt ôn thi',
+            'ai_generate'           => 'Tạo đề bằng AI (GPT-4)',
+            'upload_document'       => 'Upload Word/PDF → AI tạo đề',
+            'virtual_exam'          => 'Phòng thi ảo không giới hạn',
+            'class_management'      => 'Quản lý lớp học',
+            'priority_support'      => 'Hỗ trợ ưu tiên 24/7',
+        ],
+
+        'free_features' => [
+            'max_5_exams'       => 'Tạo tối đa 5 đề thi/tháng',
+            'max_30_questions'  => 'Tối đa 30 câu hỏi/đề',
+            'max_10_practice'   => '10 lượt ôn thi/tháng',
+            'basic_quiz'        => 'Hỗ trợ trắc nghiệm cơ bản',
+        ],
+
+        // Comparison Table
+        'comparison' => [
+            'title'             => 'SO SÁNH CHI TIẾT',
+            'heading'           => 'Tính năng theo gói',
+            'feature'           => 'Tính năng',
+            'free_plan'         => 'Miễn phí',
+            'pro_plan'          => 'Pro',
+            'enterprise_plan'   => 'Enterprise',
+        ],
+
+        // Trust Badges
+        'trust' => [
+            'ssl'               => 'Bảo mật SSL',
+            'ssl_sub'           => 'Mã hóa 256-bit',
+            'cancel_anytime'    => 'Hủy bất kỳ lúc nào',
+            'cancel_sub'        => 'Không ràng buộc',
+            'secure_payment'    => 'Thanh toán an toàn',
+            'secure_sub'        => 'VNPay, MoMo, Thẻ',
+            'support_247'       => 'Hỗ trợ 24/7',
+            'support_sub'       => 'Gói Pro & Enterprise',
+        ],
+
+        // FAQ
+        'faq' => [
+            'title'     => 'FAQ',
+            'heading'   => 'Câu hỏi về bảng giá',
+            'items' => [
+                [
+                    'q' => 'Tôi có thể dùng thử trước khi mua không?',
+                    'a' => 'Có! Gói Pro có 7 ngày dùng thử miễn phí, không cần thẻ tín dụng. Bạn có thể trải nghiệm toàn bộ tính năng và quyết định sau.'
+                ],
+                [
+                    'q' => 'Thanh toán hàng năm có ưu đãi gì?',
+                    'a' => 'Thanh toán hàng năm giúp bạn tiết kiệm 20% so với thanh toán hàng tháng. Với gói Pro, bạn tiết kiệm được 480,000đ mỗi năm.'
+                ],
+                [
+                    'q' => 'Tôi có thể nâng/hạ gói bất kỳ lúc nào không?',
+                    'a' => 'Có. Bạn có thể nâng cấp ngay lập tức. Khi hạ xuống gói thấp hơn, thay đổi sẽ có hiệu lực vào chu kỳ thanh toán tiếp theo.'
+                ],
+                [
+                    'q' => 'Mindigo có hỗ trợ xuất hóa đơn VAT không?',
+                    'a' => 'Có. Sau khi thanh toán, bạn có thể yêu cầu xuất hóa đơn VAT điện tử qua email support@mindigo.vn trong vòng 5 ngày làm việc.'
+                ],
+                [
+                    'q' => 'Gói Enterprise phù hợp với tổ chức nào?',
+                    'a' => 'Gói Enterprise phù hợp với trường đại học, trung tâm đào tạo, và doanh nghiệp có từ 50 người dùng trở lên, cần tích hợp SSO, API riêng hoặc white-label.'
+                ],
+            ]
+        ],
+    ],
 ];
