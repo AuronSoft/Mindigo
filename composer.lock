@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47e89d899ad3e164839011254dac8701",
+    "content-hash": "424178611bd4b02acde2601b7b6a3f2d",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2202,6 +2202,36 @@
                 "MIT"
             ],
             "description": "Mindigo Authentication Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/blog-management",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/BlogManagement",
+                "reference": "6dbfcddaf5781430e094cdd54358dae1580f93db"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\BlogManagement\\Providers\\BlogManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\BlogManagement\\": "src/"
+                }
+            },
+            "description": "Mindigo Blog Management Package",
             "transport-options": {
                 "relative": true
             }
@@ -8672,7 +8702,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "mindigo/blog-management": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

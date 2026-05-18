@@ -32,11 +32,19 @@ class FetchNewsJob implements ShouldQueue
 
     public function handle(): void
     {
+        // Xóa bài cũ hơn 30 ngày
+        $deleted = NewsArticle::where('published_at', '<', now()->subDays(30))->delete();
+        Log::info("FetchNewsJob: đã xóa {$deleted} bài cũ");
+
         foreach ($this->sources as $key => $source) {
             try {
                 $xml = simplexml_load_file($source['url']);
-                if (!$xml) continue;
+                if (!$xml) {
+                    Log::warning("FetchNewsJob: không load được RSS [{$key}]");
+                    continue;
+                }
 
+                $count = 0;
                 foreach ($xml->channel->item as $item) {
                     $url = (string) $item->link;
                     if (NewsArticle::where('url', $url)->exists()) continue;
@@ -62,9 +70,16 @@ class FetchNewsJob implements ShouldQueue
                         'url'          => $url,
                         'source'       => $source['name'],
                         'category'     => 'Giáo dục',
-                        'published_at' => isset($item->pubDate) ? \Carbon\Carbon::parse((string) $item->pubDate) : now(),
+                        'published_at' => isset($item->pubDate)
+                                            ? \Carbon\Carbon::parse((string) $item->pubDate)
+                                            : now(),
                     ]);
+
+                    $count++;
                 }
+
+                Log::info("FetchNewsJob: [{$key}] thêm {$count} bài mới");
+
             } catch (\Exception $e) {
                 Log::error("FetchNewsJob error [{$key}]: " . $e->getMessage());
             }

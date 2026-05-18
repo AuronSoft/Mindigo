@@ -14,6 +14,7 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "mindigo/auth": "*",
+        "mindigo/blog-management": "dev-dev",
         "mindigo/core": "*",
         "mindigo/dashboard": "*",
         "mindigo/profile": "*",
@@ -36,7 +37,8 @@
             "Mindigo\\Auth\\": "packages/Mindigo/Auth/src/",
             "Mindigo\\Core\\": "packages/Mindigo/Core/src/",
             "Mindigo\\Dashboard\\": "packages/Mindigo/Dashboard/src/",
-            "Mindigo\\Profile\\": "packages/Mindigo/Profile/src/"
+            "Mindigo\\Profile\\": "packages/Mindigo/Profile/src/", 
+            "Mindigo\\BlogManagement\\": "packages/Mindigo/BlogManagement/src/"
         }
     },
     "autoload-dev": {
@@ -60,6 +62,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/Profile"
+        }, 
+        {
+            "type": "path",
+            "url": "packages/Mindigo/BlogManagement"
         }
     ],
     "scripts": {

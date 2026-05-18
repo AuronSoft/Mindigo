@@ -23,4 +23,17 @@ class NewsController extends Controller
 
         return view('core::pages.news', compact('featured', 'articles', 'source'));
     }
+
+    public function partial(Request $request)
+    {
+        $source = $request->get('source', 'all');
+        $query = NewsArticle::orderBy('published_at', 'desc');
+        if ($source !== 'all') {
+            $query->where('source', $source);
+        }
+        $newsfeatured = (clone $query)->first();
+        $newsArticles = (clone $query)->skip(1)->take(11)->get();
+
+        return view('blog::news-partial', compact('newsfeatured', 'newsArticles', 'source'));
+    }
 }

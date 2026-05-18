@@ -19,31 +19,83 @@
     {{-- Section contact --}}
     @include('core::partials.home.contact')
 
+    {{-- Section news --}}
+    @php
+        $newsArticlesAll = \Mindigo\BlogManagement\Models\NewsArticle::orderBy('published_at', 'desc')->get();
+        $newsfeatured = $newsArticlesAll->first();
+        $newsArticles = $newsArticlesAll->skip(1)->take(11);
+    @endphp
+    @include('blog::news')
+
     {{-- CTA + Footer luôn hiển thị --}}
     @include('core::partials.home.cta-banner')
 </div>
 
 <script>
+    // Contact section toggle
     document.getElementById('btn-contact').addEventListener('click', function(e) {
         e.preventDefault();
 
         const homeSections = document.getElementById('home-sections');
         const contactSection = document.getElementById('section-contact');
+        const newsSection = document.getElementById('section-news');
+        const btnNews = document.getElementById('btn-news');
         const isContact = !contactSection.classList.contains('hidden');
 
         if (isContact) {
-            // Đang ở contact → về trang chủ
             contactSection.classList.add('hidden');
             homeSections.classList.remove('hidden');
             this.classList.remove('bg-green-50', 'text-green-600');
         } else {
-            // Vào contact
             homeSections.classList.add('hidden');
+            newsSection.classList.add('hidden');
             contactSection.classList.remove('hidden');
             this.classList.add('bg-green-50', 'text-green-600');
+            if (btnNews) btnNews.classList.remove('bg-green-50', 'text-green-600');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
+
+    // News section toggle
+    document.getElementById('btn-news').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const homeSections = document.getElementById('home-sections');
+        const newsSection = document.getElementById('section-news');
+        const contactSection = document.getElementById('section-contact');
+        const btnContact = document.getElementById('btn-contact');
+        const isNews = !newsSection.classList.contains('hidden');
+
+        if (isNews) {
+            newsSection.classList.add('hidden');
+            homeSections.classList.remove('hidden');
+            this.classList.remove('bg-green-50', 'text-green-600');
+        } else {
+            homeSections.classList.add('hidden');
+            contactSection.classList.add('hidden');
+            newsSection.classList.remove('hidden');
+            this.classList.add('bg-green-50', 'text-green-600');
+            if (btnContact) btnContact.classList.remove('bg-green-50', 'text-green-600');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+
+    // Filter news theo source
+    function filterNews(source) {
+        document.querySelectorAll('.news-filter-btn').forEach(btn => {
+            if (btn.dataset.source === source) {
+                btn.className = 'news-filter-btn text-sm font-bold px-4 py-2 rounded-xl transition bg-green-500 text-white shadow-[0_3px_0_#15803d]';
+            } else {
+                btn.className = 'news-filter-btn text-sm font-bold px-4 py-2 rounded-xl transition bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-600';
+            }
+        });
+
+        fetch(`/news/partial?source=${source}`)
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('news-articles').innerHTML = html;
+            });
+    }
 </script>
 
 <style>
