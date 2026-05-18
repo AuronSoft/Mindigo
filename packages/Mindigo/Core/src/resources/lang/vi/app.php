@@ -390,6 +390,7 @@ return [
         'section_title'     => 'Bảng giá',
         'header_badge'      => 'BẢNG GIÁ',
         'header_title'      => 'Gói dịch vụ phù hợp với bạn',
+        'header_title_plain'      => 'Gói dịch vụ',
         'header_title_highlight' => 'phù hợp với bạn',
         'header_description'=> 'Bắt đầu miễn phí, nâng cấp khi bạn sẵn sàng. Không ràng buộc hợp đồng, hủy bất kỳ lúc nào.',
 

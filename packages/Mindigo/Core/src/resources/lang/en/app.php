@@ -390,6 +390,7 @@ return [
         'section_title'          => 'Pricing',
         'header_badge'           => 'PRICING',
         'header_title'           => 'Service plans that suit you',
+        'header_title_plain'     => 'Service plans',
         'header_title_highlight' => 'suit you',
         'header_description'     => 'Start for free, upgrade when you\'re ready. No contracts, cancel anytime.',
 
