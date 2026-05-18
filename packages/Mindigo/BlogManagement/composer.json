@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/blog-management",
+    "description": "Mindigo Blog Management Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\BlogManagement\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\BlogManagement\\Providers\\BlogManagementServiceProvider"
+            ]
+        }
+    }
+}

@@ -29,7 +29,7 @@
             <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.exam_prep')</a>
             <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.classroom')</a>
             <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.pricing')</a>
-            <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.news')</a>
+            <a href="{{ route('news.index') }}" id="btn-news" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.news')</a>
             <a href="#" id="btn-contact" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.contact')</a>
         </div>
 
