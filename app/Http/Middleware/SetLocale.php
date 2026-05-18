@@ -11,20 +11,21 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = $request->getPreferredLanguage(['vi', 'en']) ?? 'vi';
-        
-        // Ưu tiên session trước, sau đó là request
         if ($request->has('lang')) {
             $locale = $request->get('lang');
-        } elseif ($request->session()->has('locale')) {
+        } elseif ($request->hasSession() && $request->session()->has('locale')) {
             $locale = $request->session()->get('locale');
+        } else {
+            $locale = 'vi';
         }
 
-        // Chỉ chấp nhận vi và en
         $locale = in_array($locale, ['vi', 'en']) ? $locale : 'vi';
 
         App::setLocale($locale);
-        $request->session()->put('locale', $locale);
+        
+        if ($request->hasSession()) {
+            $request->session()->put('locale', $locale);
+        }
 
         return $next($request);
     }

@@ -13,6 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
+        // Chạy SetLocale cho toàn bộ web routes
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
+
         $middleware->alias([
             // Middleware từ Package 
             'employee.active' => \Mindigo\Auth\Http\Middleware\CheckEmployeeActive::class,
