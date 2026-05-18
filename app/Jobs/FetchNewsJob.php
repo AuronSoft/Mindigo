@@ -60,12 +60,14 @@ class FetchNewsJob implements ShouldQueue
                         $image = $matches[1] ?? null;
                     }
 
-                    $title = (string) $item->title;
+                    // Decode HTML entities để hiển thị tiếng Việt đúng
+                    $title       = $this->decode((string) $item->title);
+                    $description = $this->decode(strip_tags((string) $item->description));
 
                     NewsArticle::create([
                         'title'        => $title,
                         'slug'         => Str::slug($title) . '-' . Str::random(6),
-                        'description'  => strip_tags((string) $item->description),
+                        'description'  => $description,
                         'image'        => $image,
                         'url'          => $url,
                         'source'       => $source['name'],
@@ -84,5 +86,13 @@ class FetchNewsJob implements ShouldQueue
                 Log::error("FetchNewsJob error [{$key}]: " . $e->getMessage());
             }
         }
+    }
+
+    /**
+     * Decode HTML entities về text tiếng Việt chuẩn.
+     */
+    private function decode(string $text): string
+    {
+        return html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 }
