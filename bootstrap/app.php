@@ -46,6 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
             \App\Http\Middleware\TrimStrings::class,
             \App\Http\Middleware\ConvertEmptyStringsToNull::class,
+            \Illuminate\Session\Middleware\StartSession::class,
             \App\Http\Middleware\SetLocale::class,
         ]);
 
