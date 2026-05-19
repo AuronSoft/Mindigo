@@ -1,17 +1,30 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Cookie;
 
 Route::middleware('web')->get('/lang/{locale}', function ($locale, \Illuminate\Http\Request $request) {
-    if (in_array($locale, ['vi', 'en'])) {
-        $request->session()->put('locale', $locale);
+    $supportedLocales = ['vi', 'en'];
+
+    if (! in_array($locale, $supportedLocales, true)) {
+        return redirect()->route('home');
     }
 
-    $previous = redirect()->getUrlGenerator()->previous();
+    $request->session()->put('locale', $locale);
 
-    if (str_contains($previous, '/lang/')) {
-        return redirect('/');
+    Cookie::queue('locale', $locale, 60 * 24 * 30);
+
+    $previous = url()->previous();
+    $previousHost = parse_url($previous, PHP_URL_HOST);
+    $currentHost = $request->getHost();
+
+    if (
+        blank($previous)
+        || ($previousHost && $previousHost !== $currentHost)
+        || str_contains($previous, '/lang/')
+    ) {
+        return redirect()->route('home');
     }
 
-    return redirect($previous);
+    return redirect()->to($previous);
 })->name('lang.switch');

@@ -34,17 +34,17 @@
         </div>
 
         <div class="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
-            <a href="{{ route('lang.switch', 'vi') }}"
-            class="text-xs font-black px-3 py-1.5 rounded-lg transition-all {{ app()->getLocale() === 'vi' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-600' }}">
-                🇻🇳 VI
+            <a href="{{ route('lang.switch', ['locale' => 'vi'], false) }}"
+               class="text-xs font-black px-3 py-1.5 rounded-lg transition-all {{ app()->getLocale() === 'vi' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-600' }}">
+                VI
             </a>
-            <a href="{{ route('lang.switch', 'en') }}"
-            class="text-xs font-black px-3 py-1.5 rounded-lg transition-all {{ app()->getLocale() === 'en' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-600' }}">
-                🇺🇸 EN
+            <a href="{{ route('lang.switch', ['locale' => 'en'], false) }}"
+               class="text-xs font-black px-3 py-1.5 rounded-lg transition-all {{ app()->getLocale() === 'en' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-600' }}">
+                EN
             </a>
         </div>
-        
-        <a href="{{ route('login') }}" class="bg-green-500 hover:bg-green-400 active:bg-green-600 text-white font-black text-sm px-5 py-2.5 rounded-xl shadow-[0_4px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 active:shadow-none active:translate-y-1 transition-all">
+
+        <a href="{{ route('login', [], false) }}" class="bg-green-500 hover:bg-green-400 active:bg-green-600 text-white font-black text-sm px-5 py-2.5 rounded-xl shadow-[0_4px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 active:shadow-none active:translate-y-1 transition-all">
             @lang('core::app.navbar.login')
         </a>
     </div>

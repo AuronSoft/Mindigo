@@ -34,7 +34,7 @@
                 </div>
                 <span class="text-sm font-bold text-gray-600">{!! __('core::app.hero.customers') !!}</span>
             </div>
-            <div class="flex gap-0.5 text-yellow-400 text-2xl -mt-1">★★★★★</div>
+            <div class="flex gap-0.5 text-yellow-400 text-2xl -mt-1">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
             <div class="flex gap-3 mt-1 flex-wrap">
                 <a href="#" class="flex items-center gap-2 bg-green-500 hover:bg-green-400 active:bg-green-600 text-white font-black text-sm px-7 py-4 rounded-2xl shadow-[0_5px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 active:shadow-none active:translate-y-1.5 transition-all">
                     <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" stroke="white" stroke-width="1.5"/><path d="M6.5 5.5l5 2.5-5 2.5V5.5z" fill="white"/></svg>
@@ -42,7 +42,7 @@
                 </a>
                 <a href="#" class="flex items-center gap-2 bg-white hover:bg-green-50 text-green-600 font-black text-sm px-7 py-4 rounded-2xl border-2 border-green-200 hover:border-green-400 transition-all">
                     <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke="#16a34a" stroke-width="1.5"/><path d="M10.5 10.5l3 3" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round"/></svg>
-                    @lang('core::app.hero.cta_search')ss
+                    @lang('core::app.hero.cta_search')
                 </a>
             </div>
         </div>
@@ -177,11 +177,13 @@
                                     <p class="text-xs font-black text-gray-700">@lang('core::app.hero.q1_title') <span class="text-gray-400 font-semibold">(@lang('core::app.hero.q1_type'))</span></p>
                                     <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded-full border border-green-200">@lang('core::app.hero.has_answer')</span>
                                 </div>
-                                <p class="text-xs font-semibold text-gray-600 italic">The bacterium E.coli:</p>
-                                <div class="flex items-center gap-1.5 text-xs text-gray-400"><span class="w-4 h-4 rounded-full bg-red-100 text-red-400 font-black flex items-center justify-center text-[9px]">✗</span> Absolutely aerobic</div>
-                                <div class="flex items-center gap-1.5 text-xs text-gray-400"><span class="w-4 h-4 rounded-full bg-red-100 text-red-400 font-black flex items-center justify-center text-[9px]">✗</span> Gram-negative cocc...</div>
-                                <div class="flex items-center gap-1.5 text-xs text-gray-400"><span class="w-4 h-4 rounded-full bg-red-100 text-red-400 font-black flex items-center justify-center text-[9px]">✗</span> Negative indole test</div>
-                                <div class="flex items-center gap-1.5 text-xs text-green-600 font-semibold"><span class="w-4 h-4 rounded-full bg-green-100 text-green-500 font-black flex items-center justify-center text-[9px]">✓</span> Negative Vosges-Proskauer</div>
+                                <p class="text-xs font-semibold text-gray-600 italic">@lang('core::app.hero.q1_prompt')</p>
+                                @foreach(trans('core::app.hero.q1_options') as $option)
+                                <div class="flex items-center gap-1.5 text-xs {{ $option['correct'] ? 'text-green-600 font-semibold' : 'text-gray-400' }}">
+                                    <span class="w-4 h-4 rounded-full font-black flex items-center justify-center text-[9px] {{ $option['correct'] ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-400' }}">{!! $option['correct'] ? '&#10003;' : '&#10007;' !!}</span>
+                                    {{ $option['text'] }}
+                                </div>
+                                @endforeach
                             </div>
 
                             {{-- Question 2 --}}
@@ -191,10 +193,13 @@
                                     <p class="text-xs font-black text-gray-700">@lang('core::app.hero.q2_title') <span class="text-gray-400 font-semibold">(@lang('core::app.hero.q2_type'))</span></p>
                                     <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded-full border border-green-200">@lang('core::app.hero.has_answer')</span>
                                 </div>
-                                <p class="text-xs text-gray-500 leading-relaxed">The steps for quantifying E.coli are arranged in order:</p>
-                                <div class="flex items-center gap-1.5 text-xs text-gray-400 mt-1.5"><span class="w-4 h-4 rounded-full bg-red-100 text-red-400 font-black flex items-center justify-center text-[9px]">✗</span> Prepare the medium</div>
-                                <div class="flex items-center gap-1.5 text-xs text-green-600 font-semibold"><span class="w-4 h-4 rounded-full bg-green-100 text-green-500 font-black flex items-center justify-center text-[9px]">✓</span> Serial dilution method</div>
-                                <div class="flex items-center gap-1.5 text-xs text-green-600 font-semibold"><span class="w-4 h-4 rounded-full bg-green-100 text-green-500 font-black flex items-center justify-center text-[9px]">✓</span> Count colonies after 24h</div>
+                                <p class="text-xs text-gray-500 leading-relaxed">@lang('core::app.hero.q2_prompt')</p>
+                                @foreach(trans('core::app.hero.q2_options') as $index => $option)
+                                <div class="flex items-center gap-1.5 text-xs {{ $option['correct'] ? 'text-green-600 font-semibold' : 'text-gray-400' }} {{ $index === 0 ? 'mt-1.5' : '' }}">
+                                    <span class="w-4 h-4 rounded-full font-black flex items-center justify-center text-[9px] {{ $option['correct'] ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-400' }}">{!! $option['correct'] ? '&#10003;' : '&#10007;' !!}</span>
+                                    {{ $option['text'] }}
+                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -202,7 +207,7 @@
             </div>
 
             {{-- Phone mockup --}}
-            <div class="absolute -bottom-4 -left-20 z-10"style="transform: perspective(800px) rotateY(20deg) rotateX(4deg) rotate(-6deg); width: 160px;">
+            <div class="absolute -bottom-4 -left-20 z-10" style="transform: perspective(800px) rotateY(20deg) rotateX(4deg) rotate(-6deg); width: 160px;">
                 <div class="relative rounded-[2.8rem] p-1"
                     style="background: linear-gradient(145deg, #e2e8f0, #cbd5e1); box-shadow: 0 25px 50px rgba(0,0,0,0.22), 0 8px 0 #94a3b8, inset 0 1px 0 rgba(255,255,255,0.9);">
                     <div class="absolute top-16 h-5 bg-slate-300 rounded-l-full" style="left:-4px; width:4px;"></div>
@@ -226,7 +231,7 @@
                         <div class="bg-white px-3 py-2 mt-1 flex items-center justify-between border-b border-gray-100">
                             <p class="text-gray-800 text-[10px] font-black">@lang('core::app.hero.phone_add_q')</p>
                             <div class="w-4 h-4 bg-red-400 rounded-full flex items-center justify-center">
-                                <span class="text-white text-[8px] font-black">✕</span>
+                                <span class="text-white text-[8px] font-black">&#10005;</span>
                             </div>
                         </div>
                         <div class="p-2.5 space-y-2 bg-white">
@@ -235,14 +240,14 @@
                                     <p class="text-[7px] font-black text-gray-400 mb-0.5">@lang('core::app.hero.q_type_label')</p>
                                     <div class="bg-gray-50 border border-gray-200 rounded-lg px-1.5 py-1 flex items-center justify-between">
                                         <span class="text-[8px] font-bold text-gray-700">@lang('core::app.hero.q_types.0')</span>
-                                        <span class="text-gray-400 text-[7px]">▾</span>
+                                        <span class="text-gray-400 text-[7px]">&#9662;</span>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <p class="text-[7px] font-black text-gray-400 mb-0.5">@lang('core::app.hero.difficulty')</p>
                                     <div class="bg-gray-50 border border-gray-200 rounded-lg px-1.5 py-1 flex items-center justify-between">
                                         <span class="text-[8px] font-bold text-gray-700">@lang('core::app.hero.difficulty_med')</span>
-                                        <span class="text-gray-400 text-[7px]">▾</span>
+                                        <span class="text-gray-400 text-[7px]">&#9662;</span>
                                     </div>
                                 </div>
                             </div>
@@ -251,7 +256,7 @@
                                 @foreach(__('core::app.hero.q_types') as $i => $type)
                                 <div class="px-2 py-1 {{ $i === 0 ? 'bg-green-50' : '' }} flex items-center justify-between border-t border-gray-50">
                                     <span class="text-[8px] font-bold {{ $i === 0 ? 'text-green-600' : 'text-gray-600' }}">{{ $type }}</span>
-                                    @if($i === 0)<span class="text-green-500 text-[8px]">✓</span>@endif
+                                    @if($i === 0)<span class="text-green-500 text-[8px]">&#10003;</span>@endif
                                 </div>
                                 @endforeach
                                 <div class="px-2 py-1 border-t border-gray-100 flex items-center gap-1.5">
@@ -267,8 +272,8 @@
                 </div>
             </div>
 
-            <div class="absolute bottom-10 right-2 text-green-400 text-3xl pointer-events-none select-none" style="animation:floatStar 4s ease-in-out infinite">✦</div>
-            <div class="absolute bottom-2 right-14 text-green-300 text-xl pointer-events-none select-none" style="animation:floatStar 3s .6s ease-in-out infinite">✦</div>
+            <div class="absolute bottom-10 right-2 text-green-400 text-3xl pointer-events-none select-none" style="animation:floatStar 4s ease-in-out infinite">&#10022;</div>
+            <div class="absolute bottom-2 right-14 text-green-300 text-xl pointer-events-none select-none" style="animation:floatStar 3s .6s ease-in-out infinite">&#10022;</div>
         </div>
     </div>
 </section>

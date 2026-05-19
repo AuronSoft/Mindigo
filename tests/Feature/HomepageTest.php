@@ -31,6 +31,28 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * Locale switch updates public pages and login consistently
+     */
+    public function test_locale_switch_persists_for_homepage_and_login(): void
+    {
+        $response = $this->from('/')->get('/lang/en');
+
+        $response->assertRedirect('/');
+        $response->assertSessionHas('locale', 'en');
+        $response->assertCookie('locale', 'en');
+
+        $this->withSession(['locale' => 'en'])->get('/')
+            ->assertOk()
+            ->assertSee('Features', false)
+            ->assertSee('Send us a message', false);
+
+        $this->withSession(['locale' => 'en'])->get('/login')
+            ->assertOk()
+            ->assertSee('Sign in', false)
+            ->assertSee('Mindigo Exam Platform', false);
+    }
+
+    /**
      * Authenticated user can access homepage
      */
     public function test_authenticated_user_can_access_homepage(): void

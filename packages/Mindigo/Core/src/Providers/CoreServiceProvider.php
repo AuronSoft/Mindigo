@@ -2,6 +2,7 @@
 
 namespace Mindigo\Core\Providers;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class CoreServiceProvider extends ServiceProvider
@@ -21,7 +22,7 @@ class CoreServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'core');
 
-        $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
+        Route::middleware('web')->group(__DIR__ . '/../Routes/web.php');
 
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'core');
 

@@ -8,7 +8,7 @@
             <h1 class="text-4xl font-black text-gray-900 mb-4">@lang('core::app.pricing.header_title_plain') <span class="text-green-500">@lang('core::app.pricing.header_title_highlight')</span></h1>
             <p class="text-gray-500 text-sm max-w-lg mx-auto leading-relaxed">@lang('core::app.pricing.header_description')</p>
 
-            {{-- Toggle tháng/năm --}}
+            {{-- Toggle --}}
             <div class="inline-flex items-center gap-3 mt-8 bg-gray-100 rounded-2xl p-1.5">
                 <button id="toggle-monthly"
                     onclick="setPricingPeriod('monthly')"
@@ -50,18 +50,18 @@
                         ['ok' => false, 'text' => __('core::app.pricing.features.virtual_exam')],
                         ['ok' => false, 'text' => __('core::app.pricing.features.class_management')],
                         ['ok' => false, 'text' => __('core::app.pricing.features.priority_support')],
-                    ] as $f)
+                    ] as $feature)
                     <div class="flex items-center gap-3">
-                        @if($f['ok'])
+                        @if($feature['ok'])
                         <div class="w-5 h-5 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
                             <svg class="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                         </div>
-                        <span class="text-sm text-gray-700">{{ $f['text'] }}</span>
+                        <span class="text-sm text-gray-700">{{ $feature['text'] }}</span>
                         @else
                         <div class="w-5 h-5 rounded-full bg-gray-50 flex items-center justify-center flex-shrink-0">
                             <svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
                         </div>
-                        <span class="text-sm text-gray-400">{{ $f['text'] }}</span>
+                        <span class="text-sm text-gray-400">{{ $feature['text'] }}</span>
                         @endif
                     </div>
                     @endforeach
@@ -72,14 +72,12 @@
                 </a>
             </div>
 
-            {{-- Pro - Best seller --}}
+            {{-- Pro --}}
             <div class="bg-green-500 rounded-2xl p-8 shadow-[0_8px_0_#15803d] flex flex-col relative overflow-hidden">
-                {{-- Badge --}}
                 <div class="absolute top-5 right-5">
-                    <span class="bg-white text-green-600 text-xs font-black px-3 py-1 rounded-full shadow-sm">⭐ @lang('core::app.pricing.pro.badge')</span>
+                    <span class="bg-white text-green-600 text-xs font-black px-3 py-1 rounded-full shadow-sm">&#11088; @lang('core::app.pricing.pro.badge')</span>
                 </div>
 
-                {{-- Decoration --}}
                 <div class="absolute -bottom-8 -right-8 w-40 h-40 bg-green-400 rounded-full opacity-30"></div>
                 <div class="absolute -top-6 -left-6 w-28 h-28 bg-green-600 rounded-full opacity-20"></div>
 
@@ -90,11 +88,11 @@
                     <div class="text-xs font-bold text-white/70 uppercase tracking-wider mb-1">@lang('core::app.pricing.pro.plan_name')</div>
                     <div class="flex items-end gap-1 mb-1">
                         <span class="pricing-price text-4xl font-black text-white"
-                            data-monthly="{{ __('core::app.pricing.pro.price_monthly') }}"
-                            data-yearly="{{ __('core::app.pricing.pro.price_yearly') }}">
+                              data-monthly="{{ __('core::app.pricing.pro.price_monthly') }}"
+                              data-yearly="{{ __('core::app.pricing.pro.price_yearly') }}">
                             @lang('core::app.pricing.pro.price_monthly')
                         </span>
-                        <span class="pricing-period text-white/70 text-sm mb-1">@lang('core::app.pricing.pro.period')</span>
+                        <span class="pricing-period text-white/70 text-sm mb-1" data-period="@lang('core::app.pricing.pro.period')">@lang('core::app.pricing.pro.period')</span>
                     </div>
                     <div class="pricing-yearly-note text-xs text-white/60 hidden">@lang('core::app.pricing.pro.yearly_note')</div>
                     <div class="pricing-monthly-note text-xs text-white/60">@lang('core::app.pricing.pro.monthly_note')</div>
@@ -110,12 +108,12 @@
                         __('core::app.pricing.features.virtual_exam'),
                         __('core::app.pricing.features.class_management'),
                         __('core::app.pricing.features.priority_support'),
-                    ] as $f)
+                    ] as $feature)
                     <div class="flex items-center gap-3">
                         <div class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
                             <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                         </div>
-                        <span class="text-sm text-white">{{ $f }}</span>
+                        <span class="text-sm text-white">{{ $feature }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -148,12 +146,12 @@
                         __('core::app.pricing.features.virtual_exam'),
                         __('core::app.pricing.features.class_management'),
                         __('core::app.pricing.features.priority_support'),
-                    ] as $f)
+                    ] as $feature)
                     <div class="flex items-center gap-3">
                         <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
                             <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                         </div>
-                        <span class="text-sm text-gray-700">{{ $f }}</span>
+                        <span class="text-sm text-gray-700">{{ $feature }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -171,6 +169,22 @@
                 <h2 class="text-xl font-black text-gray-800">@lang('core::app.pricing.comparison.heading')</h2>
             </div>
             <div class="overflow-x-auto">
+                @php
+                    $comparisonRows = [
+                        ['name' => __('core::app.pricing.features.unlimited_exams'),    'free' => __('core::app.pricing.comparison.limits.exams'),     'pro' => true,  'ent' => true],
+                        ['name' => __('core::app.pricing.features.unlimited_questions'), 'free' => __('core::app.pricing.comparison.limits.questions'), 'pro' => true,  'ent' => true],
+                        ['name' => __('core::app.pricing.features.unlimited_practice'),  'free' => __('core::app.pricing.comparison.limits.practice'),  'pro' => true,  'ent' => true],
+                        ['name' => __('core::app.pricing.features.ai_generate'),         'free' => false,                                             'pro' => true,  'ent' => true],
+                        ['name' => __('core::app.pricing.features.upload_document'),     'free' => false,                                             'pro' => true,  'ent' => true],
+                        ['name' => __('core::app.pricing.features.virtual_exam'),        'free' => false,                                             'pro' => true,  'ent' => true],
+                        ['name' => __('core::app.pricing.features.class_management'),    'free' => false,                                             'pro' => true,  'ent' => true],
+                        ['name' => __('core::app.pricing.comparison.api_webhook'),       'free' => false,                                             'pro' => false, 'ent' => true],
+                        ['name' => __('core::app.pricing.comparison.white_label'),       'free' => false,                                             'pro' => false, 'ent' => true],
+                        ['name' => __('core::app.pricing.comparison.sso_saml'),          'free' => false,                                             'pro' => false, 'ent' => true],
+                        ['name' => __('core::app.pricing.comparison.sla'),               'free' => false,                                             'pro' => false, 'ent' => true],
+                        ['name' => __('core::app.pricing.features.priority_support'),    'free' => __('core::app.pricing.comparison.support.email'),  'pro' => __('core::app.pricing.trust.support_247'), 'ent' => __('core::app.pricing.comparison.support.slack_teams')],
+                    ];
+                @endphp
                 <table class="w-full">
                     <thead>
                         <tr class="border-b border-gray-100">
@@ -181,20 +195,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                        @foreach([
-                            ['name' => __('core::app.pricing.features.unlimited_exams'),     'free' => '5/tháng',          'pro' => true,  'ent' => true],
-                            ['name' => __('core::app.pricing.features.unlimited_questions'),  'free' => '30 câu',           'pro' => true,  'ent' => true],
-                            ['name' => __('core::app.pricing.features.unlimited_practice'),   'free' => '10/tháng',         'pro' => true,  'ent' => true],
-                            ['name' => __('core::app.pricing.features.ai_generate'),          'free' => false,              'pro' => true,  'ent' => true],
-                            ['name' => __('core::app.pricing.features.upload_document'),      'free' => false,              'pro' => true,  'ent' => true],
-                            ['name' => __('core::app.pricing.features.virtual_exam'),         'free' => false,              'pro' => true,  'ent' => true],
-                            ['name' => __('core::app.pricing.features.class_management'),     'free' => false,              'pro' => true,  'ent' => true],
-                            ['name' => 'API & Webhook',                                       'free' => false,              'pro' => false, 'ent' => true],
-                            ['name' => 'White-label',                                         'free' => false,              'pro' => false, 'ent' => true],
-                            ['name' => 'SSO / SAML',                                          'free' => false,              'pro' => false, 'ent' => true],
-                            ['name' => 'SLA 99.9%',                                           'free' => false,              'pro' => false, 'ent' => true],
-                            ['name' => __('core::app.pricing.features.priority_support'),     'free' => 'Email',            'pro' => __('core::app.pricing.trust.support_247'), 'ent' => 'Riêng Slack/Teams'],
-                        ] as $row)
+                        @foreach($comparisonRows as $row)
                         <tr class="hover:bg-gray-50/50 transition-colors">
                             <td class="px-8 py-3.5 text-sm font-bold text-gray-700">{{ $row['name'] }}</td>
                             <td class="px-4 py-3.5 text-center">
@@ -286,7 +287,7 @@
             btnMonthly.classList.remove('bg-white', 'text-green-600', 'shadow-sm');
             btnMonthly.classList.add('text-gray-400');
             prices.forEach(el => el.textContent = el.dataset.yearly);
-            periods.forEach(el => el.textContent = '/tháng');
+            periods.forEach(el => el.textContent = el.dataset.period);
             yearlyNotes.forEach(el => el.classList.remove('hidden'));
             monthlyNotes.forEach(el => el.classList.add('hidden'));
         } else {
@@ -295,13 +296,12 @@
             btnYearly.classList.remove('bg-white', 'text-green-600', 'shadow-sm');
             btnYearly.classList.add('text-gray-400');
             prices.forEach(el => el.textContent = el.dataset.monthly);
-            periods.forEach(el => el.textContent = '/tháng');
+            periods.forEach(el => el.textContent = el.dataset.period);
             yearlyNotes.forEach(el => el.classList.add('hidden'));
             monthlyNotes.forEach(el => el.classList.remove('hidden'));
         }
     }
 
-    // Nút "Liên hệ tư vấn" trong Enterprise → mở contact
     document.getElementById('btn-contact-from-pricing')?.addEventListener('click', function(e) {
         e.preventDefault();
         const pricingSection = document.getElementById('section-pricing');
