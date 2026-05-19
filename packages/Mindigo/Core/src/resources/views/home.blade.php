@@ -135,6 +135,33 @@
                 document.getElementById('news-articles').innerHTML = html;
             });
     }
+
+    // Typewriter
+    (function() {
+        const words = ['study and review', 'create exams', 'practice smarter'];
+        let wordIndex = 0, charIndex = 0, isDeleting = false;
+        const el = document.getElementById('typewriter');
+        if (!el) return;
+
+        function type() {
+            const current = words[wordIndex];
+            el.textContent = isDeleting
+                ? current.substring(0, charIndex - 1)
+                : current.substring(0, charIndex + 1);
+            isDeleting ? charIndex-- : charIndex++;
+
+            let speed = isDeleting ? 60 : 100;
+            if (!isDeleting && charIndex === current.length) {
+                speed = 1500; isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                speed = 400;
+            }
+            setTimeout(type, speed);
+        }
+        type();
+    })();
 </script>
 
 <style>
