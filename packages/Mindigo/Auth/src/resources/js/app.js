@@ -1,4 +1,4 @@
-import '../../../../Core/src/resources/js/mindigo-ui.js';
+import '../../../../Core/src/resources/js/Mindigo-ui.js';
 import '../css/app.css';
 import './mindigo-id';
 
