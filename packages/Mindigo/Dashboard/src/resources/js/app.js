@@ -107,10 +107,27 @@ const normalizeSearchText = (value) => (
 
 const isSidebarExpanded = () => sidebar?.dataset.expanded === 'true';
 
+const getActiveSidebarItem = (group) => (
+    group.querySelector('.sidebar-submenu-item.bg-green-50, .sidebar-submenu-item.text-green-700')
+);
+
 const setGroupOpen = (group, open) => {
     const submenu = group.querySelector('[data-sidebar-submenu]');
     submenu?.classList.toggle('hidden', !open);
     submenu?.classList.toggle('grid', open);
+};
+
+const setGroupActive = (group, active) => {
+    const trigger = group.querySelector('.sidebar-group-trigger');
+    const icon = trigger?.querySelector('span:first-child');
+
+    trigger?.classList.toggle('bg-green-50', active);
+    trigger?.classList.toggle('text-green-800', active);
+    trigger?.classList.toggle('text-slate-700', !active);
+    icon?.classList.toggle('bg-green-100', active);
+    icon?.classList.toggle('text-green-600', active);
+    icon?.classList.toggle('bg-slate-100', !active);
+    icon?.classList.toggle('text-slate-600', !active);
 };
 
 const syncSidebar = () => {
@@ -124,10 +141,12 @@ const syncSidebar = () => {
     sidebarToggleIcon?.classList.toggle('rotate-180', expanded);
 
     sidebarGroups.forEach((group) => {
-        const hasActiveItem = group.querySelector('.sidebar-submenu-item.bg-green-50, .sidebar-submenu-item.text-green-700');
+        const hasActiveItem = getActiveSidebarItem(group);
+        const manuallyOpen = group.dataset.open === 'true';
         const hasVisibleSearch = Array.from(group.querySelectorAll('[data-sidebar-search-item]')).some((item) => !item.classList.contains('hidden'));
-        const open = expanded && (Boolean(hasActiveItem) || Boolean(sidebarSearchInput?.value) && hasVisibleSearch);
+        const open = expanded && (manuallyOpen || Boolean(hasActiveItem) || Boolean(sidebarSearchInput?.value) && hasVisibleSearch);
         setGroupOpen(group, open);
+        setGroupActive(group, open || Boolean(hasActiveItem));
     });
 };
 
@@ -163,8 +182,14 @@ const filterSidebar = () => {
             }
         });
 
+        const hasActiveItem = getActiveSidebarItem(group);
+        const open = isSidebarExpanded() && (Boolean(keyword)
+            ? visibleItems > 0 || matchGroup
+            : group.dataset.open === 'true' || Boolean(hasActiveItem));
+
         group.classList.toggle('hidden', Boolean(keyword) && !matchGroup && visibleItems === 0);
-        setGroupOpen(group, isSidebarExpanded() && (Boolean(keyword) ? visibleItems > 0 || matchGroup : group.querySelector('.sidebar-submenu-item.bg-green-50, .sidebar-submenu-item.text-green-700')));
+        setGroupOpen(group, open);
+        setGroupActive(group, open || Boolean(hasActiveItem));
     });
 };
 
@@ -210,6 +235,29 @@ sidebarSearchInput?.addEventListener('keydown', (event) => {
             firstVisibleItem.click();
         }
     }
+});
+
+sidebarGroups.forEach((group) => {
+    const trigger = group.querySelector('.sidebar-group-trigger');
+
+    trigger?.addEventListener('click', () => {
+        if (!sidebar) {
+            return;
+        }
+
+        sidebar.dataset.expanded = 'true';
+        group.dataset.open = group.dataset.open === 'true' ? 'false' : 'true';
+
+        sidebarGroups.forEach((otherGroup) => {
+            if (otherGroup !== group && !getActiveSidebarItem(otherGroup)) {
+                otherGroup.dataset.open = 'false';
+            }
+        });
+
+        syncSidebar();
+        closeUserMenu();
+        closeNotificationMenu();
+    });
 });
 
 avatarBtn?.addEventListener('click', (event) => {
