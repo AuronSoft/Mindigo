@@ -31,7 +31,7 @@
                          class="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-500" />
                     @else
                     <div class="w-full h-72 bg-green-50 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/></svg>
+                        <x-heroicon-o-newspaper class="h-16 w-16 text-green-200" />
                     </div>
                     @endif
                     <div class="p-8 flex flex-col justify-center gap-4">
@@ -62,7 +62,7 @@
                     </div>
                     @else
                     <div class="w-full h-48 bg-green-50 flex items-center justify-center">
-                        <svg class="w-10 h-10 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/></svg>
+                        <x-heroicon-o-newspaper class="h-10 w-10 text-green-200" />
                     </div>
                     @endif
                     <div class="p-5 flex flex-col gap-3 flex-1">
@@ -78,9 +78,8 @@
                 @endforeach
             </div>
             @else
-            <div class="text-center py-20 text-gray-400">
-                <svg class="w-12 h-12 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/></svg>
-                <p class="text-sm">@lang('blog::app.news.no_articles')</p>
+            <div class="py-20">
+                @include('core::partials.empty-state', ['preset' => 'articles'])
             </div>
             @endif
         </div>

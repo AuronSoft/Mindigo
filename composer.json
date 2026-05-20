@@ -39,7 +39,8 @@
             "Mindigo\\Dashboard\\": "packages/Mindigo/Dashboard/src/",
             "Mindigo\\Profile\\": "packages/Mindigo/Profile/src/", 
             "Mindigo\\BlogManagement\\": "packages/Mindigo/BlogManagement/src/",
-            "Mindigo\\SystemSetting\\": "packages/Mindigo/SystemSetting/src/"
+            "Mindigo\\SystemSetting\\": "packages/Mindigo/SystemSetting/src/",
+            "Mindigo\\AuditLog\\": "packages/Mindigo/AuditLog/src/"
         }
     },
     "autoload-dev": {
@@ -67,6 +68,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/BlogManagement"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/AuditLog"
         }
     ],
     "scripts": {

@@ -10,10 +10,11 @@
     @yield('styles')
 </head>
 <body class="bg-slate-50 font-['Be_Vietnam_Pro',ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased">
+@php($currentUser = Auth::user())
 <div id="admin-shell" class="grid min-h-screen grid-cols-[5rem_minmax(0,1fr)] transition-[grid-template-columns] duration-200">
     <aside
         id="sidebar"
-        class="sidebar sticky top-0 z-30 flex h-screen w-20 flex-col gap-3 border-r border-slate-200 bg-white p-3 transition-all duration-200"
+        class="sidebar sticky top-0 z-30 flex h-screen w-20 flex-col gap-3 bg-[#f7faf7] p-3 transition-all duration-200"
         data-expanded="false"
     >
         <a href="{{ route('dashboard') }}" class="flex min-h-12 items-center gap-3 overflow-hidden text-slate-900 no-underline">
@@ -136,25 +137,28 @@
                         @if(Route::has('system-settings.index'))
                             <a href="{{ route('system-settings.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('system-settings.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.system_settings')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.system_settings')</span></a>
                         @endif
+                        @if(Route::has('audit-logs.index'))
+                            <a href="{{ route('audit-logs.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('audit-logs.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.audit_logs')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.audit_logs')</span></a>
+                        @endif
                     </div>
                 </div>
             </nav>
         </div>
 
         <button class="mt-auto flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left" id="sidebar-avatar-btn" type="button">
-            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-green-100 text-sm font-black text-green-700">{{ mb_substr(Auth::user()->name ?? 'A', 0, 1) }}</span>
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-green-100 text-sm font-black text-green-700">{{ mb_substr($currentUser?->name ?? 'A', 0, 1) }}</span>
             <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
-                <span class="block max-w-44 truncate text-sm font-black text-slate-900">{{ Auth::user()->name }}</span>
-                <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">{{ Auth::user()->role_label ?? Auth::user()->role }}</span>
+                <span class="block max-w-44 truncate text-sm font-black text-slate-900">{{ $currentUser?->name ?? 'Guest' }}</span>
+                <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">{{ $currentUser?->role_label ?? $currentUser?->role ?? '-' }}</span>
             </span>
         </button>
 
         <div class="fixed z-50 hidden w-64 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10" id="user-menu">
             <div class="mb-1 flex items-center gap-3 rounded-xl bg-green-50 px-3 py-2.5">
-                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-sm font-black text-green-700 ring-1 ring-green-100">{{ mb_substr(Auth::user()->name ?? 'A', 0, 1) }}</span>
+                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-sm font-black text-green-700 ring-1 ring-green-100">{{ mb_substr($currentUser?->name ?? 'A', 0, 1) }}</span>
                 <span class="min-w-0">
-                    <span class="block truncate text-sm font-black text-slate-900">{{ Auth::user()->name }}</span>
-                    <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">{{ Auth::user()->role_label ?? Auth::user()->role }}</span>
+                    <span class="block truncate text-sm font-black text-slate-900">{{ $currentUser?->name ?? 'Guest' }}</span>
+                    <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">{{ $currentUser?->role_label ?? $currentUser?->role ?? '-' }}</span>
                 </span>
             </div>
             @if(Route::has('profile.index'))
@@ -175,7 +179,7 @@
         </button>
     </aside>
 
-    <main class="min-w-0 p-6 max-md:p-4">
+    <main class="min-w-0 {{ request()->routeIs('dashboard') ? 'p-0' : 'p-6 max-md:p-4' }}">
         @yield('content')
     </main>
 </div>

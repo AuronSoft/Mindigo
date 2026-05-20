@@ -82,6 +82,37 @@ initChart('qualityChart', {
     },
 });
 
+initChart('rankingChart', {
+    type: 'bar',
+    data: {
+        labels: ['Admin A.', 'Teacher B.', 'Student C.', 'Class D.', 'Exam E.'],
+        datasets: [{
+            data: [92, 84, 76, 68, 57],
+            backgroundColor: ['#15803d', '#16a34a', '#22c55e', '#86efac', '#bbf7d0'],
+            borderRadius: 14,
+            borderSkipped: false,
+            barThickness: 18,
+        }],
+    },
+    options: {
+        ...chartDefaults,
+        indexAxis: 'y',
+        scales: {
+            x: {
+                border: { display: false },
+                grid: { color: '#e2e8f0' },
+                ticks: { color: '#94a3b8', font: { weight: 800 } },
+                max: 100,
+            },
+            y: {
+                border: { display: false },
+                grid: { display: false },
+                ticks: { color: '#334155', font: { weight: 900 } },
+            },
+        },
+    },
+});
+
 const sidebar = document.getElementById('sidebar');
 const adminShell = document.getElementById('admin-shell');
 const sidebarToggle = document.getElementById('sidebar-toggle');
@@ -93,6 +124,13 @@ const avatarBtn = document.getElementById('sidebar-avatar-btn');
 const userMenu = document.getElementById('user-menu');
 const notificationBtn = document.getElementById('dashboard-notification-btn');
 const notificationMenu = document.getElementById('dashboard-notification-menu');
+const timeframeToggle = document.querySelector('[data-dashboard-timeframe-toggle]');
+const timeframeTrack = document.querySelector('[data-dashboard-timeframe-track]');
+const timeframeKnob = document.querySelector('[data-dashboard-timeframe-knob]');
+const timeframeStatus = document.querySelector('[data-dashboard-timeframe-status]');
+const dashboardDateButton = document.querySelector('[data-dashboard-date-button]');
+const dashboardDateInput = document.querySelector('[data-dashboard-date-input]');
+const dashboardDateLabel = document.querySelector('[data-dashboard-date-label]');
 
 const normalizeSearchText = (value) => (
     (value || '')
@@ -202,6 +240,26 @@ const closeNotificationMenu = () => {
     notificationBtn?.setAttribute('aria-expanded', 'false');
 };
 
+const formatDashboardDate = (value) => {
+    if (!value) {
+        return '';
+    }
+
+    const [year, month, day] = value.split('-');
+    return [day, month, year].filter(Boolean).join('/');
+};
+
+const setTimeframeEnabled = (enabled) => {
+    timeframeToggle?.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+    timeframeTrack?.classList.toggle('bg-green-600', enabled);
+    timeframeTrack?.classList.toggle('bg-slate-300', !enabled);
+    timeframeKnob?.classList.toggle('translate-x-3', enabled);
+    timeframeStatus && (timeframeStatus.textContent = enabled ? 'Timeframe' : 'Tắt lọc ngày');
+    dashboardDateButton?.classList.toggle('opacity-50', !enabled);
+    dashboardDateButton?.classList.toggle('pointer-events-none', !enabled);
+    dashboardDateInput && (dashboardDateInput.disabled = !enabled);
+};
+
 syncSidebar();
 filterSidebar();
 
@@ -234,6 +292,30 @@ sidebarSearchInput?.addEventListener('keydown', (event) => {
         if (firstVisibleItem instanceof HTMLAnchorElement) {
             firstVisibleItem.click();
         }
+    }
+});
+
+timeframeToggle?.addEventListener('click', () => {
+    setTimeframeEnabled(timeframeToggle.getAttribute('aria-pressed') !== 'true');
+});
+
+dashboardDateButton?.addEventListener('click', () => {
+    if (!dashboardDateInput || dashboardDateInput.disabled) {
+        return;
+    }
+
+    if (typeof dashboardDateInput.showPicker === 'function') {
+        dashboardDateInput.showPicker();
+        return;
+    }
+
+    dashboardDateInput.focus();
+    dashboardDateInput.click();
+});
+
+dashboardDateInput?.addEventListener('change', () => {
+    if (dashboardDateLabel) {
+        dashboardDateLabel.textContent = formatDashboardDate(dashboardDateInput.value);
     }
 });
 

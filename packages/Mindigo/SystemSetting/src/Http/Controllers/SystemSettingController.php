@@ -5,13 +5,15 @@ namespace Mindigo\SystemSetting\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\SystemSetting\Http\Requests\UpdateSystemSettingRequest;
 use Mindigo\SystemSetting\Services\SystemSettingService;
 
 class SystemSettingController extends Controller
 {
     public function __construct(
-        private readonly SystemSettingService $service
+        private readonly SystemSettingService $service,
+        private readonly AuditLogService $auditLog
     ) {}
 
     public function index(): View
@@ -30,6 +32,19 @@ class SystemSettingController extends Controller
                 ->route('system-settings.index')
                 ->with('info', 'Chưa có trường dữ liệu nào thay đổi.');
         }
+
+        $changes = $this->service->changes();
+
+        $this->auditLog->record(
+            action: 'update',
+            module: 'system_settings',
+            oldValues: collect($changes)->map(fn (array $change) => $change['old'])->all(),
+            newValues: collect($changes)->map(fn (array $change) => $change['new'])->all(),
+            metadata: [
+                'changed_count' => $changed,
+                'changes' => $changes,
+            ],
+        );
 
         return redirect()
             ->route('system-settings.index')

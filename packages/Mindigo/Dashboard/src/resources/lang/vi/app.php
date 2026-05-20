@@ -18,6 +18,7 @@ return [
     'logout' => 'Đăng xuất',
     'my_account' => 'Tài khoản của tôi',
     'system_settings' => 'Cấu hình hệ thống',
+    'audit_logs' => 'Nhật ký thao tác',
 
     'group_overview' => 'Tổng quan',
     'group_overview_desc' => 'Dashboard, đề thi, học viên',

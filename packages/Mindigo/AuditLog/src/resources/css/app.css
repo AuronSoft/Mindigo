@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+.audit-log-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background: #ffffff;
+    box-shadow: 0 1px 2px 0 rgb(226 232 240 / 0.7);
+}
+
+.audit-log-input {
+    min-height: 2.75rem;
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    padding-inline: 1rem;
+    color: #1e293b;
+    font-size: 0.875rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.audit-log-input:focus {
+    border-color: #4ade80;
+    box-shadow: 0 0 0 4px #dcfce7;
+}
+
+.audit-log-json {
+    max-height: 28rem;
+    overflow: auto;
+    border-radius: 0.75rem;
+    background: #020617;
+    padding: 1rem;
+    color: #f1f5f9;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    tab-size: 2;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.audit-log-diff-changed {
+    box-shadow: 0 0 0 2px #fcd34d, 0 0 0 4px #ffffff;
+}
+
+.audit-empty-state {
+    display: grid;
+    justify-items: center;
+    gap: 0.875rem;
+    padding-block: 1rem;
+    text-align: center;
+}
+
+.audit-empty-icon {
+    display: grid;
+    width: 5rem;
+    height: 5rem;
+    place-items: center;
+    border: 1px solid #dcfce7;
+    border-radius: 1rem;
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.audit-empty-title {
+    color: #0f172a;
+    font-size: 0.95rem;
+    font-weight: 900;
+}
+
+.audit-empty-message {
+    max-width: 28rem;
+    margin-top: 0.35rem;
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.6;
+}

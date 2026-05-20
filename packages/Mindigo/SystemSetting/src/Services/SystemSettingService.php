@@ -6,6 +6,8 @@ use Mindigo\SystemSetting\Models\SystemSetting;
 
 class SystemSettingService
 {
+    private array $lastChanges = [];
+
     public function definitions(): array
     {
         return [
@@ -92,6 +94,7 @@ class SystemSettingService
     public function update(array $settings): int
     {
         $changed = 0;
+        $this->lastChanges = [];
         $stored = SystemSetting::query()->get()->keyBy('key');
 
         foreach ($this->definitions() as $groupKey => $group) {
@@ -109,6 +112,13 @@ class SystemSettingService
                     continue;
                 }
 
+                $this->lastChanges[$key] = [
+                    'group' => $groupKey,
+                    'label' => $definition['label'],
+                    'old' => $model ? $model->typedValue() : $definition['default'],
+                    'new' => $this->typedValue($normalizedValue, $definition['type']),
+                ];
+
                 SystemSetting::query()->updateOrCreate(
                     ['key' => $key],
                     [
@@ -123,6 +133,11 @@ class SystemSettingService
         }
 
         return $changed;
+    }
+
+    public function changes(): array
+    {
+        return $this->lastChanges;
     }
 
     public function value(string $key, mixed $default = null): mixed
@@ -145,5 +160,16 @@ class SystemSettingService
     private function storageType(string $type): string
     {
         return $type === 'select' || $type === 'email' ? 'string' : $type;
+    }
+
+    private function typedValue(string $value, string $type): mixed
+    {
+        return match ($type) {
+            'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
+            'integer' => (int) $value,
+            'float' => (float) $value,
+            'json' => json_decode($value ?: '[]', true),
+            default => $value,
+        };
     }
 }

@@ -18,6 +18,7 @@ return [
     'logout' => 'Sign out',
     'my_account' => 'My account',
     'system_settings' => 'System settings',
+    'audit_logs' => 'Audit logs',
 
     'group_overview' => 'Overview',
     'group_overview_desc' => 'Dashboard, exams, learners',
