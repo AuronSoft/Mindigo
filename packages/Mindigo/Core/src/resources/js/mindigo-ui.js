@@ -125,10 +125,10 @@ function processMindigoToastNodes(root = document) {
 
 function getMindigoConfirmConfig(form) {
     return {
-        title: form.dataset.MindigoConfirmTitle || 'Xac nhan',
-        message: form.dataset.MindigoConfirmMessage || 'Ban co chac chan khong?',
-        confirmText: form.dataset.MindigoConfirmText || 'Xac nhan',
-        cancelText: form.dataset.MindigoConfirmCancel || 'Huy',
+        title: form.dataset.MindigoConfirmTitle || 'Xác nhận',
+        message: form.dataset.MindigoConfirmMessage || 'Bạn có chắc chắn không?',
+        confirmText: form.dataset.MindigoConfirmText || 'Xác nhận',
+        cancelText: form.dataset.MindigoConfirmCancel || 'Hủy',
         type: form.dataset.MindigoConfirmType || 'warning',
     };
 }
@@ -190,10 +190,10 @@ window.MindigoBindConfirmForms = bindMindigoConfirmForms;
 
 // CONFIRM DIALOG
 window.MindigoConfirm = function({
-    title = 'Xac nhan',
-    message = 'Ban co chac chan khong?',
-    confirmText = 'Xac nhan',
-    cancelText = 'Huy',
+    title = 'Xác nhận',
+    message = 'Bạn có chắc chắn không?',
+    confirmText = 'Xác nhận',
+    cancelText = 'Hủy',
     type = 'warning',
 } = {}) {
     return new Promise((resolve) => {

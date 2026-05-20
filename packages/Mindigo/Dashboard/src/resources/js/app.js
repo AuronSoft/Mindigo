@@ -285,10 +285,10 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
         event.preventDefault();
 
         const confirmed = await MindigoConfirm({
-            title: 'Dang xuat',
-            message: 'Ban co chac chan muon dang xuat khoi he thong khong?',
-            confirmText: 'Dang xuat',
-            cancelText: 'Huy',
+            title: 'Đăng xuất',
+            message: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
+            confirmText: 'Đăng xuất',
+            cancelText: 'Hủy',
             type: 'warning',
         });
 
@@ -296,7 +296,7 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
             return;
         }
 
-        MindigoToast('Dang dang xuat...', 'info', 1200);
+        MindigoToast('Đang đăng xuất...', 'info', 1200);
 
         const formId = link.dataset.logoutForm;
         const form = formId ? document.getElementById(formId) : null;
