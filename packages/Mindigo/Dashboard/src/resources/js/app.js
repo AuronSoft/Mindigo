@@ -91,6 +91,8 @@ const sidebarGroups = Array.from(document.querySelectorAll('[data-sidebar-group]
 const sidebarTextItems = Array.from(document.querySelectorAll('[data-sidebar-text]'));
 const avatarBtn = document.getElementById('sidebar-avatar-btn');
 const userMenu = document.getElementById('user-menu');
+const notificationBtn = document.getElementById('dashboard-notification-btn');
+const notificationMenu = document.getElementById('dashboard-notification-menu');
 
 const normalizeSearchText = (value) => (
     (value || '')
@@ -170,6 +172,11 @@ const closeUserMenu = () => {
     userMenu?.classList.add('hidden');
 };
 
+const closeNotificationMenu = () => {
+    notificationMenu?.classList.add('hidden');
+    notificationBtn?.setAttribute('aria-expanded', 'false');
+};
+
 syncSidebar();
 filterSidebar();
 
@@ -207,6 +214,7 @@ sidebarSearchInput?.addEventListener('keydown', (event) => {
 
 avatarBtn?.addEventListener('click', (event) => {
     event.stopPropagation();
+    closeNotificationMenu();
 
     if (!userMenu || !sidebar) {
         return;
@@ -244,14 +252,32 @@ avatarBtn?.addEventListener('click', (event) => {
     userMenu.style.visibility = '';
 });
 
+notificationBtn?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    closeUserMenu();
+
+    const isOpen = !notificationMenu?.classList.contains('hidden');
+    notificationMenu?.classList.toggle('hidden', isOpen);
+    notificationBtn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+});
+
 document.addEventListener('click', (event) => {
-    if (!userMenu || !avatarBtn) {
+    if (userMenu && avatarBtn && !userMenu.contains(event.target) && !avatarBtn.contains(event.target)) {
+        closeUserMenu();
+    }
+
+    if (notificationMenu && notificationBtn && !notificationMenu.contains(event.target) && !notificationBtn.contains(event.target)) {
+        closeNotificationMenu();
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') {
         return;
     }
 
-    if (!userMenu.contains(event.target) && !avatarBtn.contains(event.target)) {
-        closeUserMenu();
-    }
+    closeUserMenu();
+    closeNotificationMenu();
 });
 
 document.querySelectorAll('[data-logout]').forEach((link) => {

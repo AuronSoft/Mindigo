@@ -23,10 +23,47 @@
                 <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2 text-slate-400" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 <input type="text" placeholder="@lang('Mindigo-dashboard::app.global_search')" class="min-w-0 flex-1 border-0 bg-transparent text-sm font-bold outline-none placeholder:text-slate-400">
             </div>
-            <button class="grid h-11 w-11 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:text-green-700" type="button" title="@lang('Mindigo-dashboard::app.notifications')">
-                <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            </button>
-            <a href="#exams" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-green-500 px-4 text-sm font-black text-white no-underline shadow-[0_4px_0_#15803d] transition hover:-translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+            <div class="relative">
+                <button id="dashboard-notification-btn" class="relative grid h-11 w-11 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm shadow-slate-900/[0.03] transition hover:border-green-200 hover:bg-green-50 hover:text-green-700" type="button" title="@lang('Mindigo-dashboard::app.notifications')" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-green-500 ring-2 ring-white"></span>
+                </button>
+
+                <div id="dashboard-notification-menu" class="absolute right-0 top-[52px] z-40 hidden w-80 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10 max-sm:right-auto max-sm:left-0 max-sm:w-[calc(100vw-2rem)]">
+                    <div class="flex items-center justify-between gap-3 rounded-xl bg-green-50 px-3 py-2.5">
+                        <div>
+                            <p class="m-0 text-sm font-black text-slate-900">@lang('Mindigo-dashboard::app.notification_title')</p>
+                            <p class="m-0 mt-0.5 text-[11px] font-bold text-slate-500">@lang('Mindigo-dashboard::app.notification_subtitle')</p>
+                        </div>
+                        <span class="rounded-full bg-white px-2 py-1 text-[10px] font-black text-green-700 ring-1 ring-green-100">3</span>
+                    </div>
+
+                    <div class="mt-2 grid gap-1">
+                        <a href="#question-bank" class="flex gap-3 rounded-xl px-3 py-2.5 text-slate-700 no-underline transition hover:bg-slate-50">
+                            <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-green-500"></span>
+                            <span class="min-w-0">
+                                <span class="block text-sm font-black">@lang('Mindigo-dashboard::app.notification_new_questions')</span>
+                                <span class="mt-0.5 block text-xs font-semibold leading-5 text-slate-500">@lang('Mindigo-dashboard::app.notification_new_questions_desc')</span>
+                            </span>
+                        </a>
+                        <a href="#exams" class="flex gap-3 rounded-xl px-3 py-2.5 text-slate-700 no-underline transition hover:bg-slate-50">
+                            <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-amber-500"></span>
+                            <span class="min-w-0">
+                                <span class="block text-sm font-black">@lang('Mindigo-dashboard::app.notification_exam_ready')</span>
+                                <span class="mt-0.5 block text-xs font-semibold leading-5 text-slate-500">@lang('Mindigo-dashboard::app.notification_exam_ready_desc')</span>
+                            </span>
+                        </a>
+                        <a href="#reports" class="flex gap-3 rounded-xl px-3 py-2.5 text-slate-700 no-underline transition hover:bg-slate-50">
+                            <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-slate-300"></span>
+                            <span class="min-w-0">
+                                <span class="block text-sm font-black">@lang('Mindigo-dashboard::app.notification_system_ok')</span>
+                                <span class="mt-0.5 block text-xs font-semibold leading-5 text-slate-500">@lang('Mindigo-dashboard::app.notification_system_ok_desc')</span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="#exams" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-green-500 px-4 text-sm font-black text-white no-underline shadow-[0_4px_0_#15803d] transition hover:-translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none max-sm:w-full">
                 <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 @lang('Mindigo-dashboard::app.create_exam')
             </a>
