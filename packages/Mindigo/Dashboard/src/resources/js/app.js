@@ -222,15 +222,25 @@ avatarBtn?.addEventListener('click', (event) => {
         return;
     }
 
-    const sidebarRect = sidebar.getBoundingClientRect();
     const avatarRect = avatarBtn.getBoundingClientRect();
 
     userMenu.classList.remove('hidden');
     userMenu.style.visibility = 'hidden';
 
     const menuHeight = userMenu.offsetHeight;
-    userMenu.style.top = `${Math.max(12, avatarRect.top - menuHeight - 10)}px`;
-    userMenu.style.left = `${sidebarRect.right + 12}px`;
+    const menuWidth = userMenu.offsetWidth;
+    const sidebarRect = sidebar.getBoundingClientRect();
+    const viewportPadding = 12;
+    const top = Math.min(
+        window.innerHeight - menuHeight - viewportPadding,
+        Math.max(viewportPadding, avatarRect.top - menuHeight - 10),
+    );
+    const expandedLeft = sidebarRect.left + 12;
+    const compactLeft = sidebarRect.right + 10;
+    const maxLeft = window.innerWidth - menuWidth - viewportPadding;
+
+    userMenu.style.top = `${top}px`;
+    userMenu.style.left = `${Math.min(maxLeft, isSidebarExpanded() ? expandedLeft : compactLeft)}px`;
     userMenu.style.visibility = '';
 });
 

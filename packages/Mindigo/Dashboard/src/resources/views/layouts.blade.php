@@ -147,7 +147,14 @@
             </span>
         </button>
 
-        <div class="fixed z-50 hidden w-56 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl shadow-slate-900/10" id="user-menu">
+        <div class="fixed z-50 hidden w-64 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10" id="user-menu">
+            <div class="mb-1 flex items-center gap-3 rounded-xl bg-green-50 px-3 py-2.5">
+                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-sm font-black text-green-700 ring-1 ring-green-100">{{ mb_substr(Auth::user()->name ?? 'A', 0, 1) }}</span>
+                <span class="min-w-0">
+                    <span class="block truncate text-sm font-black text-slate-900">{{ Auth::user()->name }}</span>
+                    <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">{{ Auth::user()->role_label ?? Auth::user()->role }}</span>
+                </span>
+            </div>
             @if(Route::has('profile.index'))
                 <a href="{{ route('profile.index') }}" class="flex min-h-10 items-center gap-2 rounded-xl px-3 text-sm font-extrabold text-slate-600 no-underline hover:bg-slate-50 hover:text-slate-900">
                     <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
