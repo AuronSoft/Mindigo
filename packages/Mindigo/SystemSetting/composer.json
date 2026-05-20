@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/system-setting",
+    "description": "Mindigo system settings package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\SystemSetting\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\SystemSetting\\Providers\\SystemSettingServiceProvider"
+            ]
+        }
+    }
+}

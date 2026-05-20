@@ -38,7 +38,8 @@
             "Mindigo\\Core\\": "packages/Mindigo/Core/src/",
             "Mindigo\\Dashboard\\": "packages/Mindigo/Dashboard/src/",
             "Mindigo\\Profile\\": "packages/Mindigo/Profile/src/", 
-            "Mindigo\\BlogManagement\\": "packages/Mindigo/BlogManagement/src/"
+            "Mindigo\\BlogManagement\\": "packages/Mindigo/BlogManagement/src/",
+            "Mindigo\\SystemSetting\\": "packages/Mindigo/SystemSetting/src/"
         }
     },
     "autoload-dev": {
