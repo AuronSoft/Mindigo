@@ -16,7 +16,7 @@ class UpdatePasswordRequest extends FormRequest
     {
         return [
             'current_password' => ['required', 'string'],
-            'password'         => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()],
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()],
         ];
     }
 
@@ -24,11 +24,11 @@ class UpdatePasswordRequest extends FormRequest
     {
         return [
             'current_password.required' => 'Vui lòng nhập mật khẩu hiện tại.',
-            'password.required'         => 'Vui lòng nhập mật khẩu mới.',
-            'password.confirmed'        => 'Xác nhận mật khẩu không khớp.',
-            'password.min'              => 'Mật khẩu mới phải có ít nhất 8 ký tự.',
-            'password.mixed_case'       => 'Mật khẩu phải chứa cả chữ hoa và chữ thường.',
-            'password.numbers'          => 'Mật khẩu phải chứa ít nhất một chữ số.',
+            'password.required' => 'Vui lòng nhập mật khẩu mới.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
+            'password.min' => 'Mật khẩu mới phải có ít nhất 8 ký tự.',
+            'password.mixed_case' => 'Mật khẩu phải chứa cả chữ hoa và chữ thường.',
+            'password.numbers' => 'Mật khẩu phải chứa ít nhất một chữ số.',
         ];
     }
 }

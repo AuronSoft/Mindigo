@@ -14,18 +14,16 @@ class UpdateNotificationsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'notif_attendance' => ['required', 'in:all,daily,none'],
-            'notif_payroll'    => ['required', 'in:monthly,none'],
+            'notif_new_quiz' => ['nullable', 'boolean'],
+            'notif_system_news' => ['nullable', 'boolean'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'notif_attendance.required' => 'Vui lòng chọn cài đặt thông báo chấm công.',
-            'notif_attendance.in'       => 'Giá trị thông báo chấm công không hợp lệ.',
-            'notif_payroll.required'    => 'Vui lòng chọn cài đặt thông báo lương.',
-            'notif_payroll.in'          => 'Giá trị thông báo lương không hợp lệ.',
+            'notif_new_quiz.boolean' => 'Cài đặt thông báo đề thi mới không hợp lệ.',
+            'notif_system_news.boolean' => 'Cài đặt thông báo hệ thống không hợp lệ.',
         ];
     }
 }

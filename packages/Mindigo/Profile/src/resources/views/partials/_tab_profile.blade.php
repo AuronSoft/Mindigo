@@ -1,97 +1,72 @@
 <div class="profile-tab-panel" id="panel-ho-so">
-    <form id="profile-form" method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+    <form id="profile-form" method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="space-y-5">
         @csrf
         @method('PUT')
 
-        {{-- Thông tin cơ bản --}}
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-5">
-            <h3 class="text-sm font-black text-gray-900 mb-5 pb-3 border-b border-gray-100">@lang('Mindigo-profile::app.basic_information')</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700" for="first_name">@lang('Mindigo-profile::app.first_name') *</label>
-                    <input class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        type="text" id="first_name" name="first_name"
-                        value="{{ old('first_name', Auth::user()->first_name) }}"
-                        placeholder="@lang('Mindigo-profile::app.enter_first_name')" required
-                        oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ỹ\s]/g, '')"/>
+        <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70">
+            <div class="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
+                <div>
+                    <h3 class="text-base font-black text-slate-950">@lang('Mindigo-profile::app.basic_information')</h3>
+                    <p class="mt-1 text-sm font-semibold text-slate-500">@lang('Mindigo-profile::app.basic_information_desc')</p>
                 </div>
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700" for="last_name">@lang('Mindigo-profile::app.last_name') *</label>
-                    <input class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        type="text" id="last_name" name="last_name"
-                        value="{{ old('last_name', Auth::user()->last_name) }}"
-                        placeholder="@lang('Mindigo-profile::app.enter_last_name')" required
-                        oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ỹ\s]/g, '')"/>
-                </div>
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700" for="language">@lang('Mindigo-profile::app.language')</label>
-                    <select class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        id="language" name="language">
-                        <option value="vi" {{ old('language', Auth::user()->language) === 'vi' ? 'selected' : '' }}>@lang('Mindigo-profile::app.vietnamese')</option>
-                        <option value="en" {{ old('language', Auth::user()->language) === 'en' ? 'selected' : '' }}>@lang('Mindigo-profile::app.english')</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700" for="phone">@lang('Mindigo-profile::app.phone')</label>
-                    <input class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        type="text" id="phone" name="phone"
-                        value="{{ old('phone', Auth::user()->phone) }}"
-                        placeholder="@lang('Mindigo-profile::app.phone_placeholder')"
-                        pattern="^(\+84|0)\d{9}$" maxlength="12"
-                        oninput="this.value = this.value.replace(/[^0-9+]/g, '')"/>
-                </div>
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700" for="date_of_birth">@lang('Mindigo-profile::app.date_of_birth')</label>
-                    <input class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        type="date" id="date_of_birth" name="date_of_birth"
-                        value="{{ old('date_of_birth', Auth::user()->date_of_birth ? \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') : '') }}"
-                        max="{{ now()->subYears(18)->format('Y-m-d') }}"/>
-                </div>
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700" for="gender">@lang('Mindigo-profile::app.gender')</label>
-                    <select class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        id="gender" name="gender">
-                        <option value="male" {{ old('gender', Auth::user()->gender) === 'male' ? 'selected' : '' }}>@lang('Mindigo-profile::app.male')</option>
-                        <option value="female" {{ old('gender', Auth::user()->gender) === 'female' ? 'selected' : '' }}>@lang('Mindigo-profile::app.female')</option>
-                        <option value="other" {{ old('gender', Auth::user()->gender) === 'other' ? 'selected' : '' }}>@lang('Mindigo-profile::app.other')</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-1.5 col-span-2">
-                    <label class="text-xs font-black text-gray-700" for="address">@lang('Mindigo-profile::app.address')</label>
-                    <input class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        type="text" id="address" name="address"
-                        value="{{ old('address', Auth::user()->address) }}"
-                        placeholder="@lang('Mindigo-profile::app.enter_address')"/>
-                </div>
+                <span class="rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-500 ring-1 ring-slate-100">
+                    {{ $roleProfile['label'] }}
+                </span>
             </div>
-        </div>
 
-        {{-- Thông tin liên hệ --}}
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h3 class="text-sm font-black text-gray-900 mb-5 pb-3 border-b border-gray-100">@lang('Mindigo-profile::app.contact_additional_information')</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700" for="email_work">@lang('Mindigo-profile::app.work_email')</label>
-                    <input class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500 bg-gray-50 cursor-not-allowed focus:outline-none"
-                        type="email" id="email_work" name="email"
-                        value="{{ old('email', Auth::user()->email) }}"
-                        readonly required/>
+            <div class="grid gap-4 md:grid-cols-2">
+                <div class="md:col-span-2">
+                    <label class="mb-1.5 block text-xs font-black text-slate-700" for="name">@lang('Mindigo-profile::app.full_name') *</label>
+                    <input class="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-green-400 focus:ring-4 focus:ring-green-100"
+                        type="text" id="name" name="name" value="{{ old('name', $user->name) }}"
+                        placeholder="@lang('Mindigo-profile::app.enter_full_name')" required>
                 </div>
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700" for="email_personal">@lang('Mindigo-profile::app.personal_email')</label>
-                    <input class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        type="email" id="email_personal" name="email_personal"
-                        value="{{ old('email_personal', Auth::user()->email_personal) }}"
-                        placeholder="@lang('Mindigo-profile::app.personal_email_placeholder')"
-                        pattern="^[^@]+@gmail\.com$"/>
+
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-700" for="email">@lang('Mindigo-profile::app.registered_email')</label>
+                    <input class="min-h-11 w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-500 outline-none"
+                        type="email" id="email" value="{{ $user->email }}" readonly>
                 </div>
-                <div class="flex flex-col gap-1.5 col-span-2">
-                    <label class="text-xs font-black text-gray-700" for="bio">@lang('Mindigo-profile::app.bio')</label>
-                    <textarea class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition resize-none h-24"
-                        id="bio" name="bio"
-                        placeholder="@lang('Mindigo-profile::app.bio_placeholder')">{{ old('bio', Auth::user()->bio) }}</textarea>
+
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-700" for="phone">@lang('Mindigo-profile::app.phone')</label>
+                    <input class="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-green-400 focus:ring-4 focus:ring-green-100"
+                        type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}"
+                        placeholder="@lang('Mindigo-profile::app.phone_placeholder')" maxlength="12">
+                </div>
+
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-700" for="date_of_birth">@lang('Mindigo-profile::app.date_of_birth')</label>
+                    <input class="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition focus:border-green-400 focus:ring-4 focus:ring-green-100"
+                        type="date" id="date_of_birth" name="date_of_birth"
+                        value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}"
+                        max="{{ now()->subDay()->format('Y-m-d') }}">
+                </div>
+
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-700" for="gender">@lang('Mindigo-profile::app.gender')</label>
+                    <select class="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition focus:border-green-400 focus:ring-4 focus:ring-green-100"
+                        id="gender" name="gender">
+                        <option value="">@lang('Mindigo-profile::app.select_gender')</option>
+                        <option value="male" {{ old('gender', $user->gender) === 'male' ? 'selected' : '' }}>@lang('Mindigo-profile::app.male')</option>
+                        <option value="female" {{ old('gender', $user->gender) === 'female' ? 'selected' : '' }}>@lang('Mindigo-profile::app.female')</option>
+                        <option value="other" {{ old('gender', $user->gender) === 'other' ? 'selected' : '' }}>@lang('Mindigo-profile::app.other')</option>
+                    </select>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="mb-1.5 block text-xs font-black text-slate-700" for="address">@lang('Mindigo-profile::app.address')</label>
+                    <input class="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-green-400 focus:ring-4 focus:ring-green-100"
+                        type="text" id="address" name="address" value="{{ old('address', $user->address) }}"
+                        placeholder="@lang('Mindigo-profile::app.enter_address')">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="mb-1.5 block text-xs font-black text-slate-700" for="bio">@lang('Mindigo-profile::app.bio')</label>
+                    <textarea class="min-h-28 w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-green-400 focus:ring-4 focus:ring-green-100"
+                        id="bio" name="bio" placeholder="@lang('Mindigo-profile::app.bio_placeholder')">{{ old('bio', $user->bio) }}</textarea>
                 </div>
             </div>
-        </div>
+        </section>
     </form>
 </div>

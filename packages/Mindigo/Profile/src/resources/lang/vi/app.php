@@ -1,76 +1,69 @@
 <?php
 
 return [
-    'page_title' => 'Tài khoản của tôi — Mindigo',
-
-    'dashboard' => 'Trang chủ',
+    'page_title' => 'Tài khoản của tôi - Mindigo',
+    'dashboard' => 'Dashboard',
     'my_account' => 'Tài khoản của tôi',
+    'back_to_dashboard' => 'Về dashboard',
 
-    'cancel' => 'Huỷ',
     'save_changes' => 'Lưu thay đổi',
     'save_settings' => 'Lưu cài đặt',
     'update_password' => 'Cập nhật mật khẩu',
 
     'profile' => 'Hồ sơ',
-    'email_settings' => 'Cài đặt email',
+    'email_settings' => 'Thông báo',
     'security' => 'Bảo mật',
 
-    'change_avatar' => 'Đổi ảnh',
     'active' => 'Đang hoạt động',
+    'inactive' => 'Đã tạm khóa',
+    'none' => 'Chưa cập nhật',
+    'verified' => 'Đã xác minh',
+    'not_verified' => 'Chưa xác minh',
+
+    'role_profile_title' => 'Không gian hồ sơ theo vai trò',
+    'scope' => 'Phạm vi',
 
     'phone' => 'Điện thoại',
-    'hire_date' => 'Ngày tham gia',
-    'none' => '—',
+    'joined_at' => 'Ngày tham gia',
+    'email_status' => 'Trạng thái email',
 
-    'basic_information' => 'Thông tin cơ bản',
-    'contact_additional_information' => 'Thông tin liên hệ & bổ sung',
-
-    'first_name' => 'Họ',
-    'last_name' => 'Tên',
-    'language' => 'Ngôn ngữ',
+    'basic_information' => 'Thông tin cá nhân',
+    'basic_information_desc' => 'Thông tin này dùng chung cho toàn hệ thống và được hiển thị theo phân quyền hiện tại.',
+    'full_name' => 'Họ tên',
+    'registered_email' => 'Email đăng nhập',
     'date_of_birth' => 'Ngày sinh',
     'gender' => 'Giới tính',
+    'select_gender' => 'Chọn giới tính',
     'address' => 'Địa chỉ',
+    'bio' => 'Giới thiệu',
 
-    'enter_first_name' => 'Nhập họ...',
-    'enter_last_name' => 'Nhập tên...',
+    'enter_full_name' => 'Nhập họ tên...',
     'enter_address' => 'Nhập địa chỉ...',
     'phone_placeholder' => '0xxxxxxxxx hoặc +84xxxxxxxxx',
-
-    'vietnamese' => 'Tiếng Việt',
-    'english' => 'English',
+    'bio_placeholder' => 'Viết ngắn gọn về vai trò, kinh nghiệm hoặc mục tiêu học tập...',
 
     'male' => 'Nam',
     'female' => 'Nữ',
     'other' => 'Khác',
 
-    'work_email' => 'Email đăng ký',
-    'personal_email' => 'Email cá nhân',
-    'bio' => 'Giới thiệu bản thân',
-
-    'personal_email_placeholder' => 'example@gmail.com',
-    'personal_email_title' => 'Email phải có đuôi @gmail.com',
-    'bio_placeholder' => 'Viết vài dòng giới thiệu về bản thân...',
-
-    'email_notification_settings' => 'Cài đặt thông báo email',
-    'receive_attendance_notifications' => 'Nhận thông báo hoạt động học tập',
-    'receive_payroll_notifications' => 'Nhận thông báo cập nhật hệ thống',
-
-    'all' => 'Tất cả',
-    'daily' => 'Hàng ngày',
-    'monthly' => 'Hàng tháng',
-    'turn_off' => 'Tắt',
+    'email_notification_settings' => 'Cài đặt thông báo',
+    'email_notification_desc' => 'Chọn loại thông báo hệ thống gửi tới tài khoản của bạn.',
+    'notif_new_quiz' => 'Đề thi và bài luyện tập mới',
+    'notif_new_quiz_desc' => 'Nhận thông báo khi có đề thi, bài luyện tập hoặc nội dung ôn thi mới phù hợp với vai trò.',
+    'notif_system_news' => 'Tin tức và cập nhật hệ thống',
+    'notif_system_news_desc' => 'Nhận thông báo về bảo trì, nâng cấp, thay đổi chính sách hoặc cập nhật quan trọng.',
 
     'change_password' => 'Đổi mật khẩu',
+    'change_password_desc' => 'Dùng mật khẩu mạnh để bảo vệ tài khoản và quyền truy cập trong hệ thống.',
     'current_password' => 'Mật khẩu hiện tại',
     'new_password' => 'Mật khẩu mới',
     'confirm_password' => 'Xác nhận mật khẩu',
 
     'danger_zone' => 'Vùng nguy hiểm',
+    'danger_zone_desc' => 'Các thao tác này ảnh hưởng trực tiếp tới quyền truy cập tài khoản.',
     'suspend_account' => 'Đình chỉ tài khoản',
-    'suspend_account_desc' => 'Tạm thời vô hiệu hoá quyền truy cập của tài khoản này',
+    'suspend_account_desc' => 'Tạm thời vô hiệu hóa quyền truy cập và đăng xuất khỏi hệ thống.',
     'suspend' => 'Đình chỉ',
     'delete_account' => 'Xoá tài khoản',
-    'delete_account_desc' => 'Hành động này không thể hoàn tác. Toàn bộ dữ liệu sẽ bị xoá vĩnh viễn',
-    'delete' => 'Xoá tài khoản',
+    'delete_account_desc' => 'Hành động này không thể hoàn tác. Dữ liệu tài khoản sẽ bị xoá vĩnh viễn.',
 ];

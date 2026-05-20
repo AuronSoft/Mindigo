@@ -1,33 +1,43 @@
+@php($preferences = $user->notificationPreference)
+
 <div class="profile-tab-panel hidden" id="panel-email">
     <form method="POST" action="{{ route('profile.notifications') }}">
         @csrf
         @method('PUT')
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h3 class="text-sm font-black text-gray-900 mb-5 pb-3 border-b border-gray-100">@lang('Mindigo-profile::app.email_notification_settings')</h3>
-            <div class="flex flex-col gap-4">
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700">@lang('Mindigo-profile::app.receive_attendance_notifications')</label>
-                    <select class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        name="notif_attendance">
-                        <option value="all" {{ optional($employee->notificationPreference)->notif_attendance === 'all' ? 'selected' : '' }}>@lang('Mindigo-profile::app.all')</option>
-                        <option value="daily" {{ optional($employee->notificationPreference)->notif_attendance === 'daily' ? 'selected' : '' }}>@lang('Mindigo-profile::app.daily')</option>
-                        <option value="none" {{ optional($employee->notificationPreference)->notif_attendance === 'none' ? 'selected' : '' }}>@lang('Mindigo-profile::app.turn_off')</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-black text-gray-700">@lang('Mindigo-profile::app.receive_payroll_notifications')</label>
-                    <select class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                        name="notif_payroll">
-                        <option value="monthly" {{ optional($employee->notificationPreference)->notif_payroll === 'monthly' ? 'selected' : '' }}>@lang('Mindigo-profile::app.monthly')</option>
-                        <option value="none" {{ optional($employee->notificationPreference)->notif_payroll === 'none' ? 'selected' : '' }}>@lang('Mindigo-profile::app.turn_off')</option>
-                    </select>
-                </div>
+
+        <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70">
+            <div class="mb-5 border-b border-slate-100 pb-4">
+                <h3 class="text-base font-black text-slate-950">@lang('Mindigo-profile::app.email_notification_settings')</h3>
+                <p class="mt-1 text-sm font-semibold text-slate-500">@lang('Mindigo-profile::app.email_notification_desc')</p>
             </div>
-            <div class="mt-5">
-                <button type="submit" class="flex items-center gap-1.5 px-5 py-2.5 bg-green-500 hover:bg-green-400 text-white text-sm font-black rounded-xl shadow-[0_4px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 transition-all">
+
+            <div class="space-y-3">
+                <label class="flex cursor-pointer items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-green-200 hover:bg-green-50/60">
+                    <span>
+                        <span class="block text-sm font-black text-slate-900">@lang('Mindigo-profile::app.notif_new_quiz')</span>
+                        <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500">@lang('Mindigo-profile::app.notif_new_quiz_desc')</span>
+                    </span>
+                    <input type="hidden" name="notif_new_quiz" value="0">
+                    <input type="checkbox" name="notif_new_quiz" value="1" class="mt-1 h-5 w-5 rounded border-slate-300 text-green-600 focus:ring-green-500"
+                        {{ old('notif_new_quiz', $preferences?->notif_new_quiz ?? true) ? 'checked' : '' }}>
+                </label>
+
+                <label class="flex cursor-pointer items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-green-200 hover:bg-green-50/60">
+                    <span>
+                        <span class="block text-sm font-black text-slate-900">@lang('Mindigo-profile::app.notif_system_news')</span>
+                        <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500">@lang('Mindigo-profile::app.notif_system_news_desc')</span>
+                    </span>
+                    <input type="hidden" name="notif_system_news" value="0">
+                    <input type="checkbox" name="notif_system_news" value="1" class="mt-1 h-5 w-5 rounded border-slate-300 text-green-600 focus:ring-green-500"
+                        {{ old('notif_system_news', $preferences?->notif_system_news ?? true) ? 'checked' : '' }}>
+                </label>
+            </div>
+
+            <div class="mt-5 flex justify-end">
+                <button type="submit" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-green-600 px-5 text-sm font-black text-white shadow-sm transition hover:bg-green-500">
                     @lang('Mindigo-profile::app.save_settings')
                 </button>
             </div>
-        </div>
+        </section>
     </form>
 </div>

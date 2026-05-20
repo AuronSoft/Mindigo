@@ -2,10 +2,6 @@ import '../../../../Core/src/resources/js/Mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const hash = window.location.hash?.replace('#', '');
-    if (hash) {
-        const matchTab = document.querySelector(`.profile-tab[data-tab="${hash}"]`);
-        if (matchTab) matchTab.click();
-    }
 
     if (window.__profileSuccess) {
         MindigoToast(window.__profileSuccess, 'success');
@@ -18,70 +14,45 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const avatarBtn = document.getElementById('sidebar-avatar-btn');
-    const userMenu = document.getElementById('user-menu');
-
-    if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('expanded');
-        });
-    }
-
-    if (avatarBtn && userMenu) {
-        avatarBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            userMenu.classList.toggle('open');
-
-            if (userMenu.classList.contains('open') && sidebar) {
-                const rect = avatarBtn.getBoundingClientRect();
-                userMenu.style.top = rect.top + 'px';
-            }
-        });
-
-        document.addEventListener('click', () => {
-            userMenu.classList.remove('open');
-        });
-
-        userMenu.addEventListener('click', (e) => e.stopPropagation());
-    }
-
     const tabs = document.querySelectorAll('.profile-tab');
     const panels = document.querySelectorAll('.profile-tab-panel');
+    const saveBtn = document.querySelector('.btn-profile-save[form="profile-form"]');
+
+    const setActiveTab = (target) => {
+        tabs.forEach(tab => {
+            const active = tab.dataset.tab === target;
+            tab.classList.toggle('text-green-700', active);
+            tab.classList.toggle('border-green-500', active);
+            tab.classList.toggle('text-slate-400', !active);
+            tab.classList.toggle('border-transparent', !active);
+        });
+
+        panels.forEach(panel => {
+            panel.classList.toggle('hidden', panel.id !== `panel-${target}`);
+        });
+
+        if (saveBtn) {
+            saveBtn.classList.toggle('hidden', target !== 'ho-so');
+        }
+    };
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            const target = tab.dataset.tab;
-
-            tabs.forEach(t => {
-                t.classList.remove('text-green-600', 'border-green-500');
-                t.classList.add('text-gray-400', 'border-transparent');
-            });
-            tab.classList.add('text-green-600', 'border-green-500');
-            tab.classList.remove('text-gray-400', 'border-transparent');
-
-            panels.forEach(panel => {
-                if (panel.id === 'panel-' + target) {
-                    panel.classList.remove('hidden');
-                } else {
-                    panel.classList.add('hidden');
-                }
-            });
-
-            const saveBtn = document.querySelector('.btn-profile-save[form="profile-form"]');
-            if (saveBtn) {
-                saveBtn.style.display = target === 'ho-so' ? '' : 'none';
-            }
+            setActiveTab(tab.dataset.tab);
+            history.replaceState(null, '', `#${tab.dataset.tab}`);
         });
     });
+
+    if (hash && document.querySelector(`.profile-tab[data-tab="${hash}"]`)) {
+        setActiveTab(hash);
+    }
 
     const avatarInput = document.getElementById('avatar-input');
     const avPreview = document.getElementById('av-preview');
 
     if (avatarInput && avPreview) {
-        avatarInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
+        avatarInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
             if (!file) return;
 
             if (!file.type.startsWith('image/')) {
@@ -97,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const reader = new FileReader();
-            reader.onload = (ev) => {
-                avPreview.innerHTML = `<img src="${ev.target.result}" alt="avatar"/>`;
+            reader.onload = (readerEvent) => {
+                avPreview.innerHTML = `<img src="${readerEvent.target.result}" alt="avatar" class="h-full w-full object-cover">`;
             };
             reader.readAsDataURL(file);
         });
@@ -118,57 +89,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!confirmed) return;
 
             MindigoToast('Đang xử lý yêu cầu xoá tài khoản...', 'warning', 1200);
-
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/profile';
-
-            const csrf = document.createElement('input');
-            csrf.type = 'hidden';
-            csrf.name = '_token';
-            csrf.value = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
-
-            const method = document.createElement('input');
-            method.type = 'hidden';
-            method.name = '_method';
-            method.value = 'DELETE';
-
-            form.appendChild(csrf);
-            form.appendChild(method);
-            document.body.appendChild(form);
-
-            setTimeout(() => form.submit(), 400);
+            submitProfileAction('/profile', 'DELETE');
         });
     }
-
-    document.querySelectorAll('[data-logout]').forEach(link => {
-        link.addEventListener('click', async (e) => {
-            e.preventDefault();
-
-            const confirmed = await MindigoConfirm({
-                title: 'Đăng xuất',
-                message: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
-                confirmText: 'Đăng xuất',
-                cancelText: 'Huỷ',
-                type: 'warning',
-            });
-
-            if (!confirmed) return;
-
-            MindigoToast('Đang đăng xuất...', 'info', 1200);
-
-            const formId = link.dataset.logoutForm;
-            const form = formId ? document.getElementById(formId) : null;
-            setTimeout(() => form?.submit(), 500);
-        });
-    });
 
     const btnSuspend = document.getElementById('btn-suspend-account');
     if (btnSuspend) {
         btnSuspend.addEventListener('click', async () => {
             const confirmed = await MindigoConfirm({
                 title: 'Đình chỉ tài khoản?',
-                message: 'Tài khoản sẽ bị tạm khoá. Bạn sẽ bị đăng xuất ngay lập tức.',
+                message: 'Tài khoản sẽ bị tạm khoá và bạn sẽ bị đăng xuất ngay lập tức.',
                 confirmText: 'Đình chỉ',
                 cancelText: 'Huỷ',
                 type: 'warning',
@@ -177,20 +107,31 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!confirmed) return;
 
             MindigoToast('Đang xử lý...', 'warning', 1200);
-
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/profile/suspend';
-
-            const csrf = document.createElement('input');
-            csrf.type = 'hidden';
-            csrf.name = '_token';
-            csrf.value = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
-
-            form.appendChild(csrf);
-            document.body.appendChild(form);
-
-            setTimeout(() => form.submit(), 400);
+            submitProfileAction('/profile/suspend', 'POST');
         });
     }
+
 });
+
+function submitProfileAction(action, method) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = action;
+
+    const csrf = document.createElement('input');
+    csrf.type = 'hidden';
+    csrf.name = '_token';
+    csrf.value = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+    form.appendChild(csrf);
+
+    if (method !== 'POST') {
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = method;
+        form.appendChild(methodInput);
+    }
+
+    document.body.appendChild(form);
+    setTimeout(() => form.submit(), 400);
+}
