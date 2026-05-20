@@ -3,8 +3,16 @@ import '../../../../Core/src/resources/js/Mindigo-ui.js';
 const chartDefaults = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { enabled: false } },
-    animation: { duration: 800, easing: 'easeInOutQuart' },
+    plugins: {
+        legend: { display: false },
+        tooltip: {
+            backgroundColor: '#0f172a',
+            padding: 10,
+            titleFont: { family: 'Be Vietnam Pro', weight: '800' },
+            bodyFont: { family: 'Be Vietnam Pro', weight: '700' },
+        },
+    },
+    animation: { duration: 700, easing: 'easeInOutQuart' },
 };
 
 const initChart = (id, config) => {
@@ -17,58 +25,55 @@ const initChart = (id, config) => {
     new Chart(element, config);
 };
 
-initChart('chart1', {
-    type: 'bar',
-    data: {
-        labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
-        datasets: [{
-            data: [1180, 1205, 1220, 1240, 1255, 1270, 1284],
-            backgroundColor: 'rgba(34,197,94,0.15)',
-            borderColor: '#22c55e',
-            borderWidth: 1.5,
-            borderRadius: 4,
-        }],
-    },
-    options: {
-        ...chartDefaults,
-        scales: {
-            x: { display: false },
-            y: { display: false, min: 1100 },
-        },
-    },
-});
-
-initChart('chart2', {
+initChart('examTrendChart', {
     type: 'line',
     data: {
-        labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
-        datasets: [{
-            data: [1150, 1180, 1195, 1210, 1225, 1238, 1247],
-            borderColor: '#3b82f6',
-            borderWidth: 2,
-            pointRadius: 0,
-            tension: 0.4,
-            fill: true,
-            backgroundColor: 'rgba(59,130,246,0.08)',
-        }],
+        labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+        datasets: [
+            {
+                data: [820, 940, 1080, 990, 1240, 1420, 1580],
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, .12)',
+                borderWidth: 3,
+                pointRadius: 0,
+                tension: .38,
+                fill: true,
+            },
+            {
+                data: [620, 700, 760, 820, 910, 1040, 1130],
+                borderColor: '#16a34a',
+                backgroundColor: 'rgba(22, 163, 74, .06)',
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: .38,
+                fill: true,
+            },
+        ],
     },
     options: {
         ...chartDefaults,
         scales: {
-            x: { display: false },
-            y: { display: false, min: 1100 },
+            x: {
+                grid: { display: false },
+                ticks: { color: '#94a3b8', font: { weight: 800 } },
+            },
+            y: {
+                border: { display: false },
+                grid: { color: '#e2e8f0' },
+                ticks: { color: '#94a3b8', font: { weight: 800 } },
+            },
         },
     },
 });
 
-initChart('chart3', {
+initChart('qualityChart', {
     type: 'doughnut',
     data: {
         datasets: [{
-            data: [96.4, 3.6],
-            backgroundColor: ['#22c55e', '#f1f5f9'],
+            data: [72, 18, 10],
+            backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'],
             borderWidth: 0,
-            hoverOffset: 0,
+            hoverOffset: 2,
         }],
     },
     options: {
@@ -77,31 +82,13 @@ initChart('chart3', {
     },
 });
 
-initChart('chart4', {
-    type: 'bar',
-    data: {
-        labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
-        datasets: [{
-            data: [1.9, 2.0, 2.1, 2.2, 2.25, 2.35, 2.4],
-            backgroundColor: 'rgba(124,58,237,0.15)',
-            borderColor: '#7c3aed',
-            borderWidth: 1.5,
-            borderRadius: 4,
-        }],
-    },
-    options: {
-        ...chartDefaults,
-        scales: {
-            x: { display: false },
-            y: { display: false, min: 1.5 },
-        },
-    },
-});
-
 const sidebar = document.getElementById('sidebar');
+const adminShell = document.getElementById('admin-shell');
 const sidebarToggle = document.getElementById('sidebar-toggle');
+const sidebarToggleIcon = document.getElementById('sidebar-toggle-icon');
 const sidebarSearchInput = document.getElementById('sidebar-search-input');
 const sidebarGroups = Array.from(document.querySelectorAll('[data-sidebar-group]'));
+const sidebarTextItems = Array.from(document.querySelectorAll('[data-sidebar-text]'));
 const avatarBtn = document.getElementById('sidebar-avatar-btn');
 const userMenu = document.getElementById('user-menu');
 
@@ -116,10 +103,29 @@ const normalizeSearchText = (value) => (
         .trim()
 );
 
-const syncActiveSidebarGroup = () => {
+const isSidebarExpanded = () => sidebar?.dataset.expanded === 'true';
+
+const setGroupOpen = (group, open) => {
+    const submenu = group.querySelector('[data-sidebar-submenu]');
+    submenu?.classList.toggle('hidden', !open);
+    submenu?.classList.toggle('grid', open);
+};
+
+const syncSidebar = () => {
+    const expanded = isSidebarExpanded();
+
+    sidebar?.classList.toggle('w-20', !expanded);
+    sidebar?.classList.toggle('w-72', expanded);
+    adminShell?.classList.toggle('grid-cols-[5rem_minmax(0,1fr)]', !expanded);
+    adminShell?.classList.toggle('grid-cols-[18rem_minmax(0,1fr)]', expanded);
+    sidebarTextItems.forEach((item) => item.classList.toggle('hidden', !expanded));
+    sidebarToggleIcon?.classList.toggle('rotate-180', expanded);
+
     sidebarGroups.forEach((group) => {
-        const hasActiveItem = group.querySelector('.sidebar-submenu-item.active');
-        group.classList.toggle('is-active', Boolean(hasActiveItem));
+        const hasActiveItem = group.querySelector('.sidebar-submenu-item.bg-green-50, .sidebar-submenu-item.text-green-700');
+        const hasVisibleSearch = Array.from(group.querySelectorAll('[data-sidebar-search-item]')).some((item) => !item.classList.contains('hidden'));
+        const open = expanded && (Boolean(hasActiveItem) || Boolean(sidebarSearchInput?.value) && hasVisibleSearch);
+        setGroupOpen(group, open);
     });
 };
 
@@ -133,13 +139,11 @@ const filterSidebar = () => {
     sidebarGroups.forEach((group) => {
         const groupSearchText = normalizeSearchText([
             group.dataset.groupName || '',
-            group.querySelector('.sidebar-group-title')?.textContent || '',
-            group.querySelector('.sidebar-group-subtitle')?.textContent || '',
+            group.querySelector('.sidebar-group-trigger')?.textContent || '',
             group.querySelector('.sidebar-group-trigger')?.getAttribute('title') || '',
         ].join(' '));
         const items = Array.from(group.querySelectorAll('[data-sidebar-search-item]'));
         const matchGroup = keyword.length > 0 && groupSearchText.includes(keyword);
-
         let visibleItems = 0;
 
         items.forEach((item) => {
@@ -150,29 +154,34 @@ const filterSidebar = () => {
             ].join(' '));
             const showItem = !keyword || matchGroup || itemSearchText.includes(keyword);
 
-            item.classList.toggle('is-hidden', !showItem);
+            item.classList.toggle('hidden', !showItem);
 
             if (showItem) {
                 visibleItems += 1;
             }
         });
 
-        const showGroup = !keyword || matchGroup || visibleItems > 0;
-        group.classList.toggle('is-hidden', !showGroup);
+        group.classList.toggle('hidden', Boolean(keyword) && !matchGroup && visibleItems === 0);
+        setGroupOpen(group, isSidebarExpanded() && (Boolean(keyword) ? visibleItems > 0 || matchGroup : group.querySelector('.sidebar-submenu-item.bg-green-50, .sidebar-submenu-item.text-green-700')));
     });
 };
 
 const closeUserMenu = () => {
-    userMenu?.classList.remove('open');
+    userMenu?.classList.add('hidden');
 };
 
-syncActiveSidebarGroup();
+syncSidebar();
 filterSidebar();
 
 sidebarToggle?.addEventListener('click', () => {
-    sidebar?.classList.toggle('expanded');
+    if (!sidebar) {
+        return;
+    }
 
-    if (sidebar?.classList.contains('expanded')) {
+    sidebar.dataset.expanded = isSidebarExpanded() ? 'false' : 'true';
+    syncSidebar();
+
+    if (isSidebarExpanded()) {
         sidebarSearchInput?.focus();
     } else {
         closeUserMenu();
@@ -184,11 +193,11 @@ sidebarSearchInput?.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         sidebarSearchInput.value = '';
         filterSidebar();
-        return;
+        syncSidebar();
     }
 
     if (event.key === 'Enter') {
-        const firstVisibleItem = document.querySelector('.sidebar-submenu-item:not(.is-hidden)');
+        const firstVisibleItem = document.querySelector('[data-sidebar-search-item]:not(.hidden)');
 
         if (firstVisibleItem instanceof HTMLAnchorElement) {
             firstVisibleItem.click();
@@ -203,9 +212,12 @@ avatarBtn?.addEventListener('click', (event) => {
         return;
     }
 
-    const isOpen = userMenu.classList.contains('open');
+    if (!isSidebarExpanded()) {
+        sidebar.dataset.expanded = 'true';
+        syncSidebar();
+    }
 
-    if (isOpen) {
+    if (!userMenu.classList.contains('hidden')) {
         closeUserMenu();
         return;
     }
@@ -213,18 +225,13 @@ avatarBtn?.addEventListener('click', (event) => {
     const sidebarRect = sidebar.getBoundingClientRect();
     const avatarRect = avatarBtn.getBoundingClientRect();
 
+    userMenu.classList.remove('hidden');
     userMenu.style.visibility = 'hidden';
-    userMenu.style.display = 'block';
 
     const menuHeight = userMenu.offsetHeight;
-    const top = Math.max(12, avatarRect.top - menuHeight - 10);
-    const left = sidebarRect.right + 12;
-
-    userMenu.style.top = `${top}px`;
-    userMenu.style.left = `${left}px`;
+    userMenu.style.top = `${Math.max(12, avatarRect.top - menuHeight - 10)}px`;
+    userMenu.style.left = `${sidebarRect.right + 12}px`;
     userMenu.style.visibility = '';
-    userMenu.style.display = '';
-    userMenu.classList.add('open');
 });
 
 document.addEventListener('click', (event) => {
@@ -232,11 +239,7 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    if (userMenu.contains(event.target)) {
-        return;
-    }
-
-    if (!avatarBtn.contains(event.target)) {
+    if (!userMenu.contains(event.target) && !avatarBtn.contains(event.target)) {
         closeUserMenu();
     }
 });
@@ -246,10 +249,10 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
         event.preventDefault();
 
         const confirmed = await MindigoConfirm({
-            title: 'Đăng xuất',
-            message: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
-            confirmText: 'Đăng xuất',
-            cancelText: 'Huỷ',
+            title: 'Dang xuat',
+            message: 'Ban co chac chan muon dang xuat khoi he thong khong?',
+            confirmText: 'Dang xuat',
+            cancelText: 'Huy',
             type: 'warning',
         });
 
@@ -257,7 +260,7 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
             return;
         }
 
-        MindigoToast('Đang đăng xuất...', 'info', 1200);
+        MindigoToast('Dang dang xuat...', 'info', 1200);
 
         const formId = link.dataset.logoutForm;
         const form = formId ? document.getElementById(formId) : null;
@@ -265,28 +268,27 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
     });
 });
 
-// Tooltip cho sidebar khi thu gọn
-(function() {
+(() => {
     const tooltip = document.getElementById('sidebar-tooltip');
-    if (!tooltip) return;
+    if (!tooltip || !sidebar) return;
 
-    document.querySelectorAll('.sidebar-group-trigger').forEach(function(trigger) {
-        trigger.addEventListener('mouseenter', function() {
-            if (sidebar.classList.contains('expanded')) return;
+    document.querySelectorAll('.sidebar-group-trigger').forEach((trigger) => {
+        trigger.addEventListener('mouseenter', function () {
+            if (isSidebarExpanded()) return;
 
             const label = this.getAttribute('title');
             if (!label) return;
 
             const rect = this.getBoundingClientRect();
             tooltip.textContent = label;
-            tooltip.style.top = (rect.top + rect.height / 2) + 'px';
-            tooltip.style.left = (rect.right + 12) + 'px';
+            tooltip.style.top = `${rect.top + rect.height / 2}px`;
+            tooltip.style.left = `${rect.right + 12}px`;
             tooltip.style.transform = 'translateY(-50%)';
-            tooltip.classList.add('visible');
+            tooltip.classList.remove('hidden');
         });
 
-        trigger.addEventListener('mouseleave', function() {
-            tooltip.classList.remove('visible');
+        trigger.addEventListener('mouseleave', () => {
+            tooltip.classList.add('hidden');
         });
     });
 })();

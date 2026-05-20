@@ -16,8 +16,9 @@ class AdminMiddleware
             return redirect()->route('login');
         }
 
-        // Kiểm tra có phải admin hoặc có quyền admin không
-        if (!$user->isAdmin() && !$user->hasRole('admin')) {
+        $hasAdminRoleMethod = method_exists($user, 'hasRole') && $user->hasRole('admin');
+
+        if (!$user->isAdmin() && !$hasAdminRoleMethod) {
             abort(403, 'Bạn không có quyền truy cập khu vực quản trị.');
         }
 

@@ -4,394 +4,174 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'MindigoHRM')</title>
+    <title>@yield('title', __('Mindigo-dashboard::app.title'))</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700,800,900" rel="stylesheet"/>
     @yield('styles')
 </head>
-<body>
+<body class="bg-slate-50 font-['Be_Vietnam_Pro',ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased">
+<div id="admin-shell" class="grid min-h-screen grid-cols-[5rem_minmax(0,1fr)] transition-[grid-template-columns] duration-200">
+    <aside
+        id="sidebar"
+        class="sidebar sticky top-0 z-30 flex h-screen w-20 flex-col gap-3 border-r border-slate-200 bg-white p-3 transition-all duration-200"
+        data-expanded="false"
+    >
+        <a href="{{ route('dashboard') }}" class="flex min-h-12 items-center gap-3 overflow-hidden text-slate-900 no-underline">
+            <span class="grid h-11 w-11 shrink-0 place-items-center">
+                <svg width="40" height="44" viewBox="0 0 200 220" fill="none" aria-hidden="true">
+                    <path d="M48 160 L22 148 L38 158 L16 152 L35 164" fill="#15803d" stroke="#14532d" stroke-width="1"/>
+                    <circle cx="105" cy="145" r="90" fill="#22c55e" stroke="#14532d" stroke-width="3"/>
+                    <ellipse cx="115" cy="185" rx="55" ry="38" fill="#86efac" stroke="#14532d" stroke-width="2"/>
+                    <ellipse cx="80" cy="170" rx="12" ry="9" fill="#16a34a" opacity="0.5"/>
+                    <ellipse cx="110" cy="175" rx="10" ry="7" fill="#16a34a" opacity="0.4"/>
+                    <path d="M95 58 Q85 20 105 8 Q118 22 112 58" fill="#16a34a" stroke="#14532d" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M108 55 Q100 18 118 10 Q128 26 120 56" fill="#22c55e" stroke="#14532d" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M52 118 L95 108 L88 128 Z" fill="#14532d"/>
+                    <path d="M148 118 L108 108 L114 128 Z" fill="#14532d"/>
+                    <circle cx="82" cy="135" r="20" fill="white" stroke="#14532d" stroke-width="2"/>
+                    <circle cx="86" cy="138" r="12" fill="#14532d"/>
+                    <circle cx="91" cy="132" r="5" fill="white"/>
+                    <circle cx="128" cy="135" r="20" fill="white" stroke="#14532d" stroke-width="2"/>
+                    <circle cx="132" cy="138" r="12" fill="#14532d"/>
+                    <circle cx="137" cy="132" r="5" fill="white"/>
+                    <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b" stroke="#14532d" stroke-width="2"/>
+                    <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706" stroke="#14532d" stroke-width="2"/>
+                </svg>
+            </span>
+            <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
+                <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.platform')</span>
+                <span class="block text-lg font-black tracking-tight text-slate-900">Mindigo<span class="text-green-600">Exam</span></span>
+            </span>
+        </a>
 
-<div class="hrm-layout">
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-logo">
-            <div class="logo-icon">
-                <svg viewBox="0 0 16 16"><path d="M8 1L14 4V8C14 11.3 11.3 13.8 8 15C4.7 13.8 2 11.3 2 8V4L8 1Z"/></svg>
-            </div>
-
-            <div class="logo-text">
-                <span class="logo-eyebrow">
-                    @lang('Mindigo-dashboard::app.platform')
-                </span>
-
-                <span class="logo-name">
-                    Mindigo<span>HRM</span>
-                </span>
-            </div>
-        </div>
-
-        <div class="sidebar-search" id="sidebar-search-wrap">
-            <svg viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        <div class="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3">
+            <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 fill-none stroke-current stroke-2 text-slate-500" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
-
             <input
                 id="sidebar-search-input"
                 type="text"
                 placeholder="@lang('Mindigo-dashboard::app.search_placeholder')"
                 autocomplete="off"
-            />
+                class="hidden min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400"
+                data-sidebar-text
+            >
         </div>
 
-        <div class="sidebar-nav-wrap">
-            <nav class="sidebar-nav">
-
-                {{-- Mindigo HRM+ --}}
-                <div class="sidebar-group is-active"
-                     data-sidebar-group
-                     data-group-name="@lang('Mindigo-dashboard::app.core_hrm')">
-
-                    <button class="sidebar-group-trigger"
-                            type="button"
-                            title="@lang('Mindigo-dashboard::app.core_hrm')">
-
-                        <span class="sidebar-group-icon">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                            </svg>
+        <div class="min-h-0 overflow-y-auto overflow-x-hidden pr-1">
+            <nav class="flex flex-col gap-2">
+                <div class="sidebar-group" data-sidebar-group data-group-name="@lang('Mindigo-dashboard::app.group_overview')">
+                    <button class="sidebar-group-trigger flex min-h-14 w-full items-center gap-3 rounded-2xl bg-green-50 px-2 text-left text-green-800 transition hover:bg-green-50" type="button" title="@lang('Mindigo-dashboard::app.group_overview')">
+                        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-green-100 text-green-600">
+                            <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/></svg>
                         </span>
-
-                        <span class="sidebar-group-text">
-                            <span class="sidebar-group-title">
-                                @lang('Mindigo-dashboard::app.core_hrm')
-                            </span>
-
-                            <span class="sidebar-group-subtitle">
-                                @lang('Mindigo-dashboard::app.core_hrm_desc')
-                            </span>
+                        <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
+                            <span class="block truncate text-sm font-black">@lang('Mindigo-dashboard::app.group_overview')</span>
+                            <span class="block truncate text-[11px] font-bold text-slate-400">@lang('Mindigo-dashboard::app.group_overview_desc')</span>
                         </span>
                     </button>
-
-                    <div class="sidebar-submenu">
-
-                        <a href="{{ route('dashboard') }}"
-                           class="sidebar-submenu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.dashboard')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.dashboard')
-                            </span>
+                    <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                        <a href="{{ route('dashboard') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline {{ request()->routeIs('dashboard') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }}" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.dashboard')">
+                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-green-500"></span><span>@lang('Mindigo-dashboard::app.dashboard')</span>
                         </a>
-
-                        <a href="{{ route('hr.employees.index') }}"
-                           class="sidebar-submenu-item"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.employees')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.employees')
-                            </span>
+                        <a href="#question-bank" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.question_bank')">
+                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.question_bank')</span>
                         </a>
-
-                        <a href="{{ route('org-chart.index') }}"
-                           class="sidebar-submenu-item"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.org_chart')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.org_chart')
-                            </span>
+                        <a href="#exams" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exams')">
+                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.exams')</span>
                         </a>
-
-                        <a href="{{ route('hr.departments.index') }}"
-                           class="sidebar-submenu-item"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.departments_positions')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.departments_positions')
-                            </span>
+                        <a href="#learners" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.learners')">
+                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.learners')</span>
                         </a>
-
-                        <a href="{{ route('documents.index') }}"
-                           class="sidebar-submenu-item {{ request()->routeIs('documents.*') ? 'active' : '' }}"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.documents')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.documents')
-                            </span>
-                        </a>
-
                     </div>
                 </div>
 
-                {{-- Development --}}
-                <div class="sidebar-group"
-                     data-sidebar-group
-                     data-group-name="@lang('Mindigo-dashboard::app.development')">
-
-                    <button class="sidebar-group-trigger"
-                            type="button"
-                            title="@lang('Mindigo-dashboard::app.development')">
-
-                        <span class="sidebar-group-icon accent-purple">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 20V10"/>
-                                <path d="M18 20V4"/>
-                                <path d="M6 20v-6"/>
-                                <path d="M4 20h16"/>
-                            </svg>
+                <div class="sidebar-group" data-sidebar-group data-group-name="@lang('Mindigo-dashboard::app.group_content')">
+                    <button class="sidebar-group-trigger flex min-h-14 w-full items-center gap-3 rounded-2xl px-2 text-left text-slate-700 transition hover:bg-green-50 hover:text-green-800" type="button" title="@lang('Mindigo-dashboard::app.group_content')">
+                        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-green-100 text-green-600">
+                            <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg>
                         </span>
-
-                        <span class="sidebar-group-text">
-                            <span class="sidebar-group-title">
-                                @lang('Mindigo-dashboard::app.development')
-                            </span>
-
-                            <span class="sidebar-group-subtitle">
-                                @lang('Mindigo-dashboard::app.development_desc')
-                            </span>
+                        <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
+                            <span class="block truncate text-sm font-black">@lang('Mindigo-dashboard::app.group_content')</span>
+                            <span class="block truncate text-[11px] font-bold text-slate-400">@lang('Mindigo-dashboard::app.group_content_desc')</span>
                         </span>
                     </button>
-
-                    <div class="sidebar-submenu">
-
-                        <a href="#"
-                           class="sidebar-submenu-item"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.recruitment')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.recruitment')
-                            </span>
-                        </a>
-
-                        <a href="#"
-                           class="sidebar-submenu-item"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.training')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.training')
-                            </span>
-                        </a>
-
-                        <a href="#"
-                           class="sidebar-submenu-item"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.policies')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.policies')
-                            </span>
-                        </a>
-
+                    <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                        <a href="#subjects" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.subjects')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.subjects')</span></a>
+                        <a href="#documents" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.documents')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.documents')</span></a>
+                        <a href="#ai-review" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.ai_review')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.ai_review')</span></a>
                     </div>
                 </div>
 
-                {{-- Operations --}}
-                <div class="sidebar-group"
-                     data-sidebar-group
-                     data-group-name="@lang('Mindigo-dashboard::app.operations')">
-
-                    <button class="sidebar-group-trigger"
-                            type="button"
-                            title="@lang('Mindigo-dashboard::app.operations')">
-
-                        <span class="sidebar-group-icon accent-amber">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M4 13h5l2-8 4 14 2-6h3"/>
-                            </svg>
+                <div class="sidebar-group" data-sidebar-group data-group-name="@lang('Mindigo-dashboard::app.group_operations')">
+                    <button class="sidebar-group-trigger flex min-h-14 w-full items-center gap-3 rounded-2xl px-2 text-left text-slate-700 transition hover:bg-green-50 hover:text-green-800" type="button" title="@lang('Mindigo-dashboard::app.group_operations')">
+                        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-green-100 text-green-600">
+                            <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-7"/></svg>
                         </span>
-
-                        <span class="sidebar-group-text">
-                            <span class="sidebar-group-title">
-                                @lang('Mindigo-dashboard::app.operations')
-                            </span>
-
-                            <span class="sidebar-group-subtitle">
-                                @lang('Mindigo-dashboard::app.operations_desc')
-                            </span>
+                        <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
+                            <span class="block truncate text-sm font-black">@lang('Mindigo-dashboard::app.group_operations')</span>
+                            <span class="block truncate text-[11px] font-bold text-slate-400">@lang('Mindigo-dashboard::app.group_operations_desc')</span>
                         </span>
                     </button>
-
-                    <div class="sidebar-submenu">
-
-                        <a href="#"
-                           class="sidebar-submenu-item"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.attendance')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.attendance')
-                            </span>
-                        </a>
-                        
-                        <a href="#"
-                           class="sidebar-submenu-item"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.payroll')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.payroll')
-                            </span>
-                        </a>
-
+                    <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                        <a href="#sessions" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exam_sessions')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.exam_sessions')</span></a>
+                        <a href="#reports" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.reports')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.reports')</span></a>
                     </div>
                 </div>
 
-                {{-- Settings --}}
-                <div class="sidebar-group sidebar-group-settings"
-                     data-sidebar-group
-                     data-group-name="@lang('Mindigo-dashboard::app.settings')">
-
-                    <button class="sidebar-group-trigger"
-                            type="button"
-                            title="@lang('Mindigo-dashboard::app.settings')">
-
-                        <span class="sidebar-group-icon accent-slate">
-                            <svg viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82 2 2 0 1 1-2.83 2.83 1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51 2 2 0 1 1-4 0 1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33 2 2 0 1 1-2.83-2.83 1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1 2 2 0 1 1 0-4 1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82 2 2 0 1 1 2.83-2.83 1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 10 2.6a2 2 0 1 1 4 0 1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33 2 2 0 1 1 2.83 2.83 1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 21.4 10a2 2 0 1 1 0 4 1.65 1.65 0 0 0-1.51 1z"/>
-                            </svg>
+                <div class="sidebar-group" data-sidebar-group data-group-name="@lang('Mindigo-dashboard::app.settings')">
+                    <button class="sidebar-group-trigger flex min-h-14 w-full items-center gap-3 rounded-2xl px-2 text-left text-slate-700 transition hover:bg-green-50 hover:text-green-800" type="button" title="@lang('Mindigo-dashboard::app.settings')">
+                        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600">
+                            <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8 2 2 0 1 1-2.8 2.8 1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5 2 2 0 1 1-4 0 1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3 2 2 0 1 1-2.8-2.8 1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1 2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8 2 2 0 1 1 2.8-2.8 1.7 1.7 0 0 0 1.8.3 1.7 1.7 0 0 0 1-1.5 2 2 0 1 1 4 0 1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3 2 2 0 1 1 2.8 2.8 1.7 1.7 0 0 0-.3 1.8 1.7 1.7 0 0 0 1.5 1 2 2 0 1 1 0 4 1.7 1.7 0 0 0-1.5 1z"/></svg>
                         </span>
-
-                        <span class="sidebar-group-text">
-                            <span class="sidebar-group-title">
-                                @lang('Mindigo-dashboard::app.settings')
-                            </span>
-
-                            <span class="sidebar-group-subtitle">
-                                @lang('Mindigo-dashboard::app.settings_desc')
-                            </span>
+                        <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
+                            <span class="block truncate text-sm font-black">@lang('Mindigo-dashboard::app.settings')</span>
+                            <span class="block truncate text-[11px] font-bold text-slate-400">@lang('Mindigo-dashboard::app.settings_desc')</span>
                         </span>
                     </button>
-
-                    <div class="sidebar-submenu">
-
-                        <a href="{{ route('profile.index') }}"
-                           class="sidebar-submenu-item {{ request()->routeIs('profile.*') ? 'active' : '' }}"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::app.my_account')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.my_account')
-                            </span>
-                        </a>
-
-                        <a href="#"
-                           class="sidebar-submenu-item"
-                           data-sidebar-search-item
-                           data-search-label="@lang('Mindigo-dashboard::sidebar.system_settings')">
-
-                            <span class="submenu-bullet"></span>
-
-                            <span class="sidebar-submenu-label">
-                                @lang('Mindigo-dashboard::app.system_settings')
-                            </span>
-                        </a>
-
+                    <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                        @if(Route::has('profile.index'))
+                            <a href="{{ route('profile.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('profile.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.my_account')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.my_account')</span></a>
+                        @endif
+                        <a href="#settings" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.system_settings')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.system_settings')</span></a>
                     </div>
                 </div>
-
             </nav>
         </div>
 
-        <div class="sidebar-avatar-btn" id="sidebar-avatar-btn">
-            <div class="av-circle">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
-            </div>
+        <button class="mt-auto flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left" id="sidebar-avatar-btn" type="button">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-green-100 text-sm font-black text-green-700">{{ mb_substr(Auth::user()->name ?? 'A', 0, 1) }}</span>
+            <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
+                <span class="block max-w-44 truncate text-sm font-black text-slate-900">{{ Auth::user()->name }}</span>
+                <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">{{ Auth::user()->role_label ?? Auth::user()->role }}</span>
+            </span>
+        </button>
 
-            <div class="av-info">
-                <div class="av-name">{{ Auth::user()->name }}</div>
-
-                <div class="av-role">
-                    {{ Auth::user()->role ?? __('Mindigo-dashboard::sidebar.administrator') }}
-                </div>
-            </div>
-        </div>
-
-        <div class="user-menu" id="user-menu">
-
-            <a href="{{ route('profile.index') }}"
-               class="user-menu-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
-
-                <svg viewBox="0 0 24 24">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
-
-                @lang('Mindigo-dashboard::app.my_account')
-            </a>
-
-            <a href="#"
-               class="user-menu-item danger"
-               data-logout
-               data-logout-form="logout-form">
-
-                <svg viewBox="0 0 24 24">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
-                </svg>
-
+        <div class="fixed z-50 hidden w-56 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl shadow-slate-900/10" id="user-menu">
+            @if(Route::has('profile.index'))
+                <a href="{{ route('profile.index') }}" class="flex min-h-10 items-center gap-2 rounded-xl px-3 text-sm font-extrabold text-slate-600 no-underline hover:bg-slate-50 hover:text-slate-900">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    @lang('Mindigo-dashboard::app.my_account')
+                </a>
+            @endif
+            <a href="#" class="flex min-h-10 items-center gap-2 rounded-xl px-3 text-sm font-extrabold text-red-600 no-underline hover:bg-red-50" data-logout data-logout-form="logout-form">
+                <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 @lang('Mindigo-dashboard::app.logout')
             </a>
         </div>
 
-        <form id="logout-form" action="/logout" method="POST" style="display:none">
-            @csrf
-        </form>
-
-        <button class="sidebar-toggle"
-                id="sidebar-toggle"
-                type="button"
-                aria-label="@lang('Mindigo-dashboard::app.expand_sidebar')">
-
-            <svg viewBox="0 0 24 24">
-                <polyline points="9 18 15 12 9 6"/>
-            </svg>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
+        <button class="grid h-9 w-9 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:text-green-700" id="sidebar-toggle" type="button" aria-label="@lang('Mindigo-dashboard::app.expand_sidebar')">
+            <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2 transition" id="sidebar-toggle-icon" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
     </aside>
 
-    <div class="hrm-main">
+    <main class="min-w-0 p-6 max-md:p-4">
         @yield('content')
-    </div>
+    </main>
 </div>
 
-<div class="sidebar-tooltip" id="sidebar-tooltip"></div>
-
+<div class="fixed z-[80] hidden rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-extrabold text-white" id="sidebar-tooltip"></div>
 @yield('scripts')
-
 </body>
 </html>

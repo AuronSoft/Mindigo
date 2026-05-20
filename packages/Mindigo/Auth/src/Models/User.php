@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Database\Factories\UserFactory;
+use Mindigo\Profile\Models\NotificationPreference;
 
 class User extends Authenticatable
 {
@@ -163,5 +164,10 @@ class User extends Authenticatable
     public function isStudent(): bool
     {
         return $this->role === 'student';
+    }
+
+    public function notificationPreference(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(NotificationPreference::class);
     }
 }

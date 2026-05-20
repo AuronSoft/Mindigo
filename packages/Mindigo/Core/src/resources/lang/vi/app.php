@@ -335,7 +335,7 @@ return [
         'legal_3'    => 'Điều khoản hỗ trợ kỹ thuật',
         'legal_4'    => 'Chính sách sử dụng "Trợ lý AI"',
         'legal_5'    => 'Chính sách hoàn tiền',
-        'copyright'  => '© 2026 Mindigo. All rights reserved.',
+        'copyright'  => '© 2026 Auralis. All rights reserved.',
         'built_with' => 'Được xây dựng với ❤️ tại Việt Nam',
     ],
 
