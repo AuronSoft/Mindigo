@@ -59,6 +59,7 @@ return [
             'create' => 'Create questions',
             'update' => 'Update questions',
             'review' => 'Review questions',
+            'delete' => 'Delete questions',
         ],
         'results' => [
             'view' => 'View results',

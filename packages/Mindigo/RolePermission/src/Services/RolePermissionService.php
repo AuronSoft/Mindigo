@@ -52,6 +52,7 @@ class RolePermissionService
                     'questions.create' => __('Mindigo-role-permission::app.permissions.questions.create'),
                     'questions.update' => __('Mindigo-role-permission::app.permissions.questions.update'),
                     'questions.review' => __('Mindigo-role-permission::app.permissions.questions.review'),
+                    'questions.delete' => __('Mindigo-role-permission::app.permissions.questions.delete'),
                 ],
             ],
             'learner' => [
@@ -141,6 +142,7 @@ class RolePermissionService
                 'questions.view',
                 'questions.create',
                 'questions.update',
+                'questions.delete',
                 'support-tickets.view',
                 'support-tickets.create',
                 'support-tickets.reply',

@@ -1,0 +1,346 @@
+@import "tailwindcss";
+
+@source "../../../../Dashboard/src/resources/views/**/*.blade.php";
+@source "../views/**/*.blade.php";
+
+@layer components {
+    .question-page {
+        @apply px-6 py-6 max-md:px-4;
+    }
+
+    .question-hero {
+        @apply flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-sm shadow-slate-200/70 lg:flex-row lg:items-center lg:justify-between;
+    }
+
+    .question-hero h1 {
+        @apply mt-2 text-2xl font-black tracking-tight text-slate-950;
+    }
+
+    .question-hero p {
+        @apply mt-1 max-w-3xl text-sm font-semibold leading-6 text-slate-500;
+    }
+
+    .question-breadcrumb {
+        @apply flex flex-wrap items-center gap-1.5 text-xs font-black text-slate-400;
+    }
+
+    .question-breadcrumb a {
+        @apply text-slate-500 no-underline transition hover:text-green-700;
+    }
+
+    .question-breadcrumb strong {
+        @apply text-slate-700;
+    }
+
+    .question-card,
+    .question-stat-card,
+    .question-builder-card {
+        @apply rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70;
+    }
+
+    .question-builder {
+        @apply flex flex-col gap-5;
+    }
+
+    .question-builder-card {
+        @apply p-5;
+    }
+
+    .question-section-head {
+        @apply flex items-start gap-3;
+    }
+
+    .question-section-head > span {
+        @apply grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-green-100 text-xs font-black text-green-700;
+    }
+
+    .question-section-head h2 {
+        @apply text-base font-black text-slate-950;
+    }
+
+    .question-section-head p {
+        @apply mt-0.5 text-sm font-semibold leading-5 text-slate-500;
+    }
+
+    .question-stat-card {
+        @apply p-5;
+    }
+
+    .question-stat-card span {
+        @apply text-xs font-black uppercase tracking-wide text-slate-400;
+    }
+
+    .question-stat-card strong {
+        @apply mt-2 block text-3xl font-black text-slate-950;
+    }
+
+    .question-filter {
+        @apply grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/70 md:grid-cols-2 xl:grid-cols-[minmax(13rem,1fr)_minmax(8.5rem,0.62fr)_minmax(8.75rem,0.66fr)_minmax(8.5rem,0.62fr)_4rem_5rem];
+    }
+
+    .question-filter .question-input,
+    .question-filter .question-select {
+        @apply min-w-0;
+    }
+
+    .question-filter .question-filter-button,
+    .question-filter .question-secondary-button {
+        @apply w-full whitespace-nowrap px-3;
+    }
+
+    .question-folder-form {
+        @apply grid gap-3 rounded-3xl border border-green-100 bg-green-50 p-4 shadow-sm shadow-green-100/70 md:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.55fr)_minmax(0,1.2fr)_auto];
+    }
+
+    .question-import-panel {
+        @apply grid gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/70 lg:grid-cols-[minmax(18rem,0.85fr)_minmax(0,1fr)];
+    }
+
+    .question-import-drop {
+        @apply flex min-h-40 cursor-pointer items-center gap-4 rounded-2xl border-2 border-dashed border-green-200 bg-green-50 p-5 text-green-800 transition hover:border-green-300 hover:bg-green-100;
+    }
+
+    .question-import-drop.is-dragging {
+        @apply border-green-500 bg-green-100 ring-4 ring-green-100;
+    }
+
+    .question-import-drop input {
+        @apply sr-only;
+    }
+
+    .question-import-drop strong {
+        @apply block text-sm font-black;
+    }
+
+    .question-import-drop small {
+        @apply mt-1 block text-xs font-bold text-green-700;
+    }
+
+    .question-import-icon {
+        @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white text-green-700 ring-1 ring-green-100;
+    }
+
+    .question-import-controls {
+        @apply grid content-start gap-3 md:grid-cols-3;
+    }
+
+    .question-import-format {
+        @apply rounded-2xl bg-slate-50 p-4 text-xs font-bold leading-5 text-slate-500 md:col-span-3;
+    }
+
+    .question-import-format strong {
+        @apply block text-slate-700;
+    }
+
+    .question-import-format code {
+        @apply mt-2 block overflow-x-auto rounded-xl bg-slate-900 px-3 py-2 text-[11px] font-black text-white;
+    }
+
+    .question-import-format span {
+        @apply mt-2 block;
+    }
+
+    .question-bank-layout {
+        @apply grid gap-5 lg:grid-cols-[18rem_minmax(0,1fr)];
+    }
+
+    .question-folder-panel {
+        @apply flex flex-col gap-2 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm shadow-slate-200/70;
+    }
+
+    .question-folder-item {
+        @apply flex min-h-14 items-center gap-3 rounded-2xl px-3 text-slate-600 no-underline transition hover:bg-green-50 hover:text-green-800;
+    }
+
+    .question-folder-item.is-active {
+        @apply bg-green-50 text-green-800 ring-1 ring-green-100;
+    }
+
+    .question-folder-item strong {
+        @apply block truncate text-sm font-black;
+    }
+
+    .question-folder-item small {
+        @apply mt-0.5 block truncate text-xs font-bold text-slate-400;
+    }
+
+    .question-folder-dot {
+        @apply h-3 w-3 shrink-0 rounded-full;
+    }
+
+    .question-folder-dot-green {
+        @apply bg-green-500;
+    }
+
+    .question-folder-dot-sky {
+        @apply bg-sky-500;
+    }
+
+    .question-folder-dot-amber {
+        @apply bg-amber-500;
+    }
+
+    .question-folder-dot-rose {
+        @apply bg-rose-500;
+    }
+
+    .question-folder-dot-slate {
+        @apply bg-slate-500;
+    }
+
+    .question-form-grid {
+        @apply grid gap-4 md:grid-cols-2;
+    }
+
+    .question-input,
+    .question-select,
+    .question-textarea {
+        @apply w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-green-400 focus:ring-4 focus:ring-green-100;
+    }
+
+    .question-input,
+    .question-select {
+        @apply min-h-11 min-w-0;
+    }
+
+    .question-select {
+        @apply pr-9;
+    }
+
+    .question-textarea {
+        @apply min-h-28 py-3;
+    }
+
+    .question-stem {
+        @apply min-h-40 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-base font-bold leading-7 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-green-400 focus:bg-white focus:ring-4 focus:ring-green-100;
+    }
+
+    .question-field {
+        @apply block;
+    }
+
+    .question-field > span {
+        @apply mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500;
+    }
+
+    .question-field strong {
+        @apply mt-1.5 block text-xs font-bold text-red-600;
+    }
+
+    .question-error {
+        @apply mt-3 block text-xs font-bold text-red-600;
+    }
+
+    .question-option-row {
+        @apply grid grid-cols-[2.75rem_minmax(0,1fr)_2.5rem] items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-2 transition focus-within:border-green-300 focus-within:bg-white focus-within:ring-4 focus-within:ring-green-100;
+    }
+
+    .question-answer-pick {
+        @apply grid h-10 w-10 cursor-pointer place-items-center rounded-xl bg-white text-green-700 ring-1 ring-slate-200 transition;
+    }
+
+    .question-answer-pick input {
+        @apply sr-only;
+    }
+
+    .question-answer-pick span {
+        @apply h-4 w-4 rounded-full border-2 border-slate-300 bg-white transition;
+    }
+
+    .question-answer-pick input:checked + input + span,
+    .question-answer-pick input:checked + span {
+        @apply border-green-600 bg-green-600 shadow-[inset_0_0_0_3px_white];
+    }
+
+    .question-option-input {
+        @apply h-10 min-w-0 rounded-xl border-0 bg-transparent px-2 text-sm font-bold text-slate-800 outline-none placeholder:text-slate-400;
+    }
+
+    .question-icon-button {
+        @apply grid h-10 w-10 place-items-center rounded-xl text-slate-400 transition hover:bg-red-50 hover:text-red-600;
+    }
+
+    .question-add-option {
+        @apply mt-3 inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-green-50 px-4 text-sm font-black text-green-700 transition hover:bg-green-100;
+    }
+
+    .question-primary-button,
+    .question-filter-button,
+    .question-secondary-button,
+    .question-danger-button {
+        @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black no-underline transition;
+    }
+
+    .question-primary-button,
+    .question-filter-button {
+        @apply bg-green-600 text-white shadow-sm hover:bg-green-500;
+    }
+
+    .question-secondary-button {
+        @apply bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900;
+    }
+
+    .question-danger-button {
+        @apply bg-red-50 text-red-700 hover:bg-red-100;
+    }
+
+    .question-table {
+        @apply w-full min-w-[980px] border-collapse text-left;
+    }
+
+    .question-table th {
+        @apply bg-slate-50 px-5 py-4 text-xs font-black uppercase tracking-wide text-slate-400;
+    }
+
+    .question-table td {
+        @apply border-t border-slate-100 px-5 py-4 align-middle;
+    }
+
+    .question-badge {
+        @apply inline-flex min-h-8 items-center rounded-full px-3 text-xs font-black;
+    }
+
+    .question-type {
+        @apply bg-sky-100 text-sky-700;
+    }
+
+    .question-status-draft {
+        @apply bg-slate-100 text-slate-600;
+    }
+
+    .question-status-reviewing {
+        @apply bg-amber-100 text-amber-700;
+    }
+
+    .question-status-approved {
+        @apply bg-green-100 text-green-700;
+    }
+
+    .question-status-rejected {
+        @apply bg-red-100 text-red-700;
+    }
+
+    .question-difficulty-easy {
+        @apply bg-green-100 text-green-700;
+    }
+
+    .question-difficulty-medium {
+        @apply bg-amber-100 text-amber-700;
+    }
+
+    .question-difficulty-hard {
+        @apply bg-red-100 text-red-700;
+    }
+
+    .question-detail-row {
+        @apply flex items-start justify-between gap-4 rounded-xl bg-slate-50 px-3 py-2.5;
+    }
+
+    .question-detail-row dt {
+        @apply text-xs font-black uppercase tracking-wide text-slate-400;
+    }
+
+    .question-detail-row dd {
+        @apply text-right text-sm font-black text-slate-800;
+    }
+}

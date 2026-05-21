@@ -59,6 +59,7 @@ return [
             'create' => 'Tạo câu hỏi',
             'update' => 'Cập nhật câu hỏi',
             'review' => 'Duyệt câu hỏi',
+            'delete' => 'Xóa câu hỏi',
         ],
         'results' => [
             'view' => 'Xem kết quả',

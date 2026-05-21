@@ -75,9 +75,11 @@
                         <a href="{{ route('dashboard') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline {{ request()->routeIs('dashboard') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }}" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.dashboard')">
                             <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-green-500"></span><span>@lang('Mindigo-dashboard::app.dashboard')</span>
                         </a>
-                        <a href="#question-bank" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.question_bank')">
-                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.question_bank')</span>
-                        </a>
+                        @if(Route::has('question-bank.index') && ($currentUser?->hasPermissionTo('questions.view') ?? false))
+                            <a href="{{ route('question-bank.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('question-bank.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.question_bank')">
+                                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.question_bank')</span>
+                            </a>
+                        @endif
                         <a href="#exams" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exams')">
                             <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.exams')</span>
                         </a>

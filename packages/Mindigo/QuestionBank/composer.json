@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/question-bank",
+    "description": "Mindigo question bank package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\QuestionBank\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\QuestionBank\\Providers\\QuestionBankServiceProvider"
+            ]
+        }
+    }
+}
