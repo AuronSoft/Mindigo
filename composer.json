@@ -14,10 +14,12 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "mindigo/auth": "*",
-        "mindigo/blog-management": "dev-dev",
+        "mindigo/blog-management": "dev-main",
         "mindigo/core": "*",
         "mindigo/dashboard": "*",
+        "mindigo/audit-log": "*",
         "mindigo/profile": "*",
+        "mindigo/system-setting": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.4"
     },
     "require-dev": {
@@ -68,6 +70,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/BlogManagement"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/SystemSetting"
         },
         {
             "type": "path",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "424178611bd4b02acde2601b7b6a3f2d",
+    "content-hash": "751239af798f4915a4dc787bfe58bf5e",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2171,8 +2171,38 @@
             "time": "2026-03-08T20:05:35+00:00"
         },
         {
+            "name": "mindigo/audit-log",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/AuditLog",
+                "reference": "8a18f58ceb09e70eb6f4bc13886d325332f60fb2"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\AuditLog\\Providers\\AuditLogServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\AuditLog\\": "src/"
+                }
+            },
+            "description": "Mindigo audit log package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mindigo/auth",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2208,7 +2238,7 @@
         },
         {
             "name": "mindigo/blog-management",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/BlogManagement",
@@ -2238,7 +2268,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2268,7 +2298,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2298,7 +2328,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -2322,6 +2352,36 @@
                 }
             },
             "description": "Mindigo Profile Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/system-setting",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/SystemSetting",
+                "reference": "73ec6309fb8fad4f8be1a76663b12c26aad08d6e"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\SystemSetting\\Providers\\SystemSettingServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\SystemSetting\\": "src/"
+                }
+            },
+            "description": "Mindigo system settings package",
             "transport-options": {
                 "relative": true
             }
