@@ -33,6 +33,7 @@ return [
         'platform' => 'Platform',
         'content' => 'Exam content',
         'learner' => 'Learner workflow',
+        'support' => 'Support',
         'admin' => 'Administration',
     ],
 
@@ -58,6 +59,12 @@ return [
         ],
         'results' => [
             'view' => 'View results',
+        ],
+        'support_tickets' => [
+            'view' => 'View support tickets',
+            'create' => 'Create support tickets',
+            'reply' => 'Reply to support tickets',
+            'manage' => 'Manage support tickets',
         ],
         'users' => [
             'view' => 'View users',

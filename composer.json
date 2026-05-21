@@ -20,6 +20,7 @@
         "mindigo/audit-log": "*",
         "mindigo/profile": "*",
         "mindigo/role-permission": "*",
+        "mindigo/support-management": "*",
         "mindigo/system-setting": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.4"
     },
@@ -42,6 +43,7 @@
             "Mindigo\\Dashboard\\": "packages/Mindigo/Dashboard/src/",
             "Mindigo\\Profile\\": "packages/Mindigo/Profile/src/", 
             "Mindigo\\RolePermission\\": "packages/Mindigo/RolePermission/src/",
+            "Mindigo\\SupportManagement\\": "packages/Mindigo/SupportManagement/src/",
             "Mindigo\\BlogManagement\\": "packages/Mindigo/BlogManagement/src/",
             "Mindigo\\SystemSetting\\": "packages/Mindigo/SystemSetting/src/",
             "Mindigo\\AuditLog\\": "packages/Mindigo/AuditLog/src/"
@@ -72,6 +74,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/RolePermission"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/SupportManagement"
         },
         {
             "type": "path",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b86e27abf83846062f49547635445969",
+    "content-hash": "5ed5e4ff14be7a7296d47b73ea3c48e0",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2172,7 +2172,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2202,7 +2202,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2268,7 +2268,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2298,7 +2298,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2328,7 +2328,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -2358,7 +2358,7 @@
         },
         {
             "name": "mindigo/role-permission",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -2387,8 +2387,38 @@
             }
         },
         {
+            "name": "mindigo/support-management",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/SupportManagement",
+                "reference": "fb9a757311f66c0e5d2b6f93cbed1e50d29d2783"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\SupportManagement\\Providers\\SupportManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\SupportManagement\\": "src/"
+                }
+            },
+            "description": "Mindigo support management package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mindigo/system-setting",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",

@@ -39,6 +39,7 @@ return [
     'ai_review' => 'Duyệt câu hỏi AI',
     'exam_sessions' => 'Ca thi',
     'reports' => 'Báo cáo',
+    'support_tickets' => 'Hỗ trợ',
 
     'admin_area' => 'Khu vực quản trị',
     'dashboard_heading' => 'Dashboard hệ thống ôn thi trắc nghiệm',

@@ -39,6 +39,7 @@ return [
     'ai_review' => 'AI question review',
     'exam_sessions' => 'Exam sessions',
     'reports' => 'Reports',
+    'support_tickets' => 'Support tickets',
 
     'admin_area' => 'Admin area',
     'dashboard_heading' => 'Multiple choice exam dashboard',

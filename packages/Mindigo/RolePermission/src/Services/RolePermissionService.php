@@ -61,6 +61,15 @@ class RolePermissionService
                     'results.view' => __('Mindigo-role-permission::app.permissions.results.view'),
                 ],
             ],
+            'support' => [
+                'label' => __('Mindigo-role-permission::app.groups.support'),
+                'permissions' => [
+                    'support-tickets.view' => __('Mindigo-role-permission::app.permissions.support_tickets.view'),
+                    'support-tickets.create' => __('Mindigo-role-permission::app.permissions.support_tickets.create'),
+                    'support-tickets.reply' => __('Mindigo-role-permission::app.permissions.support_tickets.reply'),
+                    'support-tickets.manage' => __('Mindigo-role-permission::app.permissions.support_tickets.manage'),
+                ],
+            ],
             'admin' => [
                 'label' => __('Mindigo-role-permission::app.groups.admin'),
                 'permissions' => [
@@ -91,6 +100,16 @@ class RolePermissionService
             return self::defaultPermissionMap();
         }
 
+        $expectedRows = count(self::roleLabels()) * count(self::flatPermissions());
+        if ($rows->count() < $expectedRows) {
+            self::syncDefaults();
+
+            $rows = RolePermission::query()
+                ->whereIn('role', array_keys(self::roleLabels()))
+                ->whereIn('permission', array_keys(self::flatPermissions()))
+                ->get(['role', 'permission', 'allowed']);
+        }
+
         $map = array_fill_keys(array_keys(self::roleLabels()), []);
 
         foreach ($rows as $row) {
@@ -119,11 +138,17 @@ class RolePermissionService
                 'questions.view',
                 'questions.create',
                 'questions.update',
+                'support-tickets.view',
+                'support-tickets.create',
+                'support-tickets.reply',
             ],
             self::STUDENT => [
                 'exams.view',
                 'exams.attempt',
                 'results.view',
+                'support-tickets.view',
+                'support-tickets.create',
+                'support-tickets.reply',
             ],
         ];
     }

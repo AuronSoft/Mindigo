@@ -33,6 +33,7 @@ return [
         'platform' => 'Nền tảng',
         'content' => 'Nội dung thi',
         'learner' => 'Luồng học viên',
+        'support' => 'Hỗ trợ',
         'admin' => 'Quản trị',
     ],
 
@@ -58,6 +59,12 @@ return [
         ],
         'results' => [
             'view' => 'Xem kết quả',
+        ],
+        'support_tickets' => [
+            'view' => 'Xem yêu cầu hỗ trợ',
+            'create' => 'Tạo yêu cầu hỗ trợ',
+            'reply' => 'Phản hồi yêu cầu hỗ trợ',
+            'manage' => 'Xử lý yêu cầu hỗ trợ',
         ],
         'users' => [
             'view' => 'Xem tài khoản',
