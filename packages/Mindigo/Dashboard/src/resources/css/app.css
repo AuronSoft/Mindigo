@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@layer components {
+    .dashboard-tool-option {
+        @apply flex min-h-9 w-full items-center rounded-xl px-3 text-left text-xs font-black text-slate-600 transition hover:bg-green-50 hover:text-green-700;
+    }
+
+    .dashboard-tool-option.is-active {
+        @apply bg-green-50 text-green-700;
+    }
+}

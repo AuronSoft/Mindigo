@@ -1,6 +1,6 @@
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', 'Nhật ký thao tác - Mindigo')
+@section('title', __('Mindigo-audit-log::app.title'))
 
 @section('styles')
     @vite([
@@ -19,11 +19,11 @@
                     <div class="flex items-center gap-1.5 text-xs font-black text-slate-400">
                         <a href="{{ route('dashboard') }}" class="text-slate-500 no-underline transition hover:text-green-700">Dashboard</a>
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                        <span class="text-slate-700">Nhật ký thao tác</span>
+                        <span class="text-slate-700">@lang('Mindigo-audit-log::app.breadcrumb')</span>
                     </div>
-                    <h1 class="mt-2 text-2xl font-black tracking-tight text-slate-950">Nhật ký thao tác</h1>
+                    <h1 class="mt-2 text-2xl font-black tracking-tight text-slate-950">@lang('Mindigo-audit-log::app.heading')</h1>
                     <p class="mt-1 max-w-2xl text-sm font-semibold leading-6 text-slate-500">
-                        Theo dõi các hành động quan trọng như đăng nhập, đăng xuất và thay đổi cấu hình hệ thống.
+                        @lang('Mindigo-audit-log::app.description')
                     </p>
                 </div>
             </div>
@@ -32,41 +32,41 @@
         <form method="GET" action="{{ route('audit-logs.index') }}" class="audit-log-card p-4" data-audit-log-filter>
             <div class="grid gap-3 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_10rem_10rem_auto] lg:items-end">
                 <div>
-                    <label for="keyword" class="mb-1.5 block text-xs font-black text-slate-700">Tìm kiếm</label>
+                    <label for="keyword" class="mb-1.5 block text-xs font-black text-slate-700">@lang('Mindigo-audit-log::app.search')</label>
                     <input id="keyword" name="keyword" value="{{ request('keyword') }}" placeholder="User, email, module, action..."
                         class="audit-log-input">
                 </div>
                 <div>
-                    <label for="module" class="mb-1.5 block text-xs font-black text-slate-700">Module</label>
+                    <label for="module" class="mb-1.5 block text-xs font-black text-slate-700">@lang('Mindigo-audit-log::app.module')</label>
                     <select id="module" name="module" class="audit-log-input">
-                        <option value="">Tất cả</option>
+                        <option value="">@lang('Mindigo-audit-log::app.all')</option>
                         @foreach($modules as $module)
                             <option value="{{ $module }}" @selected(request('module') === $module)>{{ $module }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div>
-                    <label for="action" class="mb-1.5 block text-xs font-black text-slate-700">Hành động</label>
+                    <label for="action" class="mb-1.5 block text-xs font-black text-slate-700">@lang('Mindigo-audit-log::app.action')</label>
                     <select id="action" name="action" class="audit-log-input">
-                        <option value="">Tất cả</option>
+                        <option value="">@lang('Mindigo-audit-log::app.all')</option>
                         @foreach($actions as $action)
                             <option value="{{ $action }}" @selected(request('action') === $action)>{{ $action }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div>
-                    <label for="date_from" class="mb-1.5 block text-xs font-black text-slate-700">Từ ngày</label>
+                    <label for="date_from" class="mb-1.5 block text-xs font-black text-slate-700">@lang('Mindigo-audit-log::app.date_from')</label>
                     <input id="date_from" name="date_from" value="{{ request('date_from') }}" type="date"
                         class="audit-log-input px-3">
                 </div>
                 <div>
-                    <label for="date_to" class="mb-1.5 block text-xs font-black text-slate-700">Đến ngày</label>
+                    <label for="date_to" class="mb-1.5 block text-xs font-black text-slate-700">@lang('Mindigo-audit-log::app.date_to')</label>
                     <input id="date_to" name="date_to" value="{{ request('date_to') }}" type="date"
                         class="audit-log-input px-3">
                 </div>
                 <div class="flex gap-2">
-                    <button class="inline-flex min-h-11 items-center justify-center rounded-xl bg-green-600 px-4 text-sm font-black text-white transition hover:bg-green-500" type="submit">Lọc</button>
-                    <a href="{{ route('audit-logs.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 px-4 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">Xóa</a>
+                    <button class="inline-flex min-h-11 items-center justify-center rounded-xl bg-green-600 px-4 text-sm font-black text-white transition hover:bg-green-500" type="submit">@lang('Mindigo-audit-log::app.filter')</button>
+                    <a href="{{ route('audit-logs.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 px-4 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">@lang('Mindigo-audit-log::app.reset')</a>
                 </div>
             </div>
         </form>
@@ -76,11 +76,11 @@
                 <table class="min-w-full divide-y divide-slate-100">
                     <thead class="bg-slate-50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">Thời gian</th>
-                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">Người dùng</th>
-                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">Module</th>
-                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">Hành động</th>
-                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">Request</th>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">@lang('Mindigo-audit-log::app.time')</th>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">@lang('Mindigo-audit-log::app.user')</th>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">@lang('Mindigo-audit-log::app.module')</th>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">@lang('Mindigo-audit-log::app.action')</th>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase text-slate-500">@lang('Mindigo-audit-log::app.request')</th>
                             <th class="px-4 py-3 text-right text-xs font-black uppercase text-slate-500"></th>
                         </tr>
                     </thead>
@@ -89,7 +89,7 @@
                             <tr class="transition hover:bg-green-50/40">
                                 <td class="whitespace-nowrap px-4 py-3 text-sm font-bold text-slate-600">{{ $log->created_at?->format('d/m/Y H:i:s') }}</td>
                                 <td class="px-4 py-3">
-                                    <div class="text-sm font-black text-slate-900">{{ $log->user_name ?? 'Khách' }}</div>
+                                    <div class="text-sm font-black text-slate-900">{{ $log->user_name ?? __('Mindigo-audit-log::app.guest') }}</div>
                                     <div class="text-xs font-semibold text-slate-500">{{ $log->user_email ?? '-' }}</div>
                                 </td>
                                 <td class="px-4 py-3">
@@ -103,7 +103,7 @@
                                     <div class="max-w-xs truncate text-xs">{{ $log->route_name ?? $log->url ?? '-' }}</div>
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-3 text-right">
-                                    <a href="{{ route('audit-logs.show', $log) }}" class="inline-flex min-h-9 items-center justify-center rounded-xl border border-slate-200 px-3 text-xs font-black text-slate-600 no-underline transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">Chi tiết</a>
+                                    <a href="{{ route('audit-logs.show', $log) }}" class="inline-flex min-h-9 items-center justify-center rounded-xl border border-slate-200 px-3 text-xs font-black text-slate-600 no-underline transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">@lang('Mindigo-audit-log::app.detail')</a>
                                 </td>
                             </tr>
                         @empty
@@ -123,4 +123,10 @@
             </div>
         </section>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        window.__auditLogMessages = @json(__('Mindigo-audit-log::app.messages'));
+    </script>
 @endsection

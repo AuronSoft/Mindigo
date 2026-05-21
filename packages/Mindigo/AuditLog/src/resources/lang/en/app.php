@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'title' => 'Audit logs - Mindigo',
+    'detail_title' => 'Audit log detail - Mindigo',
+    'breadcrumb' => 'Audit logs',
+    'heading' => 'Audit logs',
+    'description' => 'Track important actions such as login, logout, and system setting changes.',
+    'search' => 'Search',
+    'all' => 'All',
+    'module' => 'Module',
+    'action' => 'Action',
+    'date_from' => 'From date',
+    'date_to' => 'To date',
+    'filter' => 'Filter',
+    'reset' => 'Clear',
+    'time' => 'Time',
+    'user' => 'User',
+    'guest' => 'Guest',
+    'request' => 'Request',
+    'detail' => 'Detail',
+    'back' => 'Back',
+    'old_values' => 'Old values',
+    'new_values' => 'New values',
+    'metadata' => 'Metadata',
+    'copy' => 'Copy',
+    'messages' => [
+        'empty_copy' => 'There is no data to copy.',
+        'copied' => 'Data copied.',
+        'copy_denied' => 'The browser blocked automatic copying.',
+    ],
+];

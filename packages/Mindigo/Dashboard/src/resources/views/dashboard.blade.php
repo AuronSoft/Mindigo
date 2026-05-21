@@ -10,6 +10,37 @@
     ])
 @endsection
 
+@section('scripts')
+    @php
+        $dashboardMessages = [
+            'tool_applied' => __('Mindigo-dashboard::app.dashboard_tool_applied'),
+            'filters' => __('Mindigo-dashboard::app.filters'),
+            'timeframe' => __('Mindigo-dashboard::app.timeframe'),
+            'date_filter_off' => __('Mindigo-dashboard::app.date_filter_off'),
+            'logout_title' => __('Mindigo-dashboard::app.logout_title'),
+            'logout_message' => __('Mindigo-dashboard::app.logout_message'),
+            'logout_confirm' => __('Mindigo-dashboard::app.logout_confirm'),
+            'logout_cancel' => __('Mindigo-dashboard::app.logout_cancel'),
+            'logging_out' => __('Mindigo-dashboard::app.logging_out'),
+        ];
+
+        $dashboardChartLabels = [
+            'ranking' => [
+                __('Mindigo-dashboard::app.demo_admin'),
+                __('Mindigo-dashboard::app.demo_teacher'),
+                __('Mindigo-dashboard::app.demo_student'),
+                __('Mindigo-dashboard::app.demo_class'),
+                __('Mindigo-dashboard::app.demo_exam'),
+            ],
+        ];
+    @endphp
+
+    <script>
+        window.__dashboardMessages = {{ Illuminate\Support\Js::from($dashboardMessages) }};
+        window.__dashboardChartLabels = {{ Illuminate\Support\Js::from($dashboardChartLabels) }};
+    </script>
+@endsection
+
 @section('content')
     @php($dashboardUser = Auth::user())
 
@@ -63,9 +94,9 @@
                                 <x-heroicon-o-plus class="h-4 w-4" />
                             </button>
                             @foreach([
-                                ['name' => 'Admin A.', 'color' => 'bg-green-100 text-green-700'],
-                                ['name' => 'Teacher B.', 'color' => 'bg-amber-100 text-amber-700'],
-                                ['name' => 'Student C.', 'color' => 'bg-sky-100 text-sky-700'],
+                                ['name' => __('Mindigo-dashboard::app.demo_admin'), 'color' => 'bg-green-100 text-green-700'],
+                                ['name' => __('Mindigo-dashboard::app.demo_teacher'), 'color' => 'bg-amber-100 text-amber-700'],
+                                ['name' => __('Mindigo-dashboard::app.demo_student'), 'color' => 'bg-sky-100 text-sky-700'],
                             ] as $person)
                                 <span class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-2.5 text-xs font-black text-slate-700">
                                     <span class="grid h-6 w-6 place-items-center rounded-full {{ $person['color'] }}">{{ mb_substr($person['name'], 0, 1) }}</span>
@@ -80,7 +111,7 @@
                                 <span class="h-4 w-7 rounded-full bg-green-600 p-0.5 transition" data-dashboard-timeframe-track>
                                     <span class="block h-3 w-3 translate-x-3 rounded-full bg-white transition" data-dashboard-timeframe-knob></span>
                                 </span>
-                                <span data-dashboard-timeframe-status>Timeframe</span>
+                                <span data-dashboard-timeframe-status>@lang('Mindigo-dashboard::app.timeframe')</span>
                             </button>
                             <button type="button" class="inline-flex h-9 items-center gap-2 rounded-full bg-white px-3 text-xs font-black text-slate-600 ring-1 ring-slate-200 transition hover:border-green-200 hover:bg-green-50 hover:text-green-700" data-dashboard-date-button>
                                 <x-heroicon-o-calendar-days class="h-4 w-4" />
@@ -92,42 +123,42 @@
 
                     <div class="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1fr)_31rem]">
                         <div>
-                            <p class="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-black text-green-700 ring-1 ring-green-100">Báo cáo thi cử</p>
-                            <p class="mt-5 text-sm font-black text-slate-700">Tổng lượt làm bài</p>
+                            <p class="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-black text-green-700 ring-1 ring-green-100">@lang('Mindigo-dashboard::app.exam_report')</p>
+                            <p class="mt-5 text-sm font-black text-slate-700">@lang('Mindigo-dashboard::app.total_attempts')</p>
                             <div class="mt-1 flex flex-wrap items-end gap-2">
                                 <h2 class="text-5xl font-black tracking-tight text-slate-950 max-sm:text-4xl">{{ number_format($stats['active_users'] * 128 + 24876) }}</h2>
                                 <span class="mb-1 rounded-full bg-green-600 px-2.5 py-1 text-[11px] font-black text-white">+7.9%</span>
-                                <span class="mb-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black text-emerald-700 ring-1 ring-emerald-100">+2,735 lượt</span>
+                                <span class="mb-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black text-emerald-700 ring-1 ring-emerald-100">@lang('Mindigo-dashboard::app.attempts_delta')</span>
                             </div>
-                            <p class="mt-2 text-xs font-bold text-slate-400">So với kỳ trước: {{ number_format($stats['active_users'] * 96 + 22141) }} lượt</p>
+                            <p class="mt-2 text-xs font-bold text-slate-400">@lang('Mindigo-dashboard::app.previous_period', ['count' => number_format($stats['active_users'] * 96 + 22141)])</p>
                         </div>
 
                         <div class="grid gap-3 sm:grid-cols-5">
                             <article class="rounded-2xl border border-green-100 bg-gradient-to-br from-white to-green-50 p-3 shadow-sm sm:col-span-1">
-                                <p class="text-[11px] font-black text-green-700">Top thí sinh</p>
+                                <p class="text-[11px] font-black text-green-700">@lang('Mindigo-dashboard::app.top_candidate')</p>
                                 <strong class="mt-2 block text-2xl font-black text-slate-950">72</strong>
                                 <div class="mt-3 flex items-center justify-between gap-2 text-xs font-bold text-slate-600">
-                                    <span class="inline-flex items-center gap-1"><span class="grid h-5 w-5 place-items-center rounded-full bg-sky-100 text-[10px] text-sky-700">M</span>Minh</span>
+                                    <span class="inline-flex items-center gap-1"><span class="grid h-5 w-5 place-items-center rounded-full bg-sky-100 text-[10px] text-sky-700">M</span>@lang('Mindigo-dashboard::app.demo_candidate')</span>
                                     <x-heroicon-o-chevron-right class="h-4 w-4" />
                                 </div>
                             </article>
                             <article class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-green-700 to-emerald-500 p-3 text-white shadow-sm sm:col-span-2">
                                 <div class="flex items-center justify-between">
-                                    <p class="text-[11px] font-black text-green-100">Đề tốt nhất</p>
+                                    <p class="text-[11px] font-black text-green-100">@lang('Mindigo-dashboard::app.best_exam')</p>
                                     <span class="grid h-7 w-7 place-items-center rounded-full bg-white/15">
                                         <x-heroicon-o-star class="h-4 w-4 text-green-100" />
                                     </span>
                                 </div>
-                                <strong class="mt-2 block text-2xl font-black">8.7 điểm</strong>
-                                <p class="mt-2 text-xs font-bold text-green-50">THPT Toán 01</p>
+                                <strong class="mt-2 block text-2xl font-black">@lang('Mindigo-dashboard::app.best_exam_score')</strong>
+                                <p class="mt-2 text-xs font-bold text-green-50">@lang('Mindigo-dashboard::app.best_exam_name')</p>
                             </article>
                             <article class="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
-                                <p class="text-[11px] font-black text-slate-500">Đề thi</p>
+                                <p class="text-[11px] font-black text-slate-500">@lang('Mindigo-dashboard::app.exam_count')</p>
                                 <strong class="mt-2 block text-xl font-black text-slate-950">128</strong>
                                 <span class="mt-2 inline-flex rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-black text-green-700 ring-1 ring-green-100">+5</span>
                             </article>
                             <article class="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-center shadow-sm">
-                                <p class="text-[11px] font-black text-emerald-700">Tỉ lệ đạt</p>
+                                <p class="text-[11px] font-black text-emerald-700">@lang('Mindigo-dashboard::app.pass_rate')</p>
                                 <strong class="mt-2 block text-xl font-black text-emerald-800">74%</strong>
                                 <span class="mt-2 inline-flex rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-emerald-700 ring-1 ring-emerald-100">+1.2%</span>
                             </article>
@@ -141,36 +172,55 @@
                             <span class="flex min-h-10 items-center gap-2 border-l border-slate-200 px-3 max-lg:border-l-0 max-lg:border-t"><span class="grid h-6 w-6 place-items-center rounded-full bg-amber-100 text-[10px] text-amber-700">E</span> 7,115 <b class="ml-auto text-slate-300">22.14%</b></span>
                             <span class="flex min-h-10 items-center gap-2 border-l border-slate-200 px-3 max-lg:border-l-0 max-lg:border-t"><span class="grid h-6 w-6 place-items-center rounded-full bg-emerald-100 text-[10px] text-emerald-700">C</span> 4,386 <b class="ml-auto text-slate-300">8.58%</b></span>
                         </div>
-                        <a href="#reports" class="inline-flex min-h-10 items-center justify-center rounded-full bg-green-700 px-5 text-xs font-black text-white no-underline transition hover:bg-green-600">Chi tiết</a>
+                        <a href="#reports" class="inline-flex min-h-10 items-center justify-center rounded-full bg-green-700 px-5 text-xs font-black text-white no-underline transition hover:bg-green-600">@lang('Mindigo-dashboard::app.details')</a>
                     </div>
                 </section>
 
                 <section class="grid items-stretch gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
                     <div class="grid items-stretch gap-4 lg:grid-cols-2">
-                        <div class="min-h-[21rem] rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm">
+                        <div class="min-h-[21rem] rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm" data-dashboard-tool-panel="source-list">
                             <div class="mb-4 flex items-center justify-between gap-3">
-                                <button type="button" class="inline-flex h-9 items-center gap-2 rounded-full bg-slate-50 px-3 text-slate-600 ring-1 ring-slate-200">
-                                    <x-heroicon-o-list-bullet class="h-5 w-5" />
-                                    <x-heroicon-m-chevron-down class="h-3.5 w-3.5" />
-                                </button>
-                                <button type="button" class="inline-flex h-9 items-center gap-1 rounded-full bg-slate-50 px-3 text-xs font-black text-slate-600 ring-1 ring-slate-200">
-                                    Filters
-                                    <x-heroicon-o-funnel class="h-4 w-4" />
-                                </button>
+                                <div class="relative" data-dashboard-dropdown>
+                                    <button type="button" class="inline-flex h-9 items-center gap-2 rounded-full bg-slate-50 px-3 text-slate-600 ring-1 ring-slate-200 transition hover:bg-green-50 hover:text-green-700" data-dashboard-dropdown-trigger aria-expanded="false">
+                                        <x-heroicon-o-list-bullet class="h-5 w-5" />
+                                        <span class="sr-only" data-dashboard-dropdown-label>@lang('Mindigo-dashboard::app.source_view_list')</span>
+                                        <x-heroicon-m-chevron-down class="h-3.5 w-3.5" />
+                                    </button>
+                                    <div class="absolute left-0 top-11 z-30 hidden min-w-44 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-900/10" data-dashboard-dropdown-menu>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-list" data-tool="view" data-value="list">@lang('Mindigo-dashboard::app.source_view_list')</button>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-list" data-tool="view" data-value="compact">@lang('Mindigo-dashboard::app.source_view_compact')</button>
+                                    </div>
+                                </div>
+                                <div class="relative" data-dashboard-dropdown>
+                                    <button type="button" class="inline-flex h-9 items-center gap-1 rounded-full bg-slate-50 px-3 text-xs font-black text-slate-600 ring-1 ring-slate-200 transition hover:bg-green-50 hover:text-green-700" data-dashboard-dropdown-trigger aria-expanded="false">
+                                        <span data-dashboard-dropdown-label>@lang('Mindigo-dashboard::app.filters')</span>
+                                        <x-heroicon-o-funnel class="h-4 w-4" />
+                                    </button>
+                                    <div class="absolute right-0 top-11 z-30 hidden min-w-44 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-900/10" data-dashboard-dropdown-menu>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-list" data-tool="filter" data-value="all">@lang('Mindigo-dashboard::app.filter_all')</button>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-list" data-tool="filter" data-value="core">@lang('Mindigo-dashboard::app.filter_core_exams')</button>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-list" data-tool="filter" data-value="learning">@lang('Mindigo-dashboard::app.filter_learning')</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="grid gap-2">
                                 @foreach([
-                                    ['label' => 'Thi thử THPT', 'value' => '12,459', 'percent' => '43%', 'icon' => 'heroicon-o-academic-cap', 'tone' => 'bg-green-50 text-green-700'],
-                                    ['label' => 'Luyện tập nhanh', 'value' => '8,823', 'percent' => '27%', 'icon' => 'heroicon-o-bolt', 'tone' => 'bg-amber-50 text-amber-700'],
-                                    ['label' => 'Ngân hàng đề', 'value' => '5,935', 'percent' => '18%', 'icon' => 'heroicon-o-circle-stack', 'tone' => 'bg-sky-50 text-sky-700'],
-                                    ['label' => 'Bài giao lớp', 'value' => '3,028', 'percent' => '12%', 'icon' => 'heroicon-o-users', 'tone' => 'bg-emerald-50 text-emerald-700'],
+                                    ['label' => __('Mindigo-dashboard::app.source_mock_exam'), 'value' => '12,459', 'percent' => '43%', 'icon' => 'heroicon-o-academic-cap', 'tone' => 'bg-green-50 text-green-700'],
+                                    ['label' => __('Mindigo-dashboard::app.source_quick_practice'), 'value' => '8,823', 'percent' => '27%', 'icon' => 'heroicon-o-bolt', 'tone' => 'bg-amber-50 text-amber-700'],
+                                    ['label' => __('Mindigo-dashboard::app.source_question_bank'), 'value' => '5,935', 'percent' => '18%', 'icon' => 'heroicon-o-circle-stack', 'tone' => 'bg-sky-50 text-sky-700'],
+                                    ['label' => __('Mindigo-dashboard::app.source_class_assignment'), 'value' => '3,028', 'percent' => '12%', 'icon' => 'heroicon-o-users', 'tone' => 'bg-emerald-50 text-emerald-700'],
                                 ] as $source)
-                                    <div class="flex min-h-14 items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 px-3">
+                                    <div class="flex min-h-14 items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 px-3 transition" data-dashboard-source-row data-filter="{{ in_array($loop->index, [0, 2], true) ? 'core' : 'learning' }}">
                                         <span class="grid h-9 w-9 place-items-center rounded-xl {{ $source['tone'] }}">
                                             <x-dynamic-component :component="$source['icon']" class="h-5 w-5" />
                                         </span>
-                                        <span class="min-w-0 flex-1 truncate text-sm font-black text-slate-700">{{ $source['label'] }}</span>
+                                        <span class="min-w-0 flex-1 truncate text-sm font-black text-slate-700">{{ [
+                                            __('Mindigo-dashboard::app.source_mock_exam'),
+                                            __('Mindigo-dashboard::app.source_quick_practice'),
+                                            __('Mindigo-dashboard::app.source_question_bank'),
+                                            __('Mindigo-dashboard::app.source_class_assignment'),
+                                        ][$loop->index] }}</span>
                                         <strong class="text-sm font-black text-slate-950">{{ $source['value'] }}</strong>
                                         <span class="text-xs font-black text-slate-400">{{ $source['percent'] }}</span>
                                     </div>
@@ -178,38 +228,58 @@
                             </div>
                         </div>
 
-                        <div class="min-h-[21rem] rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm">
+                        <div class="min-h-[21rem] rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm" data-dashboard-tool-panel="source-chart">
                             <div class="mb-4 flex items-center justify-between gap-3">
-                                <button type="button" class="inline-flex h-9 items-center gap-2 rounded-full bg-slate-50 px-3 text-slate-600 ring-1 ring-slate-200">
-                                    <x-heroicon-o-chart-bar class="h-5 w-5" />
-                                    <x-heroicon-m-chevron-down class="h-3.5 w-3.5" />
-                                </button>
-                                <button type="button" class="inline-flex h-9 items-center gap-1 rounded-full bg-slate-50 px-3 text-xs font-black text-slate-600 ring-1 ring-slate-200">
-                                    Filters
-                                    <x-heroicon-o-funnel class="h-4 w-4" />
-                                </button>
+                                <div class="relative" data-dashboard-dropdown>
+                                    <button type="button" class="inline-flex h-9 items-center gap-2 rounded-full bg-slate-50 px-3 text-slate-600 ring-1 ring-slate-200 transition hover:bg-green-50 hover:text-green-700" data-dashboard-dropdown-trigger aria-expanded="false">
+                                        <x-heroicon-o-chart-bar class="h-5 w-5" />
+                                        <span class="sr-only" data-dashboard-dropdown-label>@lang('Mindigo-dashboard::app.chart_view_bar')</span>
+                                        <x-heroicon-m-chevron-down class="h-3.5 w-3.5" />
+                                    </button>
+                                    <div class="absolute left-0 top-11 z-30 hidden min-w-44 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-900/10" data-dashboard-dropdown-menu>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-chart" data-tool="view" data-value="bar">@lang('Mindigo-dashboard::app.chart_view_bar')</button>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-chart" data-tool="view" data-value="compare">@lang('Mindigo-dashboard::app.chart_view_compare')</button>
+                                    </div>
+                                </div>
+                                <div class="relative" data-dashboard-dropdown>
+                                    <button type="button" class="inline-flex h-9 items-center gap-1 rounded-full bg-slate-50 px-3 text-xs font-black text-slate-600 ring-1 ring-slate-200 transition hover:bg-green-50 hover:text-green-700" data-dashboard-dropdown-trigger aria-expanded="false">
+                                        <span data-dashboard-dropdown-label>@lang('Mindigo-dashboard::app.filters')</span>
+                                        <x-heroicon-o-funnel class="h-4 w-4" />
+                                    </button>
+                                    <div class="absolute right-0 top-11 z-30 hidden min-w-44 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-900/10" data-dashboard-dropdown-menu>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-chart" data-tool="filter" data-value="all">@lang('Mindigo-dashboard::app.filter_all')</button>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-chart" data-tool="filter" data-value="core">@lang('Mindigo-dashboard::app.filter_core_exams')</button>
+                                        <button type="button" class="dashboard-tool-option" data-dashboard-option data-target="source-chart" data-tool="filter" data-value="learning">@lang('Mindigo-dashboard::app.filter_learning')</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="grid h-52 grid-cols-5 items-end gap-3 rounded-2xl bg-slate-50 px-4 pb-4 pt-6">
                                 @foreach([
-                                    ['label' => 'THPT', 'height' => 62, 'icon' => 'T', 'tone' => 'bg-green-600'],
-                                    ['label' => 'Ôn tập', 'height' => 88, 'icon' => 'Ô', 'tone' => 'bg-emerald-500'],
-                                    ['label' => 'Đề lớp', 'height' => 54, 'icon' => 'L', 'tone' => 'bg-sky-500'],
-                                    ['label' => 'AI', 'height' => 38, 'icon' => 'AI', 'tone' => 'bg-amber-400'],
-                                    ['label' => 'Khác', 'height' => 72, 'icon' => '+', 'tone' => 'bg-white border border-dashed border-slate-300'],
+                                    ['label' => __('Mindigo-dashboard::app.bar_thpt'), 'height' => 62, 'icon' => 'T', 'tone' => 'bg-green-600'],
+                                    ['label' => __('Mindigo-dashboard::app.bar_practice'), 'height' => 88, 'icon' => 'P', 'tone' => 'bg-emerald-500'],
+                                    ['label' => __('Mindigo-dashboard::app.bar_class_exam'), 'height' => 54, 'icon' => 'L', 'tone' => 'bg-sky-500'],
+                                    ['label' => __('Mindigo-dashboard::app.bar_ai'), 'height' => 38, 'icon' => 'AI', 'tone' => 'bg-amber-400'],
+                                    ['label' => __('Mindigo-dashboard::app.bar_other'), 'height' => 72, 'icon' => '+', 'tone' => 'bg-white border border-dashed border-slate-300'],
                                 ] as $bar)
-                                    <div class="flex h-full flex-col items-center justify-end gap-2">
+                                    <div class="flex h-full flex-col items-center justify-end gap-2 transition" data-dashboard-chart-bar data-filter="{{ in_array($loop->index, [0, 2], true) ? 'core' : 'learning' }}">
                                         <div class="grid w-full place-items-center rounded-2xl {{ $bar['tone'] }} text-xs font-black {{ str_contains($bar['tone'], 'bg-white') ? 'text-slate-400' : 'text-white' }}" style="height: {{ $bar['height'] }}%">
                                             {{ $bar['icon'] }}
                                         </div>
-                                        <span class="text-[10px] font-black text-slate-400">{{ $bar['label'] }}</span>
+                                        <span class="text-[10px] font-black text-slate-400">{{ [
+                                            __('Mindigo-dashboard::app.bar_thpt'),
+                                            __('Mindigo-dashboard::app.bar_practice'),
+                                            __('Mindigo-dashboard::app.bar_class_exam'),
+                                            __('Mindigo-dashboard::app.bar_ai'),
+                                            __('Mindigo-dashboard::app.bar_other'),
+                                        ][$loop->index] }}</span>
                                     </div>
                                 @endforeach
                             </div>
 
                             <div class="mt-3">
-                                <p class="text-sm font-black text-slate-900">Lượt thi theo nguồn đề</p>
-                                <p class="mt-0.5 text-xs font-semibold text-slate-400">Phân loại theo referrer/category</p>
+                                <p class="text-sm font-black text-slate-900">@lang('Mindigo-dashboard::app.source_attempts_title')</p>
+                                <p class="mt-0.5 text-xs font-semibold text-slate-400">@lang('Mindigo-dashboard::app.source_attempts_desc')</p>
                             </div>
                         </div>
                     </div>
@@ -217,10 +287,10 @@
                     <div class="min-h-[21rem] rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm" id="ranking">
                         <div class="mb-4 flex items-center justify-between gap-3">
                             <div>
-                                <p class="text-xs font-black uppercase tracking-wider text-slate-400">Ranking</p>
-                                <h3 class="mt-1 text-lg font-black text-slate-950">Top performers</h3>
+                                <p class="text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.ranking')</p>
+                                <h3 class="mt-1 text-lg font-black text-slate-950">@lang('Mindigo-dashboard::app.top_performers')</h3>
                             </div>
-                            <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-black text-green-700">Live</span>
+                            <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-black text-green-700">@lang('Mindigo-dashboard::app.live')</span>
                         </div>
                         <div class="h-72"><canvas id="rankingChart"></canvas></div>
                     </div>
@@ -239,26 +309,26 @@
                                 </div>
                             </div>
                             <div class="flex rounded-full bg-slate-100 p-1 text-xs font-black">
-                                <span class="rounded-full bg-green-700 px-3 py-1.5 text-white shadow-sm">Revenue</span>
-                                <span class="px-3 py-1.5 text-slate-500">Leads</span>
-                                <span class="px-3 py-1.5 text-slate-500">W/L</span>
+                                <span class="rounded-full bg-green-700 px-3 py-1.5 text-white shadow-sm">@lang('Mindigo-dashboard::app.revenue')</span>
+                                <span class="px-3 py-1.5 text-slate-500">@lang('Mindigo-dashboard::app.leads')</span>
+                                <span class="px-3 py-1.5 text-slate-500">@lang('Mindigo-dashboard::app.win_loss')</span>
                             </div>
                         </div>
                         <div class="grid gap-4 lg:grid-cols-[14rem_minmax(0,1fr)]">
                             <div class="rounded-[1.5rem] bg-gradient-to-br from-green-700 to-emerald-500 p-5 text-white shadow-sm">
-                                <p class="text-xs font-black text-green-100">Giá trị nội dung</p>
-                                <h4 class="mt-1 text-lg font-black">MindigoExam</h4>
+                                <p class="text-xs font-black text-green-100">@lang('Mindigo-dashboard::app.content_value')</p>
+                                <h4 class="mt-1 text-lg font-black">@lang('Mindigo-dashboard::app.product_name')</h4>
                                 <div class="mt-7 space-y-4">
                                     <div>
-                                        <p class="text-xs font-bold text-green-100">Câu hỏi đạt chuẩn</p>
+                                        <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.standard_questions')</p>
                                         <strong class="mt-0.5 block text-2xl font-black">18,552</strong>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold text-green-100">Lượt làm bài</p>
+                                        <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.attempts')</p>
                                         <strong class="mt-0.5 block text-xl font-black">373 <span class="text-sm text-green-100">/ 27,278</span></strong>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold text-green-100">Tỉ lệ thắng</p>
+                                        <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.win_rate')</p>
                                         <strong class="mt-0.5 block text-xl font-black">18% <span class="text-sm text-green-100">51 / 318</span></strong>
                                     </div>
                                 </div>
@@ -313,9 +383,9 @@
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 text-sm font-bold text-slate-700">
                                     @foreach([
-                                        ['exam' => 'Đề luyện thi THPT 2026 - Toán 01', 'candidates' => '1,248', 'score' => '7.4', 'status' => __('Mindigo-dashboard::app.published'), 'tone' => 'bg-green-100 text-green-800'],
-                                        ['exam' => 'Kiểm tra Sinh học - Di truyền', 'candidates' => '684', 'score' => '6.9', 'status' => __('Mindigo-dashboard::app.reviewing'), 'tone' => 'bg-amber-100 text-amber-800'],
-                                        ['exam' => 'Ngân hàng Anh văn B1 - Reading', 'candidates' => '932', 'score' => '8.1', 'status' => __('Mindigo-dashboard::app.scheduled'), 'tone' => 'bg-sky-100 text-sky-800'],
+                                        ['exam' => __('Mindigo-dashboard::app.demo_exam_math'), 'candidates' => '1,248', 'score' => '7.4', 'status' => __('Mindigo-dashboard::app.published'), 'tone' => 'bg-green-100 text-green-800'],
+                                        ['exam' => __('Mindigo-dashboard::app.demo_exam_biology'), 'candidates' => '684', 'score' => '6.9', 'status' => __('Mindigo-dashboard::app.reviewing'), 'tone' => 'bg-amber-100 text-amber-800'],
+                                        ['exam' => __('Mindigo-dashboard::app.demo_exam_english'), 'candidates' => '932', 'score' => '8.1', 'status' => __('Mindigo-dashboard::app.scheduled'), 'tone' => 'bg-sky-100 text-sky-800'],
                                     ] as $exam)
                                         <tr class="bg-white">
                                             <td class="px-4 py-3.5">{{ $exam['exam'] }}</td>
@@ -335,16 +405,16 @@
                 <section class="min-h-[18.85rem] rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-center justify-between gap-3">
                         <div>
-                            <p class="text-xs font-black uppercase tracking-wider text-slate-400">Top sales</p>
-                            <h3 class="mt-1 text-lg font-black text-slate-950">Learner flow</h3>
+                            <p class="text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.top_sales')</p>
+                            <h3 class="mt-1 text-lg font-black text-slate-950">@lang('Mindigo-dashboard::app.learner_flow')</h3>
                         </div>
                         <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-black text-green-700">+3</span>
                     </div>
                     <div class="mt-5 grid gap-2">
                         @foreach([
-                            ['name' => 'Admin A.', 'value' => '$209,633', 'kpi' => 84],
-                            ['name' => 'Teacher B.', 'value' => '$156,841', 'kpi' => 103],
-                            ['name' => 'Student C.', 'value' => '$45,386', 'kpi' => 41],
+                            ['name' => __('Mindigo-dashboard::app.demo_admin'), 'value' => '$209,633', 'kpi' => 84],
+                            ['name' => __('Mindigo-dashboard::app.demo_teacher'), 'value' => '$156,841', 'kpi' => 103],
+                            ['name' => __('Mindigo-dashboard::app.demo_student'), 'value' => '$45,386', 'kpi' => 41],
                         ] as $row)
                             <div class="flex items-center gap-3 rounded-2xl bg-slate-50 p-3">
                                 <span class="grid h-9 w-9 place-items-center rounded-full bg-green-100 text-xs font-black text-green-700">{{ mb_substr($row['name'], 0, 1) }}</span>

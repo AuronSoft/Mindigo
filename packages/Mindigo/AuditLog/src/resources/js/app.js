@@ -1,6 +1,7 @@
 import '../../../../Core/src/resources/js/Mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    const messages = window.__auditLogMessages || {};
     const filterForm = document.querySelector('[data-audit-log-filter]');
 
     if (filterForm) {
@@ -27,15 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const text = target?.textContent?.trim();
 
             if (!text) {
-                MindigoToast('Không có dữ liệu để sao chép.', 'info');
+                MindigoToast(messages.empty_copy || 'There is no data to copy.', 'info');
                 return;
             }
 
             try {
                 await navigator.clipboard.writeText(text);
-                MindigoToast('Đã sao chép dữ liệu.', 'success', 1800);
+                MindigoToast(messages.copied || 'Data copied.', 'success', 1800);
             } catch {
-                MindigoToast('Trình duyệt không cho phép sao chép tự động.', 'warning');
+                MindigoToast(messages.copy_denied || 'The browser blocked automatic copying.', 'warning');
             }
         });
     });

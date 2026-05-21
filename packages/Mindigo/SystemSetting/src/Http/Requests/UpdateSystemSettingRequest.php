@@ -36,14 +36,14 @@ class UpdateSystemSettingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'settings.required' => 'Vui lòng gửi dữ liệu cấu hình.',
-            'settings.array' => 'Dữ liệu cấu hình không hợp lệ.',
-            '*.required' => 'Vui lòng nhập đầy đủ cấu hình bắt buộc.',
-            '*.email' => 'Email không hợp lệ.',
-            '*.integer' => 'Giá trị phải là số nguyên.',
-            '*.min' => 'Giá trị không được nhỏ hơn 0.',
-            '*.max' => 'Giá trị vượt quá giới hạn cho phép.',
-            '*.in' => 'Giá trị được chọn không hợp lệ.',
+            'settings.required' => __('Mindigo-system-setting::app.validation.settings_required'),
+            'settings.array' => __('Mindigo-system-setting::app.validation.settings_array'),
+            '*.required' => __('Mindigo-system-setting::app.validation.required'),
+            '*.email' => __('Mindigo-system-setting::app.validation.email'),
+            '*.integer' => __('Mindigo-system-setting::app.validation.integer'),
+            '*.min' => __('Mindigo-system-setting::app.validation.min'),
+            '*.max' => __('Mindigo-system-setting::app.validation.max'),
+            '*.in' => __('Mindigo-system-setting::app.validation.in'),
         ];
     }
 }

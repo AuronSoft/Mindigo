@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'title' => 'Nhật ký thao tác - Mindigo',
+    'detail_title' => 'Chi tiết nhật ký - Mindigo',
+    'breadcrumb' => 'Nhật ký thao tác',
+    'heading' => 'Nhật ký thao tác',
+    'description' => 'Theo dõi các hành động quan trọng như đăng nhập, đăng xuất và thay đổi cấu hình hệ thống.',
+    'search' => 'Tìm kiếm',
+    'all' => 'Tất cả',
+    'module' => 'Module',
+    'action' => 'Hành động',
+    'date_from' => 'Từ ngày',
+    'date_to' => 'Đến ngày',
+    'filter' => 'Lọc',
+    'reset' => 'Xóa',
+    'time' => 'Thời gian',
+    'user' => 'Người dùng',
+    'guest' => 'Khách',
+    'request' => 'Request',
+    'detail' => 'Chi tiết',
+    'back' => 'Quay lại',
+    'old_values' => 'Dữ liệu cũ',
+    'new_values' => 'Dữ liệu mới',
+    'metadata' => 'Metadata',
+    'copy' => 'Copy',
+    'messages' => [
+        'empty_copy' => 'Không có dữ liệu để sao chép.',
+        'copied' => 'Đã sao chép dữ liệu.',
+        'copy_denied' => 'Trình duyệt không cho phép sao chép tự động.',
+    ],
+];

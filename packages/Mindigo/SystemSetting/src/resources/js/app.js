@@ -1,6 +1,8 @@
 import '../../../../Core/src/resources/js/Mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    const messages = window.__systemSettingMessages || {};
+
     if (window.__systemSettingSuccess) {
         MindigoToast(window.__systemSettingSuccess, 'success');
     }
@@ -32,15 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentSnapshot = snapshotForm(form);
 
         if (currentSnapshot === initialSnapshot) {
-            MindigoToast('Chưa có trường dữ liệu nào thay đổi.', 'info');
+            MindigoToast(messages.no_changes || 'No settings were changed.', 'info');
             return;
         }
 
         const confirmed = await MindigoConfirm({
-            title: 'Lưu cấu hình hệ thống',
-            message: 'Các thay đổi sẽ được áp dụng cho toàn bộ hệ thống. Bạn có chắc chắn muốn lưu không?',
-            confirmText: 'Lưu cấu hình',
-            cancelText: 'Huỷ',
+            title: messages.confirm_title || 'Save system settings',
+            message: messages.confirm_message || 'These changes will apply across the system. Are you sure you want to save?',
+            confirmText: messages.confirm_text || 'Save settings',
+            cancelText: messages.cancel_text || 'Cancel',
             type: 'warning',
         });
 

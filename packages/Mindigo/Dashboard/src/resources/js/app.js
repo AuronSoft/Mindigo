@@ -1,5 +1,8 @@
 import '../../../../Core/src/resources/js/Mindigo-ui.js';
 
+const dashboardMessages = window.__dashboardMessages || {};
+const dashboardChartLabels = window.__dashboardChartLabels || {};
+
 const chartDefaults = {
     responsive: true,
     maintainAspectRatio: false,
@@ -85,7 +88,7 @@ initChart('qualityChart', {
 initChart('rankingChart', {
     type: 'bar',
     data: {
-        labels: ['Admin A.', 'Teacher B.', 'Student C.', 'Class D.', 'Exam E.'],
+        labels: dashboardChartLabels.ranking || ['Admin A.', 'Teacher B.', 'Student C.', 'Class D.', 'Exam E.'],
         datasets: [{
             data: [92, 84, 76, 68, 57],
             backgroundColor: ['#15803d', '#16a34a', '#22c55e', '#86efac', '#bbf7d0'],
@@ -131,6 +134,7 @@ const timeframeStatus = document.querySelector('[data-dashboard-timeframe-status
 const dashboardDateButton = document.querySelector('[data-dashboard-date-button]');
 const dashboardDateInput = document.querySelector('[data-dashboard-date-input]');
 const dashboardDateLabel = document.querySelector('[data-dashboard-date-label]');
+const dashboardDropdowns = Array.from(document.querySelectorAll('[data-dashboard-dropdown]'));
 
 const normalizeSearchText = (value) => (
     (value || '')
@@ -240,6 +244,62 @@ const closeNotificationMenu = () => {
     notificationBtn?.setAttribute('aria-expanded', 'false');
 };
 
+const closeDashboardDropdowns = (except = null) => {
+    dashboardDropdowns.forEach((dropdown) => {
+        if (dropdown === except) {
+            return;
+        }
+
+        dropdown.querySelector('[data-dashboard-dropdown-menu]')?.classList.add('hidden');
+        dropdown.querySelector('[data-dashboard-dropdown-trigger]')?.setAttribute('aria-expanded', 'false');
+    });
+};
+
+const setDashboardToolFilter = (target, value) => {
+    const panel = document.querySelector(`[data-dashboard-tool-panel="${target}"]`);
+
+    if (!panel) {
+        return;
+    }
+
+    if (target === 'source-list') {
+        panel.querySelectorAll('[data-dashboard-source-row]').forEach((row) => {
+            const visible = value === 'all' || row.dataset.filter === value;
+            row.classList.toggle('hidden', !visible);
+        });
+    }
+
+    if (target === 'source-chart') {
+        panel.querySelectorAll('[data-dashboard-chart-bar]').forEach((bar) => {
+            const active = value === 'all' || bar.dataset.filter === value;
+            bar.classList.toggle('opacity-25', !active);
+            bar.classList.toggle('grayscale', !active);
+        });
+    }
+};
+
+const setDashboardToolView = (target, value) => {
+    const panel = document.querySelector(`[data-dashboard-tool-panel="${target}"]`);
+
+    if (!panel) {
+        return;
+    }
+
+    if (target === 'source-list') {
+        panel.querySelectorAll('[data-dashboard-source-row]').forEach((row) => {
+            row.classList.toggle('min-h-14', value !== 'compact');
+            row.classList.toggle('min-h-11', value === 'compact');
+        });
+    }
+
+    if (target === 'source-chart') {
+        panel.querySelectorAll('[data-dashboard-chart-bar] > div').forEach((bar) => {
+            bar.classList.toggle('rounded-2xl', value !== 'compare');
+            bar.classList.toggle('rounded-t-2xl', value === 'compare');
+        });
+    }
+};
+
 const formatDashboardDate = (value) => {
     if (!value) {
         return '';
@@ -254,7 +314,9 @@ const setTimeframeEnabled = (enabled) => {
     timeframeTrack?.classList.toggle('bg-green-600', enabled);
     timeframeTrack?.classList.toggle('bg-slate-300', !enabled);
     timeframeKnob?.classList.toggle('translate-x-3', enabled);
-    timeframeStatus && (timeframeStatus.textContent = enabled ? 'Timeframe' : 'Tắt lọc ngày');
+    timeframeStatus && (timeframeStatus.textContent = enabled
+        ? (dashboardMessages.timeframe || 'Timeframe')
+        : (dashboardMessages.date_filter_off || 'Date filter off'));
     dashboardDateButton?.classList.toggle('opacity-50', !enabled);
     dashboardDateButton?.classList.toggle('pointer-events-none', !enabled);
     dashboardDateInput && (dashboardDateInput.disabled = !enabled);
@@ -317,6 +379,52 @@ dashboardDateInput?.addEventListener('change', () => {
     if (dashboardDateLabel) {
         dashboardDateLabel.textContent = formatDashboardDate(dashboardDateInput.value);
     }
+});
+
+dashboardDropdowns.forEach((dropdown) => {
+    const trigger = dropdown.querySelector('[data-dashboard-dropdown-trigger]');
+    const menu = dropdown.querySelector('[data-dashboard-dropdown-menu]');
+    const label = dropdown.querySelector('[data-dashboard-dropdown-label]');
+
+    trigger?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = !menu?.classList.contains('hidden');
+
+        closeDashboardDropdowns(dropdown);
+        menu?.classList.toggle('hidden', isOpen);
+        trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+        closeUserMenu();
+        closeNotificationMenu();
+    });
+
+    dropdown.querySelectorAll('[data-dashboard-option]').forEach((option) => {
+        option.addEventListener('click', (event) => {
+            event.stopPropagation();
+
+            const target = option.dataset.target;
+            const tool = option.dataset.tool;
+            const value = option.dataset.value;
+
+            dropdown.querySelectorAll('[data-dashboard-option]').forEach((item) => {
+                item.classList.toggle('is-active', item === option);
+            });
+
+            if (label && !label.classList.contains('sr-only')) {
+                label.textContent = option.textContent.trim();
+            }
+
+            if (tool === 'filter') {
+                setDashboardToolFilter(target, value);
+            }
+
+            if (tool === 'view') {
+                setDashboardToolView(target, value);
+            }
+
+            closeDashboardDropdowns();
+            MindigoToast(dashboardMessages.tool_applied || 'Filter applied.', 'success', 1400);
+        });
+    });
 });
 
 sidebarGroups.forEach((group) => {
@@ -399,6 +507,8 @@ document.addEventListener('click', (event) => {
     if (notificationMenu && notificationBtn && !notificationMenu.contains(event.target) && !notificationBtn.contains(event.target)) {
         closeNotificationMenu();
     }
+
+    closeDashboardDropdowns();
 });
 
 document.addEventListener('keydown', (event) => {
@@ -408,6 +518,7 @@ document.addEventListener('keydown', (event) => {
 
     closeUserMenu();
     closeNotificationMenu();
+    closeDashboardDropdowns();
 });
 
 document.querySelectorAll('[data-logout]').forEach((link) => {
@@ -415,10 +526,10 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
         event.preventDefault();
 
         const confirmed = await MindigoConfirm({
-            title: 'Đăng xuất',
-            message: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
-            confirmText: 'Đăng xuất',
-            cancelText: 'Hủy',
+            title: dashboardMessages.logout_title || 'Sign out',
+            message: dashboardMessages.logout_message || 'Are you sure you want to sign out of the system?',
+            confirmText: dashboardMessages.logout_confirm || 'Sign out',
+            cancelText: dashboardMessages.logout_cancel || 'Cancel',
             type: 'warning',
         });
 
@@ -426,7 +537,7 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
             return;
         }
 
-        MindigoToast('Đang đăng xuất...', 'info', 1200);
+        MindigoToast(dashboardMessages.logging_out || 'Signing out...', 'info', 1200);
 
         const formId = link.dataset.logoutForm;
         const form = formId ? document.getElementById(formId) : null;

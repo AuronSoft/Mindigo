@@ -30,7 +30,7 @@ class SystemSettingController extends Controller
         if ($changed === 0) {
             return redirect()
                 ->route('system-settings.index')
-                ->with('info', 'Chưa có trường dữ liệu nào thay đổi.');
+                ->with('info', __('Mindigo-system-setting::app.messages.no_changes'));
         }
 
         $changes = $this->service->changes();
@@ -48,6 +48,6 @@ class SystemSettingController extends Controller
 
         return redirect()
             ->route('system-settings.index')
-            ->with('success', 'Cấu hình hệ thống đã được cập nhật.');
+            ->with('success', __('Mindigo-system-setting::app.messages.updated'));
     }
 }

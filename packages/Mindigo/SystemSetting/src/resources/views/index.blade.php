@@ -1,6 +1,6 @@
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', 'Cấu hình hệ thống - Mindigo')
+@section('title', __('Mindigo-system-setting::app.title'))
 
 @section('styles')
     @vite([
@@ -19,16 +19,16 @@
                     <div class="flex items-center gap-1.5 text-xs font-black text-slate-400">
                         <a href="{{ route('dashboard') }}" class="text-slate-500 no-underline transition hover:text-green-700">Dashboard</a>
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                        <span class="text-slate-700">Cấu hình hệ thống</span>
+                        <span class="text-slate-700">@lang('Mindigo-system-setting::app.breadcrumb')</span>
                     </div>
-                    <h1 class="mt-2 text-2xl font-black tracking-tight text-slate-950">Cấu hình hệ thống</h1>
+                    <h1 class="mt-2 text-2xl font-black tracking-tight text-slate-950">@lang('Mindigo-system-setting::app.heading')</h1>
                     <p class="mt-1 max-w-2xl text-sm font-semibold leading-6 text-slate-500">
-                        Quản lý các thiết lập lõi cho hệ thống ôn thi trắc nghiệm, người dùng, thông báo, AI và bảo mật.
+                        @lang('Mindigo-system-setting::app.description')
                     </p>
                 </div>
                 <button type="submit" form="system-setting-form" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-green-600 px-5 text-sm font-black text-white shadow-sm transition hover:bg-green-500">
                     <svg class="h-4 w-4 fill-none stroke-current stroke-[2.5]" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    Lưu cấu hình
+                    @lang('Mindigo-system-setting::app.save')
                 </button>
             </div>
         </header>
@@ -101,5 +101,6 @@
         window.__systemSettingSuccess = @json(session('success'));
         window.__systemSettingInfo = @json(session('info'));
         window.__systemSettingErrors = @json($errors->all());
+        window.__systemSettingMessages = @json(__('Mindigo-system-setting::app.messages'));
     </script>
 @endsection
