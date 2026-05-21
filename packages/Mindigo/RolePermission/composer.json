@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/role-permission",
+    "description": "Mindigo role permission package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\RolePermission\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\RolePermission\\Providers\\RolePermissionServiceProvider"
+            ]
+        }
+    }
+}

@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Database\Factories\UserFactory;
 use Mindigo\Profile\Models\NotificationPreference;
+use Mindigo\RolePermission\Services\RolePermissionService;
 
 class User extends Authenticatable
 {
@@ -164,6 +165,32 @@ class User extends Authenticatable
     public function isStudent(): bool
     {
         return $this->role === 'student';
+    }
+
+    public function hasRole(string|array $roles): bool
+    {
+        return in_array($this->role, (array) $roles, true);
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        return $this->hasRole($roles);
+    }
+
+    public function hasPermissionTo(string $permission): bool
+    {
+        return RolePermissionService::roleHasPermission($this->role, $permission);
+    }
+
+    public function hasAnyPermission(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if ($this->hasPermissionTo($permission)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function notificationPreference(): \Illuminate\Database\Eloquent\Relations\HasOne

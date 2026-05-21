@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "751239af798f4915a4dc787bfe58bf5e",
+    "content-hash": "b86e27abf83846062f49547635445969",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2352,6 +2352,36 @@
                 }
             },
             "description": "Mindigo Profile Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/role-permission",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/RolePermission",
+                "reference": "a856385cfd306c54785a7b0062dab29705b6ca81"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\RolePermission\\Providers\\RolePermissionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\RolePermission\\": "src/"
+                }
+            },
+            "description": "Mindigo role permission package",
             "transport-options": {
                 "relative": true
             }

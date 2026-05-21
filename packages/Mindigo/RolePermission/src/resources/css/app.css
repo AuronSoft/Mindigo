@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+@source "../../../../Dashboard/src/resources/views/**/*.blade.php";
+@source "../views/**/*.blade.php";
+
+@layer components {
+    .role-permission-page {
+        @apply px-6 py-6 max-md:px-4;
+    }
+
+    .role-permission-hero {
+        @apply flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-sm shadow-slate-200/70 lg:flex-row lg:items-center lg:justify-between;
+    }
+
+    .role-permission-summary {
+        @apply flex min-w-48 flex-col rounded-2xl bg-green-50 px-4 py-3 text-sm font-bold text-slate-500 ring-1 ring-green-100;
+    }
+
+    .role-permission-summary strong {
+        @apply text-3xl font-black leading-none text-green-700;
+    }
+
+    .role-card {
+        @apply rounded-3xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70;
+    }
+
+    .role-avatar {
+        @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-base font-black;
+    }
+
+    .role-avatar-admin {
+        @apply bg-green-100 text-green-700;
+    }
+
+    .role-avatar-teacher {
+        @apply bg-sky-100 text-sky-700;
+    }
+
+    .role-avatar-student {
+        @apply bg-amber-100 text-amber-700;
+    }
+
+    .role-count {
+        @apply rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600;
+    }
+
+    .role-matrix {
+        @apply overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70;
+    }
+
+    .role-matrix-header {
+        @apply flex flex-col gap-3 border-b border-slate-100 px-5 py-4 lg:flex-row lg:items-center lg:justify-between;
+    }
+
+    .role-readonly-badge {
+        @apply inline-flex min-h-9 items-center rounded-full bg-slate-100 px-4 text-xs font-black text-slate-600;
+    }
+
+    .role-save-button {
+        @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-green-600 px-5 text-sm font-black text-white shadow-sm transition hover:bg-green-500;
+    }
+
+    .role-alert {
+        @apply flex items-center gap-2 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-black text-green-700;
+    }
+
+    .role-table {
+        @apply w-full min-w-[760px] border-collapse text-left;
+    }
+
+    .role-table th {
+        @apply bg-slate-50 px-5 py-4 text-xs font-black uppercase tracking-wide text-slate-400;
+    }
+
+    .role-table th:not(:first-child),
+    .role-table td:not(:first-child) {
+        @apply text-center;
+    }
+
+    .role-table td {
+        @apply border-t border-slate-100 px-5 py-4 align-middle;
+    }
+
+    .role-group-row td {
+        @apply bg-green-50/70 px-5 py-2 text-xs font-black uppercase tracking-wide text-green-700;
+    }
+
+    .permission-state {
+        @apply mx-auto inline-grid h-9 w-9 place-items-center rounded-full;
+    }
+
+    .permission-state-on {
+        @apply bg-green-100 text-green-700 ring-1 ring-green-200;
+    }
+
+    .permission-state-off {
+        @apply bg-slate-100 text-slate-300 ring-1 ring-slate-200;
+    }
+
+    .permission-toggle {
+        @apply inline-flex cursor-pointer items-center justify-center;
+    }
+
+    .permission-toggle input {
+        @apply sr-only;
+    }
+
+    .permission-toggle input:checked + .permission-state {
+        @apply bg-green-100 text-green-700 ring-green-200;
+    }
+
+    .permission-toggle input:not(:checked) + .permission-state {
+        @apply bg-slate-100 text-slate-300 ring-slate-200;
+    }
+
+    .permission-toggle input:disabled + .permission-state {
+        @apply cursor-not-allowed opacity-80;
+    }
+
+    .permission-toggle .permission-check {
+        @apply hidden;
+    }
+
+    .permission-toggle .permission-x {
+        @apply block;
+    }
+
+    .permission-toggle input:checked + .permission-state .permission-check {
+        @apply block;
+    }
+
+    .permission-toggle input:checked + .permission-state .permission-x {
+        @apply hidden;
+    }
+}

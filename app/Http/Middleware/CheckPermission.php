@@ -16,8 +16,8 @@ class CheckPermission
             return redirect()->route('login');
         }
 
-        if (!$user->hasPermissionTo($permission)) {
-            abort(403, 'Bạn không có quyền thực hiện hành động này.');
+        if (!method_exists($user, 'hasPermissionTo') || !$user->hasPermissionTo($permission)) {
+            abort(403);
         }
 
         return $next($request);
