@@ -68,6 +68,7 @@ class RolePermissionService
                     'support-tickets.create' => __('Mindigo-role-permission::app.permissions.support_tickets.create'),
                     'support-tickets.reply' => __('Mindigo-role-permission::app.permissions.support_tickets.reply'),
                     'support-tickets.manage' => __('Mindigo-role-permission::app.permissions.support_tickets.manage'),
+                    'support-tickets.delete' => __('Mindigo-role-permission::app.permissions.support_tickets.delete'),
                 ],
             ],
             'admin' => [

@@ -25,6 +25,7 @@ return [
     'internal_note' => 'Internal note',
     'admin_note' => 'Admin note',
     'save_changes' => 'Save changes',
+    'delete_ticket' => 'Delete ticket',
     'submit_ticket' => 'Submit ticket',
     'attachments' => 'Attachments',
     'choose_files' => 'Attach files',
@@ -37,6 +38,8 @@ return [
     'confirm_reply_message' => 'Send this reply to the ticket conversation?',
     'confirm_update_title' => 'Update support ticket',
     'confirm_update_message' => 'Apply these support ticket changes?',
+    'confirm_delete_title' => 'Delete support ticket',
+    'confirm_delete_message' => 'This ticket will be removed from the active support queue. Continue?',
     'search_placeholder' => 'Search ticket, subject, requester...',
     'empty_title' => 'No support tickets',
     'empty_desc' => 'Support requests will appear here when users submit tickets.',
@@ -72,5 +75,6 @@ return [
         'created' => 'Support ticket has been created.',
         'updated' => 'Support ticket has been updated.',
         'replied' => 'Reply has been sent.',
+        'deleted' => 'Support ticket has been deleted.',
     ],
 ];

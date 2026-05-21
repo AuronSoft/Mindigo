@@ -74,6 +74,9 @@
                                 <th>@lang('Mindigo-support-management::app.status')</th>
                                 <th>@lang('Mindigo-support-management::app.priority')</th>
                                 <th>@lang('Mindigo-support-management::app.updated_at')</th>
+                                @if(auth()->user()?->isAdmin())
+                                    <th></th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -93,6 +96,23 @@
                                     <td><span class="support-badge support-status-{{ $ticket->status }}">@lang('Mindigo-support-management::app.statuses.' . $ticket->status)</span></td>
                                     <td><span class="support-badge support-priority-{{ $ticket->priority }}">@lang('Mindigo-support-management::app.priorities.' . $ticket->priority)</span></td>
                                     <td class="text-sm font-bold text-slate-500">{{ $ticket->updated_at?->diffForHumans() }}</td>
+                                    @if(auth()->user()?->isAdmin())
+                                        <td>
+                                            <form
+                                                method="POST"
+                                                action="{{ route('support-tickets.destroy', $ticket) }}"
+                                                data-mindigo-confirm-title="@lang('Mindigo-support-management::app.confirm_delete_title')"
+                                                data-mindigo-confirm-message="@lang('Mindigo-support-management::app.confirm_delete_message')"
+                                                data-mindigo-confirm-text="@lang('Mindigo-support-management::app.delete_ticket')"
+                                                data-mindigo-confirm-cancel="@lang('Mindigo-support-management::app.cancel')"
+                                                data-mindigo-confirm-type="danger"
+                                            >
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="support-danger-button">@lang('Mindigo-support-management::app.delete_ticket')</button>
+                                            </form>
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>

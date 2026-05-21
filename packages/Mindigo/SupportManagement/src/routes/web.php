@@ -13,4 +13,5 @@ Route::middleware(['web', 'auth'])
         Route::get('/{supportTicket}', [SupportTicketController::class, 'show'])->name('show');
         Route::post('/{supportTicket}/reply', [SupportTicketController::class, 'reply'])->name('reply');
         Route::put('/{supportTicket}', [SupportTicketController::class, 'update'])->name('update');
+        Route::delete('/{supportTicket}', [SupportTicketController::class, 'destroy'])->name('destroy');
     });

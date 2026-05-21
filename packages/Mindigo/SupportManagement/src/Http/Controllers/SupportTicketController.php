@@ -208,6 +208,24 @@ class SupportTicketController extends Controller
         return back()->with('success', __('Mindigo-support-management::app.messages.updated'));
     }
 
+    public function destroy(Request $request, SupportTicket $supportTicket): RedirectResponse
+    {
+        if (!$request->user()->isAdmin()) {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+
+        $this->authorizePermission($request->user(), 'support-tickets.delete');
+
+        $oldValues = $supportTicket->only(['ticket_code', 'subject', 'status', 'priority', 'category', 'assigned_to']);
+        $supportTicket->delete();
+
+        $this->audit('delete', $oldValues, [], $supportTicket);
+
+        return redirect()
+            ->route('support-tickets.index')
+            ->with('success', __('Mindigo-support-management::app.messages.deleted'));
+    }
+
     private function statsFor(User $user): array
     {
         $query = SupportTicket::query();

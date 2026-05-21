@@ -68,6 +68,7 @@ return [
             'create' => 'Create support tickets',
             'reply' => 'Reply to support tickets',
             'manage' => 'Manage support tickets',
+            'delete' => 'Delete support tickets',
         ],
         'users' => [
             'view' => 'View users',

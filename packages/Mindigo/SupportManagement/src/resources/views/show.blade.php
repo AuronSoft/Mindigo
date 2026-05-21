@@ -159,6 +159,21 @@
                     </div>
                     <button type="submit" class="support-primary-button mt-5 w-full">@lang('Mindigo-support-management::app.save_changes')</button>
                 </form>
+
+                <form
+                    method="POST"
+                    action="{{ route('support-tickets.destroy', $ticket) }}"
+                    class="support-card p-5"
+                    data-mindigo-confirm-title="@lang('Mindigo-support-management::app.confirm_delete_title')"
+                    data-mindigo-confirm-message="@lang('Mindigo-support-management::app.confirm_delete_message')"
+                    data-mindigo-confirm-text="@lang('Mindigo-support-management::app.delete_ticket')"
+                    data-mindigo-confirm-cancel="@lang('Mindigo-support-management::app.cancel')"
+                    data-mindigo-confirm-type="danger"
+                >
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="support-danger-button w-full">@lang('Mindigo-support-management::app.delete_ticket')</button>
+                </form>
             @endif
         </aside>
     </div>

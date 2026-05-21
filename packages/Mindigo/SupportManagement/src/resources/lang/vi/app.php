@@ -25,6 +25,7 @@ return [
     'internal_note' => 'Ghi chú nội bộ',
     'admin_note' => 'Ghi chú xử lý',
     'save_changes' => 'Lưu thay đổi',
+    'delete_ticket' => 'Xóa ticket',
     'submit_ticket' => 'Gửi yêu cầu',
     'attachments' => 'Tệp đính kèm',
     'choose_files' => 'Đính kèm tệp',
@@ -37,6 +38,8 @@ return [
     'confirm_reply_message' => 'Gửi phản hồi này vào cuộc trao đổi của ticket?',
     'confirm_update_title' => 'Cập nhật ticket hỗ trợ',
     'confirm_update_message' => 'Áp dụng các thay đổi cho ticket hỗ trợ này?',
+    'confirm_delete_title' => 'Xóa ticket hỗ trợ',
+    'confirm_delete_message' => 'Ticket này sẽ được xóa khỏi hàng chờ hỗ trợ đang hoạt động. Tiếp tục?',
     'search_placeholder' => 'Tìm mã ticket, tiêu đề, người gửi...',
     'empty_title' => 'Chưa có yêu cầu hỗ trợ',
     'empty_desc' => 'Các yêu cầu hỗ trợ sẽ hiển thị tại đây khi người dùng gửi ticket.',
@@ -72,5 +75,6 @@ return [
         'created' => 'Đã tạo yêu cầu hỗ trợ.',
         'updated' => 'Đã cập nhật yêu cầu hỗ trợ.',
         'replied' => 'Đã gửi phản hồi.',
+        'deleted' => 'Đã xóa yêu cầu hỗ trợ.',
     ],
 ];

@@ -68,6 +68,7 @@ return [
             'create' => 'Tạo yêu cầu hỗ trợ',
             'reply' => 'Phản hồi yêu cầu hỗ trợ',
             'manage' => 'Xử lý yêu cầu hỗ trợ',
+            'delete' => 'Xóa yêu cầu hỗ trợ',
         ],
         'users' => [
             'view' => 'Xem tài khoản',

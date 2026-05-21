@@ -20,6 +20,10 @@
         @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-green-600 px-5 text-sm font-black text-white no-underline shadow-sm transition hover:bg-green-500;
     }
 
+    .support-danger-button {
+        @apply inline-flex min-h-9 items-center justify-center rounded-xl bg-red-50 px-3 text-xs font-black text-red-700 transition hover:bg-red-100;
+    }
+
     .support-alert {
         @apply flex items-center gap-2 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-black text-green-700;
     }
