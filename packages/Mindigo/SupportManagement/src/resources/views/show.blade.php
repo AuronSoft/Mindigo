@@ -27,13 +27,6 @@
                 <span class="support-badge support-status-{{ $ticket->status }}">@lang('Mindigo-support-management::app.statuses.' . $ticket->status)</span>
             </header>
 
-            @if(session('success'))
-                <div class="support-alert">
-                    <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-[2.5]" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span>{{ session('success') }}</span>
-                </div>
-            @endif
-
             <section class="support-card p-5">
                 <h2 class="text-lg font-black text-slate-950">@lang('Mindigo-support-management::app.conversation')</h2>
                 <div class="mt-5 space-y-4">
@@ -64,7 +57,16 @@
             </section>
 
             @if(!$ticket->isClosed())
-                <form method="POST" action="{{ route('support-tickets.reply', $ticket) }}" enctype="multipart/form-data" class="support-card p-5">
+                <form
+                    method="POST"
+                    action="{{ route('support-tickets.reply', $ticket) }}"
+                    enctype="multipart/form-data"
+                    class="support-card p-5"
+                    data-mindigo-confirm-title="@lang('Mindigo-support-management::app.confirm_reply_title')"
+                    data-mindigo-confirm-message="@lang('Mindigo-support-management::app.confirm_reply_message')"
+                    data-mindigo-confirm-text="@lang('Mindigo-support-management::app.send_reply')"
+                    data-mindigo-confirm-cancel="@lang('Mindigo-support-management::app.cancel')"
+                >
                     @csrf
                     <h2 class="text-lg font-black text-slate-950">@lang('Mindigo-support-management::app.reply')</h2>
                     <div class="mt-4 space-y-4">
@@ -104,7 +106,15 @@
             </section>
 
             @if(auth()->user()?->isAdmin())
-                <form method="POST" action="{{ route('support-tickets.update', $ticket) }}" class="support-card p-5">
+                <form
+                    method="POST"
+                    action="{{ route('support-tickets.update', $ticket) }}"
+                    class="support-card p-5"
+                    data-mindigo-confirm-title="@lang('Mindigo-support-management::app.confirm_update_title')"
+                    data-mindigo-confirm-message="@lang('Mindigo-support-management::app.confirm_update_message')"
+                    data-mindigo-confirm-text="@lang('Mindigo-support-management::app.save_changes')"
+                    data-mindigo-confirm-cancel="@lang('Mindigo-support-management::app.cancel')"
+                >
                     @csrf
                     @method('PUT')
                     <h2 class="text-lg font-black text-slate-950">@lang('Mindigo-support-management::app.management')</h2>

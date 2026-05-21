@@ -187,6 +187,18 @@
     </main>
 </div>
 
+@foreach(['success' => 'success', 'info' => 'info', 'error' => 'error', 'warning' => 'warning'] as $flashKey => $toastType)
+    @if(session($flashKey))
+        <div class="hidden" data-mindigo-toast-message="{{ session($flashKey) }}" data-mindigo-toast-type="{{ $toastType }}"></div>
+    @endif
+@endforeach
+
+@if($errors->any())
+    @foreach($errors->all() as $error)
+        <div class="hidden" data-mindigo-toast-message="{{ $error }}" data-mindigo-toast-type="error" data-mindigo-toast-duration="4200"></div>
+    @endforeach
+@endif
+
 <div class="fixed z-[80] hidden rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-extrabold text-white" id="sidebar-tooltip"></div>
 @yield('scripts')
 </body>

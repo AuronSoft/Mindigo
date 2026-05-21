@@ -66,4 +66,17 @@ return [
     'suspend' => 'Suspend',
     'delete_account' => 'Delete account',
     'delete_account_desc' => 'This action cannot be undone. Account data will be permanently deleted.',
+    'messages' => [
+        'invalid_image' => 'Please select a valid image file.',
+        'image_too_large' => 'Image must not exceed 2MB.',
+        'delete_title' => 'Delete account?',
+        'delete_message' => 'This action cannot be undone. Account data will be permanently deleted.',
+        'delete_confirm' => 'Delete now',
+        'suspend_title' => 'Suspend account?',
+        'suspend_message' => 'The account will be suspended and signed out immediately.',
+        'suspend_confirm' => 'Suspend',
+        'cancel' => 'Cancel',
+        'deleting' => 'Processing account deletion...',
+        'processing' => 'Processing...',
+    ],
 ];

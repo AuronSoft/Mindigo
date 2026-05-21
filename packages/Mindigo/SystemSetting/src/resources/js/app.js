@@ -1,22 +1,7 @@
-import '../../../../Core/src/resources/js/Mindigo-ui.js';
+import '../../../../Core/src/resources/js/mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const messages = window.__systemSettingMessages || {};
-
-    if (window.__systemSettingSuccess) {
-        MindigoToast(window.__systemSettingSuccess, 'success');
-    }
-
-    if (window.__systemSettingInfo) {
-        MindigoToast(window.__systemSettingInfo, 'info');
-    }
-
-    if (Array.isArray(window.__systemSettingErrors)) {
-        window.__systemSettingErrors.forEach((message, index) => {
-            if (!message) return;
-            setTimeout(() => MindigoToast(message, 'error', 4200), index * 180);
-        });
-    }
 
     const form = document.getElementById('system-setting-form');
     if (!form) return;

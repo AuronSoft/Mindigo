@@ -742,6 +742,22 @@
     <script>window.__loginError = @json(session('error'));</script>
 @endif
 
+@php
+    $authMessages = [
+        'login_success' => __('Mindigo-auth::app.toast.login_success'),
+        'logout_success' => __('Mindigo-auth::app.toast.logout_success'),
+        'logging_out' => __('Mindigo-auth::app.toast.logging_out'),
+        'logout_title' => __('Mindigo-auth::app.confirm.logout.title'),
+        'logout_message' => __('Mindigo-auth::app.confirm.logout.message'),
+        'logout_confirm' => __('Mindigo-auth::app.confirm.logout.confirm_text'),
+        'logout_cancel' => __('Mindigo-auth::app.confirm.logout.cancel_text'),
+    ];
+@endphp
+
+<script>
+    window.__authMessages = {{ Illuminate\Support\Js::from($authMessages) }};
+</script>
+
 <form id="logoutForm" method="POST" action="{{ route('logout') }}" style="display:none;">
     @csrf
 </form>

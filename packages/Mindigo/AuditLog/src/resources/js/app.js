@@ -1,4 +1,4 @@
-import '../../../../Core/src/resources/js/Mindigo-ui.js';
+import '../../../../Core/src/resources/js/mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const messages = window.__auditLogMessages || {};

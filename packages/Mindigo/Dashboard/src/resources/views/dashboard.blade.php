@@ -38,6 +38,10 @@
     <script>
         window.__dashboardMessages = {{ Illuminate\Support\Js::from($dashboardMessages) }};
         window.__dashboardChartLabels = {{ Illuminate\Support\Js::from($dashboardChartLabels) }};
+        window.__dashboardRuntime = {{ Illuminate\Support\Js::from([
+            'timezone' => config('app.timezone'),
+            'server_now' => now()->toIso8601String(),
+        ]) }};
     </script>
 @endsection
 
@@ -115,7 +119,7 @@
                             </button>
                             <button type="button" class="inline-flex h-9 items-center gap-2 rounded-full bg-white px-3 text-xs font-black text-slate-600 ring-1 ring-slate-200 transition hover:border-green-200 hover:bg-green-50 hover:text-green-700" data-dashboard-date-button>
                                 <x-heroicon-o-calendar-days class="h-4 w-4" />
-                                <span data-dashboard-date-label>{{ now()->format('d/m/Y') }}</span>
+                                <span data-dashboard-date-label>{{ now()->format('d/m/Y H:i:s') }}</span>
                             </button>
                             <input type="date" value="{{ now()->toDateString() }}" class="sr-only" data-dashboard-date-input>
                         </div>

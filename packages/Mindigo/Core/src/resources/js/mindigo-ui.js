@@ -1,4 +1,4 @@
-// mindigo-ui.js - Global UI helpers
+// Global UI helpers.
 
 const MindigoIcons = {
     success: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
@@ -8,11 +8,11 @@ const MindigoIcons = {
 };
 
 const MindigoColors = {
-    success: { soft: '#dcfce7', border: '#bbf7d0', text: '#15803d', iconBg: '#22c55e' },
-    error: { soft: '#fef2f2', border: '#fecaca', text: '#b91c1c', iconBg: '#ef4444' },
-    danger: { soft: '#fef2f2', border: '#fecaca', text: '#b91c1c', iconBg: '#ef4444' },
-    warning: { soft: '#fffbeb', border: '#fde68a', text: '#92400e', iconBg: '#f59e0b' },
-    info: { soft: '#f0fdf4', border: '#bbf7d0', text: '#15803d', iconBg: '#22c55e' },
+    success: { soft: '#dcfce7', border: '#bbf7d0', text: '#15803d' },
+    error: { soft: '#fef2f2', border: '#fecaca', text: '#b91c1c' },
+    danger: { soft: '#fef2f2', border: '#fecaca', text: '#b91c1c' },
+    warning: { soft: '#fffbeb', border: '#fde68a', text: '#92400e' },
+    info: { soft: '#f0fdf4', border: '#bbf7d0', text: '#15803d' },
 };
 
 function escapeMindigoHtml(value) {
@@ -24,10 +24,20 @@ function escapeMindigoHtml(value) {
         .replace(/'/g, '&#039;');
 }
 
-// TOAST NOTIFICATION
-window.MindigoToast = function(msg, type = 'success', duration = 3500) {
+function readMindigoData(element, key, fallback = '') {
+    const normalKey = `mindigo${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+    const legacyKey = `Mindigo${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+
+    return element.dataset[normalKey] ?? element.dataset[legacyKey] ?? fallback;
+}
+
+function writeMindigoData(element, key, value) {
+    element.dataset[`mindigo${key.charAt(0).toUpperCase()}${key.slice(1)}`] = value;
+}
+
+window.MindigoToast = function(message, type = 'success', duration = 3500) {
     const toastType = MindigoColors[type] ? type : 'info';
-    const c = MindigoColors[toastType];
+    const color = MindigoColors[toastType];
 
     let container = document.getElementById('Mindigo-toast-container');
     if (!container) {
@@ -55,7 +65,7 @@ window.MindigoToast = function(msg, type = 'success', duration = 3500) {
         align-items: center;
         gap: 12px;
         background: #ffffff;
-        border: 1px solid ${c.border};
+        border: 1px solid ${color.border};
         color: #0f172a;
         padding: 12px 14px;
         border-radius: 16px;
@@ -72,23 +82,14 @@ window.MindigoToast = function(msg, type = 'success', duration = 3500) {
     `;
 
     toast.innerHTML = `
-        <span style="
-            width: 34px;
-            height: 34px;
-            border-radius: 12px;
-            display: grid;
-            place-items: center;
-            background: ${c.soft};
-            color: ${c.text};
-        ">${MindigoIcons[toastType]}</span>
-        <span style="min-width:0; color:#334155;">${escapeMindigoHtml(msg)}</span>
-        <span style="color:#cbd5e1; display:grid; place-items:center;">
+        <span style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:${color.soft};color:${color.text};">${MindigoIcons[toastType]}</span>
+        <span style="min-width:0;color:#334155;">${escapeMindigoHtml(message)}</span>
+        <span style="color:#cbd5e1;display:grid;place-items:center;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
         </span>
     `;
 
     container.appendChild(toast);
-
     requestAnimationFrame(() => requestAnimationFrame(() => {
         toast.style.opacity = '1';
         toast.style.transform = 'translateX(0) scale(1)';
@@ -108,16 +109,16 @@ window.MindigoToast = function(msg, type = 'success', duration = 3500) {
 };
 
 function processMindigoToastNodes(root = document) {
-    root.querySelectorAll('[data-Mindigo-toast-message]:not([data-Mindigo-toast-bound])').forEach((node) => {
-        node.dataset.MindigoToastBound = '1';
+    root.querySelectorAll('[data-mindigo-toast-message]:not([data-mindigo-toast-bound]), [data-Mindigo-toast-message]:not([data-Mindigo-toast-bound])').forEach((node) => {
+        writeMindigoData(node, 'toastBound', '1');
 
-        const message = node.dataset.MindigoToastMessage || node.textContent?.trim();
+        const message = readMindigoData(node, 'toastMessage', node.textContent?.trim());
         if (!message) {
             return;
         }
 
-        const type = node.dataset.MindigoToastType || 'info';
-        const duration = Number(node.dataset.MindigoToastDuration || 3500);
+        const type = readMindigoData(node, 'toastType', 'info');
+        const duration = Number(readMindigoData(node, 'toastDuration', 3500));
         window.MindigoToast(message, type, Number.isFinite(duration) ? duration : 3500);
         node.remove();
     });
@@ -125,11 +126,11 @@ function processMindigoToastNodes(root = document) {
 
 function getMindigoConfirmConfig(form) {
     return {
-        title: form.dataset.MindigoConfirmTitle || 'Xác nhận',
-        message: form.dataset.MindigoConfirmMessage || 'Bạn có chắc chắn không?',
-        confirmText: form.dataset.MindigoConfirmText || 'Xác nhận',
-        cancelText: form.dataset.MindigoConfirmCancel || 'Hủy',
-        type: form.dataset.MindigoConfirmType || 'warning',
+        title: readMindigoData(form, 'confirmTitle', 'Confirm action'),
+        message: readMindigoData(form, 'confirmMessage', 'Are you sure you want to continue?'),
+        confirmText: readMindigoData(form, 'confirmText', 'Confirm'),
+        cancelText: readMindigoData(form, 'confirmCancel', 'Cancel'),
+        type: readMindigoData(form, 'confirmType', 'warning'),
     };
 }
 
@@ -143,15 +144,12 @@ function bindMindigoConfirmForms() {
     document.addEventListener('submit', async (event) => {
         const form = event.target;
 
-        if (!(form instanceof HTMLFormElement)) {
+        if (!(form instanceof HTMLFormElement) || !readMindigoData(form, 'confirmMessage')) {
             return;
         }
 
-        if (!form.dataset.MindigoConfirmMessage) {
-            return;
-        }
-
-        if (form.dataset.MindigoConfirmApproved === '1') {
+        if (readMindigoData(form, 'confirmApproved') === '1') {
+            delete form.dataset.mindigoConfirmApproved;
             delete form.dataset.MindigoConfirmApproved;
             return;
         }
@@ -163,7 +161,7 @@ function bindMindigoConfirmForms() {
             return;
         }
 
-        form.dataset.MindigoConfirmApproved = '1';
+        writeMindigoData(form, 'confirmApproved', '1');
 
         if (typeof form.requestSubmit === 'function') {
             form.requestSubmit(event.submitter || undefined);
@@ -174,36 +172,24 @@ function bindMindigoConfirmForms() {
     }, true);
 }
 
-function initMindigoUi() {
-    bindMindigoConfirmForms();
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => processMindigoToastNodes(), { once: true });
-        return;
-    }
-
-    processMindigoToastNodes();
-}
-
 window.MindigoProcessToastNodes = processMindigoToastNodes;
 window.MindigoBindConfirmForms = bindMindigoConfirmForms;
 
-// CONFIRM DIALOG
 window.MindigoConfirm = function({
-    title = 'Xác nhận',
-    message = 'Bạn có chắc chắn không?',
-    confirmText = 'Xác nhận',
-    cancelText = 'Hủy',
+    title = 'Confirm action',
+    message = 'Are you sure you want to continue?',
+    confirmText = 'Confirm',
+    cancelText = 'Cancel',
     type = 'warning',
 } = {}) {
     return new Promise((resolve) => {
         const confirmType = MindigoColors[type] ? type : 'warning';
-        const c = MindigoColors[confirmType];
+        const color = MindigoColors[confirmType];
         const isDanger = confirmType === 'error' || confirmType === 'danger';
         const okBg = isDanger ? '#ef4444' : '#22c55e';
         const okShadow = isDanger ? '#b91c1c' : '#15803d';
-
         const overlay = document.createElement('div');
+
         overlay.style.cssText = `
             position: fixed;
             inset: 0;
@@ -219,69 +205,17 @@ window.MindigoConfirm = function({
         `;
 
         overlay.innerHTML = `
-            <div style="
-                width: min(420px, 100%);
-                background: #ffffff;
-                border: 1px solid #e2e8f0;
-                border-radius: 22px;
-                padding: 22px;
-                box-shadow: 0 28px 70px rgba(15,23,42,0.22);
-                transform: translateY(12px) scale(0.98);
-                transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
-                font-family: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
-            ">
-                <div style="display:flex; gap:14px; align-items:flex-start;">
-                    <div style="
-                        width: 46px;
-                        height: 46px;
-                        border-radius: 16px;
-                        background: ${c.soft};
-                        color: ${c.text};
-                        display: grid;
-                        place-items: center;
-                        flex: 0 0 auto;
-                        border: 1px solid ${c.border};
-                    ">${MindigoIcons[confirmType] || MindigoIcons.warning}</div>
-
-                    <div style="min-width:0; flex:1;">
-                        <div style="font-size:18px; font-weight:900; color:#0f172a; line-height:1.35; margin-bottom:7px;">
-                            ${escapeMindigoHtml(title)}
-                        </div>
-                        <div style="font-size:13.5px; color:#64748b; line-height:1.7; font-weight:600;">
-                            ${escapeMindigoHtml(message)}
-                        </div>
+            <div style="width:min(420px,100%);background:#ffffff;border:1px solid #e2e8f0;border-radius:22px;padding:22px;box-shadow:0 28px 70px rgba(15,23,42,0.22);transform:translateY(12px) scale(0.98);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1);font-family:'Be Vietnam Pro',ui-sans-serif,system-ui,sans-serif;">
+                <div style="display:flex;gap:14px;align-items:flex-start;">
+                    <div style="width:46px;height:46px;border-radius:16px;background:${color.soft};color:${color.text};display:grid;place-items:center;flex:0 0 auto;border:1px solid ${color.border};">${MindigoIcons[confirmType] || MindigoIcons.warning}</div>
+                    <div style="min-width:0;flex:1;">
+                        <div style="font-size:18px;font-weight:900;color:#0f172a;line-height:1.35;margin-bottom:7px;">${escapeMindigoHtml(title)}</div>
+                        <div style="font-size:13.5px;color:#64748b;line-height:1.7;font-weight:600;">${escapeMindigoHtml(message)}</div>
                     </div>
                 </div>
-
-                <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:22px;">
-                    <button id="Mindigo-confirm-cancel" type="button" style="
-                        height: 42px;
-                        padding: 0 18px;
-                        background: #ffffff;
-                        border: 1px solid #e2e8f0;
-                        border-radius: 14px;
-                        color: #475569;
-                        font-size: 13px;
-                        font-weight: 900;
-                        cursor: pointer;
-                        font-family: inherit;
-                        transition: background 0.18s ease, border-color 0.18s ease;
-                    ">${escapeMindigoHtml(cancelText)}</button>
-
-                    <button id="Mindigo-confirm-ok" type="button" style="
-                        height: 42px;
-                        padding: 0 20px;
-                        background: ${okBg};
-                        border: none;
-                        border-radius: 14px;
-                        color: #ffffff;
-                        font-size: 13px;
-                        font-weight: 900;
-                        cursor: pointer;
-                        font-family: inherit;
-                        box-shadow: 0 4px 0 ${okShadow};
-                        transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-                    ">${escapeMindigoHtml(confirmText)}</button>
+                <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:22px;">
+                    <button id="Mindigo-confirm-cancel" type="button" style="height:42px;padding:0 18px;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;color:#475569;font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;transition:background 0.18s ease,border-color 0.18s ease;">${escapeMindigoHtml(cancelText)}</button>
+                    <button id="Mindigo-confirm-ok" type="button" style="height:42px;padding:0 20px;background:${okBg};border:none;border-radius:14px;color:#ffffff;font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 4px 0 ${okShadow};transition:transform 0.18s ease,box-shadow 0.18s ease,background 0.18s ease;">${escapeMindigoHtml(confirmText)}</button>
                 </div>
             </div>
         `;
@@ -297,23 +231,6 @@ window.MindigoConfirm = function({
             dialog.style.transform = 'translateY(0) scale(1)';
         }));
 
-        okButton.addEventListener('mouseenter', () => {
-            okButton.style.transform = 'translateY(1px)';
-            okButton.style.boxShadow = `0 2px 0 ${okShadow}`;
-        });
-        okButton.addEventListener('mouseleave', () => {
-            okButton.style.transform = '';
-            okButton.style.boxShadow = `0 4px 0 ${okShadow}`;
-        });
-        cancelButton.addEventListener('mouseenter', () => {
-            cancelButton.style.background = '#f8fafc';
-            cancelButton.style.borderColor = '#cbd5e1';
-        });
-        cancelButton.addEventListener('mouseleave', () => {
-            cancelButton.style.background = '#ffffff';
-            cancelButton.style.borderColor = '#e2e8f0';
-        });
-
         const close = (result) => {
             overlay.style.opacity = '0';
             dialog.style.transform = 'translateY(10px) scale(0.98)';
@@ -325,24 +242,28 @@ window.MindigoConfirm = function({
         };
 
         const keyHandler = (event) => {
-            if (event.key === 'Escape') {
-                close(false);
-            }
-
-            if (event.key === 'Enter') {
-                close(true);
-            }
+            if (event.key === 'Escape') close(false);
+            if (event.key === 'Enter') close(true);
         };
 
         okButton.addEventListener('click', () => close(true));
         cancelButton.addEventListener('click', () => close(false));
         overlay.addEventListener('click', (event) => {
-            if (event.target === overlay) {
-                close(false);
-            }
+            if (event.target === overlay) close(false);
         });
         document.addEventListener('keydown', keyHandler);
     });
 };
+
+function initMindigoUi() {
+    bindMindigoConfirmForms();
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => processMindigoToastNodes(), { once: true });
+        return;
+    }
+
+    processMindigoToastNodes();
+}
 
 initMindigoUi();

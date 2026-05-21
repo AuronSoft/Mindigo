@@ -1,7 +1,8 @@
-import '../../../../Core/src/resources/js/Mindigo-ui.js';
+import '../../../../Core/src/resources/js/mindigo-ui.js';
 
 const dashboardMessages = window.__dashboardMessages || {};
 const dashboardChartLabels = window.__dashboardChartLabels || {};
+const dashboardRuntime = window.__dashboardRuntime || {};
 
 const chartDefaults = {
     responsive: true,
@@ -309,6 +310,59 @@ const formatDashboardDate = (value) => {
     return [day, month, year].filter(Boolean).join('/');
 };
 
+const formatDashboardDateTime = (date) => {
+    const timeZone = dashboardRuntime.timezone || 'Asia/Ho_Chi_Minh';
+    const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone,
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+    }).formatToParts(date).reduce((items, part) => {
+        items[part.type] = part.value;
+        return items;
+    }, {});
+
+    return `${parts.day}/${parts.month}/${parts.year} ${parts.hour}:${parts.minute}:${parts.second}`;
+};
+
+const formatDashboardInputDate = (date) => {
+    const timeZone = dashboardRuntime.timezone || 'Asia/Ho_Chi_Minh';
+    const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).formatToParts(date).reduce((items, part) => {
+        items[part.type] = part.value;
+        return items;
+    }, {});
+
+    return `${parts.year}-${parts.month}-${parts.day}`;
+};
+
+const startDashboardClock = () => {
+    if (!dashboardDateLabel || !dashboardDateInput) {
+        return;
+    }
+
+    const tick = () => {
+        if (dashboardDateInput.dataset.manual === 'true') {
+            return;
+        }
+
+        const now = new Date();
+        dashboardDateLabel.textContent = formatDashboardDateTime(now);
+        dashboardDateInput.value = formatDashboardInputDate(now);
+    };
+
+    tick();
+    window.setInterval(tick, 1000);
+};
+
 const setTimeframeEnabled = (enabled) => {
     timeframeToggle?.setAttribute('aria-pressed', enabled ? 'true' : 'false');
     timeframeTrack?.classList.toggle('bg-green-600', enabled);
@@ -377,9 +431,12 @@ dashboardDateButton?.addEventListener('click', () => {
 
 dashboardDateInput?.addEventListener('change', () => {
     if (dashboardDateLabel) {
+        dashboardDateInput.dataset.manual = 'true';
         dashboardDateLabel.textContent = formatDashboardDate(dashboardDateInput.value);
     }
 });
+
+startDashboardClock();
 
 dashboardDropdowns.forEach((dropdown) => {
     const trigger = dropdown.querySelector('[data-dashboard-dropdown-trigger]');

@@ -172,4 +172,18 @@ return [
         ],
     ],
 
+    'toast' => [
+        'login_success' => 'Đăng nhập thành công! Chào mừng bạn.',
+        'logout_success' => 'Đăng xuất thành công.',
+        'logging_out' => 'Đang đăng xuất...',
+    ],
+
+    'confirm' => [
+        'logout' => [
+            'title' => 'Đăng xuất',
+            'message' => 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
+            'confirm_text' => 'Đăng xuất',
+            'cancel_text' => 'Hủy',
+        ],
+    ],
 ];

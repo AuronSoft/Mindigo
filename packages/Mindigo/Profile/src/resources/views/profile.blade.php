@@ -51,5 +51,6 @@
     <script>
         window.__profileSuccess = @json(session('success'));
         window.__profileErrors = @json($errors->all());
+        window.__profileMessages = @json(__('Mindigo-profile::app.messages'));
     </script>
 @endsection

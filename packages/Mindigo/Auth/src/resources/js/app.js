@@ -1,7 +1,8 @@
-import '../../../../Core/src/resources/js/Mindigo-ui.js';
+import '../../../../Core/src/resources/js/mindigo-ui.js';
 import '../css/app.css';
 import './mindigo-id';
 
+const authMessages = window.__authMessages || {};
 const pwToggle = document.getElementById('pwToggle');
 const pwInput = document.getElementById('password');
 const eyeIcon = document.getElementById('eyeIcon');
@@ -16,16 +17,16 @@ pwToggle?.addEventListener('click', () => {
 
 document.getElementById('loginForm')?.addEventListener('submit', () => {
     const btn = document.getElementById('loginBtn');
-    btn.classList.add('loading');
-    btn.disabled = true;
+    btn?.classList.add('loading');
+    if (btn) btn.disabled = true;
 });
 
 if (window.__loginSuccess) {
-    MindigoToast('Đăng nhập thành công! Chào mừng trở lại.', 'success');
+    MindigoToast(authMessages.login_success || 'Login successful! Welcome back.', 'success');
 }
 
 if (window.__logoutSuccess) {
-    MindigoToast('Đăng xuất thành công. Hẹn gặp lại!', 'success');
+    MindigoToast(authMessages.logout_success || 'Logged out successfully. See you again!', 'success');
 }
 
 if (window.__loginError) {
@@ -33,43 +34,45 @@ if (window.__loginError) {
 }
 
 document.querySelectorAll('[data-logout]').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-        e.preventDefault();
+    btn.addEventListener('click', async (event) => {
+        event.preventDefault();
 
         const confirmed = await MindigoConfirm({
-            title: 'Đăng xuất',
-            message: 'Bạn có chắc chắn muốn đăng xuất không?',
-            confirmText: 'Đăng xuất',
-            cancelText: 'Huỷ',
+            title: authMessages.logout_title || 'Logout',
+            message: authMessages.logout_message || 'Are you sure you want to logout?',
+            confirmText: authMessages.logout_confirm || 'Logout',
+            cancelText: authMessages.logout_cancel || 'Cancel',
             type: 'warning',
         });
 
         if (!confirmed) return;
 
-        MindigoToast('Đang đăng xuất...', 'info', 1500);
+        MindigoToast(authMessages.logging_out || 'Logging out...', 'info', 1500);
         setTimeout(() => document.getElementById('logoutForm')?.submit(), 1000);
     });
 });
 
-(function () {
+(() => {
     const canvas = document.getElementById('connectorCanvas');
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     const cardIds = ['fc1', 'fc2', 'fc3', 'fc4', 'fc5', 'fc6', 'fc7'];
     const colors = ['#60A5FA', '#22c55e', '#A78BFA', '#FBBF24', '#F87171', '#34D399', '#60A5FA'];
-
-    const dots = cardIds.map((id, i) => ({
+    const dots = cardIds.map((id, index) => ({
         id,
-        color: colors[i],
+        color: colors[index],
         progress: Math.random(),
         speed: 0.003 + Math.random() * 0.002,
     }));
 
-    function getCenter(el, container) {
-        const er = el.getBoundingClientRect();
-        const cr = container.getBoundingClientRect();
-        return { x: er.left - cr.left + er.width / 2, y: er.top - cr.top + er.height / 2 };
+    function getCenter(element, container) {
+        const rect = element.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        return {
+            x: rect.left - containerRect.left + rect.width / 2,
+            y: rect.top - containerRect.top + rect.height / 2,
+        };
     }
 
     function resize() {
@@ -81,25 +84,30 @@ document.querySelectorAll('[data-logout]').forEach(btn => {
     function draw() {
         resize();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         const container = canvas.parentElement;
-        const logoEl = document.getElementById('centerLogo');
-        if (!logoEl) return requestAnimationFrame(draw);
-        const center = getCenter(logoEl, container);
+        const logo = document.getElementById('centerLogo');
+        if (!logo) {
+            requestAnimationFrame(draw);
+            return;
+        }
+
+        const center = getCenter(logo, container);
 
         dots.forEach(dot => {
-            const cardEl = document.getElementById(dot.id);
-            if (!cardEl) return;
+            const card = document.getElementById(dot.id);
+            if (!card) return;
 
-            const cardCenter = getCenter(cardEl, container);
+            const cardCenter = getCenter(card, container);
             const hex = dot.color.replace('#', '');
-            const r = parseInt(hex.substring(0, 2), 16);
-            const g = parseInt(hex.substring(2, 4), 16);
-            const b = parseInt(hex.substring(4, 6), 16);
+            const red = parseInt(hex.substring(0, 2), 16);
+            const green = parseInt(hex.substring(2, 4), 16);
+            const blue = parseInt(hex.substring(4, 6), 16);
 
             ctx.beginPath();
             ctx.moveTo(cardCenter.x, cardCenter.y);
             ctx.lineTo(center.x, center.y);
-            ctx.strokeStyle = `rgba(${r},${g},${b},0.15)`;
+            ctx.strokeStyle = `rgba(${red},${green},${blue},0.15)`;
             ctx.lineWidth = 1;
             ctx.setLineDash([4, 6]);
             ctx.stroke();
@@ -110,10 +118,9 @@ document.querySelectorAll('[data-logout]').forEach(btn => {
 
             const px = cardCenter.x + (center.x - cardCenter.x) * dot.progress;
             const py = cardCenter.y + (center.y - cardCenter.y) * dot.progress;
-
             const gradient = ctx.createRadialGradient(px, py, 0, px, py, 6);
-            gradient.addColorStop(0, `rgba(${r},${g},${b},0.9)`);
-            gradient.addColorStop(1, `rgba(${r},${g},${b},0)`);
+            gradient.addColorStop(0, `rgba(${red},${green},${blue},0.9)`);
+            gradient.addColorStop(1, `rgba(${red},${green},${blue},0)`);
 
             ctx.beginPath();
             ctx.arc(px, py, 4, 0, Math.PI * 2);

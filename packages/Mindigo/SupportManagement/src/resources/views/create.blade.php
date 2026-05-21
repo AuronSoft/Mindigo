@@ -25,7 +25,16 @@
             </div>
         </header>
 
-        <form method="POST" action="{{ route('support-tickets.store') }}" enctype="multipart/form-data" class="support-card p-5">
+        <form
+            method="POST"
+            action="{{ route('support-tickets.store') }}"
+            enctype="multipart/form-data"
+            class="support-card p-5"
+            data-mindigo-confirm-title="@lang('Mindigo-support-management::app.confirm_create_title')"
+            data-mindigo-confirm-message="@lang('Mindigo-support-management::app.confirm_create_message')"
+            data-mindigo-confirm-text="@lang('Mindigo-support-management::app.submit_ticket')"
+            data-mindigo-confirm-cancel="@lang('Mindigo-support-management::app.cancel')"
+        >
             @csrf
             <div class="grid gap-4 md:grid-cols-2">
                 <label class="support-field md:col-span-2">

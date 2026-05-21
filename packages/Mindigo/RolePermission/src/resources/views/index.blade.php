@@ -30,13 +30,6 @@
             </div>
         </header>
 
-        @if(session('success'))
-            <div class="role-alert">
-                <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-[2.5]" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>{{ session('success') }}</span>
-            </div>
-        @endif
-
         <section class="grid gap-4 lg:grid-cols-3">
             @foreach($roles as $role => $label)
                 <article class="role-card">
@@ -57,7 +50,15 @@
             @endforeach
         </section>
 
-        <form class="role-matrix" method="POST" action="{{ route('role-permissions.update') }}">
+        <form
+            class="role-matrix"
+            method="POST"
+            action="{{ route('role-permissions.update') }}"
+            data-mindigo-confirm-title="@lang('Mindigo-role-permission::app.confirm_title')"
+            data-mindigo-confirm-message="@lang('Mindigo-role-permission::app.confirm_message')"
+            data-mindigo-confirm-text="@lang('Mindigo-role-permission::app.save')"
+            data-mindigo-confirm-cancel="@lang('Mindigo-role-permission::app.cancel')"
+        >
             @csrf
             @method('PUT')
 

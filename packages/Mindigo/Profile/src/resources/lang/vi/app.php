@@ -66,4 +66,17 @@ return [
     'suspend' => 'Đình chỉ',
     'delete_account' => 'Xoá tài khoản',
     'delete_account_desc' => 'Hành động này không thể hoàn tác. Dữ liệu tài khoản sẽ bị xoá vĩnh viễn.',
+    'messages' => [
+        'invalid_image' => 'Vui lòng chọn file ảnh hợp lệ.',
+        'image_too_large' => 'Ảnh không được vượt quá 2MB.',
+        'delete_title' => 'Xóa tài khoản?',
+        'delete_message' => 'Hành động này không thể hoàn tác. Dữ liệu tài khoản sẽ bị xóa vĩnh viễn.',
+        'delete_confirm' => 'Xóa ngay',
+        'suspend_title' => 'Đình chỉ tài khoản?',
+        'suspend_message' => 'Tài khoản sẽ bị tạm khóa và bạn sẽ bị đăng xuất ngay lập tức.',
+        'suspend_confirm' => 'Đình chỉ',
+        'cancel' => 'Hủy',
+        'deleting' => 'Đang xử lý yêu cầu xóa tài khoản...',
+        'processing' => 'Đang xử lý...',
+    ],
 ];
