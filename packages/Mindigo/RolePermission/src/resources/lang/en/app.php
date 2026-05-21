@@ -74,6 +74,8 @@ return [
             'view' => 'View users',
             'create' => 'Create users',
             'update' => 'Update users',
+            'delete' => 'Delete users',
+            'restore' => 'Restore users',
         ],
         'system_settings' => [
             'view' => 'View system settings',

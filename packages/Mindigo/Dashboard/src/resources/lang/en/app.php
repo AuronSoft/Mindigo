@@ -18,6 +18,7 @@ return [
     'logout' => 'Sign out',
     'my_account' => 'My account',
     'system_settings' => 'System settings',
+    'user_management' => 'User management',
     'role_permissions' => 'Role permissions',
     'audit_logs' => 'Audit logs',
 

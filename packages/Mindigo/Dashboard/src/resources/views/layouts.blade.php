@@ -137,6 +137,9 @@
                         @if(Route::has('system-settings.index'))
                             <a href="{{ route('system-settings.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('system-settings.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.system_settings')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.system_settings')</span></a>
                         @endif
+                        @if(Route::has('users.index') && ($currentUser?->hasPermissionTo('users.view') ?? false))
+                            <a href="{{ route('users.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('users.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.user_management')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.user_management')</span></a>
+                        @endif
                         @if(Route::has('role-permissions.index'))
                             <a href="{{ route('role-permissions.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('role-permissions.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.role_permissions')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.role_permissions')</span></a>
                         @endif

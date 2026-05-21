@@ -18,6 +18,7 @@ return [
     'logout' => 'Đăng xuất',
     'my_account' => 'Tài khoản của tôi',
     'system_settings' => 'Cấu hình hệ thống',
+    'user_management' => 'Quản lý tài khoản',
     'role_permissions' => 'Phân quyền',
     'audit_logs' => 'Nhật ký thao tác',
 

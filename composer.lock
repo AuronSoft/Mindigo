@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ed5e4ff14be7a7296d47b73ea3c48e0",
+    "content-hash": "162a725368f2612c0292526af6bbff7c",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2172,7 +2172,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2202,7 +2202,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2268,7 +2268,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2298,7 +2298,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2328,7 +2328,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -2358,7 +2358,7 @@
         },
         {
             "name": "mindigo/role-permission",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -2388,7 +2388,7 @@
         },
         {
             "name": "mindigo/support-management",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SupportManagement",
@@ -2418,7 +2418,7 @@
         },
         {
             "name": "mindigo/system-setting",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",
@@ -2442,6 +2442,36 @@
                 }
             },
             "description": "Mindigo system settings package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/user-management",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/UserManagement",
+                "reference": "064cb787007ab415f0cbe6b4699b217a166c1f87"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\UserManagement\\Providers\\UserManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\UserManagement\\": "src/"
+                }
+            },
+            "description": "Mindigo user management package",
             "transport-options": {
                 "relative": true
             }

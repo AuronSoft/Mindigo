@@ -17,6 +17,8 @@ export default defineConfig({
                 "packages/Mindigo/RolePermission/src/resources/js/app.js",
                 "packages/Mindigo/SupportManagement/src/resources/css/app.css",
                 "packages/Mindigo/SupportManagement/src/resources/js/app.js",
+                "packages/Mindigo/UserManagement/src/resources/css/app.css",
+                "packages/Mindigo/UserManagement/src/resources/js/app.js",
                 "packages/Mindigo/SystemSetting/src/resources/css/app.css",
                 "packages/Mindigo/SystemSetting/src/resources/js/app.js",
                 "packages/Mindigo/AuditLog/src/resources/css/app.css",

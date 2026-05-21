@@ -74,6 +74,8 @@ return [
             'view' => 'Xem tài khoản',
             'create' => 'Tạo tài khoản',
             'update' => 'Cập nhật tài khoản',
+            'delete' => 'Xóa tài khoản',
+            'restore' => 'Khôi phục tài khoản',
         ],
         'system_settings' => [
             'view' => 'Xem cấu hình hệ thống',

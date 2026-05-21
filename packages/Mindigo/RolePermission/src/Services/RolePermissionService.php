@@ -77,6 +77,8 @@ class RolePermissionService
                     'users.view' => __('Mindigo-role-permission::app.permissions.users.view'),
                     'users.create' => __('Mindigo-role-permission::app.permissions.users.create'),
                     'users.update' => __('Mindigo-role-permission::app.permissions.users.update'),
+                    'users.delete' => __('Mindigo-role-permission::app.permissions.users.delete'),
+                    'users.restore' => __('Mindigo-role-permission::app.permissions.users.restore'),
                     'system-settings.view' => __('Mindigo-role-permission::app.permissions.system_settings.view'),
                     'system-settings.update' => __('Mindigo-role-permission::app.permissions.system_settings.update'),
                     'audit-logs.view' => __('Mindigo-role-permission::app.permissions.audit_logs.view'),

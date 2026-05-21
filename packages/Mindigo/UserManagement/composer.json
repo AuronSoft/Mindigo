@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/user-management",
+    "description": "Mindigo user management package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\UserManagement\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\UserManagement\\Providers\\UserManagementServiceProvider"
+            ]
+        }
+    }
+}
