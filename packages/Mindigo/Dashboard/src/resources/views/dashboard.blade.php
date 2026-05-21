@@ -165,12 +165,20 @@
                         </div>
                     </div>
 
-                    <div class="mt-5 grid gap-2 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-                        <div class="grid grid-cols-4 overflow-hidden rounded-full border border-green-100 bg-white text-xs font-black text-slate-500 shadow-sm max-lg:grid-cols-1">
-                            <span class="flex min-h-10 items-center gap-2 px-3"><span class="grid h-6 w-6 place-items-center rounded-full bg-green-100 text-[10px] text-green-700">A</span> 12,063 <b class="ml-auto text-slate-300">39.63%</b></span>
-                            <span class="flex min-h-10 items-center gap-2 border-l border-slate-200 px-3 max-lg:border-l-0 max-lg:border-t"><span class="grid h-6 w-6 place-items-center rounded-full bg-sky-100 text-[10px] text-sky-700">M</span> 5,841 <b class="ml-auto text-slate-300">20.65%</b></span>
-                            <span class="flex min-h-10 items-center gap-2 border-l border-slate-200 px-3 max-lg:border-l-0 max-lg:border-t"><span class="grid h-6 w-6 place-items-center rounded-full bg-amber-100 text-[10px] text-amber-700">E</span> 7,115 <b class="ml-auto text-slate-300">22.14%</b></span>
-                            <span class="flex min-h-10 items-center gap-2 border-l border-slate-200 px-3 max-lg:border-l-0 max-lg:border-t"><span class="grid h-6 w-6 place-items-center rounded-full bg-emerald-100 text-[10px] text-emerald-700">C</span> 4,386 <b class="ml-auto text-slate-300">8.58%</b></span>
+                    <div class="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                        <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                            @foreach([
+                                ['initial' => 'A', 'value' => '12,063', 'percent' => '39.63%', 'tone' => 'bg-green-100 text-green-700 ring-green-100'],
+                                ['initial' => 'M', 'value' => '5,841', 'percent' => '20.65%', 'tone' => 'bg-sky-100 text-sky-700 ring-sky-100'],
+                                ['initial' => 'E', 'value' => '7,115', 'percent' => '22.14%', 'tone' => 'bg-amber-100 text-amber-700 ring-amber-100'],
+                                ['initial' => 'C', 'value' => '4,386', 'percent' => '8.58%', 'tone' => 'bg-emerald-100 text-emerald-700 ring-emerald-100'],
+                            ] as $metric)
+                                <div class="grid min-h-12 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-500 shadow-sm">
+                                    <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-[10px] ring-1 {{ $metric['tone'] }}">{{ $metric['initial'] }}</span>
+                                    <strong class="min-w-0 truncate text-sm text-slate-700">{{ $metric['value'] }}</strong>
+                                    <b class="shrink-0 whitespace-nowrap text-[11px] text-slate-300">{{ $metric['percent'] }}</b>
+                                </div>
+                            @endforeach
                         </div>
                         <a href="#reports" class="inline-flex min-h-10 items-center justify-center rounded-full bg-green-700 px-5 text-xs font-black text-white no-underline transition hover:bg-green-600">@lang('Mindigo-dashboard::app.details')</a>
                     </div>
@@ -254,7 +262,7 @@
                                 </div>
                             </div>
 
-                            <div class="grid h-52 grid-cols-5 items-end gap-3 rounded-2xl bg-slate-50 px-4 pb-4 pt-6">
+                            <div class="grid h-56 grid-cols-5 items-end gap-2 rounded-2xl bg-slate-50 px-3 pb-4 pt-6">
                                 @foreach([
                                     ['label' => __('Mindigo-dashboard::app.bar_thpt'), 'height' => 62, 'icon' => 'T', 'tone' => 'bg-green-600'],
                                     ['label' => __('Mindigo-dashboard::app.bar_practice'), 'height' => 88, 'icon' => 'P', 'tone' => 'bg-emerald-500'],
@@ -262,11 +270,11 @@
                                     ['label' => __('Mindigo-dashboard::app.bar_ai'), 'height' => 38, 'icon' => 'AI', 'tone' => 'bg-amber-400'],
                                     ['label' => __('Mindigo-dashboard::app.bar_other'), 'height' => 72, 'icon' => '+', 'tone' => 'bg-white border border-dashed border-slate-300'],
                                 ] as $bar)
-                                    <div class="flex h-full flex-col items-center justify-end gap-2 transition" data-dashboard-chart-bar data-filter="{{ in_array($loop->index, [0, 2], true) ? 'core' : 'learning' }}">
-                                        <div class="grid w-full place-items-center rounded-2xl {{ $bar['tone'] }} text-xs font-black {{ str_contains($bar['tone'], 'bg-white') ? 'text-slate-400' : 'text-white' }}" style="height: {{ $bar['height'] }}%">
+                                    <div class="flex h-full min-w-0 flex-col items-center justify-end gap-2 transition" data-dashboard-chart-bar data-filter="{{ in_array($loop->index, [0, 2], true) ? 'core' : 'learning' }}">
+                                        <div class="grid w-full min-w-10 place-items-center rounded-2xl {{ $bar['tone'] }} text-xs font-black {{ str_contains($bar['tone'], 'bg-white') ? 'text-slate-400' : 'text-white' }}" style="height: {{ $bar['height'] }}%">
                                             {{ $bar['icon'] }}
                                         </div>
-                                        <span class="text-[10px] font-black text-slate-400">{{ [
+                                        <span class="block h-4 w-full truncate text-center text-[10px] font-black leading-4 text-slate-400" title="{{ $bar['label'] }}">{{ [
                                             __('Mindigo-dashboard::app.bar_thpt'),
                                             __('Mindigo-dashboard::app.bar_practice'),
                                             __('Mindigo-dashboard::app.bar_class_exam'),
