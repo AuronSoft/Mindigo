@@ -88,6 +88,11 @@
                         <a href="#learners" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.learners')">
                             <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.learners')</span>
                         </a>
+                        @if(Route::has('classrooms.index') && ($currentUser?->hasPermissionTo('classrooms.view') ?? false))
+                            <a href="{{ route('classrooms.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('classrooms.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.classrooms')">
+                                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.classrooms')</span>
+                            </a>
+                        @endif
                     </div>
                 </div>
 

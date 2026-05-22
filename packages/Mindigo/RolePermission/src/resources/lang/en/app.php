@@ -61,6 +61,13 @@ return [
             'update' => 'Update subjects',
             'delete' => 'Delete subjects',
         ],
+        'classrooms' => [
+            'view' => 'View classrooms',
+            'create' => 'Create classrooms',
+            'update' => 'Update classrooms',
+            'manage_students' => 'Manage classroom students',
+            'delete' => 'Delete classrooms',
+        ],
         'questions' => [
             'view' => 'View questions',
             'create' => 'Create questions',

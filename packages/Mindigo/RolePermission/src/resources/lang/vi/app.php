@@ -61,6 +61,13 @@ return [
             'update' => 'Cập nhật môn học',
             'delete' => 'Xóa môn học',
         ],
+        'classrooms' => [
+            'view' => 'Xem lớp học',
+            'create' => 'Tạo lớp học',
+            'update' => 'Cập nhật lớp học',
+            'manage_students' => 'Quản lý học sinh trong lớp',
+            'delete' => 'Xóa lớp học',
+        ],
         'questions' => [
             'view' => 'Xem câu hỏi',
             'create' => 'Tạo câu hỏi',

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "19056bee3ee61a8e5388700dbd216af8",
+    "content-hash": "e39d16848f17971323aee4a1c9b054ce",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2262,6 +2262,36 @@
                 }
             },
             "description": "Mindigo Blog Management Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/classroom-management",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/ClassroomManagement",
+                "reference": "ac7d179e56a3aa376c542ecd2a826094c921515f"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\ClassroomManagement\\Providers\\ClassroomManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\ClassroomManagement\\": "src/"
+                }
+            },
+            "description": "Mindigo classroom management package",
             "transport-options": {
                 "relative": true
             }

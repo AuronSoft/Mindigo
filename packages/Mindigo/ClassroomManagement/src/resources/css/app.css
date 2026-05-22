@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+@source "../../../../Dashboard/src/resources/views/**/*.blade.php";
+@source "../views/**/*.blade.php";
+
+@layer components {
+    .classroom-page {
+        @apply w-full px-5 pb-10 pt-2;
+    }
+
+    .classroom-hero,
+    .classroom-card,
+    .classroom-stat-card,
+    .classroom-filter {
+        @apply rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70;
+    }
+
+    .classroom-hero {
+        @apply flex flex-col gap-5 p-6 lg:flex-row lg:items-center lg:justify-between;
+    }
+
+    .classroom-hero h1 {
+        @apply mt-2 text-3xl font-black tracking-normal text-slate-950;
+    }
+
+    .classroom-hero p {
+        @apply mt-2 max-w-3xl text-sm font-semibold leading-6 text-slate-500;
+    }
+
+    .classroom-breadcrumb {
+        @apply flex flex-wrap items-center gap-2 text-xs font-black text-slate-400;
+    }
+
+    .classroom-breadcrumb a {
+        @apply text-slate-500 no-underline hover:text-green-700;
+    }
+
+    .classroom-primary-button,
+    .classroom-secondary-button,
+    .classroom-danger-button,
+    .classroom-filter-button {
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-black no-underline transition;
+    }
+
+    .classroom-primary-button,
+    .classroom-filter-button {
+        @apply border-0 bg-green-600 text-white shadow-sm shadow-green-200 hover:bg-green-500;
+    }
+
+    .classroom-secondary-button {
+        @apply border border-slate-200 bg-slate-50 text-slate-700 hover:bg-white hover:text-green-700;
+    }
+
+    .classroom-danger-button {
+        @apply border-0 bg-rose-50 text-rose-700 hover:bg-rose-100;
+    }
+
+    .classroom-stat-card {
+        @apply p-5;
+    }
+
+    .classroom-stat-card span {
+        @apply block text-xs font-black uppercase tracking-normal text-slate-400;
+    }
+
+    .classroom-stat-card strong {
+        @apply mt-2 block text-3xl font-black text-slate-950;
+    }
+
+    .classroom-filter {
+        @apply grid gap-3 p-4 lg:grid-cols-[1fr_12rem_13rem_13rem_auto_auto];
+    }
+
+    .classroom-input,
+    .classroom-select,
+    .classroom-textarea {
+        @apply w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-green-300 focus:ring-4 focus:ring-green-100;
+    }
+
+    .classroom-input,
+    .classroom-select {
+        @apply min-h-12;
+    }
+
+    .classroom-textarea {
+        @apply min-h-28 py-4 leading-6;
+    }
+
+    .classroom-table {
+        @apply w-full min-w-[920px] border-collapse;
+    }
+
+    .classroom-table th {
+        @apply bg-slate-50 px-5 py-4 text-left text-xs font-black uppercase tracking-normal text-slate-400;
+    }
+
+    .classroom-table td {
+        @apply border-t border-slate-100 px-5 py-4;
+    }
+
+    .classroom-badge,
+    .classroom-pill {
+        @apply inline-flex min-h-7 items-center rounded-full px-3 text-xs font-black;
+    }
+
+    .classroom-pill {
+        @apply bg-green-50 text-green-700;
+    }
+
+    .classroom-status-active {
+        @apply bg-green-50 text-green-700;
+    }
+
+    .classroom-status-inactive {
+        @apply bg-slate-100 text-slate-600;
+    }
+
+    .classroom-card-head {
+        @apply border-b border-slate-100 p-5;
+    }
+
+    .classroom-card-head h2 {
+        @apply text-lg font-black text-slate-950;
+    }
+
+    .classroom-card-head p {
+        @apply mt-1 text-sm font-semibold text-slate-400;
+    }
+
+    .classroom-section-head {
+        @apply flex items-start gap-3;
+    }
+
+    .classroom-section-head > span {
+        @apply grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-green-50 text-sm font-black text-green-700;
+    }
+
+    .classroom-section-head h2 {
+        @apply text-lg font-black text-slate-950;
+    }
+
+    .classroom-section-head p {
+        @apply mt-1 text-sm font-semibold text-slate-400;
+    }
+
+    .classroom-form-grid {
+        @apply grid gap-4 md:grid-cols-2;
+    }
+
+    .classroom-field {
+        @apply flex flex-col gap-2 text-sm font-black text-slate-600;
+    }
+
+    .classroom-field strong {
+        @apply text-xs font-bold text-rose-600;
+    }
+
+    .classroom-check-grid {
+        @apply grid max-h-[32rem] gap-2 overflow-y-auto pr-1 md:grid-cols-2;
+    }
+
+    .classroom-check {
+        @apply flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 text-sm font-black text-slate-700 transition hover:border-green-200 hover:bg-green-50;
+    }
+
+    .classroom-check input {
+        @apply h-4 w-4 rounded border-slate-300 text-green-600 focus:ring-green-500;
+    }
+
+    .classroom-check small {
+        @apply mt-1 block text-xs font-semibold text-slate-400;
+    }
+
+    .classroom-list-row {
+        @apply flex items-center justify-between gap-4 p-5;
+    }
+
+    .classroom-list-row strong {
+        @apply text-sm font-black text-slate-800;
+    }
+
+    .classroom-list-row span {
+        @apply text-xs font-bold text-slate-400;
+    }
+}

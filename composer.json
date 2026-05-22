@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.10.1",
         "mindigo/auth": "*",
         "mindigo/blog-management": "dev-main",
+        "mindigo/classroom-management": "*",
         "mindigo/core": "*",
         "mindigo/dashboard": "*",
         "mindigo/exam-management": "*",
@@ -43,6 +44,7 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "Mindigo\\Auth\\": "packages/Mindigo/Auth/src/",
+            "Mindigo\\ClassroomManagement\\": "packages/Mindigo/ClassroomManagement/src/",
             "Mindigo\\Core\\": "packages/Mindigo/Core/src/",
             "Mindigo\\Dashboard\\": "packages/Mindigo/Dashboard/src/",
             "Mindigo\\ExamManagement\\": "packages/Mindigo/ExamManagement/src/",
@@ -66,6 +68,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/Auth"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/ClassroomManagement"
         },
         {
             "type": "path",
