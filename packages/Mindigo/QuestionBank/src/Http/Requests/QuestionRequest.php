@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Mindigo\QuestionBank\Models\Question;
+use Mindigo\SubjectManagement\Models\Subject;
 
 class QuestionRequest extends FormRequest
 {
@@ -35,6 +36,30 @@ class QuestionRequest extends FormRequest
             'explanation' => ['nullable', 'string', 'max:5000'],
             'tags_text' => ['nullable', 'string', 'max:1000'],
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator): void {
+            $subjects = $this->activeSubjectsWithTopics();
+
+            if (empty($subjects)) {
+                return;
+            }
+
+            $subject = trim((string) $this->input('subject'));
+            $topic = trim((string) $this->input('topic'));
+
+            if (!array_key_exists($subject, $subjects)) {
+                $validator->errors()->add('subject', __('Mindigo-question-bank::app.validation.subject_required_from_catalog'));
+
+                return;
+            }
+
+            if ($topic !== '' && !in_array($topic, $subjects[$subject], true)) {
+                $validator->errors()->add('topic', __('Mindigo-question-bank::app.validation.topic_must_match_subject'));
+            }
+        });
     }
 
     public function questionData(?Question $question = null): array
@@ -104,6 +129,27 @@ class QuestionRequest extends FormRequest
             ->map(fn ($tag) => trim($tag))
             ->filter()
             ->values()
+            ->all();
+    }
+
+    private function activeSubjectsWithTopics(): array
+    {
+        if (!class_exists(Subject::class)) {
+            return [];
+        }
+
+        return Subject::query()
+            ->with(['topics' => fn ($query) => $query
+                ->where('status', 'active')
+                ->orderBy('sort_order')
+                ->orderBy('name')])
+            ->where('status', 'active')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(fn (Subject $subject) => [
+                $subject->name => $subject->topics->pluck('name')->values()->all(),
+            ])
             ->all();
     }
 }

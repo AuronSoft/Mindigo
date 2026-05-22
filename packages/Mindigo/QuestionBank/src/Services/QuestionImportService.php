@@ -6,6 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionFolder;
+use Mindigo\SubjectManagement\Models\Subject;
 
 class QuestionImportService
 {
@@ -23,6 +24,7 @@ class QuestionImportService
         $type = trim((string) ($row['type'] ?? 'single_choice'));
         $difficulty = trim((string) ($row['difficulty'] ?? 'medium'));
         $subject = trim((string) ($row['subject'] ?? ''));
+        $topic = trim((string) ($row['topic'] ?? ''));
         $content = trim((string) ($row['content'] ?? $row['question'] ?? ''));
 
         if ($subject === '' || $content === '') {
@@ -42,6 +44,8 @@ class QuestionImportService
                 'import_file' => __('Mindigo-question-bank::app.validation.import_invalid_difficulty', ['row' => $rowNumber]),
             ]);
         }
+
+        $this->validateCatalog($subject, $topic, $rowNumber);
 
         $status = trim((string) ($row['status'] ?? '')) ?: $defaultStatus;
         if (!in_array($status, ['draft', 'reviewing'], true)) {
@@ -69,7 +73,7 @@ class QuestionImportService
             'created_by' => $user->getAuthIdentifier(),
             'folder_id' => $this->folderIdFromRow($row, $user, $defaultFolderId),
             'subject' => $subject,
-            'topic' => trim((string) ($row['topic'] ?? '')) ?: null,
+            'topic' => $topic ?: null,
             'type' => $type,
             'difficulty' => $difficulty,
             'status' => $status,
@@ -163,6 +167,48 @@ class QuestionImportService
             ->map(fn ($value) => trim((string) $value))
             ->filter()
             ->values()
+            ->all();
+    }
+
+    private function validateCatalog(string $subject, string $topic, int $rowNumber): void
+    {
+        $subjects = $this->activeSubjectsWithTopics();
+
+        if (empty($subjects)) {
+            return;
+        }
+
+        if (!array_key_exists($subject, $subjects)) {
+            throw ValidationException::withMessages([
+                'import_file' => __('Mindigo-question-bank::app.validation.import_invalid_subject', ['row' => $rowNumber]),
+            ]);
+        }
+
+        if ($topic !== '' && !in_array($topic, $subjects[$subject], true)) {
+            throw ValidationException::withMessages([
+                'import_file' => __('Mindigo-question-bank::app.validation.import_invalid_topic', ['row' => $rowNumber]),
+            ]);
+        }
+    }
+
+    private function activeSubjectsWithTopics(): array
+    {
+        if (!class_exists(Subject::class)) {
+            return [];
+        }
+
+        return Subject::query()
+            ->with(['topics' => fn ($query) => $query
+                ->where('status', 'active')
+                ->orderBy('sort_order')
+                ->orderBy('name')])
+            ->where('status', 'active')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(fn (Subject $subject) => [
+                $subject->name => $subject->topics->pluck('name')->values()->all(),
+            ])
             ->all();
     }
 }
