@@ -55,6 +55,12 @@ return [
             'delete' => 'Xóa đề thi',
             'attempt' => 'Làm bài thi',
         ],
+        'subjects' => [
+            'view' => 'Xem môn học',
+            'create' => 'Tạo môn học',
+            'update' => 'Cập nhật môn học',
+            'delete' => 'Xóa môn học',
+        ],
         'questions' => [
             'view' => 'Xem câu hỏi',
             'create' => 'Tạo câu hỏi',

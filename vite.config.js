@@ -19,6 +19,8 @@ export default defineConfig({
                 "packages/Mindigo/QuestionBank/src/resources/js/app.js",
                 "packages/Mindigo/RolePermission/src/resources/css/app.css",
                 "packages/Mindigo/RolePermission/src/resources/js/app.js",
+                "packages/Mindigo/SubjectManagement/src/resources/css/app.css",
+                "packages/Mindigo/SubjectManagement/src/resources/js/app.js",
                 "packages/Mindigo/SupportManagement/src/resources/css/app.css",
                 "packages/Mindigo/SupportManagement/src/resources/js/app.js",
                 "packages/Mindigo/UserManagement/src/resources/css/app.css",

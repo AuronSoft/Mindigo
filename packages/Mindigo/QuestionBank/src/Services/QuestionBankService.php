@@ -6,6 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionFolder;
+use Mindigo\SubjectManagement\Models\Subject;
 
 class QuestionBankService
 {
@@ -151,6 +152,21 @@ class QuestionBankService
 
     public function subjects(): array
     {
+        if (class_exists(Subject::class)) {
+            $subjects = Subject::query()
+                ->where('status', 'active')
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->pluck('name')
+                ->filter()
+                ->values()
+                ->all();
+
+            if (!empty($subjects)) {
+                return $subjects;
+            }
+        }
+
         return Question::query()
             ->select('subject')
             ->whereNotNull('subject')

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b8da75b01e996533cc1727bf0c1eac36",
+    "content-hash": "19056bee3ee61a8e5388700dbd216af8",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2442,6 +2442,36 @@
                 }
             },
             "description": "Mindigo role permission package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/subject-management",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/SubjectManagement",
+                "reference": "5399551f2da69c184a85514a976ec7fa5cde93c5"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\SubjectManagement\\Providers\\SubjectManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\SubjectManagement\\": "src/"
+                }
+            },
+            "description": "Mindigo subject and topic management package",
             "transport-options": {
                 "relative": true
             }

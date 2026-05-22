@@ -22,6 +22,7 @@
         "mindigo/profile": "*",
         "mindigo/question-bank": "*",
         "mindigo/role-permission": "*",
+        "mindigo/subject-management": "*",
         "mindigo/support-management": "*",
         "mindigo/user-management": "*",
         "mindigo/system-setting": "*",
@@ -48,6 +49,7 @@
             "Mindigo\\Profile\\": "packages/Mindigo/Profile/src/", 
             "Mindigo\\QuestionBank\\": "packages/Mindigo/QuestionBank/src/",
             "Mindigo\\RolePermission\\": "packages/Mindigo/RolePermission/src/",
+            "Mindigo\\SubjectManagement\\": "packages/Mindigo/SubjectManagement/src/",
             "Mindigo\\SupportManagement\\": "packages/Mindigo/SupportManagement/src/",
             "Mindigo\\UserManagement\\": "packages/Mindigo/UserManagement/src/",
             "Mindigo\\BlogManagement\\": "packages/Mindigo/BlogManagement/src/",
@@ -88,6 +90,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/RolePermission"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/SubjectManagement"
         },
         {
             "type": "path",

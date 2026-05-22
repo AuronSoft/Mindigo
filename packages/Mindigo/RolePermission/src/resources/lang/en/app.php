@@ -55,6 +55,12 @@ return [
             'delete' => 'Delete exams',
             'attempt' => 'Take exams',
         ],
+        'subjects' => [
+            'view' => 'View subjects',
+            'create' => 'Create subjects',
+            'update' => 'Update subjects',
+            'delete' => 'Delete subjects',
+        ],
         'questions' => [
             'view' => 'View questions',
             'create' => 'Create questions',
