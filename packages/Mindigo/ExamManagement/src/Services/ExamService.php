@@ -124,6 +124,7 @@ class ExamService
         return [
             'folders' => QuestionFolder::query()->withCount('questions')->orderBy('name')->get(),
             'subjects' => $this->subjects(),
+            'subjectTopics' => $this->topicsBySubject(),
             'types' => ExamRequest::TYPES,
             'difficulties' => ExamRequest::DIFFICULTIES,
         ];
@@ -164,6 +165,40 @@ class ExamService
             ->pluck('subject')
             ->filter()
             ->values()
+            ->all();
+    }
+
+    public function topicsBySubject(): array
+    {
+        if (class_exists(Subject::class)) {
+            $subjects = Subject::query()
+                ->with(['topics' => fn ($query) => $query
+                    ->where('status', 'active')
+                    ->orderBy('sort_order')
+                    ->orderBy('name')])
+                ->where('status', 'active')
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get();
+
+            if ($subjects->isNotEmpty()) {
+                return $subjects
+                    ->mapWithKeys(fn (Subject $subject) => [
+                        $subject->name => $subject->topics->pluck('name')->values()->all(),
+                    ])
+                    ->all();
+            }
+        }
+
+        return Question::query()
+            ->select(['subject', 'topic'])
+            ->whereNotNull('subject')
+            ->whereNotNull('topic')
+            ->orderBy('subject')
+            ->orderBy('topic')
+            ->get()
+            ->groupBy('subject')
+            ->map(fn ($rows) => $rows->pluck('topic')->filter()->unique()->values()->all())
             ->all();
     }
 
