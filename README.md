@@ -104,7 +104,7 @@ The system is built following modern Laravel architecture principles, ensuring m
 </p>
 
 <p align="center">
-  <img src="screenshots/admin.png" width="800" alt="Admin panel">
+  <video src="screenshots/mindigo.mp4" width="800" controls></video>
   <br><em>Admin panel for managing system data</em>
 </p>
 
