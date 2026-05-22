@@ -1,0 +1,301 @@
+@import "tailwindcss";
+
+@source "../../../../Dashboard/src/resources/views/**/*.blade.php";
+@source "../views/**/*.blade.php";
+@source "../js/**/*.js";
+
+@layer components {
+    .exam-page {
+        @apply w-full px-5 pb-10 pt-2;
+    }
+
+    .exam-hero,
+    .exam-card,
+    .exam-stat-card,
+    .exam-builder-card,
+    .exam-filter {
+        @apply rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70;
+    }
+
+    .exam-hero {
+        @apply flex flex-col gap-5 p-6 lg:flex-row lg:items-center lg:justify-between;
+    }
+
+    .exam-hero h1 {
+        @apply mt-2 text-3xl font-black tracking-normal text-slate-950;
+    }
+
+    .exam-hero p {
+        @apply mt-2 max-w-3xl text-sm font-semibold leading-6 text-slate-500;
+    }
+
+    .exam-breadcrumb {
+        @apply flex flex-wrap items-center gap-2 text-xs font-black text-slate-400;
+    }
+
+    .exam-breadcrumb a {
+        @apply text-slate-500 no-underline hover:text-green-700;
+    }
+
+    .exam-primary-button,
+    .exam-secondary-button,
+    .exam-danger-button,
+    .exam-filter-button {
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-black no-underline transition;
+    }
+
+    .exam-primary-button,
+    .exam-filter-button {
+        @apply bg-green-600 text-white shadow-sm shadow-green-200 hover:bg-green-500;
+    }
+
+    .exam-secondary-button {
+        @apply border border-slate-200 bg-slate-50 text-slate-700 hover:bg-white hover:text-green-700;
+    }
+
+    .exam-danger-button {
+        @apply bg-rose-50 text-rose-700 hover:bg-rose-100;
+    }
+
+    .exam-stat-card {
+        @apply p-5;
+    }
+
+    .exam-stat-card span {
+        @apply block text-xs font-black uppercase tracking-normal text-slate-400;
+    }
+
+    .exam-stat-card strong {
+        @apply mt-2 block text-3xl font-black text-slate-950;
+    }
+
+    .exam-filter {
+        @apply grid gap-3 p-4 lg:grid-cols-[1.4fr_1fr_0.9fr_auto_auto];
+    }
+
+    .exam-input,
+    .exam-select,
+    .exam-textarea {
+        @apply w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-green-300 focus:ring-4 focus:ring-green-100;
+    }
+
+    .exam-input,
+    .exam-select {
+        @apply min-h-12;
+    }
+
+    .exam-textarea {
+        @apply min-h-32 py-4 leading-6;
+    }
+
+    .exam-table {
+        @apply w-full min-w-[760px] border-collapse;
+    }
+
+    .exam-table th {
+        @apply bg-slate-50 px-5 py-4 text-left text-xs font-black uppercase tracking-normal text-slate-400;
+    }
+
+    .exam-table td {
+        @apply border-t border-slate-100 px-5 py-4;
+    }
+
+    .exam-badge {
+        @apply inline-flex min-h-7 items-center rounded-full px-3 text-xs font-black;
+    }
+
+    .exam-status-draft,
+    .exam-status-reviewing {
+        @apply bg-amber-50 text-amber-700;
+    }
+
+    .exam-status-published {
+        @apply bg-green-50 text-green-700;
+    }
+
+    .exam-status-closed {
+        @apply bg-slate-100 text-slate-600;
+    }
+
+    .exam-type {
+        @apply bg-sky-50 text-sky-700;
+    }
+
+    .exam-card-head {
+        @apply flex flex-col gap-1 border-b border-slate-100 p-5;
+    }
+
+    .exam-card-head h2 {
+        @apply text-lg font-black text-slate-950;
+    }
+
+    .exam-card-head p {
+        @apply text-sm font-semibold text-slate-400;
+    }
+
+    .exam-builder-card {
+        @apply p-5;
+    }
+
+    .exam-section-head {
+        @apply flex items-start gap-3;
+    }
+
+    .exam-section-head > span {
+        @apply grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-green-50 text-sm font-black text-green-700;
+    }
+
+    .exam-section-head h2 {
+        @apply text-lg font-black text-slate-950;
+    }
+
+    .exam-section-head p {
+        @apply mt-1 text-sm font-semibold text-slate-400;
+    }
+
+    .exam-form-grid {
+        @apply grid gap-4 md:grid-cols-2;
+    }
+
+    .exam-field {
+        @apply flex flex-col gap-2 text-sm font-black text-slate-600;
+    }
+
+    .exam-field strong {
+        @apply text-xs font-bold text-rose-600;
+    }
+
+    .exam-toggle-grid {
+        @apply grid gap-3 md:grid-cols-3;
+    }
+
+    .exam-toggle {
+        @apply flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-black text-slate-700;
+    }
+
+    .exam-toggle input {
+        @apply sr-only;
+    }
+
+    .exam-toggle span {
+        @apply relative h-6 w-11 rounded-full bg-slate-300 transition;
+    }
+
+    .exam-toggle span::after {
+        content: "";
+        @apply absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition;
+    }
+
+    .exam-toggle input:checked + span {
+        @apply bg-green-600;
+    }
+
+    .exam-toggle input:checked + span::after {
+        @apply translate-x-5;
+    }
+
+    .exam-type-grid {
+        @apply grid gap-4 md:grid-cols-2 xl:grid-cols-5;
+    }
+
+    .exam-type-card {
+        @apply rounded-2xl border border-slate-200 bg-slate-50 p-4;
+    }
+
+    .exam-type-card strong {
+        @apply block min-h-10 text-sm font-black text-slate-900;
+    }
+
+    .exam-type-card label {
+        @apply mt-3 flex flex-col gap-2 text-xs font-black uppercase tracking-normal text-slate-400;
+    }
+
+    .exam-take-page {
+        @apply w-full px-5 pb-10 pt-2;
+    }
+
+    .exam-take-header {
+        @apply sticky top-0 z-20 mb-5 flex items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-sm shadow-slate-200/70 backdrop-blur;
+    }
+
+    .exam-take-header h1 {
+        @apply truncate text-2xl font-black text-slate-950;
+    }
+
+    .exam-take-header p {
+        @apply mt-1 text-sm font-bold text-slate-400;
+    }
+
+    .exam-timer {
+        @apply shrink-0 rounded-2xl bg-green-50 px-5 py-3 text-xl font-black text-green-700;
+    }
+
+    .exam-timer.is-danger {
+        @apply bg-rose-50 text-rose-700;
+    }
+
+    .exam-take-layout {
+        @apply grid gap-5 lg:grid-cols-[5rem_1fr];
+    }
+
+    .exam-question-nav {
+        @apply sticky top-28 hidden max-h-[calc(100vh-8rem)] flex-col gap-2 overflow-auto rounded-3xl border border-slate-200 bg-white p-3 shadow-sm lg:flex;
+    }
+
+    .exam-question-nav-item {
+        @apply grid h-11 w-11 place-items-center rounded-2xl bg-slate-50 text-sm font-black text-slate-600 no-underline hover:bg-green-50 hover:text-green-700;
+    }
+
+    .exam-answer-card {
+        @apply rounded-3xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70;
+    }
+
+    .exam-answer-card h2 {
+        @apply mt-3 text-base font-black leading-7 text-slate-950;
+    }
+
+    .exam-point-pill {
+        @apply shrink-0 rounded-2xl bg-green-50 px-3 py-2 text-sm font-black text-green-700;
+    }
+
+    .exam-choice {
+        @apply flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-green-200 hover:bg-green-50;
+    }
+
+    .exam-choice input {
+        @apply sr-only;
+    }
+
+    .exam-choice span {
+        @apply grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 border-slate-300 bg-white;
+    }
+
+    .exam-choice span::after {
+        content: "";
+        @apply h-2.5 w-2.5 scale-0 rounded-full bg-green-600 transition;
+    }
+
+    .exam-choice input:checked + span {
+        @apply border-green-600;
+    }
+
+    .exam-choice input:checked + span::after {
+        @apply scale-100;
+    }
+
+    .exam-choice strong {
+        @apply text-sm font-bold leading-6 text-slate-800;
+    }
+
+    .exam-submit-bar {
+        @apply sticky bottom-4 flex items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-200/80;
+    }
+
+    .exam-submit-bar span {
+        @apply text-sm font-bold text-slate-400;
+    }
+
+    .exam-result-answer {
+        @apply p-5;
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/exam-management",
+    "description": "Mindigo exam management and online testing package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\ExamManagement\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\ExamManagement\\Providers\\ExamManagementServiceProvider"
+            ]
+        }
+    }
+}

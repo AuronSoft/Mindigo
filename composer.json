@@ -17,6 +17,7 @@
         "mindigo/blog-management": "dev-main",
         "mindigo/core": "*",
         "mindigo/dashboard": "*",
+        "mindigo/exam-management": "*",
         "mindigo/audit-log": "*",
         "mindigo/profile": "*",
         "mindigo/question-bank": "*",
@@ -43,6 +44,7 @@
             "Mindigo\\Auth\\": "packages/Mindigo/Auth/src/",
             "Mindigo\\Core\\": "packages/Mindigo/Core/src/",
             "Mindigo\\Dashboard\\": "packages/Mindigo/Dashboard/src/",
+            "Mindigo\\ExamManagement\\": "packages/Mindigo/ExamManagement/src/",
             "Mindigo\\Profile\\": "packages/Mindigo/Profile/src/", 
             "Mindigo\\QuestionBank\\": "packages/Mindigo/QuestionBank/src/",
             "Mindigo\\RolePermission\\": "packages/Mindigo/RolePermission/src/",
@@ -70,6 +72,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/Dashboard"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/ExamManagement"
         },
         {
             "type": "path",

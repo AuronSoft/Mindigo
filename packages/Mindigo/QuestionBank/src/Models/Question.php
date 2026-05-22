@@ -11,7 +11,7 @@ class Question extends Model
 {
     use SoftDeletes;
 
-    public const TYPES = ['single_choice', 'multiple_choice', 'true_false', 'short_answer'];
+    public const TYPES = ['single_choice', 'multiple_choice', 'true_false', 'short_answer', 'essay'];
     public const DIFFICULTIES = ['easy', 'medium', 'hard'];
     public const STATUSES = ['draft', 'reviewing', 'approved', 'rejected'];
 

@@ -48,6 +48,7 @@ class RolePermissionService
                     'exams.create' => __('Mindigo-role-permission::app.permissions.exams.create'),
                     'exams.update' => __('Mindigo-role-permission::app.permissions.exams.update'),
                     'exams.publish' => __('Mindigo-role-permission::app.permissions.exams.publish'),
+                    'exams.delete' => __('Mindigo-role-permission::app.permissions.exams.delete'),
                     'questions.view' => __('Mindigo-role-permission::app.permissions.questions.view'),
                     'questions.create' => __('Mindigo-role-permission::app.permissions.questions.create'),
                     'questions.update' => __('Mindigo-role-permission::app.permissions.questions.update'),

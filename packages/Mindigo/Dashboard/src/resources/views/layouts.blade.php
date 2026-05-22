@@ -80,9 +80,11 @@
                                 <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.question_bank')</span>
                             </a>
                         @endif
-                        <a href="#exams" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exams')">
-                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.exams')</span>
-                        </a>
+                        @if(auth()->user()?->hasPermissionTo('exams.view'))
+                            <a href="{{ route('exams.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('exams.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exams')">
+                                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.exams')</span>
+                            </a>
+                        @endif
                         <a href="#learners" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.learners')">
                             <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.learners')</span>
                         </a>

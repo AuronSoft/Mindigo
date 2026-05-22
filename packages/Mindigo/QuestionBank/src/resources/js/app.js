@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const typeField = builder.querySelector('[data-question-type]');
         const optionPanel = builder.querySelector('[data-option-panel]');
         const shortAnswerPanel = builder.querySelector('[data-short-answer-panel]');
+        const essayPanel = builder.querySelector('[data-essay-panel]');
         const optionList = builder.querySelector('[data-option-list]');
         const template = builder.querySelector('[data-option-template]');
         const addButton = builder.querySelector('[data-add-option]');
@@ -86,11 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const setTypeMode = () => {
             const type = typeField?.value || 'single_choice';
             const isShort = type === 'short_answer';
+            const isEssay = type === 'essay';
             const isMultiple = type === 'multiple_choice';
             const isTrueFalse = type === 'true_false';
 
-            optionPanel?.classList.toggle('hidden', isShort);
+            optionPanel?.classList.toggle('hidden', isShort || isEssay);
             shortAnswerPanel?.classList.toggle('hidden', !isShort);
+            essayPanel?.classList.toggle('hidden', !isEssay);
 
             optionList?.querySelectorAll('[data-option-row]').forEach((row, index) => {
                 const singleAnswer = row.querySelector('[data-single-answer]');
@@ -118,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            addButton?.classList.toggle('hidden', isShort || isTrueFalse);
+            addButton?.classList.toggle('hidden', isShort || isEssay || isTrueFalse);
             syncOptionValues();
         };
 

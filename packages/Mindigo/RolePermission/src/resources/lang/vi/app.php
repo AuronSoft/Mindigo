@@ -52,6 +52,7 @@ return [
             'create' => 'Tạo đề thi',
             'update' => 'Cập nhật đề thi',
             'publish' => 'Xuất bản đề thi',
+            'delete' => 'Xóa đề thi',
             'attempt' => 'Làm bài thi',
         ],
         'questions' => [

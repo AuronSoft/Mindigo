@@ -240,13 +240,13 @@ class QuestionBankController extends Controller
         $options = $this->cleanArray($validated['options'] ?? []);
         $correctAnswers = $this->answersFor($validated['type'], $validated, $options);
 
-        if ($validated['type'] !== 'short_answer' && count($options) < 2) {
+        if (!in_array($validated['type'], ['short_answer', 'essay'], true) && count($options) < 2) {
             throw ValidationException::withMessages([
                 'options' => __('Mindigo-question-bank::app.validation.options_required'),
             ]);
         }
 
-        if (empty($correctAnswers)) {
+        if ($validated['type'] !== 'essay' && empty($correctAnswers)) {
             throw ValidationException::withMessages([
                 'correct_answers' => __('Mindigo-question-bank::app.validation.correct_answer_required'),
             ]);
@@ -260,7 +260,7 @@ class QuestionBankController extends Controller
             'difficulty' => $validated['difficulty'],
             'status' => $validated['status'] ?? 'draft',
             'content' => $validated['content'],
-            'options' => $validated['type'] === 'short_answer' ? [] : $options,
+            'options' => in_array($validated['type'], ['short_answer', 'essay'], true) ? [] : $options,
             'correct_answers' => $correctAnswers,
             'explanation' => $validated['explanation'] ?? null,
             'tags' => $this->csv($validated['tags_text'] ?? ''),
@@ -400,13 +400,13 @@ class QuestionBankController extends Controller
         $options = $this->splitImportValue($row['options'] ?? []);
         $correctAnswers = $this->splitImportValue($row['correct_answers'] ?? $row['answer'] ?? []);
 
-        if ($type !== 'short_answer' && count($options) < 2) {
+        if (!in_array($type, ['short_answer', 'essay'], true) && count($options) < 2) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_missing_options', ['row' => $rowNumber]),
             ]);
         }
 
-        if (empty($correctAnswers)) {
+        if ($type !== 'essay' && empty($correctAnswers)) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_missing_answer', ['row' => $rowNumber]),
             ]);
@@ -421,7 +421,7 @@ class QuestionBankController extends Controller
             'difficulty' => $difficulty,
             'status' => $status,
             'content' => $content,
-            'options' => $type === 'short_answer' ? [] : $options,
+            'options' => in_array($type, ['short_answer', 'essay'], true) ? [] : $options,
             'correct_answers' => $correctAnswers,
             'explanation' => trim((string) ($row['explanation'] ?? '')) ?: null,
             'tags' => $this->splitImportValue($row['tags'] ?? []),
@@ -472,6 +472,10 @@ class QuestionBankController extends Controller
 
     private function answersFor(string $type, array $validated, array $options): array
     {
+        if ($type === 'essay') {
+            return [];
+        }
+
         if ($type === 'short_answer') {
             return $this->cleanArray(preg_split('/\R/', (string) ($validated['short_answer_text'] ?? '')) ?: []);
         }

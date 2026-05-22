@@ -13,6 +13,8 @@ return [
     'section_answers_desc' => 'Mark the correct answer directly on each option.',
     'section_short_answer' => 'Accepted answers',
     'section_short_answer_desc' => 'Enter each accepted short answer on a separate line.',
+    'section_essay' => 'Essay response',
+    'section_essay_desc' => 'Essay questions are reviewed manually after submission.',
     'section_review' => 'Explanation and tags',
     'section_review_desc' => 'Add the solution, learning tags and review context.',
     'create_question' => 'Create question',
@@ -118,6 +120,7 @@ return [
         'multiple_choice' => 'Multiple choice',
         'true_false' => 'True/false',
         'short_answer' => 'Short answer',
+        'essay' => 'Essay',
     ],
     'difficulties' => [
         'easy' => 'Easy',

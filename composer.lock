@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b36b4cc3f57cb9d13f751debf71c5d7",
+    "content-hash": "b8da75b01e996533cc1727bf0c1eac36",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2322,6 +2322,36 @@
                 }
             },
             "description": "Mindigo Dashboard Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/exam-management",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/ExamManagement",
+                "reference": "5f03cf2418c08270c9634d482622616413cfe2de"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\ExamManagement\\Providers\\ExamManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\ExamManagement\\": "src/"
+                }
+            },
+            "description": "Mindigo exam management and online testing package",
             "transport-options": {
                 "relative": true
             }

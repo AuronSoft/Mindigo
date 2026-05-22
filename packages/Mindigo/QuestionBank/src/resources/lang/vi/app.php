@@ -13,6 +13,8 @@ return [
     'section_answers_desc' => 'Chọn đáp án đúng trực tiếp trên từng phương án.',
     'section_short_answer' => 'Đáp án chấp nhận',
     'section_short_answer_desc' => 'Mỗi đáp án trả lời ngắn nhập trên một dòng.',
+    'section_essay' => 'Câu tự luận',
+    'section_essay_desc' => 'Câu tự luận sẽ chấm thủ công sau khi nộp bài.',
     'section_review' => 'Lời giải và thẻ',
     'section_review_desc' => 'Bổ sung lời giải, thẻ học tập và ngữ cảnh duyệt.',
     'create_question' => 'Tạo câu hỏi',
@@ -118,6 +120,7 @@ return [
         'multiple_choice' => 'Nhiều đáp án',
         'true_false' => 'Đúng/sai',
         'short_answer' => 'Trả lời ngắn',
+        'essay' => 'Tự luận',
     ],
     'difficulties' => [
         'easy' => 'Dễ',

@@ -136,6 +136,16 @@
         </label>
     </section>
 
+    <section class="question-builder-card hidden" data-essay-panel>
+        <div class="question-section-head">
+            <span>02</span>
+            <div>
+                <h2>@lang('Mindigo-question-bank::app.section_essay')</h2>
+                <p>@lang('Mindigo-question-bank::app.section_essay_desc')</p>
+            </div>
+        </div>
+    </section>
+
     <section class="question-builder-card">
         <div class="question-section-head">
             <span>03</span>

@@ -52,6 +52,7 @@ return [
             'create' => 'Create exams',
             'update' => 'Update exams',
             'publish' => 'Publish exams',
+            'delete' => 'Delete exams',
             'attempt' => 'Take exams',
         ],
         'questions' => [
