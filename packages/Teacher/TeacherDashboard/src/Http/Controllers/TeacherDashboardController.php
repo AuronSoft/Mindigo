@@ -12,7 +12,6 @@ class TeacherDashboardController extends Controller
 
     public function index()
     {
-        // Xoá intended URL cũ để tránh admin redirect sau khi refresh session
         session()->forget('url.intended');
 
         $teacher = Auth::user();

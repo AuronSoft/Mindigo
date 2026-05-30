@@ -27,6 +27,7 @@
         "mindigo/subject-management": "*",
         "mindigo/support-management": "*",
         "mindigo/system-setting": "*",
+        "mindigo/teacher-classroom": "*",
         "mindigo/teacher-dashboard": "*",
         "mindigo/user-management": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.4"
@@ -60,7 +61,8 @@
             "Mindigo\\Report\\": "packages/Mindigo/Report/src/",
             "Mindigo\\ClassroomManagement\\": "packages/Mindigo/ClassroomManagement/src/",
             "Mindigo\\SubjectManagement\\": "packages/Mindigo/SubjectManagement/src/",
-            "Mindigo\\TeacherDashboard\\": "packages/Teacher/TeacherDashboard/src/"
+            "Mindigo\\TeacherDashboard\\": "packages/Teacher/TeacherDashboard/src/",
+            "Mindigo\\TeacherClassroom\\": "packages/Teacher/TeacherClassroom/src/"
         }
     },
     "autoload-dev": {
@@ -132,6 +134,10 @@
         {
             "type": "path",
             "url": "packages/Teacher/TeacherDashboard"
+        },
+        {
+            "type": "path",
+            "url": "packages/Teacher/TeacherClassroom"
         }
     ],
     "scripts": {

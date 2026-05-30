@@ -1,0 +1,56 @@
+<?php
+
+return [
+    'title'        => 'My Classrooms',
+    'subtitle'     => 'Manage your classrooms, student rosters and assigned subjects.',
+    'create'       => 'Create classroom',
+    'edit'         => 'Edit classroom',
+    'back'         => 'Back',
+    'save'         => 'Save changes',
+
+    'stat_total'    => 'Total classes',
+    'stat_active'   => 'Active',
+    'stat_inactive' => 'Paused',
+    'stat_students' => 'Students',
+
+    'search'        => 'Search by name, code...',
+    'all_status'    => 'All statuses',
+
+    'name'         => 'Class name',
+    'code'         => 'Class code',
+    'school_year'  => 'School year',
+    'description'  => 'Description',
+    'status'       => 'Status',
+    'students'     => 'Students',
+    'subjects'     => 'Subjects',
+    'name_ph'      => 'e.g. Class 12A1 - Exam prep',
+    'code_ph'      => 'e.g. 12A1-2026',
+    'school_year_ph'=> 'e.g. 2025-2026',
+    'description_ph'=> 'Short note about the class...',
+
+    'active'       => 'Active',
+    'inactive'     => 'Paused',
+
+    'class_info'   => 'Class information',
+    'student_list' => 'Student roster',
+    'subject_list' => 'Subjects',
+    'manage_students' => 'Manage students',
+    'student_count'=> ':count students',
+    'no_students'  => 'No students yet',
+    'no_subjects'  => 'No subjects assigned',
+
+    'empty_title'  => 'You have no classrooms yet',
+    'empty_desc'   => 'Create your first classroom to manage students and assign exams.',
+
+    'deleted'          => 'Classroom deleted.',
+    'delete'           => 'Delete class',
+    'delete_confirm'   => 'Are you sure you want to delete this classroom? This cannot be undone.',
+    'delete_title'     => 'Delete classroom',
+    'created'          => 'Classroom created successfully.',
+    'updated'          => 'Classroom updated.',
+    'students_updated' => 'Student roster updated.',
+
+    'name_col'     => 'Name',
+    'email_col'    => 'Email',
+    'view'         => 'Detail',
+];

@@ -26,7 +26,13 @@ class ProfileController extends Controller
         $user->load('notificationPreference');
 
         $roleProfile = $this->service->roleProfile($user->role);
-        $dashboardUrl = $user->isAdmin() && Route::has('dashboard') ? route('dashboard') : url('/');
+
+        // Nút "Về dashboard" trỏ đúng khu vực theo vai trò
+        $dashboardUrl = match (true) {
+            $user->role === 'teacher' && Route::has('teacher.dashboard') => route('teacher.dashboard'),
+            $user->isAdmin() && Route::has('dashboard')                  => route('dashboard'),
+            default                                                      => url('/'),
+        };
 
         return view('profile::profile', compact('user', 'roleProfile', 'dashboardUrl'));
     }
