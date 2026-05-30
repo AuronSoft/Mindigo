@@ -3,8 +3,9 @@
 @section('title', __('Mindigo-report::app.exam_reports'))
 
 @section('styles')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     @vite([
+        'packages/Mindigo/Dashboard/src/resources/css/app.css',
+        'packages/Mindigo/Dashboard/src/resources/js/app.js',
         'packages/Mindigo/Report/src/resources/css/app.css',
         'packages/Mindigo/Report/src/resources/js/app.js',
     ])
@@ -94,7 +95,12 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="8" class="px-4 py-8 text-center font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</td></tr>
+                                <tr><td colspan="8" class="h-52 text-center align-middle">
+                                    <div class="flex flex-col items-center justify-center gap-3">
+                                        <x-heroicon-o-document-magnifying-glass class="h-14 w-14 text-slate-200" />
+                                        <span class="text-sm font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</span>
+                                    </div>
+                                </td></tr>
                             @endforelse
                         </tbody>
                     </table>

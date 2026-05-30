@@ -234,7 +234,10 @@
                                         <span class="text-xs font-black text-slate-400">{{ $totalSubjectAttempts > 0 ? round($subject->attempt_count / $totalSubjectAttempts * 100) : 0 }}%</span>
                                     </div>
                                 @empty
-                                    <p class="py-6 text-center text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</p>
+                                    <div class="flex min-h-36 flex-col items-center justify-center gap-3">
+                                        <x-heroicon-o-chart-pie class="h-12 w-12 text-slate-200" />
+                                        <p class="text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</p>
+                                    </div>
                                 @endforelse
                             </div>
                         </div>
@@ -280,7 +283,10 @@
                                         <span class="block h-4 w-full truncate text-center text-[10px] font-black leading-4 text-slate-400" title="{{ $subject->subject }}">{{ \Illuminate\Support\Str::limit($subject->subject, 6) }}</span>
                                     </div>
                                 @empty
-                                    <div class="col-span-4 flex items-center justify-center py-8 text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</div>
+                                    <div class="col-span-4 flex min-h-44 flex-col items-center justify-center gap-3">
+                                        <x-heroicon-o-chart-bar class="h-12 w-12 text-slate-200" />
+                                        <span class="text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</span>
+                                    </div>
                                 @endforelse
                             </div>
 
@@ -405,7 +411,12 @@
                                             <td class="px-4 py-3.5"><span class="rounded-full px-2.5 py-1 text-[11px] font-black {{ $examStatusTones[$exam->status] ?? 'bg-slate-100 text-slate-700' }}">{{ __('Mindigo-dashboard::app.' . $exam->status) }}</span></td>
                                         </tr>
                                     @empty
-                                        <tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">@lang('Mindigo-dashboard::app.no_data')</td></tr>
+                                        <tr><td colspan="4" class="h-44 text-center align-middle">
+                                            <div class="flex flex-col items-center justify-center gap-3">
+                                                <x-heroicon-o-document-text class="h-12 w-12 text-slate-200" />
+                                                <span class="text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</span>
+                                            </div>
+                                        </td></tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -434,7 +445,10 @@
                                 <b class="rounded-full bg-slate-950 px-2 py-1 text-xs font-black text-white">{{ round($performer->avg_score) }}%</b>
                             </div>
                         @empty
-                            <p class="py-4 text-center text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</p>
+                            <div class="flex min-h-44 flex-col items-center justify-center gap-3">
+                                <x-heroicon-o-trophy class="h-12 w-12 text-slate-200" />
+                                <p class="text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</p>
+                            </div>
                         @endforelse
                     </div>
                 </section>

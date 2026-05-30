@@ -5,6 +5,8 @@
 @section('styles')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     @vite([
+        'packages/Mindigo/Dashboard/src/resources/css/app.css',
+        'packages/Mindigo/Dashboard/src/resources/js/app.js',
         'packages/Mindigo/Report/src/resources/css/app.css',
         'packages/Mindigo/Report/src/resources/js/app.js',
     ])
@@ -97,9 +99,13 @@
             <div class="grid gap-4 xl:grid-cols-2">
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <p class="mb-4 text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-report::app.subject_breakdown')</p>
-                    <div class="h-64"><canvas id="subjectChart"></canvas></div>
                     @if($subjectBreakdown->isEmpty())
-                        <p class="py-4 text-center text-sm font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</p>
+                        <div class="flex h-64 flex-col items-center justify-center gap-3">
+                            <x-heroicon-o-chart-pie class="h-14 w-14 text-slate-200" />
+                            <p class="text-sm font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</p>
+                        </div>
+                    @else
+                        <div class="h-64"><canvas id="subjectChart"></canvas></div>
                     @endif
                 </div>
 
@@ -120,7 +126,10 @@
                                 </a>
                             </div>
                         @empty
-                            <p class="py-6 text-center text-sm font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</p>
+                            <div class="flex min-h-52 flex-col items-center justify-center gap-3">
+                                <x-heroicon-o-document-text class="h-14 w-14 text-slate-200" />
+                                <p class="text-sm font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</p>
+                            </div>
                         @endforelse
                     </div>
                 </div>
@@ -163,7 +172,12 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="7" class="py-8 text-center font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</td></tr>
+                                <tr><td colspan="7" class="h-52 text-center align-middle">
+                                    <div class="flex flex-col items-center justify-center gap-3">
+                                        <x-heroicon-o-users class="h-14 w-14 text-slate-200" />
+                                        <span class="text-sm font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</span>
+                                    </div>
+                                </td></tr>
                             @endforelse
                         </tbody>
                     </table>

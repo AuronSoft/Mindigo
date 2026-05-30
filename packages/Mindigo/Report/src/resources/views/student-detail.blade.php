@@ -4,6 +4,8 @@
 
 @section('styles')
     @vite([
+        'packages/Mindigo/Dashboard/src/resources/css/app.css',
+        'packages/Mindigo/Dashboard/src/resources/js/app.js',
         'packages/Mindigo/Report/src/resources/css/app.css',
         'packages/Mindigo/Report/src/resources/js/app.js',
     ])
@@ -56,7 +58,10 @@
                             </div>
                         </div>
                     @empty
-                        <p class="py-6 text-center text-sm font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</p>
+                        <div class="flex min-h-52 flex-col items-center justify-center gap-3">
+                            <x-heroicon-o-academic-cap class="h-14 w-14 text-slate-200" />
+                            <p class="text-sm font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</p>
+                        </div>
                     @endforelse
                 </div>
 
@@ -66,7 +71,7 @@
                         <p class="text-sm font-black text-slate-950">@lang('Mindigo-report::app.exam_history')</p>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full min-w-[440px] text-left">
+                        <table class="w-full min-w-110 text-left">
                             <thead class="bg-slate-50 text-[11px] font-black uppercase text-slate-400">
                                 <tr>
                                     <th class="px-4 py-3">@lang('Mindigo-report::app.exam_name')</th>
@@ -90,7 +95,12 @@
                                         <td class="px-4 py-3 text-slate-500">{{ $attempt->submitted_at ? $attempt->submitted_at->format('d/m/Y') : '—' }}</td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="4" class="px-4 py-8 text-center font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</td></tr>
+                                    <tr><td colspan="4" class="h-52 text-center align-middle">
+                                        <div class="flex flex-col items-center justify-center gap-3">
+                                            <x-heroicon-o-clock class="h-14 w-14 text-slate-200" />
+                                            <span class="text-sm font-bold text-slate-400">@lang('Mindigo-report::app.no_data')</span>
+                                        </div>
+                                    </td></tr>
                                 @endforelse
                             </tbody>
                         </table>
