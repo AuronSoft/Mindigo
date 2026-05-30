@@ -102,9 +102,34 @@
                     <x-heroicon-o-bars-3 class="h-5 w-5" />
                 </button>
                 <span class="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-amber-200 via-green-100 to-emerald-300 text-xs font-black text-slate-800 shadow-sm ring-2 ring-white">{{ mb_substr($dashboardUser?->name ?? 'A', 0, 1) }}</span>
-                <a href="#exams" class="grid h-10 w-10 place-items-center rounded-full bg-green-600 text-white shadow-sm transition hover:bg-green-500">
-                    <x-heroicon-o-plus class="h-5 w-5" />
-                </a>
+
+                {{-- Quick create button --}}
+                <div class="relative" id="quick-create-wrap">
+                    <button type="button" id="quick-create-btn" class="grid h-10 w-10 place-items-center rounded-full bg-green-600 text-white shadow-sm transition hover:bg-green-500" aria-expanded="false">
+                        <x-heroicon-o-plus class="h-5 w-5" id="quick-create-icon" />
+                        <x-heroicon-m-x-mark class="h-5 w-5 hidden" id="quick-create-close-icon" />
+                    </button>
+
+                    <div id="quick-create-dropdown" class="absolute right-0 top-[calc(100%+10px)] z-50 hidden w-56 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10">
+                        <p class="px-2 pb-1.5 pt-0.5 text-[10px] font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.quick_create')</p>
+
+                        @foreach([
+                            ['route' => 'exams.create',        'label' => __('Mindigo-dashboard::app.quick_exam'),     'icon' => 'heroicon-o-document-text', 'tone' => 'bg-green-100 text-green-700'],
+                            ['route' => 'question-bank.create','label' => __('Mindigo-dashboard::app.quick_question'), 'icon' => 'heroicon-o-circle-stack',  'tone' => 'bg-amber-100 text-amber-700'],
+                            ['route' => 'users.create',        'label' => __('Mindigo-dashboard::app.quick_user'),     'icon' => 'heroicon-o-user-plus',     'tone' => 'bg-sky-100 text-sky-700'],
+                            ['route' => 'support-tickets.create','label' => __('Mindigo-dashboard::app.quick_ticket'), 'icon' => 'heroicon-o-chat-bubble-left-ellipsis', 'tone' => 'bg-rose-100 text-rose-700'],
+                        ] as $item)
+                            @if(Route::has($item['route']))
+                            <a href="{{ route($item['route']) }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 no-underline transition hover:bg-slate-50">
+                                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-xl {{ $item['tone'] }}">
+                                    <x-dynamic-component :component="$item['icon']" class="h-4 w-4" />
+                                </span>
+                                <span class="text-sm font-black text-slate-800">{{ $item['label'] }}</span>
+                            </a>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
             </div>
 
             <div id="dashboard-notification-menu" class="absolute right-8 top-20 z-40 hidden w-80 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10">

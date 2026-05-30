@@ -5,6 +5,49 @@ const dashboardChartLabels = window.__dashboardChartLabels || {};
 const dashboardRuntime = window.__dashboardRuntime || {};
 const dashboardRanking = window.__dashboardRanking || {};
 
+// ── Quick Create Dropdown ─────────────────────────────────────────────────
+(() => {
+    const btn      = document.getElementById('quick-create-btn');
+    const dropdown = document.getElementById('quick-create-dropdown');
+    const iconPlus = document.getElementById('quick-create-icon');
+    const iconX    = document.getElementById('quick-create-close-icon');
+
+    if (!btn || !dropdown) return;
+
+    const isOpen = () => btn.getAttribute('aria-expanded') === 'true';
+
+    const open = () => {
+        dropdown.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        iconPlus.classList.add('hidden');
+        iconX.classList.remove('hidden');
+        btn.classList.replace('bg-green-600', 'bg-slate-900');
+        btn.classList.replace('hover:bg-green-500', 'hover:bg-slate-800');
+    };
+
+    const close = () => {
+        dropdown.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        iconPlus.classList.remove('hidden');
+        iconX.classList.add('hidden');
+        btn.classList.replace('bg-slate-900', 'bg-green-600');
+        btn.classList.replace('hover:bg-slate-800', 'hover:bg-green-500');
+    };
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        isOpen() ? close() : open();
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!btn.closest('#quick-create-wrap').contains(e.target)) close();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+    });
+})();
+
 // ── Global Search ──────────────────────────────────────────────────────────
 (() => {
     const cfg       = window.__searchConfig || {};
