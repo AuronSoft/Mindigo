@@ -84,28 +84,28 @@ class ProfileService
 
     public function roleProfile(?string $role): array
     {
-        return match ($role) {
-            'admin' => [
-                'label' => 'Quáº£n trá»‹ viÃªn',
-                'summary' => 'Quáº£n lÃ½ váº­n hÃ nh há»‡ thá»‘ng, tÃ i khoáº£n, ná»™i dung Ã´n thi vÃ  cáº¥u hÃ¬nh báº£o máº­t.',
-                'badge' => 'bg-green-50 text-green-700 ring-green-100',
-                'icon' => 'shield',
-                'items' => ['Quáº£n lÃ½ ngÆ°á»i dÃ¹ng', 'Theo dÃµi váº­n hÃ nh', 'Cáº¥u hÃ¬nh há»‡ thá»‘ng'],
-            ],
-            'teacher' => [
-                'label' => 'GiÃ¡o viÃªn',
-                'summary' => 'Quáº£n lÃ½ há»c liá»‡u, ngÃ¢n hÃ ng cÃ¢u há»i, Ä‘á» thi vÃ  theo dÃµi káº¿t quáº£ há»c viÃªn.',
-                'badge' => 'bg-sky-50 text-sky-700 ring-sky-100',
-                'icon' => 'book',
-                'items' => ['NgÃ¢n hÃ ng cÃ¢u há»i', 'Äá» thi phá»¥ trÃ¡ch', 'Káº¿t quáº£ há»c viÃªn'],
-            ],
-            default => [
-                'label' => 'Há»c viÃªn',
-                'summary' => 'Theo dÃµi há»“ sÆ¡ há»c táº­p, lá»‹ch Ã´n luyá»‡n, káº¿t quáº£ lÃ m bÃ i vÃ  thÃ´ng bÃ¡o má»›i.',
-                'badge' => 'bg-amber-50 text-amber-700 ring-amber-100',
-                'icon' => 'user',
-                'items' => ['Lá»™ trÃ¬nh Ã´n luyá»‡n', 'Lá»‹ch sá»­ lÃ m bÃ i', 'ThÃ´ng bÃ¡o há»c táº­p'],
-            ],
+        $key = match ($role) {
+            "admin"   => "admin",
+            "teacher" => "teacher",
+            default   => "student",
         };
+
+        $tones = [
+            "admin"   => ["badge" => "bg-green-50 text-green-700 ring-green-100", "icon" => "shield"],
+            "teacher" => ["badge" => "bg-sky-50 text-sky-700 ring-sky-100",       "icon" => "book"],
+            "student" => ["badge" => "bg-amber-50 text-amber-700 ring-amber-100", "icon" => "user"],
+        ];
+
+        return [
+            "label"   => __("Mindigo-profile::app.role_{$key}_label"),
+            "summary" => __("Mindigo-profile::app.role_{$key}_summary"),
+            "badge"   => $tones[$key]["badge"],
+            "icon"    => $tones[$key]["icon"],
+            "items"   => [
+                __("Mindigo-profile::app.role_{$key}_item_1"),
+                __("Mindigo-profile::app.role_{$key}_item_2"),
+                __("Mindigo-profile::app.role_{$key}_item_3"),
+            ],
+        ];
     }
 }
