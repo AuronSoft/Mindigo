@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7ec36961fd1d7e2f6b896de23aa4fbf",
+    "content-hash": "afab386bb8da1ceb725b3bc0713e1dc5",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2682,6 +2682,36 @@
                 }
             },
             "description": "Mindigo Teacher Exam Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/teacher-question",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Teacher/TeacherQuestion",
+                "reference": "c20372e3a3c01368a9de4f576cdebbd8adb9f80e"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\TeacherQuestion\\Providers\\TeacherQuestionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\TeacherQuestion\\": "src/"
+                }
+            },
+            "description": "Mindigo Teacher Question Bank Package",
             "transport-options": {
                 "relative": true
             }

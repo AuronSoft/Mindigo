@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/teacher-question",
+    "description": "Mindigo Teacher Question Bank Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\TeacherQuestion\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\TeacherQuestion\\Providers\\TeacherQuestionServiceProvider"
+            ]
+        }
+    }
+}

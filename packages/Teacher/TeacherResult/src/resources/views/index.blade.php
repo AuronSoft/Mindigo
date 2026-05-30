@@ -88,7 +88,7 @@
                     <div class="mb-1 flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 hover:bg-slate-50 transition cursor-default">
                         <div class="min-w-0">
                             <p class="truncate text-sm font-black text-slate-800">{{ $cls->name }}</p>
-                            <p class="text-[11px] font-bold text-slate-400">{{ $cls->students_count }} @lang('teacher-classroom::app.students_unit') · {{ $cls->school_year ?: '—' }}</p>
+                            <p class="text-[11px] font-bold text-slate-400">@lang('teacher-classroom::app.students_count_badge', ['count' => $cls->students_count]){{ $cls->school_year ? ' · ' . $cls->school_year : '' }}</p>
                         </div>
                         <span class="shrink-0 rounded-full {{ $cls->status === 'active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400' }} px-1.5 py-0.5 text-[9px] font-black">
                             @lang('teacher-classroom::app.' . $cls->status)

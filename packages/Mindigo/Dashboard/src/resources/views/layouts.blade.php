@@ -235,7 +235,7 @@
         </button>
     </aside>
 
-    <main class="min-w-0 {{ request()->routeIs('dashboard') ? 'p-0' : 'p-6 max-md:p-4' }}">
+    <main class="min-w-0 {{ request()->routeIs('dashboard', 'teacher.*', 'reports.*') ? 'p-0' : 'p-6 max-md:p-4' }}">
         @yield('content')
     </main>
 </div>

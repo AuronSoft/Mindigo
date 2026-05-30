@@ -30,6 +30,7 @@
         "mindigo/teacher-classroom": "*",
         "mindigo/teacher-dashboard": "*",
         "mindigo/teacher-exam": "*",
+        "mindigo/teacher-question": "*",
         "mindigo/teacher-result": "*",
         "mindigo/user-management": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.4"
@@ -66,6 +67,7 @@
             "Mindigo\\TeacherDashboard\\": "packages/Teacher/TeacherDashboard/src/",
             "Mindigo\\TeacherClassroom\\": "packages/Teacher/TeacherClassroom/src/",
             "Mindigo\\TeacherExam\\": "packages/Teacher/TeacherExam/src/",
+            "Mindigo\\TeacherQuestion\\": "packages/Teacher/TeacherQuestion/src/",
             "Mindigo\\TeacherResult\\": "packages/Teacher/TeacherResult/src/"
         }
     },
@@ -146,6 +148,10 @@
         {
             "type": "path",
             "url": "packages/Teacher/TeacherExam"
+        },
+        {
+            "type": "path",
+            "url": "packages/Teacher/TeacherQuestion"
         },
         {
             "type": "path",
