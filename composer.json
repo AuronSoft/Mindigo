@@ -30,6 +30,7 @@
         "mindigo/teacher-classroom": "*",
         "mindigo/teacher-dashboard": "*",
         "mindigo/teacher-exam": "*",
+        "mindigo/teacher-result": "*",
         "mindigo/user-management": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.4"
     },
@@ -64,7 +65,8 @@
             "Mindigo\\SubjectManagement\\": "packages/Mindigo/SubjectManagement/src/",
             "Mindigo\\TeacherDashboard\\": "packages/Teacher/TeacherDashboard/src/",
             "Mindigo\\TeacherClassroom\\": "packages/Teacher/TeacherClassroom/src/",
-            "Mindigo\\TeacherExam\\": "packages/Teacher/TeacherExam/src/"
+            "Mindigo\\TeacherExam\\": "packages/Teacher/TeacherExam/src/",
+            "Mindigo\\TeacherResult\\": "packages/Teacher/TeacherResult/src/"
         }
     },
     "autoload-dev": {
@@ -144,6 +146,10 @@
         {
             "type": "path",
             "url": "packages/Teacher/TeacherExam"
+        },
+        {
+            "type": "path",
+            "url": "packages/Teacher/TeacherResult"
         }
     ],
     "scripts": {
