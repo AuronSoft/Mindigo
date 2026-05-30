@@ -5,15 +5,16 @@
     $points = old('points', $config['points'] ?? ['single_choice' => 1, 'multiple_choice' => 1, 'true_false' => 1, 'short_answer' => 1]);
 @endphp
 
-<section class="exam-builder-card">
+<script type="application/json" data-exam-subject-topics>@json($subjectTopics ?? [])</script>
+
+<section class="exam-builder-card" data-exam-topic-builder>
     <div class="exam-section-head"><span>01</span><div><h2>@lang('Mindigo-exam-management::app.basic_info')</h2><p>@lang('Mindigo-exam-management::app.basic_info_desc')</p></div></div>
     <div class="exam-form-grid mt-5">
         <label class="exam-field md:col-span-2"><span>@lang('Mindigo-exam-management::app.title_field')</span><input name="title" value="{{ old('title', $exam->title ?? '') }}" class="exam-input" required></label>
-        <label class="exam-field"><span>@lang('Mindigo-exam-management::app.subject')</span><input name="subject" value="{{ old('subject', $exam->subject ?? '') }}" class="exam-input" list="exam-subjects"></label>
-        <label class="exam-field"><span>@lang('Mindigo-exam-management::app.topic')</span><input name="topic" value="{{ old('topic', $exam->topic ?? '') }}" class="exam-input"></label>
+        <label class="exam-field"><span>@lang('Mindigo-exam-management::app.subject')</span><select name="subject" class="exam-select" data-exam-subject-select data-topic-target="topic"><option value=""></option>@foreach($subjects as $subject)<option value="{{ $subject }}" @selected(old('subject', $exam->subject ?? '') === $subject)>{{ $subject }}</option>@endforeach</select></label>
+        <label class="exam-field"><span>@lang('Mindigo-exam-management::app.topic')</span><select name="topic" class="exam-select" data-exam-topic-select data-topic-name="topic" data-current-value="{{ old('topic', $exam->topic ?? '') }}"><option value=""></option></select></label>
         <label class="exam-field md:col-span-2"><span>@lang('Mindigo-exam-management::app.description')</span><textarea name="description" class="exam-textarea">{{ old('description', $exam->description ?? '') }}</textarea></label>
     </div>
-    <datalist id="exam-subjects">@foreach($subjects as $subject)<option value="{{ $subject }}"></option>@endforeach</datalist>
 </section>
 
 <section class="exam-builder-card">
@@ -36,8 +37,8 @@
     <div class="exam-section-head"><span>03</span><div><h2>@lang('Mindigo-exam-management::app.generation')</h2><p>@lang('Mindigo-exam-management::app.generation_desc')</p></div></div>
     <div class="exam-form-grid mt-5">
         <label class="exam-field"><span>@lang('Mindigo-exam-management::app.folder')</span><select name="folder_id" class="exam-select"><option value="">@lang('Mindigo-exam-management::app.any_folder')</option>@foreach($folders as $folder)<option value="{{ $folder->id }}" @selected((string) old('folder_id', $config['folder_id'] ?? '') === (string) $folder->id)>{{ $folder->name }} ({{ $folder->questions_count }})</option>@endforeach</select></label>
-        <label class="exam-field"><span>@lang('Mindigo-exam-management::app.generation_subject')</span><input name="generation_subject" value="{{ old('generation_subject', $config['subject'] ?? '') }}" class="exam-input" list="exam-subjects"></label>
-        <label class="exam-field"><span>@lang('Mindigo-exam-management::app.generation_topic')</span><input name="generation_topic" value="{{ old('generation_topic', $config['topic'] ?? '') }}" class="exam-input"></label>
+        <label class="exam-field"><span>@lang('Mindigo-exam-management::app.generation_subject')</span><select name="generation_subject" class="exam-select" data-exam-subject-select data-topic-target="generation_topic"><option value=""></option>@foreach($subjects as $subject)<option value="{{ $subject }}" @selected(old('generation_subject', $config['subject'] ?? '') === $subject)>{{ $subject }}</option>@endforeach</select></label>
+        <label class="exam-field"><span>@lang('Mindigo-exam-management::app.generation_topic')</span><select name="generation_topic" class="exam-select" data-exam-topic-select data-topic-name="generation_topic" data-current-value="{{ old('generation_topic', $config['topic'] ?? '') }}"><option value=""></option></select></label>
         <label class="exam-field"><span>@lang('Mindigo-exam-management::app.generation_difficulty')</span><select name="generation_difficulty" class="exam-select"><option value="">@lang('Mindigo-exam-management::app.any_difficulty')</option>@foreach($difficulties as $difficulty)<option value="{{ $difficulty }}" @selected(old('generation_difficulty', $config['difficulty'] ?? '') === $difficulty)>@lang('Mindigo-exam-management::app.difficulties.' . $difficulty)</option>@endforeach</select></label>
     </div>
 

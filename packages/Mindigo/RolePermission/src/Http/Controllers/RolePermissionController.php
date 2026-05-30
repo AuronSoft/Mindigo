@@ -3,8 +3,8 @@
 namespace Mindigo\RolePermission\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Mindigo\RolePermission\Http\Requests\RolePermissionRequest;
 use Mindigo\RolePermission\Services\RolePermissionService;
 
 class RolePermissionController extends Controller
@@ -28,17 +28,12 @@ class RolePermissionController extends Controller
         ));
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(RolePermissionRequest $request): RedirectResponse
     {
-        $request->validate([
-            'permissions' => ['nullable', 'array'],
-            'permissions.*' => ['nullable', 'array'],
-        ]);
-
         RolePermissionService::syncDefaults();
 
         $oldMap = RolePermissionService::permissionMap();
-        $newMap = RolePermissionService::updatePermissionMap($request->input('permissions', []));
+        $newMap = RolePermissionService::updatePermissionMap($request->submittedPermissions());
 
         if (class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
             app(\Mindigo\AuditLog\Services\AuditLogService::class)->record(

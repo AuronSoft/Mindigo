@@ -9,6 +9,8 @@
 @endphp
 
 <div class="question-builder" data-question-builder>
+    <script type="application/json" data-question-subject-topics>@json($subjectTopics ?? [])</script>
+
     <section class="question-builder-card">
         <div class="question-section-head">
             <span>01</span>
@@ -21,18 +23,20 @@
         <div class="question-form-grid mt-5">
             <label class="question-field">
                 <span>@lang('Mindigo-question-bank::app.subject')</span>
-                <input name="subject" value="{{ old('subject', $question->subject ?? '') }}" class="question-input" list="question-subjects" required>
-                <datalist id="question-subjects">
+                <select name="subject" class="question-select" required data-question-subject-select data-topic-target="topic">
+                    <option value=""></option>
                     @foreach($subjects as $subject)
-                        <option value="{{ $subject }}"></option>
+                        <option value="{{ $subject }}" @selected(old('subject', $question->subject ?? '') === $subject)>{{ $subject }}</option>
                     @endforeach
-                </datalist>
+                </select>
                 @error('subject')<strong>{{ $message }}</strong>@enderror
             </label>
 
             <label class="question-field">
                 <span>@lang('Mindigo-question-bank::app.topic')</span>
-                <input name="topic" value="{{ old('topic', $question->topic ?? '') }}" class="question-input">
+                <select name="topic" class="question-select" data-question-topic-select data-topic-name="topic" data-current-value="{{ old('topic', $question->topic ?? '') }}">
+                    <option value=""></option>
+                </select>
                 @error('topic')<strong>{{ $message }}</strong>@enderror
             </label>
 

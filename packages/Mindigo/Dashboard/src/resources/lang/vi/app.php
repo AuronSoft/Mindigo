@@ -35,6 +35,7 @@ return [
     'question_bank' => 'Ngân hàng câu hỏi',
     'exams' => 'Đề thi trắc nghiệm',
     'learners' => 'Học viên',
+    'classrooms' => 'Lớp học',
     'subjects' => 'Môn học',
     'documents' => 'Tài liệu',
     'ai_review' => 'Duyệt câu hỏi AI',

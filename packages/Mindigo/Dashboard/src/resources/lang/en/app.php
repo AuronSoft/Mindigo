@@ -35,6 +35,7 @@ return [
     'question_bank' => 'Question bank',
     'exams' => 'Multiple choice exams',
     'learners' => 'Learners',
+    'classrooms' => 'Classrooms',
     'subjects' => 'Subjects',
     'documents' => 'Documents',
     'ai_review' => 'AI question review',

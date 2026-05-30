@@ -1,6 +1,57 @@
 import '../../../../Core/src/resources/js/mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    const topicsSource = document.querySelector('[data-question-subject-topics]');
+    if (topicsSource) {
+        const topicsBySubject = JSON.parse(topicsSource.textContent || '{}');
+        const topicSelects = new Map(
+            [...document.querySelectorAll('[data-question-topic-select]')].map((select) => [select.dataset.topicName, select])
+        );
+
+        const fillTopics = (subjectSelect) => {
+            const topicSelect = topicSelects.get(subjectSelect.dataset.topicTarget);
+
+            if (!topicSelect) {
+                return;
+            }
+
+            const current = topicSelect.dataset.currentValue || topicSelect.value || '';
+            const topics = topicsBySubject[subjectSelect.value] || [];
+            topicSelect.innerHTML = '<option value=""></option>';
+
+            topics.forEach((topic) => {
+                const option = document.createElement('option');
+                option.value = topic;
+                option.textContent = topic;
+                option.selected = topic === current;
+                topicSelect.append(option);
+            });
+
+            if (current && !topics.includes(current)) {
+                const option = document.createElement('option');
+                option.value = current;
+                option.textContent = current;
+                option.selected = true;
+                topicSelect.append(option);
+            }
+
+            topicSelect.disabled = !subjectSelect.value || (!topics.length && !current);
+        };
+
+        document.querySelectorAll('[data-question-subject-select]').forEach((subjectSelect) => {
+            fillTopics(subjectSelect);
+            subjectSelect.addEventListener('change', () => {
+                const topicSelect = topicSelects.get(subjectSelect.dataset.topicTarget);
+
+                if (topicSelect) {
+                    topicSelect.dataset.currentValue = '';
+                }
+
+                fillTopics(subjectSelect);
+            });
+        });
+    }
+
     document.querySelectorAll('[data-question-auto-submit]').forEach((field) => {
         field.addEventListener('change', () => field.form?.requestSubmit());
     });
