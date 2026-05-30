@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "afab386bb8da1ceb725b3bc0713e1dc5",
+    "content-hash": "4e9e31df4011c5fdc02db53b3ee9f6b0",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2172,7 +2172,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2202,7 +2202,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2268,7 +2268,7 @@
         },
         {
             "name": "mindigo/classroom-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ClassroomManagement",
@@ -2298,7 +2298,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2328,7 +2328,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2358,7 +2358,7 @@
         },
         {
             "name": "mindigo/exam-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ExamManagement",
@@ -2388,7 +2388,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -2418,7 +2418,7 @@
         },
         {
             "name": "mindigo/question-bank",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/QuestionBank",
@@ -2448,7 +2448,7 @@
         },
         {
             "name": "mindigo/report",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Report",
@@ -2478,7 +2478,7 @@
         },
         {
             "name": "mindigo/role-permission",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -2508,7 +2508,7 @@
         },
         {
             "name": "mindigo/subject-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SubjectManagement",
@@ -2538,7 +2538,7 @@
         },
         {
             "name": "mindigo/support-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SupportManagement",
@@ -2568,7 +2568,7 @@
         },
         {
             "name": "mindigo/system-setting",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",
@@ -2597,8 +2597,38 @@
             }
         },
         {
+            "name": "mindigo/teacher-announcement",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Teacher/TeacherAnnouncement",
+                "reference": "504a3f10b4305350899c2f6a292a3f661f9ccdf7"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\TeacherAnnouncement\\Providers\\TeacherAnnouncementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\TeacherAnnouncement\\": "src/"
+                }
+            },
+            "description": "Mindigo Teacher Announcement Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mindigo/teacher-classroom",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherClassroom",
@@ -2628,7 +2658,7 @@
         },
         {
             "name": "mindigo/teacher-dashboard",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDashboard",
@@ -2658,7 +2688,7 @@
         },
         {
             "name": "mindigo/teacher-exam",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherExam",
@@ -2688,7 +2718,7 @@
         },
         {
             "name": "mindigo/teacher-question",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherQuestion",
@@ -2718,7 +2748,7 @@
         },
         {
             "name": "mindigo/teacher-result",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherResult",
@@ -2748,7 +2778,7 @@
         },
         {
             "name": "mindigo/user-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/UserManagement",

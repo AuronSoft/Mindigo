@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/teacher-announcement",
+    "description": "Mindigo Teacher Announcement Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\TeacherAnnouncement\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\TeacherAnnouncement\\Providers\\TeacherAnnouncementServiceProvider"
+            ]
+        }
+    }
+}
