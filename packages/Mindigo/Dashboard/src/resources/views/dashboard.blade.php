@@ -46,6 +46,7 @@
             'timezone' => config('app.timezone'),
             'server_now' => now()->toIso8601String(),
         ]) }};
+        window.__questionStats = {{ Illuminate\Support\Js::from($questionStats) }};
         window.__searchConfig = {
             url: {{ Illuminate\Support\Js::from(route('dashboard.search')) }},
             labels: {
@@ -375,7 +376,7 @@
                 </section>
 
                 <section class="grid gap-4 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-                    <div class="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm" id="question-bank">
+                    <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" id="question-bank">
                         <div class="mb-4 flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <span class="grid h-10 w-10 place-items-center rounded-full bg-green-50 text-green-700 ring-1 ring-green-100">
@@ -386,56 +387,40 @@
                                     <h3 class="mt-0.5 text-sm font-black text-slate-950">@lang('Mindigo-dashboard::app.question_quality')</h3>
                                 </div>
                             </div>
-                            <div class="flex rounded-full bg-slate-100 p-1 text-xs font-black">
-                                <span class="rounded-full bg-green-700 px-3 py-1.5 text-white shadow-sm">@lang('Mindigo-dashboard::app.revenue')</span>
-                                <span class="px-3 py-1.5 text-slate-500">@lang('Mindigo-dashboard::app.leads')</span>
-                                <span class="px-3 py-1.5 text-slate-500">@lang('Mindigo-dashboard::app.win_loss')</span>
+                            <div class="flex rounded-full bg-slate-100 p-1 text-xs font-black" id="qchart-tabs">
+                                <button class="rounded-full bg-green-700 px-3 py-1.5 text-white shadow-sm transition" data-qchart-tab="difficulty">@lang('Mindigo-dashboard::app.qchart_difficulty')</button>
+                                <button class="px-3 py-1.5 text-slate-500 transition hover:text-slate-700" data-qchart-tab="subject">@lang('Mindigo-dashboard::app.qchart_subject')</button>
+                                <button class="px-3 py-1.5 text-slate-500 transition hover:text-slate-700" data-qchart-tab="status">@lang('Mindigo-dashboard::app.qchart_status')</button>
                             </div>
                         </div>
                         <div class="grid gap-4 lg:grid-cols-[14rem_minmax(0,1fr)]">
-                            <div class="rounded-[1.5rem] bg-gradient-to-br from-green-700 to-emerald-500 p-5 text-white shadow-sm">
-                                <p class="text-xs font-black text-green-100">@lang('Mindigo-dashboard::app.content_value')</p>
-                                <h4 class="mt-1 text-lg font-black">@lang('Mindigo-dashboard::app.product_name')</h4>
+                            {{-- Left stat card --}}
+                            <div class="rounded-3xl bg-linear-to-br from-green-700 to-emerald-500 p-5 text-white shadow-sm">
+                                <p class="text-xs font-black text-green-100">@lang('Mindigo-dashboard::app.qbank_overview')</p>
+                                <h4 class="mt-1 text-lg font-black">MindigoExam</h4>
                                 <div class="mt-7 space-y-4">
                                     <div>
                                         <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.standard_questions')</p>
                                         <strong class="mt-0.5 block text-2xl font-black">{{ number_format($totalQuestions) }}</strong>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.attempts')</p>
-                                        <strong class="mt-0.5 block text-xl font-black">{{ number_format($totalAttempts) }} <span class="text-sm text-green-100">/ {{ number_format($totalExams) }}</span></strong>
+                                        <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.qbank_pending')</p>
+                                        <strong class="mt-0.5 block text-xl font-black">{{ number_format($pendingQuestions) }} <span class="text-sm text-green-100">@lang('Mindigo-dashboard::app.questions_unit')</span></strong>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.win_rate')</p>
-                                        <strong class="mt-0.5 block text-xl font-black">{{ $passRate }}% <span class="text-sm text-green-100">{{ number_format($passedAttempts) }} / {{ number_format($totalAttempts) }}</span></strong>
+                                        <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.pass_rate')</p>
+                                        <strong class="mt-0.5 block text-xl font-black">{{ $passRate }}% <span class="text-sm text-green-100">{{ number_format($passedAttempts) }}/{{ number_format($totalAttempts) }}</span></strong>
                                     </div>
                                 </div>
                             </div>
-                            <div class="relative min-h-64 rounded-[1.5rem] bg-slate-50 p-4">
-                                <div class="absolute inset-x-4 top-7 space-y-10 text-right text-[11px] font-black text-slate-300">
-                                    <div class="border-t border-slate-200 pt-1">$14,000</div>
-                                    <div class="border-t border-slate-200 pt-1">$11,000</div>
-                                    <div class="border-t border-slate-200 pt-1">$7,500</div>
-                                    <div class="border-t border-slate-200 pt-1">$4,000</div>
-                                </div>
-                                <div class="relative z-10 grid h-56 grid-cols-7 items-end gap-2 pr-10">
-                                    @foreach([
-                                        ['height' => 46, 'label' => '$6,901', 'tag' => true],
-                                        ['height' => 34, 'label' => '', 'tag' => false],
-                                        ['height' => 86, 'label' => '$11,035', 'tag' => true],
-                                        ['height' => 57, 'label' => '', 'tag' => false],
-                                        ['height' => 49, 'label' => '', 'tag' => false],
-                                        ['height' => 74, 'label' => '$9,265', 'tag' => true],
-                                        ['height' => 61, 'label' => '', 'tag' => false],
-                                    ] as $bar)
-                                        <div class="flex h-full flex-col items-center justify-end gap-2">
-                                            @if($bar['tag'])
-                                                <span class="rounded-lg bg-green-600 px-2 py-1 text-[10px] font-black text-white shadow-sm">{{ $bar['label'] }}</span>
-                                            @endif
-                                            <span class="w-full rounded-t-2xl {{ $bar['tag'] ? 'bg-[repeating-linear-gradient(135deg,#bbf7d0_0,#bbf7d0_4px,#ffffff_4px,#ffffff_8px)] ring-1 ring-green-100' : 'bg-slate-200' }}" style="height: {{ $bar['height'] }}%"></span>
-                                            <span class="grid h-6 w-6 place-items-center rounded-full bg-white text-[10px] font-black text-green-700 ring-1 ring-slate-200">{{ $loop->iteration % 3 === 0 ? 'T' : ($loop->iteration % 2 === 0 ? 'S' : 'A') }}</span>
-                                        </div>
-                                    @endforeach
+
+                            {{-- Right dynamic chart --}}
+                            <div class="relative min-h-64 rounded-3xl bg-slate-50 p-4" id="qchart-area">
+                                {{-- Rendered by JS via window.__questionStats --}}
+                                <div id="qchart-bars" class="flex h-full min-h-56 items-end gap-2"></div>
+                                <div id="qchart-empty" class="hidden min-h-56 flex-col items-center justify-center gap-3">
+                                    <x-heroicon-o-circle-stack class="h-12 w-12 text-slate-200" />
+                                    <p class="text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</p>
                                 </div>
                             </div>
                         </div>

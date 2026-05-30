@@ -5,6 +5,65 @@ const dashboardChartLabels = window.__dashboardChartLabels || {};
 const dashboardRuntime = window.__dashboardRuntime || {};
 const dashboardRanking = window.__dashboardRanking || {};
 
+// ── Question Bank Chart ───────────────────────────────────────────────────
+(() => {
+    const stats    = window.__questionStats || {};
+    const tabsEl   = document.getElementById('qchart-tabs');
+    const barsEl   = document.getElementById('qchart-bars');
+    const emptyEl  = document.getElementById('qchart-empty');
+
+    if (!barsEl || !tabsEl) return;
+
+    const renderBars = (tab) => {
+        const items = stats[tab] || [];
+        barsEl.innerHTML = '';
+
+        if (!items.length || items.every(i => i.count === 0)) {
+            barsEl.classList.add('hidden');
+            emptyEl.classList.remove('hidden');
+            emptyEl.classList.add('flex');
+            return;
+        }
+
+        barsEl.classList.remove('hidden');
+        emptyEl.classList.add('hidden');
+        emptyEl.classList.remove('flex');
+
+        const max = Math.max(...items.map(i => i.count), 1);
+
+        items.forEach(item => {
+            const pct = Math.max(8, Math.round((item.count / max) * 84));
+            const col = document.createElement('div');
+            col.className = 'flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2';
+            col.innerHTML = `
+                <span class="text-[10px] font-black text-slate-500">${item.count}</span>
+                <div class="w-full rounded-t-2xl transition-all duration-500" style="height:${pct}%;background:${item.color}"></div>
+                <span class="block w-full truncate text-center text-[10px] font-black text-slate-400" title="${item.label}">${item.label}</span>
+            `;
+            barsEl.appendChild(col);
+        });
+    };
+
+    const setTab = (tab) => {
+        tabsEl.querySelectorAll('[data-qchart-tab]').forEach(btn => {
+            const active = btn.dataset.qchartTab === tab;
+            btn.classList.toggle('rounded-full', active);
+            btn.classList.toggle('bg-green-700', active);
+            btn.classList.toggle('text-white', active);
+            btn.classList.toggle('shadow-sm', active);
+            btn.classList.toggle('text-slate-500', !active);
+        });
+        renderBars(tab);
+    };
+
+    tabsEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-qchart-tab]');
+        if (btn) setTab(btn.dataset.qchartTab);
+    });
+
+    setTab('difficulty');
+})();
+
 // ── Quick Create Dropdown ─────────────────────────────────────────────────
 (() => {
     const btn      = document.getElementById('quick-create-btn');

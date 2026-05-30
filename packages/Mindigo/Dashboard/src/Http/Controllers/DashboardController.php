@@ -77,6 +77,28 @@ class DashboardController extends Controller
         $totalQuestions = Question::where('status', 'approved')->count();
         $pendingQuestions = Question::where('status', 'reviewing')->count();
 
+        $questionStats = [
+            'difficulty' => [
+                ['label' => 'Dễ',     'count' => Question::where('difficulty', 'easy')->count(),   'color' => '#10b981'],
+                ['label' => 'Trung',  'count' => Question::where('difficulty', 'medium')->count(), 'color' => '#f59e0b'],
+                ['label' => 'Khó',    'count' => Question::where('difficulty', 'hard')->count(),   'color' => '#ef4444'],
+            ],
+            'status' => [
+                ['label' => 'Đạt',    'count' => Question::where('status', 'approved')->count(),   'color' => '#16a34a'],
+                ['label' => 'Duyệt',  'count' => Question::where('status', 'reviewing')->count(),  'color' => '#f59e0b'],
+                ['label' => 'Nháp',   'count' => Question::where('status', 'draft')->count(),      'color' => '#94a3b8'],
+                ['label' => 'Từ chối','count' => Question::where('status', 'rejected')->count(),   'color' => '#ef4444'],
+            ],
+            'subject' => DB::table('question_bank_questions')
+                ->whereNull('deleted_at')
+                ->whereNotNull('subject')->where('subject', '!=', '')
+                ->selectRaw('subject as label, COUNT(*) as count')
+                ->groupBy('subject')->orderByDesc('count')->limit(7)
+                ->get()
+                ->map(fn ($r) => ['label' => \Illuminate\Support\Str::limit($r->label, 6), 'count' => $r->count, 'color' => '#22c55e'])
+                ->toArray(),
+        ];
+
         $pendingReview = $pendingQuestions;
         $pendingPublish = Exam::where('status', 'reviewing')->count();
         $openSupport = DB::table('support_tickets')->where('status', 'open')->count();
@@ -128,6 +150,7 @@ class DashboardController extends Controller
             'pendingReview', 'pendingPublish', 'openSupport',
             'topSubjects', 'totalSubjectAttempts',
             'rankingLabels', 'rankingData',
+            'questionStats',
             'userMetrics', 'totalUsers',
             'dashboardUser', 'headerUsers'
         ));
