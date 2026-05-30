@@ -88,6 +88,10 @@
                                class="w-44 bg-transparent text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400">
                     </div>
                 </form>
+                <a href="{{ route('teacher.questions.import') }}"
+                   class="inline-flex h-9 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">
+                    <x-heroicon-o-arrow-up-tray class="h-4 w-4" />@lang('teacher-question::app.import')
+                </a>
                 <a href="{{ route('teacher.questions.create') }}"
                    class="inline-flex h-9 items-center gap-1.5 rounded-full bg-green-600 px-4 text-sm font-black text-white no-underline shadow-sm transition hover:bg-green-500">
                     <x-heroicon-o-plus class="h-4 w-4" />@lang('teacher-question::app.create')

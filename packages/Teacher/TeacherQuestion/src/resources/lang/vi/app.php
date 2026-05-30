@@ -66,6 +66,37 @@ return [
     'empty_title'     => 'Bạn chưa có câu hỏi nào',
     'empty_desc'      => 'Thêm câu hỏi đầu tiên vào ngân hàng của bạn.',
 
+    // Import
+    'import'           => 'Nhập từ file',
+    'import_title'     => 'Nhập câu hỏi hàng loạt',
+    'import_subtitle'  => 'Tải lên file CSV, TXT hoặc JSON để thêm nhiều câu hỏi cùng lúc.',
+    'import_file_desc' => 'Kéo thả hoặc nhấn để chọn file .csv / .txt / .json — tối đa 5 MB',
+    'import_folder'    => 'Thư mục đích',
+    'import_folder_ph' => 'Lấy từ file (mặc định)',
+    'import_status'    => 'Trạng thái sau khi nhập',
+    'import_draft'     => 'Bản nháp — kiểm tra trước khi gửi',
+    'import_reviewing' => 'Gửi duyệt ngay',
+    'import_submit'    => 'Nhập câu hỏi',
+    'import_format'    => 'Cột CSV bắt buộc',
+    'imported'         => 'Đã nhập thành công :count câu hỏi.',
+
+    // Import format table
+    'fmt_col'          => 'Cột',
+    'fmt_required_hd'  => 'Bắt buộc',
+    'fmt_example_hd'   => 'Giá trị ví dụ',
+    'fmt_badge_req'    => 'Bắt buộc',
+    'fmt_badge_opt'    => 'Tùy chọn',
+    'fmt_file_types'   => 'CSV · TXT · JSON',
+    'fmt_separator'    => 'Dùng dấu | để tách nhiều giá trị trong một cột. File JSON có thể là mảng hoặc object với key questions.',
+    'ex_content'       => 'Câu hỏi của bạn ở đây',
+    'ex_subject'       => 'Toán, Văn, Anh...',
+    'ex_topic'         => 'Chủ đề cụ thể',
+    'ex_options'       => 'A: Đáp án 1 | B: Đáp án 2 | C: Đáp án 3',
+    'ex_answers'       => 'A (single) hoặc A,B (multiple)',
+    'ex_explanation'   => 'Giải thích đáp án đúng',
+    'ex_folder'        => 'Tên thư mục (tạo mới nếu chưa có)',
+    'ex_tags'          => 'tag1 | tag2 | tag3',
+
     // Messages
     'created'         => 'Đã tạo câu hỏi.',
     'updated'         => 'Đã cập nhật câu hỏi.',

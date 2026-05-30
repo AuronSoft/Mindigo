@@ -34,12 +34,12 @@ class TeacherQuestionService
 
     public function create(TeacherQuestionRequest $request): Question
     {
-        return $this->bank->create($request->user(), $request);
+        return $this->bank->createQuestion($request->user(), $request->validated());
     }
 
     public function update(Question $question, TeacherQuestionRequest $request): Question
     {
-        return $this->bank->update($question, $request);
+        return $this->bank->updateQuestion($question, $request->validated());
     }
 
     public function submitForReview(Question $question): void
@@ -62,6 +62,11 @@ class TeacherQuestionService
             ->withCount('questions')
             ->orderBy('name')
             ->get();
+    }
+
+    public function import($file, User $teacher, string $status, ?int $folderId): int
+    {
+        return $this->bank->import($file, $teacher, $status, $folderId);
     }
 
     public function formData(User $teacher): array

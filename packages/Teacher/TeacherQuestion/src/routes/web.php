@@ -15,4 +15,6 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::put('/{question}', [TeacherQuestionController::class, 'update'])->name('update');
         Route::post('/{question}/submit', [TeacherQuestionController::class, 'submit'])->name('submit');
         Route::delete('/{question}', [TeacherQuestionController::class, 'destroy'])->name('destroy');
+        Route::get('/do/import', [TeacherQuestionController::class, 'importForm'])->name('import');
+        Route::post('/do/import', [TeacherQuestionController::class, 'importStore'])->name('import.store');
     });

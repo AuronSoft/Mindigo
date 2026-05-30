@@ -3,8 +3,10 @@
 namespace Mindigo\TeacherQuestion\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\TeacherQuestion\Http\Requests\TeacherQuestionRequest;
 use Mindigo\TeacherQuestion\Services\TeacherQuestionService;
@@ -97,6 +99,45 @@ class TeacherQuestionController extends Controller
         return redirect()
             ->route('teacher.questions.index')
             ->with('success', __('teacher-question::app.deleted'));
+    }
+
+    public function importForm()
+    {
+        /** @var \Mindigo\Auth\Models\User $teacher */
+        $teacher = Auth::user();
+
+        return view('teacher-question::import', [
+            'folders' => $this->service->myFolders($teacher),
+        ]);
+    }
+
+    public function importStore(Request $request): RedirectResponse
+    {
+        /** @var \Mindigo\Auth\Models\User $teacher */
+        $teacher = Auth::user();
+
+        $request->validate([
+            'import_file' => ['required', 'file', 'max:5120', 'extensions:csv,txt,json'],
+            'folder_id'   => ['nullable', 'exists:question_bank_folders,id'],
+            'status'      => ['required', 'in:draft,reviewing'],
+        ]);
+
+        try {
+            $count = $this->service->import(
+                $request->file('import_file'),
+                $teacher,
+                $request->input('status', 'draft'),
+                $request->input('folder_id') ? (int) $request->input('folder_id') : null,
+            );
+
+            return redirect()
+                ->route('teacher.questions.index')
+                ->with('success', __('teacher-question::app.imported', ['count' => $count]));
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Throwable $e) {
+            return back()->withErrors(['import_file' => $e->getMessage()])->withInput();
+        }
     }
 
     private function authorizeOwnership(Question $question): void
