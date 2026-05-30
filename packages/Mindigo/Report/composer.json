@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/report",
+    "description": "Mindigo reporting and analytics package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\Report\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\Report\\Providers\\ReportServiceProvider"
+            ]
+        }
+    }
+}

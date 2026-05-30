@@ -27,6 +27,8 @@ export default defineConfig({
                 "packages/Mindigo/SystemSetting/src/resources/js/app.js",
                 "packages/Mindigo/AuditLog/src/resources/css/app.css",
                 "packages/Mindigo/AuditLog/src/resources/js/app.js",
+                "packages/Mindigo/Report/src/resources/css/app.css",
+                "packages/Mindigo/Report/src/resources/js/app.js",
             ],
             refresh: true,
         }),

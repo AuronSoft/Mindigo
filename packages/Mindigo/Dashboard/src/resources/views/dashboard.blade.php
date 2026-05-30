@@ -196,7 +196,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        <a href="#reports" class="inline-flex min-h-10 items-center justify-center rounded-full bg-green-700 px-5 text-xs font-black text-white no-underline transition hover:bg-green-600">@lang('Mindigo-dashboard::app.details')</a>
+                        <a href="{{ Route::has('reports.index') ? route('reports.index') : '#reports' }}" class="inline-flex min-h-10 items-center justify-center rounded-full bg-green-700 px-5 text-xs font-black text-white no-underline transition hover:bg-green-600">@lang('Mindigo-dashboard::app.details')</a>
                     </div>
                 </section>
 
@@ -386,7 +386,7 @@
                                 <p class="text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.operations')</p>
                                 <h3 class="mt-1 text-lg font-black text-slate-950">@lang('Mindigo-dashboard::app.latest_exams')</h3>
                             </div>
-                            <a href="#reports" class="rounded-full bg-slate-950 px-4 py-2 text-xs font-black text-white no-underline">@lang('Mindigo-dashboard::app.view_report')</a>
+                            <a href="{{ Route::has('reports.exams') ? route('reports.exams') : '#reports' }}" class="rounded-full bg-slate-950 px-4 py-2 text-xs font-black text-white no-underline">@lang('Mindigo-dashboard::app.view_report')</a>
                         </div>
                         <div class="overflow-hidden rounded-2xl border border-slate-200">
                             <table class="w-full min-w-[620px] text-left">

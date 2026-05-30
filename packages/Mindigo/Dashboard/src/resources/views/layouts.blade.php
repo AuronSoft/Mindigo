@@ -120,7 +120,11 @@
                     </button>
                     <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
                         <a href="#sessions" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exam_sessions')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.exam_sessions')</span></a>
+                        @if(Route::has('reports.index'))
+                        <a href="{{ route('reports.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700 {{ request()->routeIs('reports.*') ? 'bg-green-50 text-green-700' : '' }}" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.reports')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.reports')</span></a>
+                        @else
                         <a href="#reports" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.reports')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.reports')</span></a>
+                        @endif
                         @if(Route::has('support-tickets.index'))
                             <a href="{{ route('support-tickets.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('support-tickets.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.support_tickets')"><span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span><span>@lang('Mindigo-dashboard::app.support_tickets')</span></a>
                         @endif
