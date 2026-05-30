@@ -5,6 +5,150 @@ const dashboardChartLabels = window.__dashboardChartLabels || {};
 const dashboardRuntime = window.__dashboardRuntime || {};
 const dashboardRanking = window.__dashboardRanking || {};
 
+// ── Global Search ──────────────────────────────────────────────────────────
+(() => {
+    const cfg       = window.__searchConfig || {};
+    const wrap      = document.getElementById('global-search-wrap');
+    const input     = document.getElementById('global-search-input');
+    const icon      = document.getElementById('global-search-icon');
+    const spinner   = document.getElementById('global-search-spinner');
+    const clearBtn  = document.getElementById('global-search-clear');
+    const dropdown  = document.getElementById('global-search-results');
+    const list      = document.getElementById('global-search-list');
+    const empty     = document.getElementById('global-search-empty');
+
+    if (!input || !dropdown) return;
+
+    const typeIcon = {
+        exam:     'M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z',
+        user:     'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7z',
+        question: 'M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7l-4 4V7z',
+        ticket:   'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
+    };
+    const typeTone = {
+        exam:     'bg-green-100 text-green-700',
+        user:     'bg-sky-100 text-sky-700',
+        question: 'bg-amber-100 text-amber-700',
+        ticket:   'bg-rose-100 text-rose-700',
+    };
+
+    let timer = null;
+    let lastQuery = '';
+    let focusedIdx = -1;
+    let currentItems = [];
+
+    const openDropdown  = () => dropdown.classList.remove('hidden');
+    const closeDropdown = () => { dropdown.classList.add('hidden'); focusedIdx = -1; };
+    const showSpinner   = (on) => { spinner.classList.toggle('hidden', !on); icon.classList.toggle('hidden', on); };
+
+    const setFocus = (idx) => {
+        const items = list.querySelectorAll('[data-search-item]');
+        items.forEach((el, i) => el.classList.toggle('bg-slate-50', i === idx));
+        focusedIdx = idx;
+        if (items[idx]) items[idx].scrollIntoView({ block: 'nearest' });
+    };
+
+    const buildItem = (result, idx) => {
+        const path = typeIcon[result.type] || typeIcon.exam;
+        const tone = typeTone[result.type] || 'bg-slate-100 text-slate-600';
+        const typeLabel = cfg.labels?.[result.type] || result.type;
+
+        const el = document.createElement('a');
+        el.href = result.url;
+        el.className = 'flex items-center gap-3 px-4 py-2.5 no-underline transition hover:bg-slate-50';
+        el.setAttribute('data-search-item', idx);
+        el.innerHTML = `
+            <span class="grid h-8 w-8 shrink-0 place-items-center rounded-xl ${tone}">
+                <svg viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="${path}"/>
+                </svg>
+            </span>
+            <span class="min-w-0 flex-1">
+                <span class="block truncate text-sm font-black text-slate-900">${result.label}</span>
+                <span class="block truncate text-xs font-bold text-slate-400">${result.sub || ''}</span>
+            </span>
+            <span class="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-500">${typeLabel}</span>
+        `;
+        return el;
+    };
+
+    const renderResults = (results) => {
+        list.innerHTML = '';
+        currentItems = results;
+        focusedIdx = -1;
+
+        if (!results.length) {
+            list.classList.add('hidden');
+            empty.classList.remove('hidden');
+            empty.classList.add('flex');
+            return;
+        }
+
+        list.classList.remove('hidden');
+        empty.classList.add('hidden');
+        empty.classList.remove('flex');
+
+        results.forEach((r, i) => list.appendChild(buildItem(r, i)));
+    };
+
+    const doSearch = async (q) => {
+        if (q === lastQuery) return;
+        lastQuery = q;
+
+        if (q.length < 2) { closeDropdown(); return; }
+
+        showSpinner(true);
+        openDropdown();
+
+        try {
+            const res = await fetch(`${cfg.url}?q=${encodeURIComponent(q)}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+            });
+            const data = await res.json();
+            if (input.value.trim() === q) renderResults(data.results || []);
+        } catch {
+            // silent fail
+        } finally {
+            showSpinner(false);
+        }
+    };
+
+    input.addEventListener('input', () => {
+        const q = input.value.trim();
+        clearBtn.classList.toggle('hidden', !q);
+        clearTimeout(timer);
+        if (!q) { closeDropdown(); lastQuery = ''; return; }
+        timer = setTimeout(() => doSearch(q), 300);
+    });
+
+    input.addEventListener('keydown', (e) => {
+        const items = list.querySelectorAll('[data-search-item]');
+        if (e.key === 'ArrowDown') { e.preventDefault(); setFocus(Math.min(focusedIdx + 1, items.length - 1)); }
+        if (e.key === 'ArrowUp')   { e.preventDefault(); setFocus(Math.max(focusedIdx - 1, 0)); }
+        if (e.key === 'Enter' && focusedIdx >= 0 && items[focusedIdx]) {
+            e.preventDefault();
+            items[focusedIdx].click();
+        }
+        if (e.key === 'Escape') { closeDropdown(); input.blur(); }
+    });
+
+    clearBtn.addEventListener('click', () => {
+        input.value = '';
+        clearBtn.classList.add('hidden');
+        closeDropdown();
+        lastQuery = '';
+        input.focus();
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!wrap.contains(e.target)) closeDropdown();
+    });
+
+    input.addEventListener('focus', () => {
+        if (input.value.trim().length >= 2 && currentItems.length) openDropdown();
+    });
+})();
+
 const chartDefaults = {
     responsive: true,
     maintainAspectRatio: false,

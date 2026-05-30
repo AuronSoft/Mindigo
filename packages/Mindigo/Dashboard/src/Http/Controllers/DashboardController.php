@@ -109,6 +109,13 @@ class DashboardController extends Controller
 
         $dashboardUser = Auth::user();
 
+        // Header badge users: 1 admin, 1 teacher, 1 student (other than current user)
+        $headerUsers = collect([
+            User::admins()->where('id', '!=', $dashboardUser?->id)->latest()->first(),
+            User::teachers()->latest()->first(),
+            User::students()->latest()->first(),
+        ])->filter();
+
         return view('Mindigo-dashboard::dashboard', compact(
             'stats',
             'totalExams', 'recentExams',
@@ -122,7 +129,7 @@ class DashboardController extends Controller
             'topSubjects', 'totalSubjectAttempts',
             'rankingLabels', 'rankingData',
             'userMetrics', 'totalUsers',
-            'dashboardUser'
+            'dashboardUser', 'headerUsers'
         ));
     }
 }

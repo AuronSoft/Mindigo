@@ -46,6 +46,17 @@
             'timezone' => config('app.timezone'),
             'server_now' => now()->toIso8601String(),
         ]) }};
+        window.__searchConfig = {
+            url: {{ Illuminate\Support\Js::from(route('dashboard.search')) }},
+            labels: {
+                exam:     {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.search_type_exam')) }},
+                user:     {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.search_type_user')) }},
+                question: {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.search_type_question')) }},
+                ticket:   {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.search_type_ticket')) }},
+                empty:    {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.search_no_results')) }},
+                hint:     {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.search_hint')) }},
+            },
+        };
         window.__dashboardRanking = {
             labels: {{ Illuminate\Support\Js::from($rankingLabels) }},
             data: {{ Illuminate\Support\Js::from($rankingData) }},
@@ -57,9 +68,33 @@
 
     <section class="min-h-screen bg-[#f7faf7]">
         <header class="flex min-h-[4.25rem] flex-wrap items-center justify-between gap-4 bg-[#f7faf7] px-5 py-3 backdrop-blur max-md:px-4">
-            <div class="flex min-w-[16rem] max-w-xl flex-1 items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-                <x-heroicon-o-magnifying-glass class="h-5 w-5 shrink-0 text-slate-400" />
-                <input type="text" placeholder="@lang('Mindigo-dashboard::app.global_search')" class="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400">
+            <div class="relative min-w-[16rem] max-w-xl flex-1" id="global-search-wrap">
+                <div class="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 transition focus-within:border-green-300 focus-within:bg-white focus-within:shadow-sm">
+                    <x-heroicon-o-magnifying-glass class="h-5 w-5 shrink-0 text-slate-400" id="global-search-icon" />
+                    <svg id="global-search-spinner" class="hidden h-5 w-5 shrink-0 animate-spin text-green-500" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"/></svg>
+                    <input
+                        id="global-search-input"
+                        type="text"
+                        placeholder="@lang('Mindigo-dashboard::app.global_search')"
+                        autocomplete="off"
+                        data-search-url="{{ route('dashboard.search') }}"
+                        class="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400"
+                    >
+                    <button id="global-search-clear" class="hidden text-slate-400 hover:text-slate-600">
+                        <x-heroicon-m-x-mark class="h-4 w-4" />
+                    </button>
+                </div>
+                {{-- Results dropdown --}}
+                <div id="global-search-results" class="absolute left-0 top-[calc(100%+6px)] z-50 hidden w-full min-w-90 rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10">
+                    <div id="global-search-list" class="max-h-105 overflow-y-auto py-2"></div>
+                    <div id="global-search-empty" class="hidden flex-col items-center gap-2 py-8 text-center">
+                        <x-heroicon-o-magnifying-glass class="h-10 w-10 text-slate-200" />
+                        <p class="text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.search_no_results')</p>
+                    </div>
+                    <div class="border-t border-slate-100 px-4 py-2.5">
+                        <p class="text-[11px] font-bold text-slate-400" id="global-search-hint">@lang('Mindigo-dashboard::app.search_hint')</p>
+                    </div>
+                </div>
             </div>
 
             <div class="flex items-center gap-2 rounded-full bg-white/80 p-1.5 shadow-sm ring-1 ring-slate-200">
@@ -101,20 +136,25 @@
                 <section class="min-h-[18.85rem] rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm" id="overview">
                     <div class="flex flex-wrap items-center justify-between gap-4">
                         <div class="flex flex-wrap items-center gap-2">
+                            @if(Route::has('users.create'))
+                            <a href="{{ route('users.create') }}" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:border-green-200 hover:bg-green-50 hover:text-green-700" title="@lang('Mindigo-dashboard::app.create_user')">
+                                <x-heroicon-o-plus class="h-4 w-4" />
+                            </a>
+                            @else
                             <button type="button" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600">
                                 <x-heroicon-o-plus class="h-4 w-4" />
                             </button>
-                            @foreach([
-                                ['name' => __('Mindigo-dashboard::app.demo_admin'), 'color' => 'bg-green-100 text-green-700'],
-                                ['name' => __('Mindigo-dashboard::app.demo_teacher'), 'color' => 'bg-amber-100 text-amber-700'],
-                                ['name' => __('Mindigo-dashboard::app.demo_student'), 'color' => 'bg-sky-100 text-sky-700'],
-                            ] as $person)
+                            @endif
+                            @php
+                                $badgeTones = ['bg-green-100 text-green-700', 'bg-amber-100 text-amber-700', 'bg-sky-100 text-sky-700'];
+                            @endphp
+                            @foreach($headerUsers as $i => $person)
                                 <span class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-2.5 text-xs font-black text-slate-700">
-                                    <span class="grid h-6 w-6 place-items-center rounded-full {{ $person['color'] }}">{{ mb_substr($person['name'], 0, 1) }}</span>
-                                    {{ $person['name'] }}
+                                    <span class="grid h-6 w-6 place-items-center rounded-full text-[10px] {{ $badgeTones[$i] ?? 'bg-slate-100 text-slate-600' }}">{{ mb_substr($person->name, 0, 1) }}</span>
+                                    {{ \Illuminate\Support\Str::limit($person->name, 14) }}
                                 </span>
                             @endforeach
-                            <span class="grid h-9 w-9 place-items-center rounded-full bg-green-700 text-xs font-black text-white">C</span>
+                            <span class="grid h-9 w-9 place-items-center rounded-full bg-green-700 text-xs font-black text-white" title="{{ $dashboardUser?->name }}">{{ mb_substr($dashboardUser?->name ?? 'A', 0, 1) }}</span>
                         </div>
 
                         <div class="flex flex-wrap items-center gap-2">
