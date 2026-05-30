@@ -2,6 +2,8 @@
 
 namespace Mindigo\QuestionBank\Models;
 
+use Database\Factories\QuestionFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +11,12 @@ use Mindigo\Auth\Models\User;
 
 class Question extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected static function newFactory(): QuestionFactory
+    {
+        return QuestionFactory::new();
+    }
 
     public const TYPES = ['single_choice', 'multiple_choice', 'true_false', 'short_answer', 'essay'];
     public const DIFFICULTIES = ['easy', 'medium', 'hard'];

@@ -2,6 +2,8 @@
 
 namespace Mindigo\ExamManagement\Models;
 
+use Database\Factories\ExamFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +12,12 @@ use Mindigo\Auth\Models\User;
 
 class Exam extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected static function newFactory(): ExamFactory
+    {
+        return ExamFactory::new();
+    }
 
     public const STATUSES = ['draft', 'reviewing', 'published', 'closed'];
 

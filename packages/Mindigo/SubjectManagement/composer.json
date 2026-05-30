@@ -9,13 +9,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Mindigo\SubjectManagement\\": "src/"
+            "Mindigo\\SubjectManagement\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Mindigo\SubjectManagement\Providers\SubjectManagementServiceProvider"
+                "Mindigo\\SubjectManagement\\Providers\\SubjectManagementServiceProvider"
             ]
         }
     }

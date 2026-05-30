@@ -3,6 +3,7 @@
 namespace Mindigo\Dashboard\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
@@ -52,9 +53,9 @@ class DashboardController extends Controller
             ->orderByDesc('avg_score')
             ->first();
 
-        $bestExam = Exam::withCount(['attempts' => fn ($q) => $q->where('status', 'submitted')])
+        $bestExam = Exam::whereHas('attempts', fn ($q) => $q->where('status', 'submitted'))
+            ->withCount(['attempts' => fn ($q) => $q->where('status', 'submitted')])
             ->withAvg(['attempts' => fn ($q) => $q->where('status', 'submitted')], 'percentage')
-            ->having('attempts_count', '>', 0)
             ->orderByDesc('attempts_avg_percentage')
             ->first();
 
@@ -106,7 +107,7 @@ class DashboardController extends Controller
             ['initial' => 'ON', 'value' => $stats['active_users'], 'tone' => 'bg-emerald-100 text-emerald-700 ring-emerald-100'],
         ];
 
-        $dashboardUser = auth()->user();
+        $dashboardUser = Auth::user();
 
         return view('Mindigo-dashboard::dashboard', compact(
             'stats',

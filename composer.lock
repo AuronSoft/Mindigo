@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e39d16848f17971323aee4a1c9b054ce",
+    "content-hash": "e2fff268410a7bec1e52a45c40085b62",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2172,7 +2172,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2202,7 +2202,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2268,7 +2268,7 @@
         },
         {
             "name": "mindigo/classroom-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ClassroomManagement",
@@ -2298,7 +2298,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2328,7 +2328,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2358,7 +2358,7 @@
         },
         {
             "name": "mindigo/exam-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ExamManagement",
@@ -2388,7 +2388,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -2418,7 +2418,7 @@
         },
         {
             "name": "mindigo/question-bank",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/QuestionBank",
@@ -2447,8 +2447,38 @@
             }
         },
         {
+            "name": "mindigo/report",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/Report",
+                "reference": "1841adc7360327c13715c6bef0a30d6b762160e3"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\Report\\Providers\\ReportServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\Report\\": "src/"
+                }
+            },
+            "description": "Mindigo reporting and analytics package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mindigo/role-permission",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -2478,11 +2508,11 @@
         },
         {
             "name": "mindigo/subject-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SubjectManagement",
-                "reference": "5399551f2da69c184a85514a976ec7fa5cde93c5"
+                "reference": "77eb52297b93748f8d69a0bd3b7f4f5effa356d4"
             },
             "require": {
                 "illuminate/support": "^12.0",
@@ -2501,14 +2531,14 @@
                     "Mindigo\\SubjectManagement\\": "src/"
                 }
             },
-            "description": "Mindigo subject and topic management package",
+            "description": "Mindigo subject management package",
             "transport-options": {
                 "relative": true
             }
         },
         {
             "name": "mindigo/support-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SupportManagement",
@@ -2538,7 +2568,7 @@
         },
         {
             "name": "mindigo/system-setting",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",
@@ -2568,7 +2598,7 @@
         },
         {
             "name": "mindigo/user-management",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/UserManagement",

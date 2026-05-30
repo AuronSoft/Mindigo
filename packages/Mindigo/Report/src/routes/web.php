@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\Report\Http\Controllers\ReportController;
 
-Route::middleware(['auth', 'check.role:admin'])
+Route::middleware(['web', 'auth', 'role:admin'])
     ->prefix('reports')
     ->name('reports.')
     ->group(function () {

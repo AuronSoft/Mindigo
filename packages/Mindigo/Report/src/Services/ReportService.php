@@ -72,9 +72,9 @@ class ReportService
 
     public function getTopExams(int $limit = 10): \Illuminate\Support\Collection
     {
-        return Exam::withCount(['attempts' => fn ($q) => $q->where('status', 'submitted')])
+        return Exam::whereHas('attempts', fn ($q) => $q->where('status', 'submitted'))
+            ->withCount(['attempts' => fn ($q) => $q->where('status', 'submitted')])
             ->withAvg(['attempts' => fn ($q) => $q->where('status', 'submitted')], 'percentage')
-            ->having('attempts_count', '>', 0)
             ->orderByDesc('attempts_count')
             ->limit($limit)
             ->get();
@@ -143,11 +143,14 @@ class ReportService
         $total = $attempts->count();
         $passed = (clone $attempts)->where('passed', true)->count();
         $avgScore = (clone $attempts)->avg('percentage') ?? 0;
-        $avgDuration = (clone $attempts)
+        // Compute avg duration in PHP to stay DB-agnostic (avoid MySQL-only TIMESTAMPDIFF)
+        $durRows = (clone $attempts)
             ->whereNotNull('started_at')
             ->whereNotNull('submitted_at')
-            ->selectRaw('AVG(TIMESTAMPDIFF(MINUTE, started_at, submitted_at)) as avg_mins')
-            ->value('avg_mins') ?? 0;
+            ->pluck('submitted_at', 'started_at');
+        $avgDuration = $durRows->isNotEmpty()
+            ? (int) $durRows->map(fn ($sub, $start) => max(0, (int) round((strtotime($sub) - strtotime($start)) / 60)))->average()
+            : 0;
 
         $distribution = [];
         foreach ([

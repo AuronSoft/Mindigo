@@ -2,6 +2,8 @@
 
 namespace Mindigo\ExamManagement\Models;
 
+use Database\Factories\ExamAttemptFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +11,12 @@ use Mindigo\Auth\Models\User;
 
 class ExamAttempt extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory(): ExamAttemptFactory
+    {
+        return ExamAttemptFactory::new();
+    }
     public const STATUSES = ['in_progress', 'submitted', 'expired'];
 
     protected $fillable = [
