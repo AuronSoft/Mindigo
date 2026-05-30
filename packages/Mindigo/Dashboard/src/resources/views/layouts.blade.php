@@ -10,14 +10,14 @@
     @yield('styles')
 </head>
 <body class="bg-slate-50 font-['Be_Vietnam_Pro',ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased">
-@php($currentUser = Auth::user())
+@php $currentUser = Auth::user(); @endphp
 <div id="admin-shell" class="grid min-h-screen grid-cols-[5rem_minmax(0,1fr)] transition-[grid-template-columns] duration-200">
     <aside
         id="sidebar"
         class="sidebar sticky top-0 z-30 flex h-screen w-20 flex-col gap-3 bg-[#f7faf7] p-3 transition-all duration-200"
         data-expanded="false"
     >
-        <a href="{{ route('dashboard') }}" class="flex min-h-12 items-center gap-3 overflow-hidden text-slate-900 no-underline">
+        <a href="{{ $currentUser?->role === 'teacher' && Route::has('teacher.dashboard') ? route('teacher.dashboard') : route('dashboard') }}" class="flex min-h-12 items-center gap-3 overflow-hidden text-slate-900 no-underline">
             <span class="grid h-11 w-11 shrink-0 place-items-center">
                 <svg width="40" height="44" viewBox="0 0 200 220" fill="none" aria-hidden="true">
                     <path d="M48 160 L22 148 L38 158 L16 152 L35 164" fill="#15803d" stroke="#14532d" stroke-width="1"/>
@@ -61,6 +61,39 @@
 
         <div class="min-h-0 overflow-y-auto overflow-x-hidden pr-1">
             <nav class="flex flex-col gap-2">
+
+            @if($currentUser?->role === 'teacher')
+            {{-- ── NAV GIÁO VIÊN (chỉ route teacher.* — dữ liệu được scope theo giáo viên) ── --}}
+            @php
+                $dot      = 'h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 in-[.text-green-700]:bg-green-500';
+                $base     = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
+                $inactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
+                $soon     = 'flex min-h-9 cursor-not-allowed items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-300';
+                $teacherNav = [
+                    ['route' => 'teacher.dashboard',           'match' => 'teacher.dashboard',    'label' => __('teacher-dashboard::app.dashboard')],
+                    ['route' => 'teacher.classrooms.index',    'match' => 'teacher.classrooms.*', 'label' => __('teacher-dashboard::app.my_classrooms')],
+                    ['route' => 'teacher.exams.index',         'match' => 'teacher.exams.*',      'label' => __('teacher-dashboard::app.my_exams')],
+                    ['route' => 'teacher.questions.index',     'match' => 'teacher.questions.*',  'label' => __('teacher-dashboard::app.my_questions')],
+                    ['route' => 'teacher.results.index',       'match' => 'teacher.results.*',    'label' => __('teacher-dashboard::app.results')],
+                    ['route' => 'teacher.announcements.index', 'match' => 'teacher.announcements.*', 'label' => __('teacher-dashboard::app.announcements')],
+                ];
+            @endphp
+            <div class="px-1 pt-1">
+                <p class="mb-1 px-2 text-[10px] font-black uppercase tracking-wider text-slate-400" data-sidebar-text>@lang('teacher-dashboard::app.title')</p>
+                @foreach($teacherNav as $nav)
+                    @if(Route::has($nav['route']))
+                        <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
+                            <span class="{{ $dot }}"></span><span data-sidebar-text>{{ $nav['label'] }}</span>
+                        </a>
+                    @else
+                        <span class="{{ $soon }}" title="Sắp có">
+                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-200"></span><span data-sidebar-text>{{ $nav['label'] }}</span>
+                        </span>
+                    @endif
+                @endforeach
+            </div>
+            @else
+            {{-- ── NAV ADMIN (giữ nguyên) ── --}}
                 <div class="sidebar-group" data-sidebar-group data-group-name="@lang('Mindigo-dashboard::app.group_overview')">
                     <button class="sidebar-group-trigger flex min-h-14 w-full items-center gap-3 rounded-2xl bg-green-50 px-2 text-left text-green-800 transition hover:bg-green-50" type="button" title="@lang('Mindigo-dashboard::app.group_overview')">
                         <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-green-100 text-green-600">
@@ -163,6 +196,8 @@
                         @endif
                     </div>
                 </div>
+            @endif
+            {{-- ── END role nav ── --}}
             </nav>
         </div>
 

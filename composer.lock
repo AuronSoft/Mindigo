@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e2fff268410a7bec1e52a45c40085b62",
+    "content-hash": "d27b2ff3d0c62d76e8aed7929a08ef31",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2592,6 +2592,36 @@
                 }
             },
             "description": "Mindigo system settings package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/teacher-dashboard",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Teacher/TeacherDashboard",
+                "reference": "2c2c30a01c726d6b49b58612511c879c8751f532"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\TeacherDashboard\\Providers\\TeacherDashboardServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\TeacherDashboard\\": "src/"
+                }
+            },
+            "description": "Mindigo Teacher Dashboard Package",
             "transport-options": {
                 "relative": true
             }

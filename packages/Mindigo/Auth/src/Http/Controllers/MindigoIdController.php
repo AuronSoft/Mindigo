@@ -58,7 +58,16 @@ class MindigoIdController extends Controller
         $record->update(['used' => true]);
         $this->service->loginUser($request, $user);
 
-        return redirect()->intended('/dashboard');
+        if ($user->role === 'admin') {
+            return redirect()->intended('/dashboard');
+        }
+
+        session()->forget('url.intended');
+
+        return redirect(match ($user->role) {
+            'teacher' => '/teacher',
+            default   => '/',
+        });
     }
 
     public function verifyOtp(VerifyOtpRequest $request): JsonResponse
@@ -83,7 +92,7 @@ class MindigoIdController extends Controller
 
         return response()->json([
             'ok'       => true,
-            'redirect' => redirect()->intended('/dashboard')->getTargetUrl(),
+            'redirect' => redirect()->intended(match ($user->role) { 'teacher' => '/teacher', 'student' => '/', default => '/dashboard' })->getTargetUrl(),
         ]);
     }
 }

@@ -24,8 +24,22 @@ class LoginController extends Controller
         $this->service->attempt($request);
         $this->service->persistSession($request);
 
-        return redirect()->intended('/dashboard')
-            ->with('login_success', true);
+        $user = auth()->user();
+
+        // Admin: dùng intended() để giữ URL đã vào trước khi bị redirect đăng nhập
+        // Teacher/Student: redirect thẳng theo role, KHÔNG dùng intended() vì
+        // session có thể chứa URL admin từ lần truy cập trước gây lỗi 403
+        if ($user?->role === 'admin') {
+            return redirect()->intended('/dashboard')->with('login_success', true);
+        }
+
+        // Xoá intended URL cũ tránh redirect nhầm vào admin area
+        session()->forget('url.intended');
+
+        return redirect(match ($user?->role) {
+            'teacher' => '/teacher',
+            default   => '/',
+        })->with('login_success', true);
     }
 
     public function destroy(Request $request)

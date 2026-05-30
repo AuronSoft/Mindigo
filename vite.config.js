@@ -33,6 +33,8 @@ export default defineConfig({
                 "packages/Mindigo/AuditLog/src/resources/js/app.js",
                 "packages/Mindigo/Report/src/resources/css/app.css",
                 "packages/Mindigo/Report/src/resources/js/app.js",
+                "packages/Teacher/TeacherDashboard/src/resources/css/app.css",
+                "packages/Teacher/TeacherDashboard/src/resources/js/app.js",
             ],
             refresh: true,
         }),

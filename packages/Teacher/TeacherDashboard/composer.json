@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/teacher-dashboard",
+    "description": "Mindigo Teacher Dashboard Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\TeacherDashboard\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\TeacherDashboard\\Providers\\TeacherDashboardServiceProvider"
+            ]
+        }
+    }
+}
