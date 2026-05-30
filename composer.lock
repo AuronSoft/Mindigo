@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "89de9d5f8e3a6a6cbe0fcc0f14ae59df",
+    "content-hash": "900e4c459293524e9dfae668b6ba7481",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2652,6 +2652,36 @@
                 }
             },
             "description": "Mindigo Teacher Dashboard Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/teacher-exam",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Teacher/TeacherExam",
+                "reference": "8a538d7f21104c75cef2f27ec169b42f8f16e553"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\TeacherExam\\Providers\\TeacherExamServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\TeacherExam\\": "src/"
+                }
+            },
+            "description": "Mindigo Teacher Exam Package",
             "transport-options": {
                 "relative": true
             }
