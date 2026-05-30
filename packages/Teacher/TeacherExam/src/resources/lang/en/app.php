@@ -51,9 +51,33 @@ return [
     'empty_title'    => 'You have no exams yet',
     'empty_desc'     => 'Create your first exam to assign to students.',
 
+    // Table headers & labels
+    'col_subject'    => 'Subject',
+    'col_questions'  => 'Questions',
+    'col_attempts'   => 'Attempts',
+    'col_avg'        => 'Avg score',
+    'col_status'     => 'Status',
+    'col_student'    => 'Student',
+    'col_score'      => 'Score %',
+    'col_result'     => 'Result',
+    'col_submitted'  => 'Submitted at',
+
+    // Exam info
+    'info_subject'   => 'Subject',
+    'info_topic'     => 'Topic',
+    'info_duration'  => 'Duration',
+    'info_questions' => 'Questions',
+    'info_score'     => 'Passing score',
+    'info_status'    => 'Status',
+
+    // Misc
+    'cancel'         => 'Cancel',
+    'attempts_label' => 'submissions',
+    'avg_prefix'     => 'Avg',
+
     'created'        => 'Exam created successfully.',
     'updated'        => 'Exam updated.',
-    'published'      => 'Exam published.',
-    'closed'         => 'Exam closed.',
+    'msg_published'  => 'Exam published.',
+    'msg_closed'     => 'Exam closed.',
     'deleted'        => 'Exam deleted.',
 ];

@@ -111,11 +111,11 @@
                         <div class="mt-auto flex items-center gap-4 border-t border-slate-100 pt-3">
                             <span class="inline-flex items-center gap-1.5 text-xs font-black text-slate-500">
                                 <x-heroicon-o-academic-cap class="h-4 w-4 text-slate-400" />
-                                {{ $classroom->students_count }} học sinh
+                                @lang('teacher-classroom::app.students_count_badge', ['count' => $classroom->students_count])
                             </span>
                             <span class="inline-flex items-center gap-1.5 text-xs font-black text-slate-500">
                                 <x-heroicon-o-book-open class="h-4 w-4 text-slate-400" />
-                                {{ $classroom->subjects->count() }} môn
+                                @lang('teacher-classroom::app.subjects_count_badge', ['count' => $classroom->subjects->count()])
                             </span>
                         </div>
                     </a>
@@ -124,17 +124,17 @@
                     <div class="flex items-center gap-1 border-t border-slate-100 px-4 py-2.5">
                         <a href="{{ route('teacher.classrooms.edit', $classroom) }}"
                            class="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-black text-slate-500 no-underline transition hover:bg-slate-50 hover:text-slate-800">
-                            <x-heroicon-o-pencil-square class="h-3.5 w-3.5" />Sửa
+                            <x-heroicon-o-pencil-square class="h-3.5 w-3.5" />@lang('teacher-classroom::app.edit_short')
                         </a>
                         <a href="{{ route('teacher.classrooms.show', $classroom) }}"
                            class="inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-xs font-black text-slate-500 no-underline transition hover:bg-slate-50 hover:text-slate-800">
-                            <x-heroicon-o-users class="h-3.5 w-3.5" />Học sinh
+                            <x-heroicon-o-users class="h-3.5 w-3.5" />@lang('teacher-classroom::app.students')
                         </a>
                         <form method="POST" action="{{ route('teacher.classrooms.destroy', $classroom) }}" class="ml-auto"
                               data-mindigo-confirm-title="@lang('teacher-classroom::app.delete_title')"
                               data-mindigo-confirm-message="@lang('teacher-classroom::app.delete_confirm')"
                               data-mindigo-confirm-text="@lang('teacher-classroom::app.delete')"
-                              data-mindigo-confirm-cancel="Hủy"
+                              data-mindigo-confirm-cancel="{{ __('teacher-classroom::app.cancel') }}"
                               data-mindigo-confirm-type="danger">
                             @csrf @method('DELETE')
                             <button type="submit"

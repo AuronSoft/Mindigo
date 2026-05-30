@@ -63,4 +63,10 @@ return [
 
     'welcome'    => 'Hello',
     'welcome_sub'=> 'Here is an overview of your classroom and exam activity today.',
+
+    'attempts_unit'  => 'attempts',
+    'students_unit'  => 'students',
+    'school_year_dot'=> ' · ',
+    'avg_label'      => 'Avg',
+    'attempts_abbr'  => 'attempts',
 ];

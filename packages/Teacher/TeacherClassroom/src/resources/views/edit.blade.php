@@ -29,7 +29,7 @@
               data-mindigo-confirm-title="@lang('teacher-classroom::app.delete_title')"
               data-mindigo-confirm-message="@lang('teacher-classroom::app.delete_confirm')"
               data-mindigo-confirm-text="@lang('teacher-classroom::app.delete')"
-              data-mindigo-confirm-cancel="Hủy"
+              data-mindigo-confirm-cancel="{{ __('teacher-classroom::app.cancel') }}"
               data-mindigo-confirm-type="danger">
             @csrf @method('DELETE')
             <button type="submit"

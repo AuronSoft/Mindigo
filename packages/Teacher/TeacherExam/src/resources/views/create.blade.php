@@ -3,7 +3,6 @@
 @section('title', __('teacher-exam::app.create'))
 
 @section('styles')
-    {{-- Tái dùng CSS/JS của ExamManagement (form builder phức tạp) --}}
     @vite([
         'packages/Mindigo/Dashboard/src/resources/css/app.css',
         'packages/Mindigo/Dashboard/src/resources/js/app.js',
@@ -28,7 +27,7 @@
     <div class="p-6">
         <form method="POST" action="{{ route('teacher.exams.store') }}" class="mx-auto max-w-4xl space-y-4">
             @csrf
-            {{-- Tái dùng hoàn toàn form builder của admin ExamManagement --}}
+   
             @include('Mindigo-exam-management::partials.form')
 
             <div class="flex items-center justify-end gap-2 rounded-3xl border border-slate-200 bg-white p-4">

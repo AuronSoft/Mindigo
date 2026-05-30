@@ -34,7 +34,7 @@
                   data-mindigo-confirm-title="@lang('teacher-classroom::app.delete_title')"
                   data-mindigo-confirm-message="@lang('teacher-classroom::app.delete_confirm')"
                   data-mindigo-confirm-text="@lang('teacher-classroom::app.delete')"
-                  data-mindigo-confirm-cancel="Hủy"
+                  data-mindigo-confirm-cancel="{{ __('teacher-classroom::app.cancel') }}"
                   data-mindigo-confirm-type="danger">
                 @csrf @method('DELETE')
                 <button type="submit"
@@ -51,8 +51,8 @@
         <div class="grid gap-3 sm:grid-cols-3">
             @foreach([
                 ['label' => 'Trạng thái',  'value' => __('teacher-classroom::app.' . $classroom->status), 'tone' => $classroom->status === 'active' ? 'text-green-700 bg-green-50' : 'text-slate-600 bg-slate-100'],
-                ['label' => 'Học sinh',     'value' => $classroom->students->count() . ' người', 'tone' => 'text-sky-700 bg-sky-50'],
-                ['label' => 'Môn học',      'value' => $classroom->subjects->count() . ' môn',  'tone' => 'text-violet-700 bg-violet-50'],
+                ['label' => __('teacher-classroom::app.stat_label_students'), 'value' => __('teacher-classroom::app.students_count_badge', ['count' => $classroom->students->count()]), 'tone' => 'text-sky-700 bg-sky-50'],
+                ['label' => __('teacher-classroom::app.stat_label_subjects'),  'value' => __('teacher-classroom::app.subjects_count_badge', ['count' => $classroom->subjects->count()]),  'tone' => 'text-violet-700 bg-violet-50'],
             ] as $stat)
                 <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="min-w-0">
@@ -72,8 +72,8 @@
                     <p class="mb-3 text-xs font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.class_info')</p>
                     <div class="space-y-2">
                         @foreach([
-                            ['Mã lớp',     $classroom->code],
-                            ['Năm học',    $classroom->school_year ?: '—'],
+                            [__('teacher-classroom::app.info_class_code'),  $classroom->code],
+                            [__('teacher-classroom::app.info_school_year'), $classroom->school_year ?: '—'],
                         ] as $row)
                             <div class="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2.5 text-sm">
                                 <span class="font-bold text-slate-500">{{ $row[0] }}</span>
@@ -112,7 +112,7 @@
                 <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
                     <div>
                         <p class="text-sm font-black text-slate-950">@lang('teacher-classroom::app.student_list')</p>
-                        <p class="mt-0.5 text-xs font-bold text-slate-400">{{ $classroom->students->count() }} học sinh trong lớp</p>
+                        <p class="mt-0.5 text-xs font-bold text-slate-400">@lang('teacher-classroom::app.students_in_class', ['count' => $classroom->students->count()])</p>
                     </div>
                 </div>
 
@@ -120,16 +120,16 @@
                     <div class="flex flex-col items-center justify-center gap-3 py-20">
                         <x-heroicon-o-academic-cap class="h-14 w-14 text-slate-200" />
                         <p class="text-base font-black text-slate-600">@lang('teacher-classroom::app.no_students')</p>
-                        <p class="text-sm font-bold text-slate-400">Chỉnh sửa lớp để thêm học sinh.</p>
+                        <p class="text-sm font-bold text-slate-400">@lang('teacher-classroom::app.add_students_hint')</p>
                     </div>
                 @else
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
                             <thead class="bg-slate-50 text-[11px] font-black uppercase tracking-wide text-slate-400">
                                 <tr>
-                                    <th class="w-10 px-5 py-3">#</th>
-                                    <th class="px-5 py-3">Học sinh</th>
-                                    <th class="px-5 py-3">Email</th>
+                                    <th class="w-10 px-5 py-3">@lang('teacher-classroom::app.col_number')</th>
+                                    <th class="px-5 py-3">@lang('teacher-classroom::app.col_student')</th>
+                                    <th class="px-5 py-3">@lang('teacher-classroom::app.col_email')</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">

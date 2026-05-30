@@ -159,7 +159,7 @@
                                 <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full {{ $i === 0 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500' }} text-xs font-black">{{ $i + 1 }}</span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate text-sm font-black text-slate-900">{{ $s->name }}</span>
-                                    <span class="text-xs font-bold text-slate-400">{{ $s->attempt_count }} lượt thi</span>
+                                    <span class="text-xs font-bold text-slate-400">{{ $s->attempt_count }} @lang('teacher-dashboard::app.attempts_unit')</span>
                                 </span>
                                 <span class="rounded-full bg-green-50 px-2.5 py-1 text-[11px] font-black text-green-700">{{ $s->avg_score }}%</span>
                             </div>
@@ -188,7 +188,7 @@
                                 </span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate text-sm font-black text-slate-900">{{ $classroom->name }}</span>
-                                    <span class="text-xs font-bold text-slate-400">{{ $classroom->students_count }} học sinh · {{ $classroom->school_year }}</span>
+                                    <span class="text-xs font-bold text-slate-400">{{ $classroom->students_count }} @lang('teacher-dashboard::app.students_unit') · {{ $classroom->school_year }}</span>
                                 </span>
                                 <span class="shrink-0 rounded-full {{ $classroom->status === 'active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500' }} px-2 py-0.5 text-[10px] font-black">
                                     @lang('teacher-dashboard::app.' . $classroom->status)
@@ -230,7 +230,7 @@
                                 </span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate text-sm font-black text-slate-900">{{ \Illuminate\Support\Str::limit($exam->title, 26) }}</span>
-                                    <span class="text-xs font-bold text-slate-400">{{ $exam->attempts_count }} lượt · TB {{ $exam->attempts_avg_percentage ? round($exam->attempts_avg_percentage, 1) . '%' : '—' }}</span>
+                                    <span class="text-xs font-bold text-slate-400">{{ $exam->attempts_count }} @lang('teacher-dashboard::app.attempts_abbr') · @lang('teacher-dashboard::app.avg_label') {{ $exam->attempts_avg_percentage ? round($exam->attempts_avg_percentage, 1) . '%' : '—' }}</span>
                                 </span>
                                 <span class="shrink-0 rounded-full {{ $statusTone }} px-2 py-0.5 text-[10px] font-black">
                                     @lang('teacher-dashboard::app.' . $exam->status)

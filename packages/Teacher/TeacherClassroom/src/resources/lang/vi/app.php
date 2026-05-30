@@ -50,6 +50,21 @@ return [
 
     // Messages
     'deleted'          => 'Đã xóa lớp học.',
+
+    // Hardcoded text cần lang
+    'cancel'           => 'Hủy',
+    'edit_short'       => 'Sửa',
+    'students_in_class'=> ':count học sinh trong lớp',
+    'add_students_hint'=> 'Chỉnh sửa lớp để thêm học sinh.',
+    'students_count_badge' => ':count học sinh',
+    'subjects_count_badge' => ':count môn',
+    'stat_label_students'  => 'Học sinh',
+    'stat_label_subjects'  => 'Môn học',
+    'info_class_code'  => 'Mã lớp',
+    'info_school_year' => 'Năm học',
+    'col_number'       => '#',
+    'col_student'      => 'Học sinh',
+    'col_email'        => 'Email',
     'delete'           => 'Xóa lớp',
     'delete_confirm'   => 'Bạn có chắc muốn xóa lớp này? Hành động không thể hoàn tác.',
     'delete_title'     => 'Xóa lớp học',

@@ -67,7 +67,7 @@
                       data-mindigo-confirm-title="@lang('teacher-exam::app.publish_title')"
                       data-mindigo-confirm-message="@lang('teacher-exam::app.publish_confirm')"
                       data-mindigo-confirm-text="@lang('teacher-exam::app.publish')"
-                      data-mindigo-confirm-cancel="Hủy"
+                      data-mindigo-confirm-cancel="{{ __('teacher-exam::app.cancel') }}"
                       data-mindigo-confirm-type="info">
                     @csrf
                     <button type="submit"
@@ -80,7 +80,7 @@
                       data-mindigo-confirm-title="@lang('teacher-exam::app.close_title')"
                       data-mindigo-confirm-message="@lang('teacher-exam::app.close_confirm')"
                       data-mindigo-confirm-text="@lang('teacher-exam::app.close')"
-                      data-mindigo-confirm-cancel="Hủy"
+                      data-mindigo-confirm-cancel="{{ __('teacher-exam::app.cancel') }}"
                       data-mindigo-confirm-type="warning">
                     @csrf
                     <button type="submit"
@@ -93,7 +93,7 @@
                   data-mindigo-confirm-title="@lang('teacher-exam::app.delete_title')"
                   data-mindigo-confirm-message="@lang('teacher-exam::app.delete_confirm')"
                   data-mindigo-confirm-text="@lang('teacher-exam::app.delete')"
-                  data-mindigo-confirm-cancel="Hủy"
+                  data-mindigo-confirm-cancel="{{ __('teacher-exam::app.cancel') }}"
                   data-mindigo-confirm-type="danger">
                 @csrf @method('DELETE')
                 <button type="submit"
@@ -135,12 +135,12 @@
                     <p class="mb-3 text-xs font-black uppercase tracking-wider text-slate-400">@lang('teacher-exam::app.exam_info')</p>
                     <div class="space-y-2">
                         @foreach([
-                            ['Môn học',    $exam->subject ?: '—'],
-                            ['Chủ đề',     $exam->topic ?: '—'],
-                            ['Thời gian',  $exam->duration_minutes . ' ' . __('teacher-exam::app.minutes')],
-                            ['Số câu',     ($exam->total_questions ?? '—') . ' ' . __('teacher-exam::app.questions')],
-                            ['Điểm đạt',   $exam->passing_score . '/' . $exam->total_points],
-                            ['Trạng thái', __('teacher-exam::app.' . $exam->status)],
+                            [__('teacher-exam::app.info_subject'),   $exam->subject ?: '—'],
+                            [__('teacher-exam::app.info_topic'),     $exam->topic ?: '—'],
+                            [__('teacher-exam::app.info_duration'),  $exam->duration_minutes . ' ' . __('teacher-exam::app.minutes')],
+                            [__('teacher-exam::app.info_questions'), ($exam->total_questions ?? '—') . ' ' . __('teacher-exam::app.questions')],
+                            [__('teacher-exam::app.info_score'),     $exam->passing_score . '/' . $exam->total_points],
+                            [__('teacher-exam::app.info_status'),    __('teacher-exam::app.' . $exam->status)],
                         ] as $row)
                             <div class="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2.5 text-sm">
                                 <span class="font-bold text-slate-500">{{ $row[0] }}</span>
@@ -160,7 +160,7 @@
             <div class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                 <div class="border-b border-slate-100 px-5 py-4">
                     <p class="text-sm font-black text-slate-950">@lang('teacher-exam::app.candidate_list')</p>
-                    <p class="mt-0.5 text-xs font-bold text-slate-400">{{ $results['total'] }} lượt nộp bài</p>
+                    <p class="mt-0.5 text-xs font-bold text-slate-400">{{ $results['total'] }} @lang('teacher-exam::app.attempts_label')</p>
                 </div>
 
                 @if($results['list']->isEmpty())
@@ -174,10 +174,10 @@
                             <thead class="bg-slate-50 text-[11px] font-black uppercase tracking-wide text-slate-400">
                                 <tr>
                                     <th class="w-10 px-5 py-3">#</th>
-                                    <th class="px-5 py-3">Học sinh</th>
-                                    <th class="px-5 py-3">Điểm %</th>
-                                    <th class="px-5 py-3">Kết quả</th>
-                                    <th class="px-5 py-3">Nộp lúc</th>
+                                    <th class="px-5 py-3">@lang('teacher-exam::app.col_student')</th>
+                                    <th class="px-5 py-3">@lang('teacher-exam::app.col_score')</th>
+                                    <th class="px-5 py-3">@lang('teacher-exam::app.col_result')</th>
+                                    <th class="px-5 py-3">@lang('teacher-exam::app.col_submitted')</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">

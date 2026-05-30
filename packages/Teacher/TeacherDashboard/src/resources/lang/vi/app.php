@@ -70,4 +70,11 @@ return [
     // Welcome
     'welcome'      => 'Xin chào',
     'welcome_sub'  => 'Đây là tổng quan hoạt động lớp học và đề thi của bạn hôm nay.',
+
+    // Hardcoded text
+    'attempts_unit'  => 'lượt thi',
+    'students_unit'  => 'học sinh',
+    'school_year_dot'=> ' · ',
+    'avg_label'      => 'TB',
+    'attempts_abbr'  => 'lượt',
 ];

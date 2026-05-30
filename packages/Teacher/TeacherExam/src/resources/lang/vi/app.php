@@ -58,9 +58,33 @@ return [
     'empty_desc'     => 'Tạo đề thi đầu tiên để giao cho học sinh ôn luyện.',
 
     // Messages
+    // Table headers
+    'col_subject'    => 'Môn',
+    'col_questions'  => 'Câu hỏi',
+    'col_attempts'   => 'Lượt thi',
+    'col_avg'        => 'Điểm TB',
+    'col_status'     => 'Trạng thái',
+    'col_student'    => 'Học sinh',
+    'col_score'      => 'Điểm %',
+    'col_result'     => 'Kết quả',
+    'col_submitted'  => 'Nộp lúc',
+
+    // Exam info labels
+    'info_subject'   => 'Môn học',
+    'info_topic'     => 'Chủ đề',
+    'info_duration'  => 'Thời gian',
+    'info_questions' => 'Số câu',
+    'info_score'     => 'Điểm đạt',
+    'info_status'    => 'Trạng thái',
+
+    // Misc
+    'cancel'         => 'Hủy',
+    'attempts_label' => 'lượt nộp bài',
+    'avg_prefix'     => 'TB',
+
     'created'        => 'Đã tạo đề thi thành công.',
     'updated'        => 'Đã cập nhật đề thi.',
-    'published'      => 'Đã xuất bản đề thi.',
-    'closed'         => 'Đã đóng đề thi.',
+    'msg_published'  => 'Đã xuất bản đề thi.',
+    'msg_closed'     => 'Đã đóng đề thi.',
     'deleted'        => 'Đã xóa đề thi.',
 ];

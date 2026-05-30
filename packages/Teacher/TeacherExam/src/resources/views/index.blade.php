@@ -91,11 +91,11 @@
                     <thead class="border-b border-slate-100 bg-slate-50 text-[11px] font-black uppercase tracking-wide text-slate-400">
                         <tr>
                             <th class="px-5 py-3.5">Đề thi</th>
-                            <th class="px-5 py-3.5">Môn</th>
-                            <th class="px-5 py-3.5">Câu hỏi</th>
-                            <th class="px-5 py-3.5">Lượt thi</th>
-                            <th class="px-5 py-3.5">Điểm TB</th>
-                            <th class="px-5 py-3.5">Trạng thái</th>
+                            <th class="px-5 py-3.5">@lang('teacher-exam::app.col_subject')</th>
+                            <th class="px-5 py-3.5">@lang('teacher-exam::app.col_questions')</th>
+                            <th class="px-5 py-3.5">@lang('teacher-exam::app.col_attempts')</th>
+                            <th class="px-5 py-3.5">@lang('teacher-exam::app.col_avg')</th>
+                            <th class="px-5 py-3.5">@lang('teacher-exam::app.col_status')</th>
                             <th class="px-5 py-3.5"></th>
                         </tr>
                     </thead>
@@ -142,7 +142,7 @@
                                               data-mindigo-confirm-title="@lang('teacher-exam::app.delete_title')"
                                               data-mindigo-confirm-message="@lang('teacher-exam::app.delete_confirm')"
                                               data-mindigo-confirm-text="@lang('teacher-exam::app.delete')"
-                                              data-mindigo-confirm-cancel="Hủy"
+                                              data-mindigo-confirm-cancel="{{ __('teacher-exam::app.cancel') }}"
                                               data-mindigo-confirm-type="danger">
                                             @csrf @method('DELETE')
                                             <button type="submit"

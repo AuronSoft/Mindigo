@@ -81,7 +81,7 @@ class TeacherExamController extends Controller
 
         return redirect()
             ->route('teacher.exams.show', $exam)
-            ->with('success', __('teacher-exam::app.published'));
+            ->with('success', __('teacher-exam::app.msg_published'));
     }
 
     public function close(Exam $exam): RedirectResponse
@@ -92,7 +92,7 @@ class TeacherExamController extends Controller
 
         return redirect()
             ->route('teacher.exams.show', $exam)
-            ->with('success', __('teacher-exam::app.closed'));
+            ->with('success', __('teacher-exam::app.msg_closed'));
     }
 
     public function destroy(Exam $exam): RedirectResponse
