@@ -35,6 +35,10 @@
         ];
     @endphp
 
+    @php
+        $rankingLabels = $topPerformers->map(fn($p) => mb_strlen($p->name) > 14 ? mb_substr($p->name, 0, 14) . '…' : $p->name)->values()->toArray();
+        $rankingData = $topPerformers->pluck('avg_score')->map(fn($v) => (float) $v)->values()->toArray();
+    @endphp
     <script>
         window.__dashboardMessages = {{ Illuminate\Support\Js::from($dashboardMessages) }};
         window.__dashboardChartLabels = {{ Illuminate\Support\Js::from($dashboardChartLabels) }};
@@ -42,6 +46,10 @@
             'timezone' => config('app.timezone'),
             'server_now' => now()->toIso8601String(),
         ]) }};
+        window.__dashboardRanking = {
+            labels: {{ Illuminate\Support\Js::from($rankingLabels) }},
+            data: {{ Illuminate\Support\Js::from($rankingData) }},
+        };
     </script>
 @endsection
 
@@ -130,19 +138,19 @@
                             <p class="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-black text-green-700 ring-1 ring-green-100">@lang('Mindigo-dashboard::app.exam_report')</p>
                             <p class="mt-5 text-sm font-black text-slate-700">@lang('Mindigo-dashboard::app.total_attempts')</p>
                             <div class="mt-1 flex flex-wrap items-end gap-2">
-                                <h2 class="text-5xl font-black tracking-tight text-slate-950 max-sm:text-4xl">{{ number_format($stats['active_users'] * 128 + 24876) }}</h2>
-                                <span class="mb-1 rounded-full bg-green-600 px-2.5 py-1 text-[11px] font-black text-white">+7.9%</span>
+                                <h2 class="text-5xl font-black tracking-tight text-slate-950 max-sm:text-4xl">{{ number_format($totalAttempts) }}</h2>
+                                <span class="mb-1 rounded-full bg-green-600 px-2.5 py-1 text-[11px] font-black text-white">{{ ($growth >= 0 ? '+' : '') . $growth . '%' }}</span>
                                 <span class="mb-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black text-emerald-700 ring-1 ring-emerald-100">@lang('Mindigo-dashboard::app.attempts_delta')</span>
                             </div>
-                            <p class="mt-2 text-xs font-bold text-slate-400">@lang('Mindigo-dashboard::app.previous_period', ['count' => number_format($stats['active_users'] * 96 + 22141)])</p>
+                            <p class="mt-2 text-xs font-bold text-slate-400">@lang('Mindigo-dashboard::app.previous_period', ['count' => number_format($previousMonthAttempts)])</p>
                         </div>
 
                         <div class="grid gap-3 sm:grid-cols-5">
                             <article class="rounded-2xl border border-green-100 bg-gradient-to-br from-white to-green-50 p-3 shadow-sm sm:col-span-1">
                                 <p class="text-[11px] font-black text-green-700">@lang('Mindigo-dashboard::app.top_candidate')</p>
-                                <strong class="mt-2 block text-2xl font-black text-slate-950">72</strong>
+                                <strong class="mt-2 block text-2xl font-black text-slate-950">{{ $topPerformer ? round($topPerformer->avg_score) : '—' }}</strong>
                                 <div class="mt-3 flex items-center justify-between gap-2 text-xs font-bold text-slate-600">
-                                    <span class="inline-flex items-center gap-1"><span class="grid h-5 w-5 place-items-center rounded-full bg-sky-100 text-[10px] text-sky-700">M</span>@lang('Mindigo-dashboard::app.demo_candidate')</span>
+                                    <span class="inline-flex items-center gap-1"><span class="grid h-5 w-5 place-items-center rounded-full bg-sky-100 text-[10px] text-sky-700">{{ $topPerformer ? mb_substr($topPerformer->name, 0, 1) : '?' }}</span>{{ $topPerformer ? $topPerformer->name : __('Mindigo-dashboard::app.demo_candidate') }}</span>
                                     <x-heroicon-o-chevron-right class="h-4 w-4" />
                                 </div>
                             </article>
@@ -153,34 +161,38 @@
                                         <x-heroicon-o-star class="h-4 w-4 text-green-100" />
                                     </span>
                                 </div>
-                                <strong class="mt-2 block text-2xl font-black">@lang('Mindigo-dashboard::app.best_exam_score')</strong>
-                                <p class="mt-2 text-xs font-bold text-green-50">@lang('Mindigo-dashboard::app.best_exam_name')</p>
+                                <strong class="mt-2 block text-2xl font-black">{{ $bestExam ? round($bestExam->attempts_avg_percentage ?? 0) . '%' : '—' }}</strong>
+                                <p class="mt-2 text-xs font-bold text-green-50">{{ $bestExam ? \Illuminate\Support\Str::limit($bestExam->title, 28) : __('Mindigo-dashboard::app.best_exam_name') }}</p>
                             </article>
                             <article class="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
                                 <p class="text-[11px] font-black text-slate-500">@lang('Mindigo-dashboard::app.exam_count')</p>
-                                <strong class="mt-2 block text-xl font-black text-slate-950">128</strong>
-                                <span class="mt-2 inline-flex rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-black text-green-700 ring-1 ring-green-100">+5</span>
+                                <strong class="mt-2 block text-xl font-black text-slate-950">{{ $totalExams }}</strong>
+                                <span class="mt-2 inline-flex rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-black text-green-700 ring-1 ring-green-100">{{ $recentExams > 0 ? '+' . $recentExams : '0' }}</span>
                             </article>
                             <article class="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-center shadow-sm">
                                 <p class="text-[11px] font-black text-emerald-700">@lang('Mindigo-dashboard::app.pass_rate')</p>
-                                <strong class="mt-2 block text-xl font-black text-emerald-800">74%</strong>
-                                <span class="mt-2 inline-flex rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-emerald-700 ring-1 ring-emerald-100">+1.2%</span>
+                                <strong class="mt-2 block text-xl font-black text-emerald-800">{{ $passRate }}%</strong>
+                                <span class="mt-2 inline-flex rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-emerald-700 ring-1 ring-emerald-100">{{ number_format($passedAttempts) }}</span>
                             </article>
                         </div>
                     </div>
 
                     <div class="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                        @php
+                            $userMetrics = [
+                                ['initial' => 'A', 'label' => __('Mindigo-dashboard::app.demo_admin'), 'value' => $stats['admins'], 'tone' => 'bg-green-100 text-green-700 ring-green-100'],
+                                ['initial' => 'GV', 'label' => __('Mindigo-dashboard::app.demo_teacher'), 'value' => $stats['teachers'], 'tone' => 'bg-sky-100 text-sky-700 ring-sky-100'],
+                                ['initial' => 'HS', 'label' => __('Mindigo-dashboard::app.demo_student'), 'value' => $stats['students'], 'tone' => 'bg-amber-100 text-amber-700 ring-amber-100'],
+                                ['initial' => 'ON', 'label' => __('Mindigo-dashboard::app.active_users'), 'value' => $stats['active_users'], 'tone' => 'bg-emerald-100 text-emerald-700 ring-emerald-100'],
+                            ];
+                            $totalUsers = max(1, $stats['admins'] + $stats['teachers'] + $stats['students']);
+                        @endphp
                         <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-                            @foreach([
-                                ['initial' => 'A', 'value' => '12,063', 'percent' => '39.63%', 'tone' => 'bg-green-100 text-green-700 ring-green-100'],
-                                ['initial' => 'M', 'value' => '5,841', 'percent' => '20.65%', 'tone' => 'bg-sky-100 text-sky-700 ring-sky-100'],
-                                ['initial' => 'E', 'value' => '7,115', 'percent' => '22.14%', 'tone' => 'bg-amber-100 text-amber-700 ring-amber-100'],
-                                ['initial' => 'C', 'value' => '4,386', 'percent' => '8.58%', 'tone' => 'bg-emerald-100 text-emerald-700 ring-emerald-100'],
-                            ] as $metric)
+                            @foreach($userMetrics as $metric)
                                 <div class="grid min-h-12 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-500 shadow-sm">
                                     <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-[10px] ring-1 {{ $metric['tone'] }}">{{ $metric['initial'] }}</span>
-                                    <strong class="min-w-0 truncate text-sm text-slate-700">{{ $metric['value'] }}</strong>
-                                    <b class="shrink-0 whitespace-nowrap text-[11px] text-slate-300">{{ $metric['percent'] }}</b>
+                                    <strong class="min-w-0 truncate text-sm text-slate-700" title="{{ $metric['label'] }}">{{ number_format($metric['value']) }}</strong>
+                                    <b class="shrink-0 whitespace-nowrap text-[11px] text-slate-300">{{ round($metric['value'] / $totalUsers * 100, 1) }}%</b>
                                 </div>
                             @endforeach
                         </div>
@@ -216,27 +228,24 @@
                                 </div>
                             </div>
 
+                            @php
+                                $subjectIcons = ['heroicon-o-academic-cap', 'heroicon-o-bolt', 'heroicon-o-circle-stack', 'heroicon-o-users'];
+                                $subjectTones = ['bg-green-50 text-green-700', 'bg-amber-50 text-amber-700', 'bg-sky-50 text-sky-700', 'bg-emerald-50 text-emerald-700'];
+                                $subjectFilters = ['core', 'learning', 'core', 'learning'];
+                            @endphp
                             <div class="grid gap-2">
-                                @foreach([
-                                    ['label' => __('Mindigo-dashboard::app.source_mock_exam'), 'value' => '12,459', 'percent' => '43%', 'icon' => 'heroicon-o-academic-cap', 'tone' => 'bg-green-50 text-green-700'],
-                                    ['label' => __('Mindigo-dashboard::app.source_quick_practice'), 'value' => '8,823', 'percent' => '27%', 'icon' => 'heroicon-o-bolt', 'tone' => 'bg-amber-50 text-amber-700'],
-                                    ['label' => __('Mindigo-dashboard::app.source_question_bank'), 'value' => '5,935', 'percent' => '18%', 'icon' => 'heroicon-o-circle-stack', 'tone' => 'bg-sky-50 text-sky-700'],
-                                    ['label' => __('Mindigo-dashboard::app.source_class_assignment'), 'value' => '3,028', 'percent' => '12%', 'icon' => 'heroicon-o-users', 'tone' => 'bg-emerald-50 text-emerald-700'],
-                                ] as $source)
-                                    <div class="flex min-h-14 items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 px-3 transition" data-dashboard-source-row data-filter="{{ in_array($loop->index, [0, 2], true) ? 'core' : 'learning' }}">
-                                        <span class="grid h-9 w-9 place-items-center rounded-xl {{ $source['tone'] }}">
-                                            <x-dynamic-component :component="$source['icon']" class="h-5 w-5" />
+                                @forelse($topSubjects as $i => $subject)
+                                    <div class="flex min-h-14 items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 px-3 transition" data-dashboard-source-row data-filter="{{ $subjectFilters[$i] ?? 'all' }}">
+                                        <span class="grid h-9 w-9 place-items-center rounded-xl {{ $subjectTones[$i] ?? 'bg-slate-50 text-slate-600' }}">
+                                            <x-dynamic-component :component="$subjectIcons[$i] ?? 'heroicon-o-document'" class="h-5 w-5" />
                                         </span>
-                                        <span class="min-w-0 flex-1 truncate text-sm font-black text-slate-700">{{ [
-                                            __('Mindigo-dashboard::app.source_mock_exam'),
-                                            __('Mindigo-dashboard::app.source_quick_practice'),
-                                            __('Mindigo-dashboard::app.source_question_bank'),
-                                            __('Mindigo-dashboard::app.source_class_assignment'),
-                                        ][$loop->index] }}</span>
-                                        <strong class="text-sm font-black text-slate-950">{{ $source['value'] }}</strong>
-                                        <span class="text-xs font-black text-slate-400">{{ $source['percent'] }}</span>
+                                        <span class="min-w-0 flex-1 truncate text-sm font-black text-slate-700">{{ $subject->subject }}</span>
+                                        <strong class="text-sm font-black text-slate-950">{{ number_format($subject->attempt_count) }}</strong>
+                                        <span class="text-xs font-black text-slate-400">{{ $totalSubjectAttempts > 0 ? round($subject->attempt_count / $totalSubjectAttempts * 100) : 0 }}%</span>
                                     </div>
-                                @endforeach
+                                @empty
+                                    <p class="py-6 text-center text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</p>
+                                @endforelse
                             </div>
                         </div>
 
@@ -266,27 +275,23 @@
                                 </div>
                             </div>
 
-                            <div class="grid h-56 grid-cols-5 items-end gap-2 rounded-2xl bg-slate-50 px-3 pb-4 pt-6">
-                                @foreach([
-                                    ['label' => __('Mindigo-dashboard::app.bar_thpt'), 'height' => 62, 'icon' => 'T', 'tone' => 'bg-green-600'],
-                                    ['label' => __('Mindigo-dashboard::app.bar_practice'), 'height' => 88, 'icon' => 'P', 'tone' => 'bg-emerald-500'],
-                                    ['label' => __('Mindigo-dashboard::app.bar_class_exam'), 'height' => 54, 'icon' => 'L', 'tone' => 'bg-sky-500'],
-                                    ['label' => __('Mindigo-dashboard::app.bar_ai'), 'height' => 38, 'icon' => 'AI', 'tone' => 'bg-amber-400'],
-                                    ['label' => __('Mindigo-dashboard::app.bar_other'), 'height' => 72, 'icon' => '+', 'tone' => 'bg-white border border-dashed border-slate-300'],
-                                ] as $bar)
-                                    <div class="flex h-full min-w-0 flex-col items-center justify-end gap-2 transition" data-dashboard-chart-bar data-filter="{{ in_array($loop->index, [0, 2], true) ? 'core' : 'learning' }}">
-                                        <div class="grid w-full min-w-10 place-items-center rounded-2xl {{ $bar['tone'] }} text-xs font-black {{ str_contains($bar['tone'], 'bg-white') ? 'text-slate-400' : 'text-white' }}" style="height: {{ $bar['height'] }}%">
-                                            {{ $bar['icon'] }}
+                            @php
+                                $barTones = ['bg-green-600', 'bg-emerald-500', 'bg-sky-500', 'bg-amber-400'];
+                                $barFilters = ['core', 'learning', 'core', 'learning'];
+                                $maxSubjectCount = $topSubjects->max('attempt_count') ?: 1;
+                            @endphp
+                            <div class="grid h-56 items-end gap-2 rounded-2xl bg-slate-50 px-3 pb-4 pt-6" style="grid-template-columns: repeat({{ max(1, $topSubjects->count()) }}, minmax(0, 1fr))">
+                                @forelse($topSubjects as $i => $subject)
+                                    @php $height = max(10, round($subject->attempt_count / $maxSubjectCount * 88)); @endphp
+                                    <div class="flex h-full min-w-0 flex-col items-center justify-end gap-2 transition" data-dashboard-chart-bar data-filter="{{ $barFilters[$i] ?? 'all' }}">
+                                        <div class="grid w-full min-w-10 place-items-center rounded-2xl {{ $barTones[$i] ?? 'bg-slate-400' }} text-xs font-black text-white" style="height: {{ $height }}%">
+                                            {{ mb_substr($subject->subject, 0, 2) }}
                                         </div>
-                                        <span class="block h-4 w-full truncate text-center text-[10px] font-black leading-4 text-slate-400" title="{{ $bar['label'] }}">{{ [
-                                            __('Mindigo-dashboard::app.bar_thpt'),
-                                            __('Mindigo-dashboard::app.bar_practice'),
-                                            __('Mindigo-dashboard::app.bar_class_exam'),
-                                            __('Mindigo-dashboard::app.bar_ai'),
-                                            __('Mindigo-dashboard::app.bar_other'),
-                                        ][$loop->index] }}</span>
+                                        <span class="block h-4 w-full truncate text-center text-[10px] font-black leading-4 text-slate-400" title="{{ $subject->subject }}">{{ \Illuminate\Support\Str::limit($subject->subject, 6) }}</span>
                                     </div>
-                                @endforeach
+                                @empty
+                                    <div class="col-span-4 flex items-center justify-center py-8 text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</div>
+                                @endforelse
                             </div>
 
                             <div class="mt-3">
@@ -333,15 +338,15 @@
                                 <div class="mt-7 space-y-4">
                                     <div>
                                         <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.standard_questions')</p>
-                                        <strong class="mt-0.5 block text-2xl font-black">18,552</strong>
+                                        <strong class="mt-0.5 block text-2xl font-black">{{ number_format($totalQuestions) }}</strong>
                                     </div>
                                     <div>
                                         <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.attempts')</p>
-                                        <strong class="mt-0.5 block text-xl font-black">373 <span class="text-sm text-green-100">/ 27,278</span></strong>
+                                        <strong class="mt-0.5 block text-xl font-black">{{ number_format($totalAttempts) }} <span class="text-sm text-green-100">/ {{ number_format($totalExams) }}</span></strong>
                                     </div>
                                     <div>
                                         <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.win_rate')</p>
-                                        <strong class="mt-0.5 block text-xl font-black">18% <span class="text-sm text-green-100">51 / 318</span></strong>
+                                        <strong class="mt-0.5 block text-xl font-black">{{ $passRate }}% <span class="text-sm text-green-100">{{ number_format($passedAttempts) }} / {{ number_format($totalAttempts) }}</span></strong>
                                     </div>
                                 </div>
                             </div>
@@ -393,19 +398,25 @@
                                         <th class="px-4 py-3">@lang('Mindigo-dashboard::app.status')</th>
                                     </tr>
                                 </thead>
+                                @php
+                                    $examStatusTones = [
+                                        'published' => 'bg-green-100 text-green-800',
+                                        'reviewing' => 'bg-amber-100 text-amber-800',
+                                        'draft' => 'bg-slate-100 text-slate-700',
+                                        'closed' => 'bg-red-100 text-red-800',
+                                    ];
+                                @endphp
                                 <tbody class="divide-y divide-slate-100 text-sm font-bold text-slate-700">
-                                    @foreach([
-                                        ['exam' => __('Mindigo-dashboard::app.demo_exam_math'), 'candidates' => '1,248', 'score' => '7.4', 'status' => __('Mindigo-dashboard::app.published'), 'tone' => 'bg-green-100 text-green-800'],
-                                        ['exam' => __('Mindigo-dashboard::app.demo_exam_biology'), 'candidates' => '684', 'score' => '6.9', 'status' => __('Mindigo-dashboard::app.reviewing'), 'tone' => 'bg-amber-100 text-amber-800'],
-                                        ['exam' => __('Mindigo-dashboard::app.demo_exam_english'), 'candidates' => '932', 'score' => '8.1', 'status' => __('Mindigo-dashboard::app.scheduled'), 'tone' => 'bg-sky-100 text-sky-800'],
-                                    ] as $exam)
+                                    @forelse($latestExams as $exam)
                                         <tr class="bg-white">
-                                            <td class="px-4 py-3.5">{{ $exam['exam'] }}</td>
-                                            <td class="px-4 py-3.5">{{ $exam['candidates'] }}</td>
-                                            <td class="px-4 py-3.5">{{ $exam['score'] }}</td>
-                                            <td class="px-4 py-3.5"><span class="rounded-full px-2.5 py-1 text-[11px] font-black {{ $exam['tone'] }}">{{ $exam['status'] }}</span></td>
+                                            <td class="max-w-50 truncate px-4 py-3.5">{{ \Illuminate\Support\Str::limit($exam->title, 36) }}</td>
+                                            <td class="px-4 py-3.5">{{ number_format($exam->attempts_count) }}</td>
+                                            <td class="px-4 py-3.5">{{ $exam->attempts_avg_score ? round($exam->attempts_avg_score, 1) : '—' }}</td>
+                                            <td class="px-4 py-3.5"><span class="rounded-full px-2.5 py-1 text-[11px] font-black {{ $examStatusTones[$exam->status] ?? 'bg-slate-100 text-slate-700' }}">{{ __('Mindigo-dashboard::app.' . $exam->status) }}</span></td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">@lang('Mindigo-dashboard::app.no_data')</td></tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -423,20 +434,18 @@
                         <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-black text-green-700">+3</span>
                     </div>
                     <div class="mt-5 grid gap-2">
-                        @foreach([
-                            ['name' => __('Mindigo-dashboard::app.demo_admin'), 'value' => '$209,633', 'kpi' => 84],
-                            ['name' => __('Mindigo-dashboard::app.demo_teacher'), 'value' => '$156,841', 'kpi' => 103],
-                            ['name' => __('Mindigo-dashboard::app.demo_student'), 'value' => '$45,386', 'kpi' => 41],
-                        ] as $row)
+                        @forelse($topPerformers as $performer)
                             <div class="flex items-center gap-3 rounded-2xl bg-slate-50 p-3">
-                                <span class="grid h-9 w-9 place-items-center rounded-full bg-green-100 text-xs font-black text-green-700">{{ mb_substr($row['name'], 0, 1) }}</span>
+                                <span class="grid h-9 w-9 place-items-center rounded-full bg-green-100 text-xs font-black text-green-700">{{ mb_substr($performer->name, 0, 1) }}</span>
                                 <span class="min-w-0 flex-1">
-                                    <span class="block truncate text-sm font-black text-slate-900">{{ $row['name'] }}</span>
-                                    <span class="block text-xs font-bold text-slate-400">{{ $row['value'] }}</span>
+                                    <span class="block truncate text-sm font-black text-slate-900">{{ $performer->name }}</span>
+                                    <span class="block text-xs font-bold text-slate-400">{{ $performer->attempt_count }} @lang('Mindigo-dashboard::app.attempts_label')</span>
                                 </span>
-                                <b class="rounded-full bg-slate-950 px-2 py-1 text-xs font-black text-white">{{ $row['kpi'] }}</b>
+                                <b class="rounded-full bg-slate-950 px-2 py-1 text-xs font-black text-white">{{ round($performer->avg_score) }}%</b>
                             </div>
-                        @endforeach
+                        @empty
+                            <p class="py-4 text-center text-sm font-bold text-slate-400">@lang('Mindigo-dashboard::app.no_data')</p>
+                        @endforelse
                     </div>
                 </section>
 
@@ -450,9 +459,9 @@
                     </div>
                     <div class="mt-4 space-y-3">
                         @foreach([
-                            ['label' => __('Mindigo-dashboard::app.task_review_questions'), 'count' => 42, 'tone' => 'bg-green-600'],
-                            ['label' => __('Mindigo-dashboard::app.task_publish_exam'), 'count' => 8, 'tone' => 'bg-amber-500'],
-                            ['label' => __('Mindigo-dashboard::app.task_support'), 'count' => 15, 'tone' => 'bg-slate-950'],
+                            ['label' => __('Mindigo-dashboard::app.task_review_questions'), 'count' => $pendingReview, 'tone' => 'bg-green-600'],
+                            ['label' => __('Mindigo-dashboard::app.task_publish_exam'), 'count' => $pendingPublish, 'tone' => 'bg-amber-500'],
+                            ['label' => __('Mindigo-dashboard::app.task_support'), 'count' => $openSupport, 'tone' => 'bg-slate-950'],
                         ] as $task)
                             <div class="grid grid-cols-[8px_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl bg-slate-50 p-3">
                                 <span class="h-10 rounded-full {{ $task['tone'] }}"></span>

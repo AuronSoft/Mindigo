@@ -151,4 +151,9 @@ return [
     'logout_confirm' => 'Đăng xuất',
     'logout_cancel' => 'Hủy',
     'logging_out' => 'Đang đăng xuất...',
+    'no_data' => 'Chưa có dữ liệu',
+    'active_users' => 'Đang hoạt động',
+    'attempts_label' => 'lượt thi',
+    'draft' => 'Bản nháp',
+    'closed' => 'Đã đóng',
 ];

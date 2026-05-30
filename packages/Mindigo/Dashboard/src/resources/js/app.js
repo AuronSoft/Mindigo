@@ -3,6 +3,7 @@ import '../../../../Core/src/resources/js/mindigo-ui.js';
 const dashboardMessages = window.__dashboardMessages || {};
 const dashboardChartLabels = window.__dashboardChartLabels || {};
 const dashboardRuntime = window.__dashboardRuntime || {};
+const dashboardRanking = window.__dashboardRanking || {};
 
 const chartDefaults = {
     responsive: true,
@@ -89,9 +90,9 @@ initChart('qualityChart', {
 initChart('rankingChart', {
     type: 'bar',
     data: {
-        labels: dashboardChartLabels.ranking || ['Admin A.', 'Teacher B.', 'Student C.', 'Class D.', 'Exam E.'],
+        labels: dashboardRanking.labels || dashboardChartLabels.ranking || ['—', '—', '—', '—', '—'],
         datasets: [{
-            data: [92, 84, 76, 68, 57],
+            data: dashboardRanking.data || [0, 0, 0, 0, 0],
             backgroundColor: ['#15803d', '#16a34a', '#22c55e', '#86efac', '#bbf7d0'],
             borderRadius: 14,
             borderSkipped: false,

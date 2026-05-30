@@ -151,4 +151,9 @@ return [
     'logout_confirm' => 'Sign out',
     'logout_cancel' => 'Cancel',
     'logging_out' => 'Signing out...',
+    'no_data' => 'No data yet',
+    'active_users' => 'Active users',
+    'attempts_label' => 'attempts',
+    'draft' => 'Draft',
+    'closed' => 'Closed',
 ];
