@@ -93,6 +93,21 @@ class DashboardController extends Controller
 
         $totalSubjectAttempts = $topSubjects->sum('attempt_count') ?: 1;
 
+        $rankingLabels = $topPerformers->map(
+            fn ($p) => mb_strlen($p->name) > 14 ? mb_substr($p->name, 0, 14) . '…' : $p->name
+        )->values()->toArray();
+        $rankingData = $topPerformers->pluck('avg_score')->map(fn ($v) => (float) $v)->values()->toArray();
+
+        $totalUsers = max(1, $stats['admins'] + $stats['teachers'] + $stats['students']);
+        $userMetrics = [
+            ['initial' => 'A',  'value' => $stats['admins'],       'tone' => 'bg-green-100 text-green-700 ring-green-100'],
+            ['initial' => 'GV', 'value' => $stats['teachers'],     'tone' => 'bg-sky-100 text-sky-700 ring-sky-100'],
+            ['initial' => 'HS', 'value' => $stats['students'],     'tone' => 'bg-amber-100 text-amber-700 ring-amber-100'],
+            ['initial' => 'ON', 'value' => $stats['active_users'], 'tone' => 'bg-emerald-100 text-emerald-700 ring-emerald-100'],
+        ];
+
+        $dashboardUser = auth()->user();
+
         return view('Mindigo-dashboard::dashboard', compact(
             'stats',
             'totalExams', 'recentExams',
@@ -103,7 +118,10 @@ class DashboardController extends Controller
             'latestExams', 'topPerformers',
             'totalQuestions', 'pendingQuestions',
             'pendingReview', 'pendingPublish', 'openSupport',
-            'topSubjects', 'totalSubjectAttempts'
+            'topSubjects', 'totalSubjectAttempts',
+            'rankingLabels', 'rankingData',
+            'userMetrics', 'totalUsers',
+            'dashboardUser'
         ));
     }
 }

@@ -54,7 +54,6 @@
 @endsection
 
 @section('content')
-    @php($dashboardUser = Auth::user())
 
     <section class="min-h-screen bg-[#f7faf7]">
         <header class="flex min-h-[4.25rem] flex-wrap items-center justify-between gap-4 bg-[#f7faf7] px-5 py-3 backdrop-blur max-md:px-4">
@@ -178,20 +177,11 @@
                     </div>
 
                     <div class="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-                        @php
-                            $userMetrics = [
-                                ['initial' => 'A', 'label' => __('Mindigo-dashboard::app.demo_admin'), 'value' => $stats['admins'], 'tone' => 'bg-green-100 text-green-700 ring-green-100'],
-                                ['initial' => 'GV', 'label' => __('Mindigo-dashboard::app.demo_teacher'), 'value' => $stats['teachers'], 'tone' => 'bg-sky-100 text-sky-700 ring-sky-100'],
-                                ['initial' => 'HS', 'label' => __('Mindigo-dashboard::app.demo_student'), 'value' => $stats['students'], 'tone' => 'bg-amber-100 text-amber-700 ring-amber-100'],
-                                ['initial' => 'ON', 'label' => __('Mindigo-dashboard::app.active_users'), 'value' => $stats['active_users'], 'tone' => 'bg-emerald-100 text-emerald-700 ring-emerald-100'],
-                            ];
-                            $totalUsers = max(1, $stats['admins'] + $stats['teachers'] + $stats['students']);
-                        @endphp
                         <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
                             @foreach($userMetrics as $metric)
                                 <div class="grid min-h-12 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-500 shadow-sm">
                                     <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-[10px] ring-1 {{ $metric['tone'] }}">{{ $metric['initial'] }}</span>
-                                    <strong class="min-w-0 truncate text-sm text-slate-700" title="{{ $metric['label'] }}">{{ number_format($metric['value']) }}</strong>
+                                    <strong class="min-w-0 truncate text-sm text-slate-700">{{ number_format($metric['value']) }}</strong>
                                     <b class="shrink-0 whitespace-nowrap text-[11px] text-slate-300">{{ round($metric['value'] / $totalUsers * 100, 1) }}%</b>
                                 </div>
                             @endforeach
