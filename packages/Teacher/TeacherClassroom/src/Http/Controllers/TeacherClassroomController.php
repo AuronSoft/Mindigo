@@ -102,10 +102,11 @@ class TeacherClassroomController extends Controller
      */
     private function authorizeOwnership(Classroom $classroom): void
     {
+        /** @var \Mindigo\Auth\Models\User $user */
         $user = Auth::user();
 
         abort_unless(
-            $user->isAdmin() || $classroom->teacher_id === $user->getAuthIdentifier(),
+            $user->isAdmin() || $classroom->teacher_id === (int) $user->getAuthIdentifier(),
             403,
             'Bạn không có quyền truy cập lớp học này.'
         );

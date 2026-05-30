@@ -129,6 +129,7 @@ class DashboardController extends Controller
             ['initial' => 'ON', 'value' => $stats['active_users'], 'tone' => 'bg-emerald-100 text-emerald-700 ring-emerald-100'],
         ];
 
+        /** @var \Mindigo\Auth\Models\User $dashboardUser */
         $dashboardUser = Auth::user();
 
         // Header badge users: 1 admin, 1 teacher, 1 student (other than current user)

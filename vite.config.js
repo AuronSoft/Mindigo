@@ -35,6 +35,7 @@ export default defineConfig({
                 "packages/Mindigo/Report/src/resources/js/app.js",
                 "packages/Teacher/TeacherDashboard/src/resources/css/app.css",
                 "packages/Teacher/TeacherDashboard/src/resources/js/app.js",
+                "packages/Teacher/TeacherClassroom/src/resources/css/app.css",
             ],
             refresh: true,
         }),

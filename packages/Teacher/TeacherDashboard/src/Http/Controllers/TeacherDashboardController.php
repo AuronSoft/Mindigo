@@ -14,6 +14,7 @@ class TeacherDashboardController extends Controller
     {
         session()->forget('url.intended');
 
+        /** @var \Mindigo\Auth\Models\User $teacher */
         $teacher = Auth::user();
 
         $stats         = $this->service->getStats($teacher);
