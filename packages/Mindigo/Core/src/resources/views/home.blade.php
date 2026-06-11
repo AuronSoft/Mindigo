@@ -138,7 +138,7 @@
 
     // Typewriter
     (function() {
-        const words = ['study and review', 'create exams', 'practice smarter'];
+        const words = ['ôn tập hiệu quả', 'tạo đề thi dễ dàng', 'luyện tập thông minh'];
         let wordIndex = 0, charIndex = 0, isDeleting = false;
         const el = document.getElementById('typewriter');
         if (!el) return;
