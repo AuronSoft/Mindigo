@@ -70,25 +70,27 @@
                 $inactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
                 $soon     = 'flex min-h-9 cursor-not-allowed items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-300';
                 $teacherNav = [
-                    ['route' => 'teacher.dashboard',           'match' => 'teacher.dashboard',    'label' => __('teacher-dashboard::app.dashboard')],
-                    ['route' => 'teacher.classrooms.index',    'match' => 'teacher.classrooms.*', 'label' => __('teacher-dashboard::app.my_classrooms')],
-                    ['route' => 'teacher.exams.index',         'match' => 'teacher.exams.*',      'label' => __('teacher-dashboard::app.my_exams')],
-                    ['route' => 'teacher.questions.index',     'match' => 'teacher.questions.*',  'label' => __('teacher-dashboard::app.my_questions')],
-                    ['route' => 'teacher.results.index',       'match' => 'teacher.results.*',    'label' => __('teacher-dashboard::app.results')],
-                    ['route' => 'teacher.announcements.index', 'match' => 'teacher.announcements.*', 'label' => __('teacher-dashboard::app.announcements')],
-                ];
+                ['route' => 'teacher.dashboard',           'match' => 'teacher.dashboard',       'label' => __('teacher-dashboard::app.dashboard'),    'icon' => 'heroicon-o-squares-2x2'],
+                ['route' => 'teacher.classrooms.index',    'match' => 'teacher.classrooms.*',    'label' => __('teacher-dashboard::app.my_classrooms'), 'icon' => 'heroicon-o-user-group'],
+                ['route' => 'teacher.exams.index',         'match' => 'teacher.exams.*',         'label' => __('teacher-dashboard::app.my_exams'),      'icon' => 'heroicon-o-document-text'],
+                ['route' => 'teacher.questions.index',     'match' => 'teacher.questions.*',     'label' => __('teacher-dashboard::app.my_questions'),  'icon' => 'heroicon-o-circle-stack'],
+                ['route' => 'teacher.results.index',       'match' => 'teacher.results.*',       'label' => __('teacher-dashboard::app.results'),       'icon' => 'heroicon-o-chart-bar'],
+                ['route' => 'teacher.announcements.index', 'match' => 'teacher.announcements.*', 'label' => __('teacher-dashboard::app.announcements'), 'icon' => 'heroicon-o-megaphone'],
+            ];
             @endphp
             <div class="px-1 pt-1">
                 <p class="mb-1 px-2 text-[10px] font-black uppercase tracking-wider text-slate-400" data-sidebar-text>@lang('teacher-dashboard::app.title')</p>
                 @foreach($teacherNav as $nav)
                     @if(Route::has($nav['route']))
                         <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
-                            <span class="{{ $dot }}"></span><span data-sidebar-text>{{ $nav['label'] }}</span>
-                        </a>
+                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                        <span data-sidebar-text>{{ $nav['label'] }}</span>
+                    </a>
                     @else
                         <span class="{{ $soon }}" title="Sắp có">
-                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-200"></span><span data-sidebar-text>{{ $nav['label'] }}</span>
-                        </span>
+                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                        <span data-sidebar-text>{{ $nav['label'] }}</span>
+                    </span>
                     @endif
                 @endforeach
             </div>
@@ -105,26 +107,30 @@
                         </span>
                     </button>
                     <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
-                        <a href="{{ route('dashboard') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline {{ request()->routeIs('dashboard') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }}" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.dashboard')">
-                            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 in-[.text-green-700]:bg-green-500"></span><span>@lang('Mindigo-dashboard::app.dashboard')</span>
-                        </a>
+                        <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
+                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                        <span data-sidebar-text>{{ $nav['label'] }}</span>
+                    </a>
                         @if(Route::has('question-bank.index') && ($currentUser?->hasPermissionTo('questions.view') ?? false))
-                            <a href="{{ route('question-bank.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('question-bank.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.question_bank')">
-                                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 in-[.text-green-700]:bg-green-500"></span><span>@lang('Mindigo-dashboard::app.question_bank')</span>
-                            </a>
+                            <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
+                            <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                            <span data-sidebar-text>{{ $nav['label'] }}</span>
+                        </a>
                         @endif
                         @if(Route::has('exams.index') && ($currentUser?->hasPermissionTo('exams.view') ?? false))
-                            <a href="{{ route('exams.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('exams.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exams')">
-                                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 in-[.text-green-700]:bg-green-500"></span><span>@lang('Mindigo-dashboard::app.exams')</span>
-                            </a>
+                            <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
+                            <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                            <span data-sidebar-text>{{ $nav['label'] }}</span>
+                        </a>
                         @endif
                         <a href="#learners" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.learners')">
                             <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 in-[.text-green-700]:bg-green-500"></span><span>@lang('Mindigo-dashboard::app.learners')</span>
                         </a>
                         @if(Route::has('classrooms.index') && ($currentUser?->hasPermissionTo('classrooms.view') ?? false))
-                            <a href="{{ route('classrooms.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('classrooms.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.classrooms')">
-                                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 in-[.text-green-700]:bg-green-500"></span><span>@lang('Mindigo-dashboard::app.classrooms')</span>
-                            </a>
+                            <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
+                            <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                            <span data-sidebar-text>{{ $nav['label'] }}</span>
+                        </a>
                         @endif
                     </div>
                 </div>
