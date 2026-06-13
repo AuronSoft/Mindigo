@@ -10,7 +10,7 @@ return [
     'auth' => [
         'login_title' => 'Sign in',
         'login_subtitle' => 'to continue to :platform',
-        'platform' => 'Mindigo Exam Platform',
+        'platform' => 'Mindingo LMS Platform',
 
         'email' => 'Email',
         'email_placeholder' => 'student@example.com',

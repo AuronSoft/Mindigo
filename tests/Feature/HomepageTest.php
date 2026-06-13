@@ -49,7 +49,7 @@ class HomepageTest extends TestCase
         $this->withSession(['locale' => 'en'])->get('/login')
             ->assertOk()
             ->assertSee('Sign in', false)
-            ->assertSee('Mindigo Exam Platform', false);
+            ->assertSee('Mindingo LMS Platform', false);
     }
 
     /**

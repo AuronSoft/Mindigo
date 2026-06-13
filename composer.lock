@@ -2381,7 +2381,7 @@
                     "Mindigo\\ExamManagement\\": "src/"
                 }
             },
-            "description": "Mindigo exam management and online testing package",
+            "description": "Mindingo LMS management and online testing package",
             "transport-options": {
                 "relative": true
             }
