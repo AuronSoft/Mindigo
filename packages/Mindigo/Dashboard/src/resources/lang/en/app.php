@@ -139,7 +139,7 @@ return [
     'leads' => 'Leads',
     'win_loss' => 'W/L',
     'content_value' => 'Content value',
-    'product_name' => 'MindigoExam',
+    'product_name' => 'MindingoLMS',
     'standard_questions' => 'Qualified questions',
     'attempts' => 'Attempts',
     'win_rate' => 'Win rate',

@@ -15,7 +15,7 @@ class SystemSettingService
                 'label' => __('Mindigo-system-setting::app.definitions.general.label'),
                 'description' => __('Mindigo-system-setting::app.definitions.general.description'),
                 'settings' => [
-                    'site_name' => ['label' => __('Mindigo-system-setting::app.settings.site_name'), 'type' => 'string', 'default' => 'MindigoExam'],
+                    'site_name' => ['label' => __('Mindigo-system-setting::app.settings.site_name'), 'type' => 'string', 'default' => 'MindingoLMS'],
                     'support_email' => ['label' => __('Mindigo-system-setting::app.settings.support_email'), 'type' => 'email', 'default' => 'support@mindigo.test'],
                     'support_phone' => ['label' => __('Mindigo-system-setting::app.settings.support_phone'), 'type' => 'string', 'default' => ''],
                     'default_locale' => [
@@ -76,7 +76,7 @@ class SystemSettingService
                     'notify_new_exam' => ['label' => __('Mindigo-system-setting::app.settings.notify_new_exam'), 'type' => 'boolean', 'default' => true],
                     'notify_exam_result' => ['label' => __('Mindigo-system-setting::app.settings.notify_exam_result'), 'type' => 'boolean', 'default' => true],
                     'notify_security' => ['label' => __('Mindigo-system-setting::app.settings.notify_security'), 'type' => 'boolean', 'default' => true],
-                    'mail_from_name' => ['label' => __('Mindigo-system-setting::app.settings.mail_from_name'), 'type' => 'string', 'default' => 'MindigoExam'],
+                    'mail_from_name' => ['label' => __('Mindigo-system-setting::app.settings.mail_from_name'), 'type' => 'string', 'default' => 'MindingoLMS'],
                 ],
             ],
             'ai_security' => [
