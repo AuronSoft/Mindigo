@@ -422,10 +422,12 @@ const setGroupActive = (group, active) => {
 
 const syncSidebar = () => {
     const expanded = isSidebarExpanded();
+    const compactWidthClass = sidebar?.dataset.compactWidth || 'w-20';
+    const compactGridClass = adminShell?.dataset.compactGrid || 'grid-cols-[5rem_minmax(0,1fr)]';
 
-    sidebar?.classList.toggle('w-20', !expanded);
+    sidebar?.classList.toggle(compactWidthClass, !expanded);
     sidebar?.classList.toggle('w-72', expanded);
-    adminShell?.classList.toggle('grid-cols-[5rem_minmax(0,1fr)]', !expanded);
+    adminShell?.classList.toggle(compactGridClass, !expanded);
     adminShell?.classList.toggle('grid-cols-[18rem_minmax(0,1fr)]', expanded);
     sidebarTextItems.forEach((item) => item.classList.toggle('hidden', !expanded));
     sidebarToggleIcon?.classList.toggle('rotate-180', expanded);
@@ -853,11 +855,11 @@ document.querySelectorAll('[data-logout]').forEach((link) => {
     const tooltip = document.getElementById('sidebar-tooltip');
     if (!tooltip || !sidebar) return;
 
-    document.querySelectorAll('.sidebar-group-trigger').forEach((trigger) => {
+    document.querySelectorAll('.sidebar-group-trigger, [data-sidebar-tooltip]').forEach((trigger) => {
         trigger.addEventListener('mouseenter', function () {
             if (isSidebarExpanded()) return;
 
-            const label = this.getAttribute('title');
+            const label = this.dataset.sidebarTooltip || this.getAttribute('title');
             if (!label) return;
 
             const rect = this.getBoundingClientRect();

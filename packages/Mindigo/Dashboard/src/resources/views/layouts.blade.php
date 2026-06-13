@@ -10,12 +10,16 @@
     @yield('styles')
 </head>
 <body class="bg-slate-50 font-['Be_Vietnam_Pro',ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased">
-@php $currentUser = Auth::user(); @endphp
-<div id="admin-shell" class="grid min-h-screen grid-cols-[5rem_minmax(0,1fr)] transition-[grid-template-columns] duration-200">
+@php
+    $currentUser = Auth::user();
+    $isTeacherShell = $currentUser?->role === 'teacher';
+@endphp
+<div id="admin-shell" class="grid min-h-screen {{ $isTeacherShell ? 'grid-cols-[6rem_minmax(0,1fr)]' : 'grid-cols-[5rem_minmax(0,1fr)]' }} transition-[grid-template-columns] duration-200" data-compact-grid="{{ $isTeacherShell ? 'grid-cols-[6rem_minmax(0,1fr)]' : 'grid-cols-[5rem_minmax(0,1fr)]' }}">
     <aside
         id="sidebar"
-        class="sidebar sticky top-0 z-30 flex h-screen w-20 flex-col gap-3 bg-[#f7faf7] p-3 transition-all duration-200"
+        class="sidebar sticky top-0 z-30 flex h-screen {{ $isTeacherShell ? 'w-24' : 'w-20' }} flex-col gap-3 bg-[#f7faf7] p-3 transition-all duration-200"
         data-expanded="false"
+        data-compact-width="{{ $isTeacherShell ? 'w-24' : 'w-20' }}"
     >
         <a href="{{ $currentUser?->role === 'teacher' && Route::has('teacher.dashboard') ? route('teacher.dashboard') : route('dashboard') }}" class="flex min-h-12 items-center gap-3 overflow-hidden text-slate-900 no-underline">
             <span class="grid h-11 w-11 shrink-0 place-items-center">
@@ -66,9 +70,9 @@
             {{-- ── NAV GIÁO VIÊN (chỉ route teacher.* — dữ liệu được scope theo giáo viên) ── --}}
             @php
                 $dot      = 'h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 in-[.text-green-700]:bg-green-500';
-                $base     = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
+                $base     = 'sidebar-submenu-item flex min-h-12 items-center gap-3 rounded-2xl px-3 text-sm font-extrabold no-underline';
                 $inactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
-                $soon     = 'flex min-h-9 cursor-not-allowed items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-300';
+                $soon     = 'flex min-h-12 cursor-not-allowed items-center gap-3 rounded-2xl px-3 text-sm font-extrabold text-slate-300';
                 $teacherNav = [
                 ['route' => 'teacher.dashboard',           'match' => 'teacher.dashboard',       'label' => __('teacher-dashboard::app.dashboard'),    'icon' => 'heroicon-o-squares-2x2'],
                 ['route' => 'teacher.classrooms.index',    'match' => 'teacher.classrooms.*',    'label' => __('teacher-dashboard::app.my_classrooms'), 'icon' => 'heroicon-o-user-group'],
@@ -78,17 +82,17 @@
                 ['route' => 'teacher.announcements.index', 'match' => 'teacher.announcements.*', 'label' => __('teacher-dashboard::app.announcements'), 'icon' => 'heroicon-o-megaphone'],
             ];
             @endphp
-            <div class="px-1 pt-1">
+            <div class="flex flex-col gap-2 px-1 pt-2">
                 <p class="mb-1 px-2 text-[10px] font-black uppercase tracking-wider text-slate-400" data-sidebar-text>@lang('teacher-dashboard::app.title')</p>
                 @foreach($teacherNav as $nav)
                     @if(Route::has($nav['route']))
-                        <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
-                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                        <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item data-sidebar-tooltip="{{ $nav['label'] }}" title="{{ $nav['label'] }}">
+                        <x-dynamic-component :component="$nav['icon']" class="h-5 w-5 shrink-0" />
                         <span data-sidebar-text>{{ $nav['label'] }}</span>
                     </a>
                     @else
-                        <span class="{{ $soon }}" title="Sắp có">
-                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                        <span class="{{ $soon }}" title="{{ $nav['label'] }}" data-sidebar-tooltip="{{ $nav['label'] }}">
+                        <x-dynamic-component :component="$nav['icon']" class="h-5 w-5 shrink-0" />
                         <span data-sidebar-text>{{ $nav['label'] }}</span>
                     </span>
                     @endif

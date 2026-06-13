@@ -52,6 +52,8 @@ return [
     'question' => 'Câu hỏi',
     'subject' => 'Môn học',
     'topic' => 'Chủ đề',
+    'select_subject' => 'Chọn môn học',
+    'select_topic' => 'Chọn chủ đề',
     'type' => 'Loại câu hỏi',
     'difficulty' => 'Độ khó',
     'status' => 'Trạng thái',

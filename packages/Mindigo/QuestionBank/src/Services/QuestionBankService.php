@@ -159,7 +159,9 @@ class QuestionBankService
                 ->orderBy('sort_order')
                 ->orderBy('name')
                 ->pluck('name')
+                ->map(fn ($subject) => trim((string) $subject))
                 ->filter()
+                ->unique()
                 ->values()
                 ->all();
 
@@ -174,7 +176,9 @@ class QuestionBankService
             ->distinct()
             ->orderBy('subject')
             ->pluck('subject')
+            ->map(fn ($subject) => trim((string) $subject))
             ->filter()
+            ->unique()
             ->values()
             ->all();
     }
@@ -195,8 +199,15 @@ class QuestionBankService
             if ($subjects->isNotEmpty()) {
                 return $subjects
                     ->mapWithKeys(fn (Subject $subject) => [
-                        $subject->name => $subject->topics->pluck('name')->values()->all(),
+                        trim((string) $subject->name) => $subject->topics
+                            ->pluck('name')
+                            ->map(fn ($topic) => trim((string) $topic))
+                            ->filter()
+                            ->unique()
+                            ->values()
+                            ->all(),
                     ])
+                    ->filter(fn (array $topics, string $subject) => filled($subject))
                     ->all();
             }
         }
@@ -208,6 +219,11 @@ class QuestionBankService
             ->orderBy('subject')
             ->orderBy('topic')
             ->get()
+            ->map(fn (Question $question) => [
+                'subject' => trim((string) $question->subject),
+                'topic' => trim((string) $question->topic),
+            ])
+            ->filter(fn (array $row) => filled($row['subject']) && filled($row['topic']))
             ->groupBy('subject')
             ->map(fn ($rows) => $rows->pluck('topic')->filter()->unique()->values()->all())
             ->all();

@@ -24,7 +24,7 @@
             <label class="question-field">
                 <span>@lang('Mindigo-question-bank::app.subject')</span>
                 <select name="subject" class="question-select" required data-question-subject-select data-topic-target="topic">
-                    <option value=""></option>
+                    <option value="">@lang('Mindigo-question-bank::app.select_subject')</option>
                     @foreach($subjects as $subject)
                         <option value="{{ $subject }}" @selected(old('subject', $question->subject ?? '') === $subject)>{{ $subject }}</option>
                     @endforeach
@@ -34,8 +34,8 @@
 
             <label class="question-field">
                 <span>@lang('Mindigo-question-bank::app.topic')</span>
-                <select name="topic" class="question-select" data-question-topic-select data-topic-name="topic" data-current-value="{{ old('topic', $question->topic ?? '') }}">
-                    <option value=""></option>
+                <select name="topic" class="question-select" data-question-topic-select data-topic-name="topic" data-current-value="{{ old('topic', $question->topic ?? '') }}" data-placeholder="@lang('Mindigo-question-bank::app.select_topic')">
+                    <option value="">@lang('Mindigo-question-bank::app.select_topic')</option>
                 </select>
                 @error('topic')<strong>{{ $message }}</strong>@enderror
             </label>

@@ -52,6 +52,8 @@ return [
     'question' => 'Question',
     'subject' => 'Subject',
     'topic' => 'Topic',
+    'select_subject' => 'Select subject',
+    'select_topic' => 'Select topic',
     'type' => 'Type',
     'difficulty' => 'Difficulty',
     'status' => 'Status',
