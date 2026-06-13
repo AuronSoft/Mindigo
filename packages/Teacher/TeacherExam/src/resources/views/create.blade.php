@@ -25,21 +25,10 @@
     </header>
 
     <div class="p-6">
-        <form method="POST" action="{{ route('teacher.exams.store') }}" class="mx-auto max-w-4xl space-y-4">
+        <form method="POST" action="{{ route('teacher.exams.store') }}" class="w-full space-y-4">
             @csrf
    
             @include('Mindigo-exam-management::partials.form')
-
-            <div class="flex items-center justify-end gap-2 rounded-3xl border border-slate-200 bg-white p-4">
-                <a href="{{ route('teacher.exams.index') }}"
-                   class="inline-flex h-10 items-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">
-                    @lang('teacher-exam::app.back')
-                </a>
-                <button type="submit"
-                        class="inline-flex h-10 items-center gap-2 rounded-2xl bg-green-600 px-6 text-sm font-black text-white shadow-sm shadow-green-200 transition hover:bg-green-500">
-                    <x-heroicon-o-check class="h-4 w-4" />@lang('teacher-exam::app.save')
-                </button>
-            </div>
         </form>
     </div>
 </div>

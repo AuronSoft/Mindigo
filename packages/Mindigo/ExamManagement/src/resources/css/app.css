@@ -6,7 +6,7 @@
 
 @layer components {
     .exam-page {
-        @apply w-full px-5 pb-10 pt-2;
+        @apply w-full px-5 pb-10 pt-2 max-md:px-4;
     }
 
     .exam-hero,
@@ -157,6 +157,103 @@
         @apply grid gap-4 md:grid-cols-2;
     }
 
+    .exam-studio {
+        @apply rounded-[2rem] border border-green-100 bg-white p-5 shadow-[0_2px_0_#dcfce7,0_8px_0_#bbf7d0,0_24px_50px_rgba(22,163,74,0.12)];
+    }
+
+    .exam-studio-toolbar {
+        @apply grid gap-3 md:grid-cols-[minmax(0,1fr)_auto];
+    }
+
+    .exam-upload-button {
+        @apply flex min-h-14 items-center gap-3 rounded-2xl border-2 border-dashed border-green-300 bg-green-50 px-5 text-left text-sm font-black text-green-700 transition hover:bg-green-100;
+    }
+
+    .exam-review-button,
+    .exam-save-chip {
+        @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 text-sm font-black text-white shadow-[0_4px_0_#15803d,0_10px_20px_rgba(22,163,74,0.25)] transition hover:-translate-y-0.5 hover:bg-green-500;
+    }
+
+    .exam-studio-actions {
+        @apply mt-4 flex flex-wrap items-center gap-2;
+    }
+
+    .exam-return-button {
+        @apply inline-flex min-h-9 items-center justify-center gap-2 rounded-xl border border-red-100 bg-red-50 px-4 text-xs font-black text-red-400 no-underline transition hover:bg-red-100;
+    }
+
+    .exam-studio-layout {
+        @apply mt-6 grid gap-5 xl:grid-cols-[13rem_minmax(0,1fr)];
+    }
+
+    .exam-studio-sidebar {
+        @apply flex flex-col gap-5;
+    }
+
+    .exam-studio-label {
+        @apply mb-2 text-[11px] font-black uppercase tracking-wide text-slate-400;
+    }
+
+    .exam-part-list {
+        @apply flex flex-col gap-2;
+    }
+
+    .exam-part-item {
+        @apply rounded-xl bg-slate-100 px-3 py-2 text-center text-xs font-black text-slate-500 no-underline transition hover:bg-green-50 hover:text-green-700;
+    }
+
+    .exam-part-item.is-active {
+        @apply bg-green-600 text-white shadow-[0_3px_0_#15803d,0_8px_16px_rgba(22,163,74,0.24)];
+    }
+
+    .exam-question-index {
+        @apply grid grid-cols-5 gap-2;
+    }
+
+    .exam-question-index span {
+        @apply grid h-8 place-items-center rounded-lg bg-slate-100 text-xs font-black text-slate-400;
+    }
+
+    .exam-question-index span.is-filled {
+        @apply bg-green-600 text-white shadow-[0_2px_0_#15803d];
+    }
+
+    .exam-progress-card {
+        @apply rounded-2xl border border-green-100 bg-green-50 p-4 text-xs font-black text-green-700;
+    }
+
+    .exam-progress-card span {
+        @apply text-green-500;
+    }
+
+    .exam-progress-card p {
+        @apply mt-2 text-[11px] text-green-600;
+    }
+
+    .exam-progress-track {
+        @apply mt-3 h-2 overflow-hidden rounded-full bg-green-100;
+    }
+
+    .exam-progress-track span {
+        @apply block h-full rounded-full bg-green-500;
+    }
+
+    .exam-studio-main {
+        @apply min-w-0 space-y-4;
+    }
+
+    .exam-panel-card {
+        @apply rounded-2xl border-green-100 shadow-[0_2px_14px_rgba(22,163,74,0.08)];
+    }
+
+    .exam-panel-card.is-highlight {
+        @apply bg-green-50/40;
+    }
+
+    .exam-answer-pill {
+        @apply shrink-0 rounded-full border border-green-200 bg-green-100 px-2.5 py-1 text-[10px] font-black text-green-700;
+    }
+
     .exam-field {
         @apply flex flex-col gap-2 text-sm font-black text-slate-600;
     }
@@ -195,7 +292,7 @@
     }
 
     .exam-type-grid {
-        @apply grid gap-4 md:grid-cols-2 xl:grid-cols-5;
+        @apply grid gap-4 md:grid-cols-2 2xl:grid-cols-5;
     }
 
     .exam-type-card {

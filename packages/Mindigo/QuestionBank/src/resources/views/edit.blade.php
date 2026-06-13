@@ -12,7 +12,7 @@
 @endsection
 
 @section('content')
-    <div class="question-page mx-auto flex max-w-5xl flex-col gap-6">
+    <div class="question-page flex w-full flex-col gap-6">
         <header class="question-hero">
             <div>
                 <div class="question-breadcrumb">
@@ -31,11 +31,6 @@
             @csrf
             @method('PUT')
             @include('Mindigo-question-bank::partials.form')
-            <div class="flex flex-wrap justify-end gap-3">
-                <a href="{{ route('question-bank.show', $question) }}" class="question-secondary-button">@lang('Mindigo-question-bank::app.cancel')</a>
-                <button type="submit" name="submit_for_review" value="1" class="question-secondary-button">@lang('Mindigo-question-bank::app.submit_for_review')</button>
-                <button type="submit" class="question-primary-button">@lang('Mindigo-question-bank::app.save')</button>
-            </div>
         </form>
     </div>
 @endsection

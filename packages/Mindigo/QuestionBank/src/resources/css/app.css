@@ -5,7 +5,7 @@
 
 @layer components {
     .question-page {
-        @apply px-6 py-6 max-md:px-4;
+        @apply w-full px-6 py-6 max-md:px-4;
     }
 
     .question-hero {
@@ -39,11 +39,92 @@
     }
 
     .question-builder {
+        @apply flex flex-col gap-0;
+    }
+
+    .question-studio-toolbar {
+        @apply grid gap-3 rounded-t-[2rem] border border-b-0 border-green-100 bg-white p-5 md:grid-cols-[minmax(0,1fr)_auto];
+    }
+
+    .question-upload-button {
+        @apply flex min-h-14 items-center gap-3 rounded-2xl border-2 border-dashed border-green-300 bg-green-50 px-5 text-left text-sm font-black text-green-700 transition hover:bg-green-100;
+    }
+
+    .question-review-button,
+    .question-save-chip {
+        @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 text-sm font-black text-white shadow-[0_4px_0_#15803d,0_10px_20px_rgba(22,163,74,0.25)] transition hover:-translate-y-0.5 hover:bg-green-500;
+    }
+
+    .question-studio-actions {
+        @apply flex flex-wrap items-center gap-2 border-x border-green-100 bg-white px-5 pb-5;
+    }
+
+    .question-return-button {
+        @apply inline-flex min-h-9 items-center justify-center gap-2 rounded-xl border border-red-100 bg-red-50 px-4 text-xs font-black text-red-400 transition hover:bg-red-100;
+    }
+
+    .question-studio-layout {
+        @apply grid gap-5 rounded-b-[2rem] border border-t-0 border-green-100 bg-white p-5 shadow-[0_2px_0_#dcfce7,0_8px_0_#bbf7d0,0_24px_50px_rgba(22,163,74,0.12)] xl:grid-cols-[13rem_minmax(0,1fr)];
+    }
+
+    .question-studio-sidebar {
         @apply flex flex-col gap-5;
+    }
+
+    .question-studio-label {
+        @apply mb-2 text-[11px] font-black uppercase tracking-wide text-slate-400;
+    }
+
+    .question-part-list {
+        @apply flex flex-col gap-2;
+    }
+
+    .question-part-item {
+        @apply rounded-xl bg-slate-100 px-3 py-2 text-center text-xs font-black text-slate-500 no-underline transition hover:bg-green-50 hover:text-green-700;
+    }
+
+    .question-part-item.is-active {
+        @apply bg-green-600 text-white shadow-[0_3px_0_#15803d,0_8px_16px_rgba(22,163,74,0.24)];
+    }
+
+    .question-mini-index {
+        @apply grid grid-cols-5 gap-2;
+    }
+
+    .question-mini-index span {
+        @apply grid h-8 place-items-center rounded-lg bg-slate-100 text-xs font-black text-slate-400;
+    }
+
+    .question-mini-index span.is-filled {
+        @apply bg-green-600 text-white shadow-[0_2px_0_#15803d];
+    }
+
+    .question-progress-card {
+        @apply rounded-2xl border border-green-100 bg-green-50 p-4 text-xs font-black text-green-700;
+    }
+
+    .question-progress-track {
+        @apply mt-3 h-2 overflow-hidden rounded-full bg-green-100;
+    }
+
+    .question-progress-track span {
+        @apply block h-full w-[30%] rounded-full bg-green-500;
+    }
+
+    .question-progress-card p {
+        @apply mt-2 text-[11px] text-green-600;
+    }
+
+    .question-studio-main {
+        @apply min-w-0 space-y-4;
     }
 
     .question-builder-card {
         @apply p-5;
+    }
+
+    .question-builder-card.is-highlight {
+        @apply border-green-100 bg-green-50/40 shadow-[0_2px_14px_rgba(22,163,74,0.08)];
     }
 
     .question-section-head {
