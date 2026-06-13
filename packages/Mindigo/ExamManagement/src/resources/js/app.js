@@ -18,7 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const current = topicSelect.dataset.currentValue || topicSelect.value || '';
             const topics = topicsBySubject[subjectSelect.value] || [];
-            topicSelect.innerHTML = '<option value=""></option>';
+            const placeholder = topicSelect.dataset.placeholder || '';
+            topicSelect.innerHTML = '';
+            const placeholderOption = document.createElement('option');
+            placeholderOption.value = '';
+            placeholderOption.textContent = placeholder;
+            topicSelect.append(placeholderOption);
 
             topics.forEach((topic) => {
                 const option = document.createElement('option');
