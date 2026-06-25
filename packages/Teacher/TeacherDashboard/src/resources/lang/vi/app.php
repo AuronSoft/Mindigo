@@ -2,7 +2,7 @@
 
 return [
     'title'          => 'Bảng điều khiển giáo viên',
-    'platform'       => 'Nền tảng LMS',
+    'platform'       => 'Nền tảng học tập trực tuyến',
     'search'         => 'Tìm kiếm...',
     'dashboard'      => 'Dashboard',
     'my_classrooms'  => 'Lớp học của tôi',
@@ -10,6 +10,12 @@ return [
     'my_questions'   => 'Câu hỏi của tôi',
     'results'        => 'Kết quả học sinh',
     'announcements'  => 'Thông báo',
+    'courses'        => 'Quản lý khóa học',
+    'grading'        => 'Chấm điểm',
+    'assignments'    => 'Bài tập',
+    'homework'       => 'Bài tập về nhà',
+    'reports'        => 'Báo cáo',
+    'discussions'    => 'Trao đổi',
     'profile'        => 'Hồ sơ cá nhân',
     'logout'         => 'Đăng xuất',
     'logout_confirm' => 'Đăng xuất',
@@ -17,9 +23,9 @@ return [
     'group_overview' => 'Tổng quan',
     'group_overview_desc' => 'Hôm nay và hoạt động',
     'group_teaching' => 'Giảng dạy',
-    'group_teaching_desc' => 'Lớp, đề thi, câu hỏi',
+    'group_teaching_desc' => 'Khóa học, lớp, bài tập',
     'group_tracking' => 'Theo dõi',
-    'group_tracking_desc' => 'Kết quả và thông báo',
+    'group_tracking_desc' => 'Chấm điểm, báo cáo, trao đổi',
     'group_account' => 'Tài khoản',
     'group_account_desc' => 'Hồ sơ và tuỳ chọn',
 
