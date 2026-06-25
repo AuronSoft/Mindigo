@@ -138,7 +138,11 @@
 
     // Typewriter
     (function() {
-        const words = ['ôn tập hiệu quả', 'tạo đề thi dễ dàng', 'luyện tập thông minh'];
+        const words = {{ Illuminate\Support\Js::from([
+            __('core::app.hero.heading_2'),
+            __('core::app.hero.heading_4'),
+            __('core::app.hero.heading_5'),
+        ]) }};
         let wordIndex = 0, charIndex = 0, isDeleting = false;
         const el = document.getElementById('typewriter');
         if (!el) return;
