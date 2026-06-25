@@ -2,6 +2,7 @@
 
 namespace Mindigo\Auth\Http\Controllers;
 
+use App\Support\RoleRedirector;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,9 +20,8 @@ class MindigoIdController extends Controller
     public function send(MindigoIdRequest $request): JsonResponse
     {
         $email = strtolower($request->email);
-        $type  = $request->type;
+        $type = $request->type;
 
-        // Silent fail — tránh user enumeration
         if (!$this->service->findUser($email)) {
             return response()->json(['ok' => true]);
         }
@@ -62,17 +62,14 @@ class MindigoIdController extends Controller
             return redirect()->intended('/dashboard');
         }
 
-        session()->forget('url.intended');
+        RoleRedirector::clearUnsafeIntendedFor($user);
 
-        return redirect(match ($user->role) {
-            'teacher' => '/teacher',
-            default   => '/',
-        });
+        return RoleRedirector::redirectFor($user);
     }
 
     public function verifyOtp(VerifyOtpRequest $request): JsonResponse
     {
-        $email  = strtolower($request->email);
+        $email = strtolower($request->email);
         $record = $this->service->verifyOtpToken($email, $request->otp);
 
         if (!$record) {
@@ -90,9 +87,15 @@ class MindigoIdController extends Controller
         $record->update(['used' => true]);
         $this->service->loginUser($request, $user);
 
+        $redirect = $user->role === 'admin'
+            ? redirect()->intended('/dashboard')->getTargetUrl()
+            : RoleRedirector::pathFor($user);
+
+        RoleRedirector::clearUnsafeIntendedFor($user);
+
         return response()->json([
-            'ok'       => true,
-            'redirect' => redirect()->intended(match ($user->role) { 'teacher' => '/teacher', 'student' => '/', default => '/dashboard' })->getTargetUrl(),
+            'ok' => true,
+            'redirect' => $redirect,
         ]);
     }
 }

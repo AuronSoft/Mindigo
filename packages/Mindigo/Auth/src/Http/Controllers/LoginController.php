@@ -2,10 +2,11 @@
 
 namespace Mindigo\Auth\Http\Controllers;
 
-use Mindigo\Auth\Http\Requests\LoginRequest;
-use Mindigo\Auth\Services\LoginService;
+use App\Support\RoleRedirector;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Mindigo\Auth\Http\Requests\LoginRequest;
+use Mindigo\Auth\Services\LoginService;
 
 class LoginController extends Controller
 {
@@ -26,20 +27,13 @@ class LoginController extends Controller
 
         $user = auth()->user();
 
-        // Admin: dùng intended() để giữ URL đã vào trước khi bị redirect đăng nhập
-        // Teacher/Student: redirect thẳng theo role, KHÔNG dùng intended() vì
-        // session có thể chứa URL admin từ lần truy cập trước gây lỗi 403
         if ($user?->role === 'admin') {
             return redirect()->intended('/dashboard')->with('login_success', true);
         }
 
-        // Xoá intended URL cũ tránh redirect nhầm vào admin area
-        session()->forget('url.intended');
+        RoleRedirector::clearUnsafeIntendedFor($user);
 
-        return redirect(match ($user?->role) {
-            'teacher' => '/teacher',
-            default   => '/',
-        })->with('login_success', true);
+        return RoleRedirector::redirectFor($user)->with('login_success', true);
     }
 
     public function destroy(Request $request)

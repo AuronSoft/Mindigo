@@ -2,6 +2,7 @@
 
 namespace Mindigo\Auth\Http\Middleware;
 
+use App\Support\RoleRedirector;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -11,15 +12,27 @@ class CheckRole
     {
         $user = $request->user();
 
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
         $allowed = [];
+
         foreach ($roles as $role) {
-            foreach (explode('|', $role) as $r) {
-                $allowed[] = trim($r);
+            foreach (explode('|', $role) as $item) {
+                $allowed[] = trim($item);
             }
         }
 
-        if (!$user || !in_array($user->role, $allowed)) {
-            abort(403);
+        if (!in_array($user->role, $allowed, true)) {
+            if ($request->expectsJson()) {
+                abort(403);
+            }
+
+            RoleRedirector::clearUnsafeIntendedFor($user);
+
+            return RoleRedirector::redirectFor($user)
+                ->with('warning', 'Bạn không có quyền truy cập khu vực này.');
         }
 
         return $next($request);

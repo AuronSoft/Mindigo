@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\RoleRedirector;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,29 +10,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|null  ...$guards
-     * @return mixed
-     */
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                
-                // Nếu là guard admin → chuyển đến trang admin
-                if ($guard === 'admin') {
-                    return redirect()->route('admin.dashboard');
-                }
+                $user = Auth::guard($guard)->user();
 
-                // Người dùng thường → chuyển đến dashboard
-                return redirect()->route('dashboard'); 
-                // Hoặc có thể dùng: return redirect()->intended(route('dashboard'));
+                RoleRedirector::clearUnsafeIntendedFor($user);
+
+                return RoleRedirector::redirectFor($user);
             }
         }
 

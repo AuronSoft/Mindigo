@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\RoleRedirector;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,14 @@ class AdminMiddleware
         $hasAdminRoleMethod = method_exists($user, 'hasRole') && $user->hasRole('admin');
 
         if (!$user->isAdmin() && !$hasAdminRoleMethod) {
-            abort(403, 'Bạn không có quyền truy cập khu vực quản trị.');
+            if ($request->expectsJson()) {
+                abort(403, 'Bạn không có quyền truy cập khu vực quản trị.');
+            }
+
+            RoleRedirector::clearUnsafeIntendedFor($user);
+
+            return RoleRedirector::redirectFor($user)
+                ->with('warning', 'Bạn không có quyền truy cập khu vực quản trị.');
         }
 
         return $next($request);
