@@ -2,7 +2,7 @@
 
 return [
     'title'          => 'Bảng điều khiển giáo viên',
-    'platform'       => 'Nền tảng ôn thi',
+    'platform'       => 'Nền tảng LMS',
     'search'         => 'Tìm kiếm...',
     'dashboard'      => 'Dashboard',
     'my_classrooms'  => 'Lớp học của tôi',
@@ -14,6 +14,14 @@ return [
     'logout'         => 'Đăng xuất',
     'logout_confirm' => 'Đăng xuất',
     'settings'       => 'Cài đặt',
+    'group_overview' => 'Tổng quan',
+    'group_overview_desc' => 'Hôm nay và hoạt động',
+    'group_teaching' => 'Giảng dạy',
+    'group_teaching_desc' => 'Lớp, đề thi, câu hỏi',
+    'group_tracking' => 'Theo dõi',
+    'group_tracking_desc' => 'Kết quả và thông báo',
+    'group_account' => 'Tài khoản',
+    'group_account_desc' => 'Hồ sơ và tuỳ chọn',
 
     // Stats
     'total_classrooms' => 'Lớp học',

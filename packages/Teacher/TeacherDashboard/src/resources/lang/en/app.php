@@ -2,7 +2,7 @@
 
 return [
     'title'          => 'Teacher Dashboard',
-    'platform'       => 'Exam platform',
+    'platform'       => 'LMS platform',
     'search'         => 'Search...',
     'dashboard'      => 'Dashboard',
     'my_classrooms'  => 'My Classrooms',
@@ -14,6 +14,14 @@ return [
     'logout'         => 'Sign out',
     'logout_confirm' => 'Sign out',
     'settings'       => 'Settings',
+    'group_overview' => 'Overview',
+    'group_overview_desc' => 'Today and activity',
+    'group_teaching' => 'Teaching',
+    'group_teaching_desc' => 'Classes, exams, questions',
+    'group_tracking' => 'Tracking',
+    'group_tracking_desc' => 'Results and announcements',
+    'group_account' => 'Account',
+    'group_account_desc' => 'Profile and preferences',
 
     'total_classrooms'  => 'Classrooms',
     'total_students'    => 'Students',

@@ -45,7 +45,7 @@
             </span>
             <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
                 <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.platform')</span>
-                <span class="block text-lg font-black tracking-tight text-slate-900">Mindigo<span class="text-green-600">Exam</span></span>
+                <span class="block text-lg font-black tracking-tight text-slate-900">Mindigo <span class="text-green-600">LMS</span></span>
             </span>
         </a>
 
@@ -69,33 +69,76 @@
             @if($currentUser?->role === 'teacher')
             {{-- ── NAV GIÁO VIÊN (chỉ route teacher.* — dữ liệu được scope theo giáo viên) ── --}}
             @php
-                $dot      = 'h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 in-[.text-green-700]:bg-green-500';
-                $base     = 'sidebar-submenu-item flex min-h-12 items-center gap-3 rounded-2xl px-3 text-sm font-extrabold no-underline';
-                $inactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
-                $soon     = 'flex min-h-12 cursor-not-allowed items-center gap-3 rounded-2xl px-3 text-sm font-extrabold text-slate-300';
-                $teacherNav = [
-                ['route' => 'teacher.dashboard',           'match' => 'teacher.dashboard',       'label' => __('teacher-dashboard::app.dashboard'),    'icon' => 'heroicon-o-squares-2x2'],
-                ['route' => 'teacher.classrooms.index',    'match' => 'teacher.classrooms.*',    'label' => __('teacher-dashboard::app.my_classrooms'), 'icon' => 'heroicon-o-user-group'],
-                ['route' => 'teacher.exams.index',         'match' => 'teacher.exams.*',         'label' => __('teacher-dashboard::app.my_exams'),      'icon' => 'heroicon-o-document-text'],
-                ['route' => 'teacher.questions.index',     'match' => 'teacher.questions.*',     'label' => __('teacher-dashboard::app.my_questions'),  'icon' => 'heroicon-o-circle-stack'],
-                ['route' => 'teacher.results.index',       'match' => 'teacher.results.*',       'label' => __('teacher-dashboard::app.results'),       'icon' => 'heroicon-o-chart-bar'],
-                ['route' => 'teacher.announcements.index', 'match' => 'teacher.announcements.*', 'label' => __('teacher-dashboard::app.announcements'), 'icon' => 'heroicon-o-megaphone'],
-            ];
+                $teacherBase = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
+                $teacherInactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
+                $teacherSoon = 'flex min-h-9 cursor-not-allowed items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-300';
+                $teacherNavGroups = [
+                    [
+                        'name' => __('teacher-dashboard::app.group_overview'),
+                        'desc' => __('teacher-dashboard::app.group_overview_desc'),
+                        'icon' => 'heroicon-o-squares-2x2',
+                        'items' => [
+                            ['route' => 'teacher.dashboard', 'match' => 'teacher.dashboard', 'label' => __('teacher-dashboard::app.dashboard'), 'icon' => 'heroicon-o-home'],
+                        ],
+                    ],
+                    [
+                        'name' => __('teacher-dashboard::app.group_teaching'),
+                        'desc' => __('teacher-dashboard::app.group_teaching_desc'),
+                        'icon' => 'heroicon-o-academic-cap',
+                        'items' => [
+                            ['route' => 'teacher.classrooms.index', 'match' => 'teacher.classrooms.*', 'label' => __('teacher-dashboard::app.my_classrooms'), 'icon' => 'heroicon-o-user-group'],
+                            ['route' => 'teacher.exams.index', 'match' => 'teacher.exams.*', 'label' => __('teacher-dashboard::app.my_exams'), 'icon' => 'heroicon-o-document-text'],
+                            ['route' => 'teacher.questions.index', 'match' => 'teacher.questions.*', 'label' => __('teacher-dashboard::app.my_questions'), 'icon' => 'heroicon-o-circle-stack'],
+                        ],
+                    ],
+                    [
+                        'name' => __('teacher-dashboard::app.group_tracking'),
+                        'desc' => __('teacher-dashboard::app.group_tracking_desc'),
+                        'icon' => 'heroicon-o-chart-bar',
+                        'items' => [
+                            ['route' => 'teacher.results.index', 'match' => 'teacher.results.*', 'label' => __('teacher-dashboard::app.results'), 'icon' => 'heroicon-o-presentation-chart-line'],
+                            ['route' => 'teacher.announcements.index', 'match' => 'teacher.announcements.*', 'label' => __('teacher-dashboard::app.announcements'), 'icon' => 'heroicon-o-megaphone'],
+                        ],
+                    ],
+                    [
+                        'name' => __('teacher-dashboard::app.group_account'),
+                        'desc' => __('teacher-dashboard::app.group_account_desc'),
+                        'icon' => 'heroicon-o-cog-6-tooth',
+                        'items' => [
+                            ['route' => 'profile.index', 'match' => 'profile.*', 'label' => __('teacher-dashboard::app.profile'), 'icon' => 'heroicon-o-user-circle'],
+                        ],
+                    ],
+                ];
             @endphp
             <div class="flex flex-col gap-2 px-1 pt-2">
                 <p class="mb-1 px-2 text-[10px] font-black uppercase tracking-wider text-slate-400" data-sidebar-text>@lang('teacher-dashboard::app.title')</p>
-                @foreach($teacherNav as $nav)
-                    @if(Route::has($nav['route']))
-                        <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item data-sidebar-tooltip="{{ $nav['label'] }}" title="{{ $nav['label'] }}">
-                        <x-dynamic-component :component="$nav['icon']" class="h-5 w-5 shrink-0" />
-                        <span data-sidebar-text>{{ $nav['label'] }}</span>
-                    </a>
-                    @else
-                        <span class="{{ $soon }}" title="{{ $nav['label'] }}" data-sidebar-tooltip="{{ $nav['label'] }}">
-                        <x-dynamic-component :component="$nav['icon']" class="h-5 w-5 shrink-0" />
-                        <span data-sidebar-text>{{ $nav['label'] }}</span>
-                    </span>
-                    @endif
+                @foreach($teacherNavGroups as $group)
+                    <div class="sidebar-group" data-sidebar-group data-group-name="{{ $group['name'] }}">
+                        <button class="sidebar-group-trigger flex min-h-14 w-full items-center gap-3 rounded-2xl px-2 text-left text-slate-700 transition hover:bg-green-50 hover:text-green-800" type="button" title="{{ $group['name'] }}">
+                            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600">
+                                <x-dynamic-component :component="$group['icon']" class="h-5 w-5 shrink-0" />
+                            </span>
+                            <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
+                                <span class="block truncate text-sm font-black">{{ $group['name'] }}</span>
+                                <span class="block truncate text-[11px] font-bold text-slate-400">{{ $group['desc'] }}</span>
+                            </span>
+                        </button>
+                        <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                            @foreach($group['items'] as $nav)
+                                @if(Route::has($nav['route']))
+                                    <a href="{{ route($nav['route']) }}" class="{{ $teacherBase }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $teacherInactive }}" data-sidebar-search-item data-search-label="{{ $nav['label'] }}" data-sidebar-tooltip="{{ $nav['label'] }}" title="{{ $nav['label'] }}">
+                                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                                        <span data-sidebar-text>{{ $nav['label'] }}</span>
+                                    </a>
+                                @else
+                                    <span class="{{ $teacherSoon }}" title="{{ $nav['label'] }}" data-sidebar-tooltip="{{ $nav['label'] }}">
+                                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                                        <span data-sidebar-text>{{ $nav['label'] }}</span>
+                                    </span>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
                 @endforeach
             </div>
             @else

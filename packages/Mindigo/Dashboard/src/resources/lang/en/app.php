@@ -2,7 +2,7 @@
 
 return [
     'title' => 'Admin Dashboard',
-    'platform' => 'Exam preparation platform',
+    'platform' => 'Learning management platform',
     'search_placeholder' => 'Search features...',
     'global_search' => 'Search exams, learners, questions...',
     'notifications' => 'Notifications',
@@ -139,7 +139,7 @@ return [
     'leads' => 'Leads',
     'win_loss' => 'W/L',
     'content_value' => 'Content value',
-    'product_name' => 'MindingoLMS',
+    'product_name' => 'Mindigo LMS',
     'standard_questions' => 'Qualified questions',
     'attempts' => 'Attempts',
     'win_rate' => 'Win rate',
