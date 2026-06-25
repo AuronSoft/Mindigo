@@ -111,31 +111,51 @@
                         </span>
                     </button>
                     <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
-                        <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
-                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
-                        <span data-sidebar-text>{{ $nav['label'] }}</span>
-                    </a>
-                        @if(Route::has('question-bank.index') && ($currentUser?->hasPermissionTo('questions.view') ?? false))
-                            <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
-                            <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
-                            <span data-sidebar-text>{{ $nav['label'] }}</span>
-                        </a>
-                        @endif
-                        @if(Route::has('exams.index') && ($currentUser?->hasPermissionTo('exams.view') ?? false))
-                            <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
-                            <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
-                            <span data-sidebar-text>{{ $nav['label'] }}</span>
-                        </a>
-                        @endif
+                        @php
+                            $overviewBase = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
+                            $overviewInactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
+                            $overviewNav = [
+                                [
+                                    'route' => 'dashboard',
+                                    'match' => 'dashboard',
+                                    'label' => __('Mindigo-dashboard::app.dashboard'),
+                                    'icon' => 'heroicon-o-squares-2x2',
+                                    'show' => Route::has('dashboard'),
+                                ],
+                                [
+                                    'route' => 'question-bank.index',
+                                    'match' => 'question-bank.*',
+                                    'label' => __('Mindigo-dashboard::app.question_bank'),
+                                    'icon' => 'heroicon-o-circle-stack',
+                                    'show' => Route::has('question-bank.index') && ($currentUser?->hasPermissionTo('questions.view') ?? false),
+                                ],
+                                [
+                                    'route' => 'exams.index',
+                                    'match' => 'exams.*',
+                                    'label' => __('Mindigo-dashboard::app.exams'),
+                                    'icon' => 'heroicon-o-document-text',
+                                    'show' => Route::has('exams.index') && ($currentUser?->hasPermissionTo('exams.view') ?? false),
+                                ],
+                                [
+                                    'route' => 'classrooms.index',
+                                    'match' => 'classrooms.*',
+                                    'label' => __('Mindigo-dashboard::app.classrooms'),
+                                    'icon' => 'heroicon-o-user-group',
+                                    'show' => Route::has('classrooms.index') && ($currentUser?->hasPermissionTo('classrooms.view') ?? false),
+                                ],
+                            ];
+                        @endphp
+                        @foreach($overviewNav as $nav)
+                            @if($nav['show'])
+                                <a href="{{ route($nav['route']) }}" class="{{ $overviewBase }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $overviewInactive }}" data-sidebar-search-item data-search-label="{{ $nav['label'] }}">
+                                    <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                                    <span data-sidebar-text>{{ $nav['label'] }}</span>
+                                </a>
+                            @endif
+                        @endforeach
                         <a href="#learners" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.learners')">
                             <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 in-[.text-green-700]:bg-green-500"></span><span>@lang('Mindigo-dashboard::app.learners')</span>
                         </a>
-                        @if(Route::has('classrooms.index') && ($currentUser?->hasPermissionTo('classrooms.view') ?? false))
-                            <a href="{{ route($nav['route']) }}" class="{{ $base }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $inactive }}" data-sidebar-search-item>
-                            <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
-                            <span data-sidebar-text>{{ $nav['label'] }}</span>
-                        </a>
-                        @endif
                     </div>
                 </div>
 
