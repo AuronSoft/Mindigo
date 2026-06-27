@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', __('Mindigo-dashboard::app.title'))</title>
+    <meta name="description" content="@yield('meta_description', __('Mindigo-dashboard::app.title'))">
+    <meta name="robots" content="noindex, nofollow">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700,800,900" rel="stylesheet"/>
     @yield('styles')
@@ -21,7 +23,14 @@
         data-expanded="false"
         data-compact-width="{{ $isTeacherShell ? 'w-24' : 'w-20' }}"
     >
-        <a href="{{ $currentUser?->role === 'teacher' && Route::has('teacher.dashboard') ? route('teacher.dashboard') : route('dashboard') }}" class="flex min-h-12 items-center gap-3 overflow-hidden text-slate-900 no-underline">
+        @php
+            $homeRoute = match (true) {
+                $currentUser?->role === 'student' && Route::has('student.dashboard') => route('student.dashboard'),
+                $currentUser?->role === 'teacher' && Route::has('teacher.dashboard') => route('teacher.dashboard'),
+                default => route('dashboard'),
+            };
+        @endphp
+        <a href="{{ $homeRoute }}" class="flex min-h-12 items-center gap-3 overflow-hidden text-slate-900 no-underline">
             <span class="grid h-11 w-11 shrink-0 place-items-center">
                 <svg width="40" height="44" viewBox="0 0 200 220" fill="none" aria-hidden="true">
                     <path d="M48 160 L22 148 L38 158 L16 152 L35 164" fill="#15803d" stroke="#14532d" stroke-width="1"/>
@@ -66,7 +75,90 @@
         <div class="min-h-0 overflow-y-auto overflow-x-hidden pr-1">
             <nav class="flex flex-col gap-2">
 
-            @if($currentUser?->role === 'teacher')
+            @if($currentUser?->role === 'student')
+            {{-- ── NAV HỌC SINH (chỉ route student.* — dữ liệu scope theo học sinh) ── --}}
+            @php
+                $stuBase = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
+                $stuInactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
+                $studentNavGroups = [
+                    [
+                        'name' => __('student-dashboard::app.group_overview'),
+                        'desc' => __('student-dashboard::app.group_overview_desc'),
+                        'icon' => 'heroicon-o-squares-2x2',
+                        'items' => [
+                            ['route' => 'student.dashboard', 'match' => 'student.dashboard', 'label' => __('student-dashboard::app.nav_dashboard'), 'icon' => 'heroicon-o-home'],
+                        ],
+                    ],
+                    [
+                        'name' => __('student-dashboard::app.group_learning'),
+                        'desc' => __('student-dashboard::app.group_learning_desc'),
+                        'icon' => 'heroicon-o-academic-cap',
+                        'items' => [
+                            ['route' => 'student.classrooms.index', 'match' => 'student.classrooms.*', 'label' => __('student-dashboard::app.nav_classrooms'), 'icon' => 'heroicon-o-user-group'],
+                            ['route' => 'student.assignments.index', 'match' => 'student.assignments.*', 'label' => __('student-dashboard::app.nav_assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
+                            ['route' => 'student.exams.index', 'match' => 'student.exams.*', 'label' => __('student-dashboard::app.nav_exams'), 'icon' => 'heroicon-o-document-text'],
+                            ['route' => 'student.practice.index', 'match' => 'student.practice.*', 'label' => __('student-dashboard::app.nav_practice'), 'icon' => 'heroicon-o-pencil-square'],
+                        ],
+                    ],
+                    [
+                        'name' => __('student-dashboard::app.group_tracking'),
+                        'desc' => __('student-dashboard::app.group_tracking_desc'),
+                        'icon' => 'heroicon-o-chart-bar',
+                        'items' => [
+                            ['route' => 'student.schedule.index', 'match' => 'student.schedule.*', 'label' => __('student-dashboard::app.nav_schedule'), 'icon' => 'heroicon-o-calendar-days'],
+                            ['route' => 'student.progress.index', 'match' => 'student.progress.*', 'label' => __('student-dashboard::app.nav_progress'), 'icon' => 'heroicon-o-presentation-chart-line'],
+                            ['route' => 'student.history.index', 'match' => 'student.history.*', 'label' => __('student-dashboard::app.nav_history'), 'icon' => 'heroicon-o-clock'],
+                            ['route' => 'student.leaderboard.index', 'match' => 'student.leaderboard.*', 'label' => __('student-dashboard::app.nav_leaderboard'), 'icon' => 'heroicon-o-trophy'],
+                        ],
+                    ],
+                    [
+                        'name' => __('student-dashboard::app.group_interaction'),
+                        'desc' => __('student-dashboard::app.group_interaction_desc'),
+                        'icon' => 'heroicon-o-chat-bubble-left-right',
+                        'items' => [
+                            ['route' => 'student.discussions.index', 'match' => 'student.discussions.*', 'label' => __('student-dashboard::app.nav_discussions'), 'icon' => 'heroicon-o-chat-bubble-left-right'],
+                            ['route' => 'student.live-sessions.index', 'match' => 'student.live-sessions.*', 'label' => __('student-dashboard::app.nav_live'), 'icon' => 'heroicon-o-video-camera'],
+                        ],
+                    ],
+                    [
+                        'name' => __('student-dashboard::app.group_personal'),
+                        'desc' => __('student-dashboard::app.group_personal_desc'),
+                        'icon' => 'heroicon-o-cog-6-tooth',
+                        'items' => [
+                            ['route' => 'student.notebook.index', 'match' => 'student.notebook.*', 'label' => __('student-dashboard::app.nav_notebook'), 'icon' => 'heroicon-o-book-open'],
+                            ['route' => 'profile.index', 'match' => 'profile.*', 'label' => __('student-dashboard::app.nav_profile'), 'icon' => 'heroicon-o-user-circle'],
+                        ],
+                    ],
+                ];
+            @endphp
+            <div class="flex flex-col gap-2 px-1 pt-2">
+                <p class="mb-1 px-2 text-[10px] font-black uppercase tracking-wider text-slate-400" data-sidebar-text>@lang('student-dashboard::app.nav_section')</p>
+                @foreach($studentNavGroups as $group)
+                    <div class="sidebar-group" data-sidebar-group data-group-name="{{ $group['name'] }}">
+                        <button class="sidebar-group-trigger flex min-h-14 w-full items-center gap-3 rounded-2xl px-2 text-left text-slate-700 transition hover:bg-green-50 hover:text-green-800" type="button" title="{{ $group['name'] }}">
+                            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600">
+                                <x-dynamic-component :component="$group['icon']" class="h-5 w-5 shrink-0" />
+                            </span>
+                            <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
+                                <span class="block truncate text-sm font-black">{{ $group['name'] }}</span>
+                                <span class="block truncate text-[11px] font-bold text-slate-400">{{ $group['desc'] }}</span>
+                            </span>
+                        </button>
+                        <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                            @foreach($group['items'] as $nav)
+                                @php $stuActive = request()->routeIs($nav['match']); @endphp
+                                @if(Route::has($nav['route']))
+                                    <a href="{{ route($nav['route']) }}" class="{{ $stuBase }} {{ $stuActive ? 'bg-green-50 text-green-700' : $stuInactive }}" data-sidebar-search-item data-search-label="{{ $nav['label'] }}" data-sidebar-tooltip="{{ $nav['label'] }}" title="{{ $nav['label'] }}">
+                                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
+                                        <span data-sidebar-text>{{ $nav['label'] }}</span>
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            @elseif($currentUser?->role === 'teacher')
             {{-- ── NAV GIÁO VIÊN (chỉ route teacher.* — dữ liệu được scope theo giáo viên) ── --}}
             @php
                 $teacherBase = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
@@ -313,7 +405,7 @@
         </button>
     </aside>
 
-    <main class="min-w-0 {{ request()->routeIs('dashboard', 'teacher.*', 'reports.*') ? 'p-0' : 'p-6 max-md:p-4' }}">
+    <main class="min-w-0 {{ request()->routeIs('dashboard', 'teacher.*', 'student.*', 'reports.*') ? 'p-0' : 'p-6 max-md:p-4' }}">
         @yield('content')
     </main>
 </div>

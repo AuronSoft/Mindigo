@@ -1,2 +1,15 @@
-{{-- StudentExam :: index --}}
-<h1>{{ __('student-exam::app.title') }}</h1>
+@extends('Mindigo-dashboard::layouts')
+
+@section('title', __('student-dashboard::app.nav_exams') . ' · Mindigo LMS')
+@section('meta_description', __('student-dashboard::app.nav_exams'))
+
+@section('styles')
+    @vite([
+        'packages/Mindigo/Dashboard/src/resources/css/app.css',
+        'packages/Mindigo/Dashboard/src/resources/js/app.js',
+    ])
+@endsection
+
+@section('content')
+    @include('student-dashboard::partials.placeholder', ['title' => __('student-dashboard::app.nav_exams')])
+@endsection

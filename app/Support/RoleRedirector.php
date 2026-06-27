@@ -13,6 +13,7 @@ class RoleRedirector
         return match ($user?->role ?? null) {
             'admin' => Route::has('dashboard') ? route('dashboard', [], false) : '/dashboard',
             'teacher' => Route::has('teacher.dashboard') ? route('teacher.dashboard', [], false) : '/teacher',
+            'student' => Route::has('student.dashboard') ? route('student.dashboard', [], false) : '/student',
             default => Route::has('home') ? route('home', [], false) : '/',
         };
     }

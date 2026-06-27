@@ -2,8 +2,8 @@
 
 namespace Mindigo\StudentDashboard\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\StudentDashboard\Services\DashboardService;
 
 class DashboardController extends Controller
@@ -12,8 +12,27 @@ class DashboardController extends Controller
     {
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        return view('student-dashboard::index');
+        session()->forget('url.intended');
+
+        /** @var \Mindigo\Auth\Models\User $student */
+        $student = Auth::user();
+
+        $classroomIds        = $this->service->classroomIds($student);
+        $stats               = $this->service->getStats($student, $classroomIds);
+        $myClassrooms        = $this->service->getMyClassrooms($student);
+        $upcomingAssignments = $this->service->getUpcomingAssignments($student, $classroomIds);
+        $openExams           = $this->service->getOpenExams();
+        $recentResults       = $this->service->getRecentResults($student);
+
+        return view('student-dashboard::dashboard', compact(
+            'student',
+            'stats',
+            'myClassrooms',
+            'upcomingAssignments',
+            'openExams',
+            'recentResults',
+        ));
     }
 }
