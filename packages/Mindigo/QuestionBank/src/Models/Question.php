@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Mindigo\Auth\Models\User;
+use Mindigo\QuestionBank\Models\QuestionEditHistory;
+
 
 class Question extends Model
 {
@@ -66,4 +68,9 @@ class Question extends Model
     {
         return $this->belongsTo(QuestionFolder::class, 'folder_id');
     }
+
+    public function editHistories(): \Illuminate\Database\Eloquent\Relations\HasMany
+{
+    return $this->hasMany(QuestionEditHistory::class, 'question_id')->latest();
+}
 }

@@ -24,11 +24,11 @@
         </div>
     </header>
 
-    <div class="p-6">
-        <form method="POST" action="{{ route('teacher.questions.store') }}" class="w-full space-y-4">
-            @csrf
-            @include('Mindigo-question-bank::partials.form')
-        </form>
-    </div>
+    <div class="question-page mx-auto w-full max-w-5xl p-6">
+    <form method="POST" action="{{ route('teacher.questions.store') }}" class="w-full">
+        @csrf
+        @include('Mindigo-question-bank::partials.form')
+    </form>
+</div>
 </div>
 @endsection

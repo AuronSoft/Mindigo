@@ -19,6 +19,11 @@ class TeacherQuestionService
         return $this->bank->filteredList($teacher, $filters);
     }
 
+    public function importFromRows(array $rows, User $teacher, string $status, ?int $folderId): int
+{
+    return $this->bank->importFromRows($rows, $teacher, $status, $folderId);
+}
+
     public function stats(User $teacher): array
     {
         $tid = $teacher->getAuthIdentifier();
@@ -78,4 +83,34 @@ class TeacherQuestionService
 
         return $data;
     }
+        public function bulkUpdateDifficulty(User $teacher, array $ids, string $difficulty): void
+    {
+        \Mindigo\QuestionBank\Models\Question::query()
+            ->whereIn('id', $ids)
+            ->where('created_by', $teacher->getAuthIdentifier())
+            ->update(['difficulty' => $difficulty]);
+    }
+
+    public function bulkDelete(User $teacher, array $ids): void
+    {
+        $questions = \Mindigo\QuestionBank\Models\Question::query()
+            ->whereIn('id', $ids)
+            ->where('created_by', $teacher->getAuthIdentifier())
+            ->get();
+
+        foreach ($questions as $question) {
+            $this->bank->delete($question);
+        }
+    }
+    public function bulkUpdateStatus(User $teacher, array $ids, string $status): void
+{
+    \Mindigo\QuestionBank\Models\Question::query()
+        ->whereIn('id', $ids)
+        ->where('created_by', $teacher->getAuthIdentifier())
+        ->update([
+            'status'      => $status,
+            'reviewed_by' => $status === 'approved' ? $teacher->getAuthIdentifier() : null,
+            'reviewed_at' => $status === 'approved' ? now() : null,
+        ]);
+}
 }
