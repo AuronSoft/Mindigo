@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/teacher-discussion",
+    "description": "Mindigo Teacher Discussion Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\TeacherDiscussion\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\TeacherDiscussion\\Providers\\TeacherDiscussionServiceProvider"
+            ]
+        }
+    }
+}
