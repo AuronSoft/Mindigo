@@ -3,7 +3,9 @@
 namespace Mindigo\Report\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
+use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\Report\Services\ReportService;
 
@@ -55,5 +57,39 @@ class ReportController extends Controller
         $report = $this->reportService->getStudentReport($user);
 
         return view('Mindigo-report::student-detail', compact('user', 'report'));
+    }
+
+    public function teacher()
+    {
+        /** @var \Mindigo\Auth\Models\User $teacher */
+        $teacher = Auth::user();
+        $classrooms = $this->reportService->getTeacherClassrooms($teacher);
+        $selectedClassroom = $this->selectedTeacherClassroom($teacher);
+        $period = request()->integer('period', 30);
+        $period = in_array($period, [7, 30, 90], true) ? $period : 30;
+
+        $report = $this->reportService->getTeacherReport($teacher, $selectedClassroom, $period);
+
+        return view('Mindigo-report::teacher', compact(
+            'teacher',
+            'classrooms',
+            'selectedClassroom',
+            'period',
+            'report'
+        ));
+    }
+
+    private function selectedTeacherClassroom(User $teacher): ?Classroom
+    {
+        $classroomId = request()->integer('classroom_id');
+
+        if (! $classroomId) {
+            return null;
+        }
+
+        return Classroom::query()
+            ->where('teacher_id', $teacher->getAuthIdentifier())
+            ->whereKey($classroomId)
+            ->firstOrFail();
     }
 }

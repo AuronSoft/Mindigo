@@ -13,3 +13,10 @@ Route::middleware(['web', 'auth', 'role:admin'])
         Route::get('/students', [ReportController::class, 'students'])->name('students');
         Route::get('/students/{user}', [ReportController::class, 'studentDetail'])->name('student.detail');
     });
+
+Route::middleware(['web', 'auth', 'role:teacher|admin'])
+    ->prefix('teacher/reports')
+    ->name('teacher.reports.')
+    ->group(function () {
+        Route::get('/', [ReportController::class, 'teacher'])->name('index');
+    });

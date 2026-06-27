@@ -2,11 +2,16 @@
 
 namespace Mindigo\Report\Services;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Mindigo\Auth\Models\User;
+use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\QuestionBank\Models\Question;
+use Mindigo\TeacherAssignment\Models\Assignment;
+use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 
 class ReportService
 {
@@ -245,5 +250,218 @@ class ReportService
             )
             ->orderByDesc('attempts_count')
             ->paginate($perPage);
+    }
+
+    public function getTeacherClassrooms(User $teacher): Collection
+    {
+        return Classroom::query()
+            ->where('teacher_id', $teacher->getAuthIdentifier())
+            ->withCount('students')
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function getTeacherReport(User $teacher, ?Classroom $classroom = null, int $days = 30): array
+    {
+        $studentIds = $this->teacherStudentIds($teacher, $classroom);
+        $attempts = $this->teacherAttempts($teacher, $studentIds)
+            ->where('submitted_at', '>=', now()->subDays($days - 1)->startOfDay());
+
+        $totalAttempts = (clone $attempts)->count();
+        $passedAttempts = (clone $attempts)->where('passed', true)->count();
+        $avgScore = ((clone $attempts)->avg('percentage') ?? 0) / 10;
+
+        $assignmentQuery = Assignment::query()->where('teacher_id', $teacher->getAuthIdentifier());
+        if ($classroom) {
+            $assignmentQuery->where('classroom_id', $classroom->id);
+        }
+
+        $assignmentIds = (clone $assignmentQuery)->pluck('id');
+        $submissionQuery = AssignmentSubmission::query()->whereIn('assignment_id', $assignmentIds);
+
+        $totalSubmissions = (clone $submissionQuery)->count();
+        $gradedSubmissions = (clone $submissionQuery)->whereNotNull('score')->count();
+
+        return [
+            'summary' => [
+                'total_students' => $studentIds->count(),
+                'total_exams' => $this->teacherExamQuery($teacher, $classroom, $studentIds)->count(),
+                'total_attempts' => $totalAttempts,
+                'pass_rate' => $totalAttempts > 0 ? round($passedAttempts / $totalAttempts * 100, 1) : 0,
+                'avg_score' => round($avgScore, 1),
+                'total_assignments' => (clone $assignmentQuery)->count(),
+                'submission_rate' => $studentIds->count() > 0 && (clone $assignmentQuery)->count() > 0
+                    ? round($totalSubmissions / ($studentIds->count() * (clone $assignmentQuery)->count()) * 100, 1)
+                    : 0,
+                'graded_submissions' => $gradedSubmissions,
+            ],
+            'trend' => $this->teacherAttemptTrend($teacher, $studentIds, $days),
+            'score_distribution' => $this->teacherScoreDistribution($teacher, $studentIds, $days),
+            'classrooms' => $this->teacherClassroomPerformance($teacher, $days),
+            'exams' => $this->teacherExamPerformance($teacher, $classroom, $studentIds, $days),
+            'students' => $this->teacherStudentAttention($teacher, $studentIds, $days),
+        ];
+    }
+
+    private function teacherStudentIds(User $teacher, ?Classroom $classroom = null): Collection
+    {
+        $query = DB::table('classroom_students')
+            ->join('classrooms', 'classrooms.id', '=', 'classroom_students.classroom_id')
+            ->where('classrooms.teacher_id', $teacher->getAuthIdentifier())
+            ->whereNull('classrooms.deleted_at');
+
+        if ($classroom) {
+            $query->where('classroom_students.classroom_id', $classroom->id);
+        }
+
+        return $query->pluck('classroom_students.student_id')->unique()->values();
+    }
+
+    private function teacherAttempts(User $teacher, Collection $studentIds): Builder
+    {
+        return ExamAttempt::query()
+            ->whereHas('exam', fn (Builder $query) => $query->where('created_by', $teacher->getAuthIdentifier()))
+            ->whereIn('user_id', $studentIds)
+            ->where('status', 'submitted');
+    }
+
+    private function teacherExamQuery(User $teacher, ?Classroom $classroom, Collection $studentIds): Builder
+    {
+        $query = Exam::query()->where('created_by', $teacher->getAuthIdentifier());
+
+        if ($classroom) {
+            $query->whereHas('attempts', fn (Builder $attempts) => $attempts->whereIn('user_id', $studentIds));
+        }
+
+        return $query;
+    }
+
+    private function teacherAttemptTrend(User $teacher, Collection $studentIds, int $days): array
+    {
+        $rows = $this->teacherAttempts($teacher, $studentIds)
+            ->where('submitted_at', '>=', now()->subDays($days - 1)->startOfDay())
+            ->selectRaw('DATE(submitted_at) as date, COUNT(*) as count, ROUND(AVG(percentage) / 10, 1) as avg_score')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+
+        $labels = [];
+        $counts = [];
+        $scores = [];
+
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $day = now()->subDays($i);
+            $date = $day->toDateString();
+            $labels[] = $day->format('d/m');
+            $counts[] = $rows[$date]->count ?? 0;
+            $scores[] = isset($rows[$date]) ? (float) $rows[$date]->avg_score : null;
+        }
+
+        return compact('labels', 'counts', 'scores');
+    }
+
+    private function teacherScoreDistribution(User $teacher, Collection $studentIds, int $days): array
+    {
+        $attempts = $this->teacherAttempts($teacher, $studentIds)
+            ->where('submitted_at', '>=', now()->subDays($days - 1)->startOfDay());
+
+        $distribution = [];
+        foreach (['0-2' => [0, 20], '2-4' => [20, 40], '4-6' => [40, 60], '6-8' => [60, 80], '8-10' => [80, 101]] as $label => [$min, $max]) {
+            $distribution[$label] = (clone $attempts)
+                ->where('percentage', '>=', $min)
+                ->where('percentage', '<', $max)
+                ->count();
+        }
+
+        return $distribution;
+    }
+
+    private function teacherClassroomPerformance(User $teacher, int $days): Collection
+    {
+        return $this->getTeacherClassrooms($teacher)->map(function (Classroom $classroom) use ($teacher, $days) {
+            $studentIds = $this->teacherStudentIds($teacher, $classroom);
+            $attempts = $this->teacherAttempts($teacher, $studentIds)
+                ->where('submitted_at', '>=', now()->subDays($days - 1)->startOfDay());
+            $total = (clone $attempts)->count();
+            $passed = (clone $attempts)->where('passed', true)->count();
+            $assignmentIds = Assignment::query()
+                ->where('teacher_id', $teacher->getAuthIdentifier())
+                ->where('classroom_id', $classroom->id)
+                ->pluck('id');
+
+            return [
+                'classroom' => $classroom,
+                'students' => $studentIds->count(),
+                'attempts' => $total,
+                'avg_score' => round(((clone $attempts)->avg('percentage') ?? 0) / 10, 1),
+                'pass_rate' => $total > 0 ? round($passed / $total * 100, 1) : 0,
+                'assignments' => $assignmentIds->count(),
+                'submissions' => AssignmentSubmission::query()->whereIn('assignment_id', $assignmentIds)->count(),
+            ];
+        });
+    }
+
+    private function teacherExamPerformance(User $teacher, ?Classroom $classroom, Collection $studentIds, int $days): Collection
+    {
+        $attemptFilter = function (Builder $query) use ($studentIds, $days): void {
+            $query->where('status', 'submitted')
+                ->whereIn('user_id', $studentIds)
+                ->where('submitted_at', '>=', now()->subDays($days - 1)->startOfDay());
+        };
+
+        return Exam::query()
+            ->where('created_by', $teacher->getAuthIdentifier())
+            ->when($classroom, fn (Builder $query) => $query->whereHas('attempts', fn (Builder $attempts) => $attempts->whereIn('user_id', $studentIds)))
+            ->withCount(['attempts' => $attemptFilter])
+            ->withAvg(['attempts' => $attemptFilter], 'percentage')
+            ->orderByDesc('updated_at')
+            ->limit(10)
+            ->get()
+            ->map(function (Exam $exam) use ($studentIds, $days) {
+                $attempts = ExamAttempt::query()
+                    ->where('exam_id', $exam->id)
+                    ->where('status', 'submitted')
+                    ->whereIn('user_id', $studentIds)
+                    ->where('submitted_at', '>=', now()->subDays($days - 1)->startOfDay());
+                $total = (clone $attempts)->count();
+                $passed = (clone $attempts)->where('passed', true)->count();
+
+                return [
+                    'exam' => $exam,
+                    'attempts' => $total,
+                    'avg_score' => round(($exam->attempts_avg_percentage ?? 0) / 10, 1),
+                    'pass_rate' => $total > 0 ? round($passed / $total * 100, 1) : 0,
+                    'last_submitted_at' => (clone $attempts)->max('submitted_at'),
+                ];
+            });
+    }
+
+    private function teacherStudentAttention(User $teacher, Collection $studentIds, int $days): Collection
+    {
+        return User::students()
+            ->whereIn('id', $studentIds)
+            ->select('id', 'name', 'email')
+            ->get()
+            ->map(function (User $student) use ($teacher, $days) {
+                $attempts = ExamAttempt::query()
+                    ->where('user_id', $student->id)
+                    ->whereHas('exam', fn (Builder $query) => $query->where('created_by', $teacher->getAuthIdentifier()))
+                    ->where('status', 'submitted')
+                    ->where('submitted_at', '>=', now()->subDays($days - 1)->startOfDay());
+                $total = (clone $attempts)->count();
+                $passed = (clone $attempts)->where('passed', true)->count();
+
+                return [
+                    'student' => $student,
+                    'attempts' => $total,
+                    'avg_score' => round(((clone $attempts)->avg('percentage') ?? 0) / 10, 1),
+                    'pass_rate' => $total > 0 ? round($passed / $total * 100, 1) : 0,
+                    'last_at' => (clone $attempts)->max('submitted_at'),
+                ];
+            })
+            ->sortBy(fn (array $row) => [$row['attempts'] > 0 ? 1 : 0, $row['avg_score'], $row['pass_rate']])
+            ->values()
+            ->take(8);
     }
 }

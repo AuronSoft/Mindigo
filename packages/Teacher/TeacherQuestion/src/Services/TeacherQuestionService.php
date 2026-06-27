@@ -20,9 +20,9 @@ class TeacherQuestionService
     }
 
     public function importFromRows(array $rows, User $teacher, string $status, ?int $folderId): int
-{
+    {
     return $this->bank->importFromRows($rows, $teacher, $status, $folderId);
-}
+    }
 
     public function stats(User $teacher): array
     {
@@ -103,8 +103,8 @@ class TeacherQuestionService
         }
     }
     public function bulkUpdateStatus(User $teacher, array $ids, string $status): void
-{
-    \Mindigo\QuestionBank\Models\Question::query()
+    {
+        \Mindigo\QuestionBank\Models\Question::query()
         ->whereIn('id', $ids)
         ->where('created_by', $teacher->getAuthIdentifier())
         ->update([
@@ -112,5 +112,5 @@ class TeacherQuestionService
             'reviewed_by' => $status === 'approved' ? $teacher->getAuthIdentifier() : null,
             'reviewed_at' => $status === 'approved' ? now() : null,
         ]);
-}
+    }
 }
