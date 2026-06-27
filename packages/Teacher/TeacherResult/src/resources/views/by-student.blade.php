@@ -12,7 +12,7 @@
 @section('content')
 <div class="flex min-h-screen flex-col bg-slate-50">
     <header class="sticky top-0 z-10 flex items-center gap-3 border-b border-slate-200 bg-white/95 px-6 py-3 backdrop-blur">
-        <a href="{{ route('teacher.results.index') }}" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:bg-green-50 hover:text-green-700">
+        <a href="{{ route('teacher.results.index', array_filter(['classroom_id' => $selectedClassroom?->id])) }}" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:bg-green-50 hover:text-green-700">
             <x-heroicon-o-arrow-left class="h-4 w-4" />
         </a>
         <div class="flex items-center gap-3">
@@ -34,7 +34,7 @@
             <div class="grid grid-cols-3 gap-2">
                 @foreach([
                     [__('teacher-result::app.total_attempts'), $detail['total'],         'text-slate-900'],
-                    [__('teacher-result::app.avg_score'),      $detail['avg_score'].'%', 'text-sky-700'],
+                    [__('teacher-result::app.avg_score'),      $detail['avg_score'].'/10', 'text-sky-700'],
                     [__('teacher-result::app.pass_rate'),      $detail['pass_rate'].'%', 'text-green-700'],
                 ] as $s)
                     <div class="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
@@ -51,10 +51,10 @@
                     <div class="mb-3 last:mb-0">
                         <div class="mb-1 flex items-center justify-between gap-2">
                             <span class="text-sm font-black text-slate-800">{{ $subj['subject'] }}</span>
-                            <span class="text-xs font-black text-slate-500">{{ $subj['avg_score'] }}% · {{ $subj['count'] }} @lang('teacher-result::app.attempts_unit')</span>
+                            <span class="text-xs font-black text-slate-500">{{ $subj['avg_score'] }}/10 · {{ $subj['count'] }} @lang('teacher-result::app.attempts_unit')</span>
                         </div>
                         <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-                            <div class="h-2 rounded-full bg-green-500 transition-all duration-500" style="width:{{ min(100,$subj['avg_score']) }}%"></div>
+                            <div class="h-2 rounded-full bg-green-500 transition-all duration-500" style="width:{{ min(100, $subj['avg_score'] * 10) }}%"></div>
                         </div>
                     </div>
                 @empty
@@ -100,7 +100,7 @@
                                             <div class="h-1.5 w-14 overflow-hidden rounded-full bg-slate-100">
                                                 <div class="h-1.5 rounded-full bg-green-500" style="width:{{ min(100,$a->percentage) }}%"></div>
                                             </div>
-                                            <span class="text-sm font-black text-slate-700">{{ round($a->percentage, 1) }}%</span>
+                                            <span class="text-sm font-black text-slate-700">{{ round($a->percentage / 10, 1) }}/10</span>
                                         </div>
                                     </td>
                                     <td class="px-5 py-3">
@@ -113,7 +113,7 @@
                                     <td class="px-5 py-3 text-xs font-bold text-slate-400">{{ $a->submitted_at?->diffForHumans() }}</td>
                                     <td class="px-5 py-3">
                                         @if($a->exam)
-                                            <a href="{{ route('teacher.results.by_exam', $a->exam) }}"
+                                            <a href="{{ route('teacher.results.by_exam', array_filter(['exam' => $a->exam, 'classroom_id' => $selectedClassroom?->id])) }}"
                                                class="text-xs font-black text-slate-400 no-underline hover:text-green-700">→</a>
                                         @endif
                                     </td>

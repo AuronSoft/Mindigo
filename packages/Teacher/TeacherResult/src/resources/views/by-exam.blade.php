@@ -29,7 +29,7 @@
 @section('content')
 <div class="flex min-h-screen flex-col bg-slate-50">
     <header class="sticky top-0 z-10 flex items-center gap-3 border-b border-slate-200 bg-white/95 px-6 py-3 backdrop-blur">
-        <a href="{{ route('teacher.results.index') }}" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:bg-green-50 hover:text-green-700">
+        <a href="{{ route('teacher.results.index', array_filter(['classroom_id' => $selectedClassroom?->id])) }}" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:bg-green-50 hover:text-green-700">
             <x-heroicon-o-arrow-left class="h-4 w-4" />
         </a>
         <div>
@@ -48,7 +48,7 @@
                     [__('teacher-result::app.total_candidates'), number_format($result['total']),   'bg-slate-900 text-white'],
                     [__('teacher-result::app.pass_rate'),        $result['pass_rate'] . '%',        'bg-green-600 text-white'],
                     [__('teacher-result::app.passed'),           number_format($result['passed']),  'bg-emerald-50 text-emerald-800'],
-                    [__('teacher-result::app.avg_score'),        $result['avg_score'] . '%',        'bg-sky-50 text-sky-800'],
+                    [__('teacher-result::app.avg_score'),        $result['avg_score'] . '/10',        'bg-sky-50 text-sky-800'],
                 ] as $card)
                     <article class="rounded-2xl {{ $card[2] }} p-3 shadow-sm">
                         <p class="text-[10px] font-black uppercase tracking-wider opacity-60">{{ $card[0] }}</p>
@@ -94,7 +94,7 @@
                                     <td class="px-5 py-3">
                                         <div class="flex items-center gap-2">
                                             <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-slate-100 text-[10px] font-black text-slate-600">{{ mb_substr($a->user?->name ?? '?', 0, 1) }}</span>
-                                            <a href="{{ route('teacher.results.by_student', $a->user_id) }}" class="text-sm font-black text-slate-900 no-underline hover:text-green-700">{{ $a->user?->name ?? '—' }}</a>
+                                            <a href="{{ route('teacher.results.by_student', array_filter(['user' => $a->user_id, 'classroom_id' => $selectedClassroom?->id])) }}" class="text-sm font-black text-slate-900 no-underline hover:text-green-700">{{ $a->user?->name ?? '—' }}</a>
                                         </div>
                                     </td>
                                     <td class="px-5 py-3">
@@ -102,7 +102,7 @@
                                             <div class="h-1.5 w-14 overflow-hidden rounded-full bg-slate-100">
                                                 <div class="h-1.5 rounded-full bg-green-500" style="width:{{ min(100,$a->percentage) }}%"></div>
                                             </div>
-                                            <span class="text-sm font-black text-slate-700">{{ round($a->percentage, 1) }}%</span>
+                                            <span class="text-sm font-black text-slate-700">{{ round($a->percentage / 10, 1) }}/10</span>
                                         </div>
                                     </td>
                                     <td class="px-5 py-3">

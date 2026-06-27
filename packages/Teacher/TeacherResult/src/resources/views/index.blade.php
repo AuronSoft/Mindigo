@@ -36,7 +36,7 @@
             if (elS) new Chart(elS, {
                 type: 'line',
                 data: { labels, datasets: [{ data: scores, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,.08)', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#3b82f6', tension: .38, fill: true, spanGaps: true }] },
-                options: { ...common, scales: { x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { weight: 700, size: 10 } } }, y: { border: { display: false }, grid: { color: '#f1f5f9' }, ticks: { color: '#94a3b8', font: { weight: 700 } }, min: 0, max: 100 } } },
+                options: { ...common, scales: { x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { weight: 700, size: 10 } } }, y: { border: { display: false }, grid: { color: '#f1f5f9' }, ticks: { color: '#94a3b8', font: { weight: 700 } }, min: 0, max: 10 } } },
             });
 
             // Tab switching
@@ -67,6 +67,9 @@
             <p class="text-xs font-bold text-slate-400">@lang('teacher-result::app.subtitle')</p>
         </div>
         <form method="GET" class="flex items-center gap-2">
+            @if($selectedClassroom)
+                <input type="hidden" name="classroom_id" value="{{ $selectedClassroom->id }}">
+            @endif
             <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 focus-within:border-green-300 focus-within:bg-white focus-within:ring-1 focus-within:ring-green-100">
                 <x-heroicon-o-magnifying-glass class="h-4 w-4 text-slate-400" />
                 <input type="text" name="q" value="{{ $keyword }}"
@@ -85,15 +88,15 @@
                     @lang('teacher-classroom::app.title')
                 </p>
                 @forelse($classrooms as $cls)
-                    <div class="mb-1 flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 hover:bg-slate-50 transition cursor-default">
+                    <a href="{{ route('teacher.results.index', array_filter(['classroom_id' => $cls->id, 'q' => $keyword ?: null])) }}" class="mb-1 flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 transition no-underline {{ $selectedClassroom && $selectedClassroom->id === $cls->id ? 'bg-green-50 ring-1 ring-green-100' : 'hover:bg-slate-50' }}">
                         <div class="min-w-0">
                             <p class="truncate text-sm font-black text-slate-800">{{ $cls->name }}</p>
-                            <p class="text-[11px] font-bold text-slate-400">@lang('teacher-classroom::app.students_count_badge', ['count' => $cls->students_count]){{ $cls->school_year ? ' · ' . $cls->school_year : '' }}</p>
+                            <p class="text-[11px] font-bold text-slate-400">@lang('teacher-classroom::app.students_count_badge', ['count' => $cls->students_count]){{ $cls->school_year ? ' - ' . $cls->school_year : '' }}</p>
                         </div>
                         <span class="shrink-0 rounded-full {{ $cls->status === 'active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400' }} px-1.5 py-0.5 text-[9px] font-black">
                             @lang('teacher-classroom::app.' . $cls->status)
                         </span>
-                    </div>
+                    </a>
                 @empty
                     <p class="px-2 py-4 text-xs font-bold text-slate-400">@lang('teacher-classroom::app.no_classrooms')</p>
                 @endforelse
@@ -108,7 +111,7 @@
                 @foreach([
                     ['label' => __('teacher-result::app.total_attempts'),  'value' => number_format($overview['total_attempts']),              'color' => 'text-green-600',  'bg' => 'bg-green-50',  'icon' => 'heroicon-o-pencil-square'],
                     ['label' => __('teacher-result::app.pass_rate'),       'value' => $overview['pass_rate'] . '%',                            'color' => 'text-emerald-600','bg' => 'bg-emerald-50','icon' => 'heroicon-o-check-badge'],
-                    ['label' => __('teacher-result::app.avg_score'),       'value' => $overview['avg_score'] . '%',                            'color' => 'text-sky-600',    'bg' => 'bg-sky-50',    'icon' => 'heroicon-o-chart-bar'],
+                    ['label' => __('teacher-result::app.avg_score'),       'value' => $overview['avg_score'] . '/10',                            'color' => 'text-sky-600',    'bg' => 'bg-sky-50',    'icon' => 'heroicon-o-chart-bar'],
                     ['label' => __('teacher-result::app.total_students'),  'value' => number_format($overview['total_students']),              'color' => 'text-violet-600', 'bg' => 'bg-violet-50', 'icon' => 'heroicon-o-academic-cap'],
                 ] as $card)
                     <article class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm">
@@ -185,9 +188,9 @@
                                         <td class="px-5 py-3">
                                             <div class="flex items-center gap-2">
                                                 <div class="h-1.5 w-16 overflow-hidden rounded-full bg-slate-100">
-                                                    <div class="h-1.5 rounded-full bg-sky-500" style="width:{{ min(100,$r['avg_score']) }}%"></div>
+                                                    <div class="h-1.5 rounded-full bg-sky-500" style="width:{{ min(100, $r['avg_score'] * 10) }}%"></div>
                                                 </div>
-                                                <span class="text-sm font-black text-slate-700">{{ $r['avg_score'] }}%</span>
+                                                <span class="text-sm font-black text-slate-700">{{ $r['avg_score'] }}/10</span>
                                             </div>
                                         </td>
                                         <td class="px-5 py-3">
@@ -197,7 +200,7 @@
                                             </span>
                                         </td>
                                         <td class="px-5 py-3">
-                                            <a href="{{ route('teacher.results.by_exam', $r['exam']) }}"
+                                            <a href="{{ route('teacher.results.by_exam', array_filter(['exam' => $r['exam'], 'classroom_id' => $selectedClassroom?->id])) }}"
                                                class="text-xs font-black text-slate-400 no-underline hover:text-green-700">
                                                 @lang('teacher-result::app.view_detail') →
                                             </a>
@@ -248,9 +251,9 @@
                                         <td class="px-5 py-3">
                                             <div class="flex items-center gap-2">
                                                 <div class="h-1.5 w-16 overflow-hidden rounded-full bg-slate-100">
-                                                    <div class="h-1.5 rounded-full bg-green-500" style="width:{{ min(100,$r['avg_score']) }}%"></div>
+                                                    <div class="h-1.5 rounded-full bg-green-500" style="width:{{ min(100, $r['avg_score'] * 10) }}%"></div>
                                                 </div>
-                                                <span class="text-sm font-black text-slate-700">{{ $r['avg_score'] }}%</span>
+                                                <span class="text-sm font-black text-slate-700">{{ $r['avg_score'] }}/10</span>
                                             </div>
                                         </td>
                                         <td class="px-5 py-3">
@@ -262,7 +265,7 @@
                                             {{ $r['last_at'] ? \Carbon\Carbon::parse($r['last_at'])->diffForHumans() : '—' }}
                                         </td>
                                         <td class="px-5 py-3">
-                                            <a href="{{ route('teacher.results.by_student', $r['student']) }}"
+                                            <a href="{{ route('teacher.results.by_student', array_filter(['user' => $r['student'], 'classroom_id' => $selectedClassroom?->id])) }}"
                                                class="text-xs font-black text-slate-400 no-underline hover:text-green-700">
                                                 @lang('teacher-result::app.view_detail') →
                                             </a>
