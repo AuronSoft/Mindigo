@@ -2,6 +2,7 @@
 
 namespace Mindigo\StudentDashboard\Services;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
@@ -23,100 +24,276 @@ class DashboardService
     }
 
     /**
-     * Các lớp của học sinh (kèm giáo viên).
+     * Submission của học sinh, key theo assignment_id.
      */
-    public function getMyClassrooms(User $student): Collection
+    protected function submissions(User $student): Collection
     {
-        return Classroom::query()
-            ->whereHas('students', fn ($q) => $q->where('student_id', $student->id))
-            ->with('teacher')
-            ->latest()
-            ->take(6)
-            ->get();
+        return AssignmentSubmission::query()
+            ->where('student_id', $student->id)
+            ->get()
+            ->keyBy('assignment_id');
     }
 
     /**
-     * Bài tập sắp đến hạn mà học sinh CHƯA nộp.
+     * 4 thẻ thống kê đầu trang (đều có %, tỉ lệ x/y và thanh tiến độ).
      */
-    public function getUpcomingAssignments(User $student, Collection $classroomIds): Collection
+    public function getStudyStats(User $student, Collection $classroomIds): array
     {
-        if ($classroomIds->isEmpty()) {
-            return collect();
-        }
+        $submissions = $this->submissions($student);
 
-        $submittedIds = AssignmentSubmission::query()
-            ->where('student_id', $student->id)
-            ->pluck('assignment_id');
-
-        return Assignment::query()
+        // Bài tập đã nộp
+        $assignmentTotal = $classroomIds->isEmpty() ? 0 : Assignment::query()
             ->whereIn('classroom_id', $classroomIds)
             ->where('status', 'published')
-            ->whereNotIn('id', $submittedIds)
-            ->where('due_date', '>=', now())
-            ->with('classroom')
-            ->orderBy('due_date')
-            ->take(5)
-            ->get();
+            ->count();
+        $assignmentDone = $submissions->count();
+
+        // Bài thi đã làm / tổng đề đã xuất bản
+        $examTotal = Exam::query()->where('status', 'published')->count();
+        $examDone  = ExamAttempt::query()
+            ->where('user_id', $student->id)
+            ->whereNotNull('submitted_at')
+            ->distinct('exam_id')
+            ->count('exam_id');
+
+        // Điểm trung bình
+        $avgScore = (float) (ExamAttempt::query()
+            ->where('user_id', $student->id)
+            ->whereNotNull('submitted_at')
+            ->avg('percentage') ?? 0);
+
+        return [
+            'assignments' => [
+                'percent' => $this->percent($assignmentDone, $assignmentTotal),
+                'done'    => $assignmentDone,
+                'total'   => $assignmentTotal,
+            ],
+            'exams' => [
+                'percent' => $this->percent($examDone, $examTotal),
+                'done'    => $examDone,
+                'total'   => $examTotal,
+            ],
+            'weekly' => [
+                'percent' => $this->getWeeklyProgress($student, $classroomIds),
+            ],
+            'avg_score' => [
+                'percent' => (int) round($avgScore),
+            ],
+        ];
     }
 
     /**
-     * Đề thi đang mở (đã xuất bản, còn trong thời gian làm bài).
+     * Tiến độ tuần này (% bài tập đến hạn trong tuần đã nộp).
      */
-    public function getOpenExams(): Collection
+    public function getWeeklyProgress(User $student, Collection $classroomIds): int
     {
-        return Exam::query()
+        if ($classroomIds->isEmpty()) {
+            return 0;
+        }
+
+        $weekAssignments = Assignment::query()
+            ->whereIn('classroom_id', $classroomIds)
             ->where('status', 'published')
-            ->where(fn ($q) => $q->whereNull('ends_at')->orWhere('ends_at', '>=', now()))
-            ->orderByRaw('starts_at IS NULL, starts_at ASC')
-            ->take(5)
-            ->get();
+            ->whereBetween('due_date', [now()->startOfWeek(), now()->endOfWeek()])
+            ->pluck('id');
+
+        if ($weekAssignments->isEmpty()) {
+            return 0;
+        }
+
+        $done = AssignmentSubmission::query()
+            ->where('student_id', $student->id)
+            ->whereIn('assignment_id', $weekAssignments)
+            ->count();
+
+        return $this->percent($done, $weekAssignments->count());
     }
 
     /**
-     * Kết quả thi gần đây của học sinh.
+     * Dải ngày của tuần hiện tại cho bộ chọn lịch.
      */
-    public function getRecentResults(User $student): Collection
+    public function getWeekStrip(): array
     {
-        return ExamAttempt::query()
+        $cursor = now()->startOfWeek();
+        $today  = now()->startOfDay();
+        $days   = [];
+
+        for ($i = 0; $i < 7; $i++) {
+            $days[] = [
+                'day'     => $cursor->day,
+                'label'   => $cursor->translatedFormat('D'),
+                'is_today'=> $cursor->isSameDay($today),
+            ];
+            $cursor->addDay();
+        }
+
+        return $days;
+    }
+
+    /**
+     * Việc cần làm sắp tới (bài tập chưa nộp + đề thi sắp đóng), kèm thời gian còn lại.
+     */
+    public function getActiveTasks(User $student, Collection $classroomIds): Collection
+    {
+        $tasks = collect();
+
+        if ($classroomIds->isNotEmpty()) {
+            $submittedIds = AssignmentSubmission::query()
+                ->where('student_id', $student->id)
+                ->pluck('assignment_id');
+
+            Assignment::query()
+                ->whereIn('classroom_id', $classroomIds)
+                ->where('status', 'published')
+                ->whereNotIn('id', $submittedIds)
+                ->where('due_date', '>=', now())
+                ->with('classroom')
+                ->orderBy('due_date')
+                ->take(5)
+                ->get()
+                ->each(fn (Assignment $a) => $tasks->push((object) [
+                    'type'      => 'assignment',
+                    'title'     => $a->title,
+                    'status'    => __('student-dashboard::app.status_not_submitted'),
+                    'at'        => $a->due_date,
+                    'time_left' => $this->timeLeft($a->due_date),
+                ]));
+        }
+
+        Exam::query()
+            ->where('status', 'published')
+            ->whereNotNull('ends_at')
+            ->where('ends_at', '>=', now())
+            ->orderBy('ends_at')
+            ->take(5)
+            ->get()
+            ->each(fn (Exam $e) => $tasks->push((object) [
+                'type'      => 'exam',
+                'title'     => $e->title,
+                'status'    => __('student-dashboard::app.status_not_started'),
+                'at'        => $e->ends_at,
+                'time_left' => $this->timeLeft($e->ends_at),
+            ]));
+
+        return $tasks->sortBy('at')->take(4)->values();
+    }
+
+    /**
+     * Thống kê tiến độ bài tập cho biểu đồ donut.
+     */
+    public function getCourseStats(User $student, Collection $classroomIds): array
+    {
+        $total = $classroomIds->isEmpty() ? 0 : Assignment::query()
+            ->whereIn('classroom_id', $classroomIds)
+            ->where('status', 'published')
+            ->count();
+
+        $submissions = $this->submissions($student);
+        $completed   = $submissions->whereIn('status', ['graded', 'returned'])->count();
+        $inProgress  = $submissions->where('status', 'submitted')->count();
+        $incomplete  = max(0, $total - $completed - $inProgress);
+
+        return [
+            'total'       => $total,
+            'completed'   => $completed,
+            'in_progress' => $inProgress,
+            'incomplete'  => $incomplete,
+            'pct_completed'   => $this->percent($completed, $total),
+            'pct_in_progress' => $this->percent($inProgress, $total),
+            'pct_incomplete'  => $this->percent($incomplete, $total),
+        ];
+    }
+
+    /**
+     * Số hoạt động học tập theo từng ngày trong tuần (cho biểu đồ cột).
+     */
+    public function getWeeklyActivity(User $student): array
+    {
+        $start = now()->startOfWeek();
+        $end   = now()->endOfWeek();
+
+        $counts = array_fill(1, 7, 0); // 1=Mon .. 7=Sun
+
+        AssignmentSubmission::query()
+            ->where('student_id', $student->id)
+            ->whereBetween('submitted_at', [$start, $end])
+            ->pluck('submitted_at')
+            ->each(function ($d) use (&$counts) {
+                $counts[Carbon::parse($d)->dayOfWeekIso]++;
+            });
+
+        ExamAttempt::query()
+            ->where('user_id', $student->id)
+            ->whereBetween('submitted_at', [$start, $end])
+            ->pluck('submitted_at')
+            ->each(function ($d) use (&$counts) {
+                $counts[Carbon::parse($d)->dayOfWeekIso]++;
+            });
+
+        return array_values($counts);
+    }
+
+    /**
+     * Hoạt động gần đây của học sinh (nộp bài / làm thi).
+     */
+    public function getRecentActivity(User $student): Collection
+    {
+        $items = collect();
+
+        AssignmentSubmission::query()
+            ->where('student_id', $student->id)
+            ->whereNotNull('submitted_at')
+            ->with('assignment')
+            ->latest('submitted_at')
+            ->take(5)
+            ->get()
+            ->each(fn ($s) => $items->push((object) [
+                'type'   => 'assignment',
+                'text'   => $s->assignment?->title,
+                'action' => __('student-dashboard::app.act_submitted'),
+                'at'     => $s->submitted_at,
+            ]));
+
+        ExamAttempt::query()
             ->where('user_id', $student->id)
             ->whereNotNull('submitted_at')
             ->with('exam')
             ->latest('submitted_at')
             ->take(5)
-            ->get();
+            ->get()
+            ->each(fn ($a) => $items->push((object) [
+                'type'   => 'exam',
+                'text'   => $a->exam?->title,
+                'action' => __('student-dashboard::app.act_finished_exam'),
+                'at'     => $a->submitted_at,
+            ]));
+
+        return $items->sortByDesc('at')->take(5)->values();
     }
 
-    /**
-     * Số liệu tổng quan cho các thẻ thống kê.
-     */
-    public function getStats(User $student, Collection $classroomIds): array
+    // ----- helpers -----
+
+    protected function percent(int $value, int $total): int
     {
-        $submittedIds = AssignmentSubmission::query()
-            ->where('student_id', $student->id)
-            ->pluck('assignment_id');
+        return $total > 0 ? (int) round($value / $total * 100) : 0;
+    }
 
-        $pendingAssignments = $classroomIds->isEmpty() ? 0 : Assignment::query()
-            ->whereIn('classroom_id', $classroomIds)
-            ->where('status', 'published')
-            ->whereNotIn('id', $submittedIds)
-            ->where('due_date', '>=', now())
-            ->count();
+    protected function timeLeft(?Carbon $when): string
+    {
+        if (! $when) {
+            return '';
+        }
 
-        $examsTaken = ExamAttempt::query()
-            ->where('user_id', $student->id)
-            ->whereNotNull('submitted_at')
-            ->count();
+        $hours = now()->diffInHours($when, false);
 
-        $avgScore = ExamAttempt::query()
-            ->where('user_id', $student->id)
-            ->whereNotNull('submitted_at')
-            ->avg('percentage');
+        if ($hours < 0) {
+            return __('student-dashboard::app.overdue');
+        }
 
-        return [
-            'classrooms'          => $classroomIds->count(),
-            'pending_assignments' => $pendingAssignments,
-            'exams_taken'         => $examsTaken,
-            'avg_score'           => $avgScore ? round((float) $avgScore, 1) : 0,
-        ];
+        if ($hours < 24) {
+            return __('student-dashboard::app.time_left_hours', ['count' => max(1, (int) round($hours))]);
+        }
+
+        return __('student-dashboard::app.time_left_days', ['count' => (int) floor($hours / 24)]);
     }
 }

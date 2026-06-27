@@ -9,26 +9,48 @@ return [
     'area'             => 'Student',
     'title'            => 'Home',
 
-    // Dashboard
-    'greeting'         => 'Hi, :name 👋',
-    'subtitle'         => 'Let\'s see what you need to study today.',
-    'view_all'         => 'View all',
+    // Common
+    'see_all'          => 'See all',
+    'this_week'        => 'This week',
 
-    'stat_classrooms'  => 'Classrooms',
-    'stat_pending'     => 'Assignments to do',
-    'stat_exams'       => 'Exams taken',
-    'stat_avg_score'   => 'Average score',
+    // 4 stat cards
+    'card_assignments' => 'Assignments submitted',
+    'card_exams'       => 'Exams taken',
+    'card_weekly'      => 'Weekly progress',
+    'card_avg'         => 'Average score',
+    'of_count'         => ':done / :total :unit',
+    'unit_assignments' => 'tasks',
+    'unit_exams'       => 'exams',
+    'scale_100'        => 'out of 100',
 
-    'upcoming_assignments' => 'Upcoming assignments',
-    'empty_assignments'    => 'No upcoming assignments.',
-    'open_exams'           => 'Open exams',
-    'empty_exams'          => 'No open exams right now.',
-    'my_classrooms'        => 'My classrooms',
-    'empty_classrooms'     => 'You haven\'t joined any classroom yet.',
-    'no_teacher'           => 'No teacher',
-    'recent_results'       => 'Recent results',
-    'empty_results'        => 'You have no exam results yet.',
-    'deleted_exam'         => 'Deleted exam',
+    // Active tasks
+    'active_tasks'        => 'Active tasks',
+    'status_not_submitted'=> 'Not submitted',
+    'status_not_started'  => 'Not started',
+    'empty_tasks'         => 'No upcoming tasks. Great!',
+    'overdue'             => 'Overdue',
+    'time_left_hours'     => ':count h left',
+    'time_left_days'      => ':count d left',
+
+    // Donut stats
+    'course_stats'        => 'Course statistics',
+    'empty_course_stats'  => 'No assignment data yet.',
+    'legend_completed'    => 'Completed',
+    'legend_in_progress'  => 'Awaiting grade',
+    'legend_incomplete'   => 'Not started',
+
+    // Weekly activity bar chart
+    'weekly_activity'     => 'Weekly activity',
+    'd_mon' => 'Mon', 'd_tue' => 'Tue', 'd_wed' => 'Wed', 'd_thu' => 'Thu', 'd_fri' => 'Fri', 'd_sat' => 'Sat', 'd_sun' => 'Sun',
+
+    // Recent activity
+    'recent_activity'     => 'Recent activity',
+    'empty_activity'      => 'No activity yet.',
+    'act_submitted'       => 'Submitted assignment',
+    'act_finished_exam'   => 'Finished exam',
+
+    'no_teacher'          => 'No teacher',
+    'deleted_exam'        => 'Deleted exam',
 
     // Sidebar nav
     'nav_section'      => 'Student',

@@ -9,26 +9,48 @@ return [
     'area'             => 'Học sinh',
     'title'            => 'Trang chủ',
 
-    // Dashboard
-    'greeting'         => 'Xin chào, :name 👋',
-    'subtitle'         => 'Cùng xem hôm nay bạn cần học gì nhé.',
-    'view_all'         => 'Xem tất cả',
+    // Chung
+    'see_all'          => 'Xem tất cả',
+    'this_week'        => 'Tuần này',
 
-    'stat_classrooms'  => 'Lớp đang học',
-    'stat_pending'     => 'Bài tập cần làm',
-    'stat_exams'       => 'Bài thi đã làm',
-    'stat_avg_score'   => 'Điểm trung bình',
+    // 4 thẻ thống kê
+    'card_assignments' => 'Bài tập đã nộp',
+    'card_exams'       => 'Bài thi đã làm',
+    'card_weekly'      => 'Tiến độ tuần',
+    'card_avg'         => 'Điểm trung bình',
+    'of_count'         => ':done / :total :unit',
+    'unit_assignments' => 'bài',
+    'unit_exams'       => 'đề',
+    'scale_100'        => 'trên thang 100',
 
-    'upcoming_assignments' => 'Bài tập sắp đến hạn',
-    'empty_assignments'    => 'Không có bài tập nào sắp đến hạn.',
-    'open_exams'           => 'Bài thi đang mở',
-    'empty_exams'          => 'Hiện chưa có bài thi nào đang mở.',
-    'my_classrooms'        => 'Lớp của tôi',
-    'empty_classrooms'     => 'Bạn chưa tham gia lớp nào.',
-    'no_teacher'           => 'Chưa có giáo viên',
-    'recent_results'       => 'Kết quả gần đây',
-    'empty_results'        => 'Bạn chưa có kết quả thi nào.',
-    'deleted_exam'         => 'Đề thi đã bị xoá',
+    // Active tasks
+    'active_tasks'        => 'Việc cần làm',
+    'status_not_submitted'=> 'Chưa nộp',
+    'status_not_started'  => 'Chưa làm',
+    'empty_tasks'         => 'Không có việc nào sắp tới. Tuyệt vời!',
+    'overdue'             => 'Quá hạn',
+    'time_left_hours'     => 'Còn :count giờ',
+    'time_left_days'      => 'Còn :count ngày',
+
+    // Donut thống kê
+    'course_stats'        => 'Thống kê khoá học',
+    'empty_course_stats'  => 'Chưa có dữ liệu bài tập.',
+    'legend_completed'    => 'Hoàn thành',
+    'legend_in_progress'  => 'Đang chờ chấm',
+    'legend_incomplete'   => 'Chưa làm',
+
+    // Bar chart hoạt động tuần
+    'weekly_activity'     => 'Hoạt động trong tuần',
+    'd_mon' => 'T2', 'd_tue' => 'T3', 'd_wed' => 'T4', 'd_thu' => 'T5', 'd_fri' => 'T6', 'd_sat' => 'T7', 'd_sun' => 'CN',
+
+    // Hoạt động gần đây
+    'recent_activity'     => 'Hoạt động gần đây',
+    'empty_activity'      => 'Chưa có hoạt động nào.',
+    'act_submitted'       => 'Đã nộp bài tập',
+    'act_finished_exam'   => 'Hoàn thành bài thi',
+
+    'no_teacher'          => 'Chưa có giáo viên',
+    'deleted_exam'        => 'Đề thi đã bị xoá',
 
     // Sidebar nav
     'nav_section'      => 'Học sinh',

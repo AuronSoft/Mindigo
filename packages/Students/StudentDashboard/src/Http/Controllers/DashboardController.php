@@ -19,20 +19,22 @@ class DashboardController extends Controller
         /** @var \Mindigo\Auth\Models\User $student */
         $student = Auth::user();
 
-        $classroomIds        = $this->service->classroomIds($student);
-        $stats               = $this->service->getStats($student, $classroomIds);
-        $myClassrooms        = $this->service->getMyClassrooms($student);
-        $upcomingAssignments = $this->service->getUpcomingAssignments($student, $classroomIds);
-        $openExams           = $this->service->getOpenExams();
-        $recentResults       = $this->service->getRecentResults($student);
+        $classroomIds   = $this->service->classroomIds($student);
+        $stats          = $this->service->getStudyStats($student, $classroomIds);
+        $weekStrip      = $this->service->getWeekStrip();
+        $activeTasks    = $this->service->getActiveTasks($student, $classroomIds);
+        $courseStats    = $this->service->getCourseStats($student, $classroomIds);
+        $weeklyActivity = $this->service->getWeeklyActivity($student);
+        $recentActivity = $this->service->getRecentActivity($student);
 
         return view('student-dashboard::dashboard', compact(
             'student',
             'stats',
-            'myClassrooms',
-            'upcomingAssignments',
-            'openExams',
-            'recentResults',
+            'weekStrip',
+            'activeTasks',
+            'courseStats',
+            'weeklyActivity',
+            'recentActivity',
         ));
     }
 }
