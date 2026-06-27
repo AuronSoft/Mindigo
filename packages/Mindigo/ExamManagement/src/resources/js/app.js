@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-exam-topic-builder]').forEach((builder) => {
         const partLinks = [...builder.querySelectorAll('[data-exam-part-link]')];
         const partCards = [...builder.querySelectorAll('[data-exam-part]')];
-        const indexButtons = [...builder.querySelectorAll('[data-exam-question-index-button]')];
+        const questionIndex = builder.querySelector('[data-exam-question-index]');
         const countInputs = [...builder.querySelectorAll('[data-exam-count-input]')];
         const totalCount = builder.querySelector('[data-exam-total-count]');
         const progress = builder.querySelector('[data-exam-progress]');
@@ -160,17 +160,51 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        indexButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                const target = document.getElementById(button.dataset.examQuestionIndexButton);
-                if (!target) {
-                    return;
-                }
+        const renderQuestionIndex = () => {
+            if (!questionIndex) {
+                return;
+            }
 
-                indexButtons.forEach((item) => item.classList.toggle('is-active', item === button));
-                setActivePart('source');
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            questionIndex.innerHTML = '';
+
+            let questionNumber = 1;
+            countInputs.forEach((input) => {
+                const count = Math.max(0, Number(input.value || 0));
+                const targetId = input.dataset.indexTarget;
+                const target = targetId ? document.getElementById(targetId) : null;
+                const title = target?.querySelector('strong')?.textContent?.trim() || '';
+
+                for (let i = 0; i < count; i += 1) {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.textContent = String(questionNumber);
+                    button.dataset.examQuestionIndexButton = targetId || '';
+                    button.title = title;
+                    button.classList.toggle('is-active', questionNumber === 1);
+                    questionIndex.append(button);
+                    questionNumber += 1;
+                }
             });
+        };
+
+        questionIndex?.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-exam-question-index-button]');
+
+            if (!button) {
+                return;
+            }
+
+            const target = document.getElementById(button.dataset.examQuestionIndexButton);
+
+            if (!target) {
+                return;
+            }
+
+            questionIndex.querySelectorAll('[data-exam-question-index-button]').forEach((item) => {
+                item.classList.toggle('is-active', item === button);
+            });
+            setActivePart('source');
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
 
         const syncCounts = () => {
@@ -184,10 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 progress.style.width = `${Math.min(100, Math.max(12, total * 3))}%`;
             }
 
-            countInputs.forEach((input) => {
-                const button = builder.querySelector(`[data-exam-question-index-button="${input.dataset.indexTarget}"]`);
-                button?.classList.toggle('is-filled', Number(input.value || 0) > 0);
-            });
+            renderQuestionIndex();
         };
 
         countInputs.forEach((input) => input.addEventListener('input', syncCounts));

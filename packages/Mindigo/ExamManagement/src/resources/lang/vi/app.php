@@ -64,6 +64,7 @@ return [
     'attempts' => 'Lượt làm',
     'minutes' => 'phút',
     'total_points' => 'Tổng điểm',
+    'total_questions' => 'Tổng số câu hỏi',
     'total_exams' => 'Tổng đề thi',
     'published_exams' => 'Đã xuất bản',
     'draft_exams' => 'Bản nháp',

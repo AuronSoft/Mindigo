@@ -24,11 +24,7 @@
 
             <div>
                 <p class="exam-studio-label">@lang('Mindigo-exam-management::app.question_index_label')</p>
-                <div class="exam-question-index" data-exam-question-index>
-                    @foreach($types as $index => $type)
-                        <button type="button" class="{{ (int) ($counts[$type] ?? 0) > 0 ? 'is-filled' : '' }} {{ $index === 0 ? 'is-active' : '' }}" data-exam-question-index-button="exam-type-{{ $type }}" title="@lang('Mindigo-exam-management::app.question_types.' . $type)">{{ $index + 1 }}</button>
-                    @endforeach
-                </div>
+                <div class="exam-question-index" data-exam-question-index></div>
             </div>
 
             <div class="exam-progress-card">

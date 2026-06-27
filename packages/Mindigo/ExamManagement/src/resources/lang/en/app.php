@@ -64,6 +64,7 @@ return [
     'attempts' => 'Attempts',
     'minutes' => 'minutes',
     'total_points' => 'Total points',
+    'total_questions' => 'Total questions',
     'total_exams' => 'Total exams',
     'published_exams' => 'Published',
     'draft_exams' => 'Drafts',
