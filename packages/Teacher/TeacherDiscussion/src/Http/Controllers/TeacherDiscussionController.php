@@ -5,8 +5,10 @@ namespace Mindigo\TeacherDiscussion\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherDiscussion\Http\Requests\StoreDiscussionMessageRequest;
+use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 use Mindigo\TeacherDiscussion\Services\TeacherDiscussionService;
 
@@ -42,6 +44,27 @@ class TeacherDiscussionController extends Controller
         return redirect()
             ->route('teacher.discussions.index', ['thread' => $thread->id])
             ->with('success', __('teacher-discussion::app.sent'));
+    }
+
+    public function attachment(DiscussionAttachment $attachment)
+    {
+        $attachment->loadMissing('message.thread');
+        $thread = $attachment->message?->thread;
+
+        abort_unless($thread instanceof DiscussionThread, 404);
+        $this->authorizeThread($thread);
+
+        $disk = $attachment->disk ?: 'public';
+        $storage = Storage::disk($disk);
+
+        abort_unless($storage->exists($attachment->path), 404);
+
+        $filename = str_replace(['"', "\r", "\n"], '', $attachment->original_name);
+
+        return response()->file($storage->path($attachment->path), [
+            'Content-Type' => $attachment->mime_type ?: 'application/octet-stream',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+        ]);
     }
 
     private function authorizeThread(DiscussionThread $thread): void

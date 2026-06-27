@@ -9,4 +9,5 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
     ->group(function () {
         Route::get('/', [TeacherDiscussionController::class, 'index'])->name('index');
         Route::post('/{thread}/messages', [TeacherDiscussionController::class, 'store'])->name('messages.store');
+        Route::get('/attachments/{attachment}', [TeacherDiscussionController::class, 'attachment'])->name('attachments.show');
     });

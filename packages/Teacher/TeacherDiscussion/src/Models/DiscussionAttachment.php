@@ -4,7 +4,6 @@ namespace Mindigo\TeacherDiscussion\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 
 class DiscussionAttachment extends Model
 {
@@ -26,7 +25,7 @@ class DiscussionAttachment extends Model
 
     public function url(): string
     {
-        return Storage::disk($this->disk ?: 'public')->url($this->path);
+        return route('teacher.discussions.attachments.show', $this, false);
     }
 
     public function isImage(): bool
