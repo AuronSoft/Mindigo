@@ -63,7 +63,7 @@
         <div class="grid gap-3 sm:grid-cols-4">
             <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div class="min-w-0">
-                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">Trạng thái</p>
+                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.status')</p>
                     <span class="mt-1 inline-flex rounded-full px-3 py-1 text-sm font-black {{ $classroom->status === 'active' ? 'text-green-700 bg-green-50' : 'text-slate-600 bg-slate-100' }}">
                         {{ __('teacher-classroom::app.' . $classroom->status) }}
                     </span>
@@ -71,25 +71,25 @@
             </div>
             <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div class="min-w-0">
-                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">Học sinh</p>
+                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.students')</p>
                     <span class="mt-1 inline-flex rounded-full px-3 py-1 text-sm font-black text-sky-700 bg-sky-50">
-                        {{ $classroom->students->count() }} học viên
+                        {{ __('teacher-classroom::app.students_count', ['count' => $classroom->students->count()]) }}
                     </span>
                 </div>
             </div>
             <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div class="min-w-0">
-                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">Trợ giảng</p>
+                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.assistant')</p>
                     <span class="mt-1 inline-flex rounded-full px-3 py-1 text-sm font-black text-indigo-700 bg-indigo-50">
-                        {{ $classroom->assistant ? $classroom->assistant->name : 'Chưa phân công' }}
+                        {{ $classroom->assistant ? $classroom->assistant->name : __('teacher-classroom::app.unassigned') }}
                     </span>
                 </div>
             </div>
             <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div class="min-w-0">
-                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">Môn học</p>
+                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.subjects')</p>
                     <span class="mt-1 inline-flex rounded-full px-3 py-1 text-sm font-black text-violet-700 bg-violet-50">
-                        {{ $classroom->subjects->count() }} môn học
+                        {{ __('teacher-classroom::app.subjects_count', ['count' => $classroom->subjects->count()]) }}
                     </span>
                 </div>
             </div>
@@ -99,16 +99,16 @@
         <div class="border-b border-slate-200 bg-white rounded-t-3xl px-6 pt-3 shadow-sm">
             <nav class="-mb-px flex gap-6" aria-label="Tabs">
                 <button onclick="switchTab('students')" id="tab-btn-students" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'students' ? 'active' : '' }}">
-                    Học viên & Trợ giảng
+                    @lang('teacher-classroom::app.students_and_assistants')
                 </button>
                 <button onclick="switchTab('attendance')" id="tab-btn-attendance" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'attendance' ? 'active' : '' }}">
-                    Điểm danh
+                    @lang('teacher-classroom::app.attendance')
                 </button>
                 <button onclick="switchTab('schedule')" id="tab-btn-schedule" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'schedule' ? 'active' : '' }}">
-                    Lịch học
+                    @lang('teacher-classroom::app.schedule')
                 </button>
                 <button onclick="switchTab('announcements')" id="tab-btn-announcements" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'announcements' ? 'active' : '' }}">
-                    Thông báo
+                    @lang('teacher-classroom::app.announcements')
                 </button>
             </nav>
         </div>
@@ -120,29 +120,29 @@
             <div id="tab-content-students" class="tab-content {{ $currentTab === 'students' ? '' : 'hidden' }}">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                     <div>
-                        <h2 class="text-base font-black text-slate-900">Danh sách học viên lớp</h2>
-                        <p class="text-xs font-bold text-slate-400">Quản lý các thành viên học tập trong lớp của bạn</p>
+                        <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.student_list_title')</h2>
+                        <p class="text-xs font-bold text-slate-400">@lang('teacher-classroom::app.student_list_subtitle')</p>
                     </div>
                     <button onclick="openModal('students-modal')" class="inline-flex h-9 items-center gap-2 rounded-full bg-green-600 px-4 text-xs font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-100">
-                        <x-heroicon-o-user-plus class="h-4 w-4" /> Quản lý học sinh
+                        <x-heroicon-o-user-plus class="h-4 w-4" /> @lang('teacher-classroom::app.manage_students')
                     </button>
                 </div>
 
                 @if($classroom->students->isEmpty())
                     <div class="flex flex-col items-center justify-center gap-3 py-20">
                         <x-heroicon-o-academic-cap class="h-14 w-14 text-slate-200" />
-                        <p class="text-base font-black text-slate-600">Lớp chưa có học viên</p>
-                        <p class="text-sm font-bold text-slate-400">Click nút "Quản lý học sinh" ở trên để thêm học viên vào lớp.</p>
+                        <p class="text-base font-black text-slate-600">@lang('teacher-classroom::app.no_students_in_classroom')</p>
+                        <p class="text-sm font-bold text-slate-400">@lang('teacher-classroom::app.add_students_hint_click')</p>
                     </div>
                 @else
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
                             <thead class="bg-slate-50 text-[11px] font-black uppercase tracking-wide text-slate-400">
                                 <tr>
-                                    <th class="w-10 px-5 py-3">#</th>
-                                    <th class="px-5 py-3">Học sinh</th>
-                                    <th class="px-5 py-3">Email</th>
-                                    <th class="px-5 py-3 text-right">Thao tác</th>
+                                    <th class="w-10 px-5 py-3">@lang('teacher-classroom::app.col_number')</th>
+                                    <th class="px-5 py-3">@lang('teacher-classroom::app.col_student')</th>
+                                    <th class="px-5 py-3">@lang('teacher-classroom::app.col_email')</th>
+                                    <th class="px-5 py-3 text-right">@lang('teacher-classroom::app.actions')</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
@@ -160,10 +160,10 @@
                                         <td class="px-5 py-3 text-sm font-bold text-slate-400">{{ $student->email }}</td>
                                         <td class="px-5 py-3 text-sm text-right">
                                             <form method="POST" action="{{ route('teacher.classrooms.students.sync', $classroom) }}" class="inline"
-                                                  data-mindigo-confirm-title="Xóa học sinh"
-                                                  data-mindigo-confirm-message="Bạn có chắc chắn muốn xóa học sinh {{ $student->name }} khỏi lớp học này?"
-                                                  data-mindigo-confirm-text="Xóa"
-                                                  data-mindigo-confirm-cancel="Hủy"
+                                                  data-mindigo-confirm-title="{{ __('teacher-classroom::app.delete_student_title') }}"
+                                                  data-mindigo-confirm-message="{{ __('teacher-classroom::app.delete_student_confirm', ['name' => $student->name]) }}"
+                                                  data-mindigo-confirm-text="{{ __('teacher-classroom::app.delete_student') }}"
+                                                  data-mindigo-confirm-cancel="{{ __('teacher-classroom::app.cancel') }}"
                                                   data-mindigo-confirm-type="danger">
                                                 @csrf
                                                 @foreach($classroom->students as $s)
@@ -171,7 +171,7 @@
                                                         <input type="hidden" name="student_ids[]" value="{{ $s->id }}">
                                                     @endif
                                                 @endforeach
-                                                <button type="submit" class="text-red-500 hover:text-red-700 font-bold">Xóa</button>
+                                                <button type="submit" class="text-red-500 hover:text-red-700 font-bold">@lang('teacher-classroom::app.delete_student')</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -186,8 +186,8 @@
             <div id="tab-content-attendance" class="tab-content {{ $currentTab === 'attendance' ? '' : 'hidden' }}">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-3">
                     <div>
-                        <h2 class="text-base font-black text-slate-900">Điểm danh học sinh</h2>
-                        <p class="text-xs font-bold text-slate-400">Chọn ngày và đánh giá tình trạng đi học của học viên</p>
+                        <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.attendance_title')</h2>
+                        <p class="text-xs font-bold text-slate-400">@lang('teacher-classroom::app.attendance_subtitle')</p>
                     </div>
                     <form method="GET" action="{{ route('teacher.classrooms.show', $classroom) }}" class="flex items-center gap-2">
                         <input type="hidden" name="tab" value="attendance">
@@ -199,8 +199,8 @@
                 @if($classroom->students->isEmpty())
                     <div class="flex flex-col items-center justify-center gap-3 py-20">
                         <x-heroicon-o-academic-cap class="h-14 w-14 text-slate-200" />
-                        <p class="text-base font-black text-slate-600">Không có học sinh để điểm danh</p>
-                        <p class="text-sm font-bold text-slate-400">Vui lòng thêm học sinh vào lớp học trước.</p>
+                        <p class="text-base font-black text-slate-600">@lang('teacher-classroom::app.no_students_to_attendance')</p>
+                        <p class="text-sm font-bold text-slate-400">@lang('teacher-classroom::app.add_students_first')</p>
                     </div>
                 @else
                     <form method="POST" action="{{ route('teacher.classrooms.attendance.save', $classroom) }}">
@@ -210,12 +210,12 @@
                             <table class="w-full text-left">
                                 <thead class="bg-slate-50 text-[11px] font-black uppercase tracking-wide text-slate-400">
                                     <tr>
-                                        <th class="px-5 py-3">Học sinh</th>
-                                        <th class="px-5 py-3">Có mặt (P)</th>
-                                        <th class="px-5 py-3">Vắng mặt (A)</th>
-                                        <th class="px-5 py-3">Đi trễ (L)</th>
-                                        <th class="px-5 py-3">Có phép (E)</th>
-                                        <th class="px-5 py-3">Ghi chú</th>
+                                        <th class="px-5 py-3">@lang('teacher-classroom::app.col_student')</th>
+                                        <th class="px-5 py-3">@lang('teacher-classroom::app.present_label')</th>
+                                        <th class="px-5 py-3">@lang('teacher-classroom::app.absent_label')</th>
+                                        <th class="px-5 py-3">@lang('teacher-classroom::app.late_label')</th>
+                                        <th class="px-5 py-3">@lang('teacher-classroom::app.excused_label')</th>
+                                        <th class="px-5 py-3">@lang('teacher-classroom::app.remarks')</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100">
@@ -251,7 +251,7 @@
                                                 </label>
                                             </td>
                                             <td class="px-5 py-3.5">
-                                                <input type="text" name="records[{{ $student->id }}][remarks]" value="{{ $remarks }}" placeholder="Nhập ghi chú..."
+                                                <input type="text" name="records[{{ $student->id }}][remarks]" value="{{ $remarks }}" placeholder="{{ __('teacher-classroom::app.remarks_placeholder') }}"
                                                        class="w-full max-w-xs rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 outline-none transition focus:border-green-400">
                                             </td>
                                         </tr>
@@ -261,25 +261,25 @@
                         </div>
                         <div class="flex justify-end">
                             <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-2xl bg-green-600 px-6 text-sm font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-150">
-                                <x-heroicon-o-check class="h-4 w-4" /> Lưu điểm danh ngày {{ date('d/m/Y', strtotime($selectedDate)) }}
+                                <x-heroicon-o-check class="h-4 w-4" /> {{ __('teacher-classroom::app.save_attendance_date', ['date' => date('d/m/Y', strtotime($selectedDate))]) }}
                             </button>
                         </div>
                     </form>
 
                     {{-- Attendance History Summary --}}
                     <div class="mt-8 border-t border-slate-100 pt-6">
-                        <h3 class="text-sm font-black text-slate-900 mb-3">Lịch sử điểm danh gần đây</h3>
+                        <h3 class="text-sm font-black text-slate-900 mb-3">@lang('teacher-classroom::app.attendance_history')</h3>
                         @if($attendanceHistory->isEmpty())
-                            <p class="text-xs font-bold text-slate-400">Chưa có bản ghi điểm danh nào trong quá khứ.</p>
+                            <p class="text-xs font-bold text-slate-400">@lang('teacher-classroom::app.no_attendance_history')</p>
                         @else
                             <div class="overflow-x-auto rounded-2xl border border-slate-200 max-h-[300px] overflow-y-auto">
                                 <table class="w-full text-left">
                                     <thead class="bg-slate-50 text-[10px] font-black uppercase tracking-wide text-slate-400 sticky top-0">
                                         <tr>
-                                            <th class="px-4 py-2 bg-slate-50">Ngày học</th>
-                                            <th class="px-4 py-2 bg-slate-50">Học sinh</th>
-                                            <th class="px-4 py-2 bg-slate-50">Trạng thái</th>
-                                            <th class="px-4 py-2 bg-slate-50">Ghi chú</th>
+                                            <th class="px-4 py-2 bg-slate-50">@lang('teacher-classroom::app.col_session_date')</th>
+                                            <th class="px-4 py-2 bg-slate-50">@lang('teacher-classroom::app.col_student')</th>
+                                            <th class="px-4 py-2 bg-slate-50">@lang('teacher-classroom::app.status')</th>
+                                            <th class="px-4 py-2 bg-slate-50">@lang('teacher-classroom::app.remarks')</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 text-xs">
@@ -289,13 +289,13 @@
                                                 <td class="px-4 py-2 font-bold text-slate-800">{{ $hist->student?->name }}</td>
                                                 <td class="px-4 py-2">
                                                     @if($hist->status === 'present')
-                                                        <span class="inline-flex rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-black text-green-700">Có mặt</span>
+                                                        <span class="inline-flex rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-black text-green-700">@lang('teacher-classroom::app.present')</span>
                                                     @elseif($hist->status === 'absent')
-                                                        <span class="inline-flex rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-black text-red-700">Vắng mặt</span>
+                                                        <span class="inline-flex rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-black text-red-700">@lang('teacher-classroom::app.absent')</span>
                                                     @elseif($hist->status === 'late')
-                                                        <span class="inline-flex rounded-full bg-yellow-50 px-2 py-0.5 text-[10px] font-black text-yellow-700">Đi trễ</span>
+                                                        <span class="inline-flex rounded-full bg-yellow-50 px-2 py-0.5 text-[10px] font-black text-yellow-700">@lang('teacher-classroom::app.late')</span>
                                                     @elseif($hist->status === 'excused')
-                                                        <span class="inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-black text-blue-700">Có phép</span>
+                                                        <span class="inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-black text-blue-700">@lang('teacher-classroom::app.excused')</span>
                                                     @endif
                                                 </td>
                                                 <td class="px-4 py-2 text-slate-400">{{ $hist->remarks ?: '—' }}</td>
@@ -313,19 +313,19 @@
             <div id="tab-content-schedule" class="tab-content {{ $currentTab === 'schedule' ? '' : 'hidden' }}">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                     <div>
-                        <h2 class="text-base font-black text-slate-900">Quản lý lịch học</h2>
-                        <p class="text-xs font-bold text-slate-400">Thiết lập và theo dõi các buổi học của lớp học này</p>
+                        <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.schedule_title')</h2>
+                        <p class="text-xs font-bold text-slate-400">@lang('teacher-classroom::app.schedule_subtitle')</p>
                     </div>
                     <button onclick="openModal('schedule-modal')" class="inline-flex h-9 items-center gap-2 rounded-full bg-green-600 px-4 text-xs font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-100">
-                        <x-heroicon-o-plus class="h-4 w-4" /> Thêm buổi học
+                        <x-heroicon-o-plus class="h-4 w-4" /> @lang('teacher-classroom::app.add_schedule')
                     </button>
                 </div>
 
                 @if($schedules->isEmpty())
                     <div class="flex flex-col items-center justify-center gap-3 py-20">
                         <x-heroicon-o-calendar-days class="h-14 w-14 text-slate-200" />
-                        <p class="text-base font-black text-slate-600">Lịch học trống</p>
-                        <p class="text-sm font-bold text-slate-400">Chưa có buổi học nào được lên lịch cho lớp học này. Click "Thêm buổi học" để bắt đầu.</p>
+                        <p class="text-base font-black text-slate-600">@lang('teacher-classroom::app.empty_schedule')</p>
+                        <p class="text-sm font-bold text-slate-400">@lang('teacher-classroom::app.empty_schedule_desc')</p>
                     </div>
                 @else
                     <div class="relative border-l border-slate-200 ml-4 py-2 pl-6 space-y-8">
@@ -357,10 +357,10 @@
                                                 <x-heroicon-o-pencil class="h-3.5 w-3.5" />
                                             </button>
                                             <form method="POST" action="{{ route('teacher.classrooms.schedules.destroy', $sched) }}"
-                                                  data-mindigo-confirm-title="Xóa buổi học"
-                                                  data-mindigo-confirm-message="Bạn có chắc chắn muốn xóa buổi học này khỏi lịch?"
-                                                  data-mindigo-confirm-text="Xóa"
-                                                  data-mindigo-confirm-cancel="Hủy"
+                                                  data-mindigo-confirm-title="{{ __('teacher-classroom::app.delete_schedule_title') }}"
+                                                  data-mindigo-confirm-message="{{ __('teacher-classroom::app.delete_schedule_confirm') }}"
+                                                  data-mindigo-confirm-text="{{ __('teacher-classroom::app.delete') }}"
+                                                  data-mindigo-confirm-cancel="{{ __('teacher-classroom::app.cancel') }}"
                                                   data-mindigo-confirm-type="danger">
                                                 @csrf @method('DELETE')
                                                 <button type="submit" class="grid h-8 w-8 place-items-center rounded-lg border border-red-100 text-red-500 hover:bg-red-50">
@@ -380,12 +380,12 @@
             <div id="tab-content-announcements" class="tab-content {{ $currentTab === 'announcements' ? '' : 'hidden' }}">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                     <div>
-                        <h2 class="text-base font-black text-slate-900">Thông báo cho lớp</h2>
-                        <p class="text-xs font-bold text-slate-400">Danh sách các thông báo đã đăng gửi tới học sinh của lớp</p>
+                        <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.announcements_title')</h2>
+                        <p class="text-xs font-bold text-slate-400">@lang('teacher-classroom::app.announcements_subtitle')</p>
                     </div>
                     @if(Route::has('teacher.announcements.create'))
                         <a href="{{ route('teacher.announcements.create', ['classroom_id' => $classroom->id]) }}" class="inline-flex h-9 items-center gap-2 rounded-full bg-green-600 px-4 text-xs font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-100">
-                            <x-heroicon-o-megaphone class="h-4 w-4" /> Gửi thông báo mới
+                            <x-heroicon-o-megaphone class="h-4 w-4" /> @lang('teacher-classroom::app.create_announcement')
                         </a>
                     @endif
                 </div>
@@ -393,8 +393,8 @@
                 @if($announcements->isEmpty())
                     <div class="flex flex-col items-center justify-center gap-3 py-20">
                         <x-heroicon-o-bell class="h-14 w-14 text-slate-200" />
-                        <p class="text-base font-black text-slate-600">Chưa gửi thông báo nào</p>
-                        <p class="text-sm font-bold text-slate-400">Thông báo mới sẽ giúp học sinh nắm bắt thông tin lớp học nhanh chóng.</p>
+                        <p class="text-base font-black text-slate-600">@lang('teacher-classroom::app.empty_announcements')</p>
+                        <p class="text-sm font-bold text-slate-400">@lang('teacher-classroom::app.empty_announcements_desc')</p>
                     </div>
                 @else
                     <div class="space-y-4">
@@ -411,7 +411,7 @@
                                                 {{ $ann->type }}
                                             </span>
                                             @if($ann->is_pinned)
-                                                <span class="inline-flex items-center text-[10px] text-green-700 font-bold bg-green-50 rounded-full px-2 py-0.5">Ghim</span>
+                                                <span class="inline-flex items-center text-[10px] text-green-700 font-bold bg-green-50 rounded-full px-2 py-0.5">@lang('teacher-classroom::app.pin')</span>
                                             @endif
                                             <span class="text-xs text-slate-400">{{ $ann->published_at ? $ann->published_at->format('d/m/Y H:i') : 'Nháp' }}</span>
                                         </div>
@@ -419,7 +419,7 @@
                                         <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">{{ Str::limit(strip_tags($ann->content), 200) }}</p>
                                     </div>
                                     @if(Route::has('teacher.announcements.show'))
-                                        <a href="{{ route('teacher.announcements.show', $ann) }}" class="text-xs font-black text-green-600 hover:text-green-750 whitespace-nowrap">Xem chi tiết &rarr;</a>
+                                        <a href="{{ route('teacher.announcements.show', $ann) }}" class="text-xs font-black text-green-600 hover:text-green-750 whitespace-nowrap">{!! __('teacher-classroom::app.view_detail') !!}</a>
                                     @endif
                                 </div>
                             </div>
@@ -436,14 +436,14 @@
 <div id="students-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur hidden">
     <div class="w-full max-w-2xl bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
         <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
-            <h3 class="text-base font-black text-slate-900">Quản lý danh sách học sinh</h3>
+            <h3 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.manage_students_title')</h3>
             <button onclick="closeModal('students-modal')" class="text-slate-400 hover:text-slate-600">
                 <x-heroicon-o-x-mark class="h-6 w-6" />
             </button>
         </div>
         <form method="POST" action="{{ route('teacher.classrooms.students.sync', $classroom) }}" class="flex-1 overflow-y-auto p-6 flex flex-col">
             @csrf
-            <p class="text-xs font-bold text-slate-500 mb-4">Chọn các học sinh bạn muốn thêm vào lớp học này. Bỏ chọn để xóa khỏi lớp.</p>
+            <p class="text-xs font-bold text-slate-500 mb-4">@lang('teacher-classroom::app.manage_students_desc')</p>
             <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 flex-1 overflow-y-auto border border-slate-100 rounded-2xl p-3 bg-slate-50/50">
                 @foreach($allStudents as $student)
                     <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-150 cursor-pointer hover:bg-green-50/20 hover:border-green-300 transition">
@@ -458,8 +458,8 @@
                 @endforeach
             </div>
             <div class="mt-6 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
-                <button type="button" onclick="closeModal('students-modal')" class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">Hủy</button>
-                <button type="submit" class="inline-flex h-9 items-center rounded-xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-500 shadow-sm shadow-green-100">Lưu danh sách</button>
+                <button type="button" onclick="closeModal('students-modal')" class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">@lang('teacher-classroom::app.cancel')</button>
+                <button type="submit" class="inline-flex h-9 items-center rounded-xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-500 shadow-sm shadow-green-100">@lang('teacher-classroom::app.save_list')</button>
             </div>
         </form>
     </div>
@@ -469,7 +469,7 @@
 <div id="schedule-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur hidden">
     <div class="w-full max-w-lg bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden flex flex-col">
         <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
-            <h3 id="schedule-modal-title" class="text-base font-black text-slate-900">Thêm buổi học mới</h3>
+            <h3 id="schedule-modal-title" class="text-base font-black text-slate-900">@lang('teacher-classroom::app.add_schedule_title')</h3>
             <button onclick="closeModal('schedule-modal')" class="text-slate-400 hover:text-slate-600">
                 <x-heroicon-o-x-mark class="h-6 w-6" />
             </button>
@@ -479,38 +479,38 @@
             <input type="hidden" name="_method" id="schedule-form-method" value="POST">
 
             <div>
-                <label class="mb-1.5 block text-xs font-black text-slate-600">Tiêu đề buổi học <span class="text-red-500">*</span></label>
-                <input type="text" name="title" id="schedule-title" required placeholder="VD: Học Chương 1 - Bài 1"
+                <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.schedule_title_field') <span class="text-red-500">*</span></label>
+                <input type="text" name="title" id="schedule-title" required placeholder="{{ __('teacher-classroom::app.schedule_title_ph') }}"
                        class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
             </div>
 
             <div class="grid gap-4 grid-cols-3">
                 <div class="col-span-1">
-                    <label class="mb-1.5 block text-xs font-black text-slate-600">Ngày học <span class="text-red-500">*</span></label>
+                    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.session_date_field') <span class="text-red-500">*</span></label>
                     <input type="date" name="session_date" id="schedule-date" required
                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
                 </div>
                 <div>
-                    <label class="mb-1.5 block text-xs font-black text-slate-600">Giờ bắt đầu <span class="text-red-500">*</span></label>
+                    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.start_time_field') <span class="text-red-500">*</span></label>
                     <input type="time" name="start_time" id="schedule-start" required
                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
                 </div>
                 <div>
-                    <label class="mb-1.5 block text-xs font-black text-slate-600">Giờ kết thúc <span class="text-red-500">*</span></label>
+                    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.end_time_field') <span class="text-red-500">*</span></label>
                     <input type="time" name="end_time" id="schedule-end" required
                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
                 </div>
             </div>
 
             <div>
-                <label class="mb-1.5 block text-xs font-black text-slate-600">Mô tả / Ghi chú</label>
-                <textarea name="description" id="schedule-desc" rows="3" placeholder="Ghi chú về nội dung học hoặc dặn dò..."
+                <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.schedule_desc_field')</label>
+                <textarea name="description" id="schedule-desc" rows="3" placeholder="{{ __('teacher-classroom::app.schedule_desc_ph') }}"
                           class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400 resize-none"></textarea>
             </div>
 
             <div class="mt-6 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
-                <button type="button" onclick="closeModal('schedule-modal')" class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">Hủy</button>
-                <button type="submit" class="inline-flex h-9 items-center rounded-xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-500 shadow-sm shadow-green-100">Lưu buổi học</button>
+                <button type="button" onclick="closeModal('schedule-modal')" class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">@lang('teacher-classroom::app.cancel')</button>
+                <button type="submit" class="inline-flex h-9 items-center rounded-xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-500 shadow-sm shadow-green-100">@lang('teacher-classroom::app.save_schedule')</button>
             </div>
         </form>
     </div>
@@ -548,6 +548,7 @@
         }
     }
 
+    // Modal management
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -557,7 +558,7 @@
 
     // Schedule modals logic
     function openEditScheduleModal(sched) {
-        document.getElementById('schedule-modal-title').innerText = 'Chỉnh sửa buổi học';
+        document.getElementById('schedule-modal-title').innerText = "{{ __('teacher-classroom::app.edit_schedule_title') }}";
         document.getElementById('schedule-form-method').value = 'PUT';
 
         // Set form action
@@ -594,7 +595,7 @@
     const addSchedBtn = document.querySelector('[onclick="openModal(\'schedule-modal\')"]');
     if (addSchedBtn) {
         addSchedBtn.addEventListener('click', function() {
-            document.getElementById('schedule-modal-title').innerText = 'Thêm buổi học mới';
+            document.getElementById('schedule-modal-title').innerText = "{{ __('teacher-classroom::app.add_schedule_title') }}";
             document.getElementById('schedule-form-method').value = 'POST';
             document.getElementById('schedule-form').action = "{{ route('teacher.classrooms.schedules.store', $classroom) }}";
             document.getElementById('schedule-title').value = '';

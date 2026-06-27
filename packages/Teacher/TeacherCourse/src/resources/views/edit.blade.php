@@ -1,6 +1,6 @@
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', 'Sửa khóa học — ' . $course->name)
+@section('title', __('teacher-course::app.edit_course') . ' — ' . $course->name)
 
 @section('styles')
     @vite([
@@ -18,7 +18,7 @@
         </a>
         <div>
             <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">{{ $course->name }}</p>
-            <h1 class="mt-0.5 text-lg font-black text-slate-950">Chỉnh sửa khóa học</h1>
+            <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-course::app.edit_course')</h1>
         </div>
     </header>
 
@@ -32,11 +32,11 @@
                 <div class="flex items-center justify-end gap-2 border-t border-slate-100 pt-5">
                     <a href="{{ route('teacher.courses.show', $course) }}"
                        class="inline-flex h-10 items-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">
-                        Hủy
+                        @lang('teacher-course::app.cancel')
                     </a>
                     <button type="submit"
                             class="inline-flex h-10 items-center gap-2 rounded-2xl bg-green-600 px-6 text-sm font-black text-white shadow-sm shadow-green-200 transition hover:bg-green-500">
-                        <x-heroicon-o-check class="h-4 w-4" /> Lưu thay đổi
+                        <x-heroicon-o-check class="h-4 w-4" /> @lang('teacher-course::app.save_changes')
                     </button>
                 </div>
             </form>
