@@ -69,6 +69,7 @@ return [
     'info_questions' => 'Questions',
     'info_score'     => 'Passing score',
     'info_status'    => 'Status',
+    'print' => 'Print exam',  // in pdf
 
     // Misc
     'cancel'         => 'Cancel',
