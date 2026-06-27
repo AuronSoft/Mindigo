@@ -7,12 +7,45 @@ use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionFolder;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\QuestionBank\Models\QuestionEditHistory;
 
 class QuestionBankService
 {
     public function __construct(private QuestionImportService $imports)
     {
     }
+
+    public function importFromRows(array $rows, User $user, string $status, ?int $defaultFolderId): int
+{
+    if (empty($rows)) {
+        throw \Illuminate\Validation\ValidationException::withMessages([
+            'import_file' => __('Mindigo-question-bank::app.validation.import_empty'),
+        ]);
+    }
+
+    $created = 0;
+    foreach ($rows as $row) {
+        $question = Question::query()->create([
+            'created_by'      => $user->getAuthIdentifier(),
+            'status'          => $status,
+            'folder_id'       => $row['folder_id'] ?? $defaultFolderId,
+            'subject'         => $row['subject'] ?? null,
+            'topic'           => $row['topic'] ?? null,
+            'type'            => $row['type']            ?? 'single_choice',
+            'difficulty'      => $row['difficulty']      ?? 'medium',
+            'content'         => $row['content'],
+            'options'         => $row['options']         ?? [],
+            'correct_answers' => $row['correct_answers'] ?? [],
+            'explanation'     => $row['explanation']     ?? null,
+            'tags'            => $row['tags']            ?? [],
+        ]);
+
+        $this->auditQuestion('import', [], $question->only($this->auditFields()), $question);
+        $created++;
+    }
+
+    return $created;
+}
 
     public function filteredList(User $user, array $filters)
     {
@@ -90,6 +123,7 @@ class QuestionBankService
         ]);
 
         $this->auditQuestion('create', [], $question->only($this->auditFields()), $question);
+        $this->recordHistory('create', [], $question->toArray(), $question); //record
 
         return $question;
     }
@@ -100,6 +134,7 @@ class QuestionBankService
         $question->fill($data)->save();
 
         $this->auditQuestion('update', $oldValues, $question->only($this->auditFields()), $question);
+         $this->recordHistory('update', $oldValues, $question->toArray(), $question);//record
 
         return $question;
     }
@@ -115,6 +150,7 @@ class QuestionBankService
         ])->save();
 
         $this->auditQuestion('review', $oldValues, $question->only(['status', 'review_note', 'reviewed_by', 'reviewed_at']), $question);
+        $this->recordHistory('review', $oldValues, $question->toArray(), $question, $data['review_note'] ?? null);//record
     }
 
     public function delete(Question $question): void
@@ -273,6 +309,8 @@ class QuestionBankService
         );
     }
 
+    
+
     private function auditFolder(string $action, array $oldValues, array $newValues, QuestionFolder $folder): void
     {
         if (!class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
@@ -288,4 +326,31 @@ class QuestionBankService
             $folder
         );
     }
+
+    // Thêm method vào QuestionBankService:
+
+private function recordHistory(string $action, array $oldValues, array $newValues, Question $question, ?string $note = null): void
+{
+    $changes = [];
+    $trackFields = ['subject', 'topic', 'type', 'difficulty', 'status', 'content', 'explanation', 'tags', 'folder_id', 'review_note'];
+
+    foreach ($trackFields as $field) {
+        $old = $oldValues[$field] ?? null;
+        $new = $newValues[$field] ?? null;
+        // Normalize array để so sánh
+        if (is_array($old)) $old = implode(', ', $old);
+        if (is_array($new)) $new = implode(', ', $new);
+        if ($old !== $new) {
+            $changes[$field] = ['old' => $old, 'new' => $new];
+        }
+    }
+
+    QuestionEditHistory::create([
+        'question_id' => $question->id,
+        'edited_by'   => auth()->id(),
+        'action'      => $action,
+        'changes'     => $changes ?: null,
+        'note'        => $note,
+    ]);
+}
 }
