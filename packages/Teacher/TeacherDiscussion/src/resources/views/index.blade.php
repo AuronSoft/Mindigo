@@ -25,6 +25,55 @@
                 });
             }
 
+            const fileInput = document.querySelector('[data-discussion-files]');
+            const fileTrigger = document.querySelector('[data-discussion-file-trigger]');
+            const filePreview = document.querySelector('[data-discussion-file-preview]');
+            if (fileInput && fileTrigger) {
+                fileTrigger.addEventListener('click', function () {
+                    fileInput.click();
+                });
+                fileInput.addEventListener('change', function () {
+                    if (!filePreview) return;
+                    const files = Array.from(fileInput.files || []);
+                    filePreview.innerHTML = '';
+                    filePreview.classList.toggle('hidden', files.length === 0);
+                    files.slice(0, 6).forEach(function (file) {
+                        const item = document.createElement('span');
+                        item.className = 'inline-flex max-w-44 items-center gap-1 rounded-full bg-green-50 px-3 py-1 text-[11px] font-black text-green-700';
+                        item.textContent = file.name;
+                        filePreview.appendChild(item);
+                    });
+                });
+            }
+
+            const voiceButton = document.querySelector('[data-discussion-voice]');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (voiceButton && input && SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = document.documentElement.lang === 'en' ? 'en-US' : 'vi-VN';
+                recognition.interimResults = false;
+                recognition.continuous = false;
+
+                voiceButton.addEventListener('click', function () {
+                    recognition.start();
+                    voiceButton.classList.add('bg-green-50', 'text-green-700');
+                });
+
+                recognition.addEventListener('result', function (event) {
+                    const transcript = event.results[0][0].transcript;
+                    input.value = (input.value ? input.value + ' ' : '') + transcript;
+                    input.dispatchEvent(new Event('input'));
+                    input.focus();
+                });
+
+                recognition.addEventListener('end', function () {
+                    voiceButton.classList.remove('bg-green-50', 'text-green-700');
+                });
+            } else if (voiceButton) {
+                voiceButton.classList.add('opacity-40');
+                voiceButton.setAttribute('disabled', 'disabled');
+            }
+
             const infoToggle = document.querySelector('[data-discussion-info-toggle]');
             const infoPanel = document.querySelector('[data-discussion-info-panel]');
             if (infoToggle && infoPanel) {
@@ -157,8 +206,32 @@
                                                 <p class="mb-1 px-2 text-[11px] font-black text-slate-500">{{ $senderName }}</p>
                                             @endunless
 
-                                            <div class="rounded-[1.35rem] px-4 py-2.5 shadow-sm {{ $mine ? 'rounded-br-md bg-green-600 text-white' : 'rounded-bl-md bg-white text-slate-800' }}">
-                                                <p class="whitespace-pre-line break-words text-sm font-semibold leading-6">{{ $message->body }}</p>
+                                            <div class="space-y-2 rounded-[1.35rem] px-4 py-2.5 shadow-sm {{ $mine ? 'rounded-br-md bg-green-600 text-white' : 'rounded-bl-md bg-white text-slate-800' }}">
+                                                @if($message->body !== '')
+                                                    <p class="whitespace-pre-line break-words text-sm font-semibold leading-6">{{ $message->body }}</p>
+                                                @endif
+
+                                                @if($message->attachments->isNotEmpty())
+                                                    <div class="grid gap-2 {{ $message->attachments->filter(fn ($attachment) => $attachment->isImage())->count() > 1 ? 'grid-cols-2' : '' }}">
+                                                        @foreach($message->attachments as $attachment)
+                                                            @if($attachment->isImage())
+                                                                <a href="{{ $attachment->url() }}" target="_blank" class="block overflow-hidden rounded-2xl bg-black/5 no-underline">
+                                                                    <img src="{{ $attachment->url() }}" alt="{{ $attachment->original_name }}" class="max-h-56 w-full object-cover">
+                                                                </a>
+                                                            @else
+                                                                <a href="{{ $attachment->url() }}" target="_blank" class="flex items-center gap-3 rounded-2xl {{ $mine ? 'bg-white/15 text-white' : 'bg-slate-50 text-slate-700' }} p-3 no-underline">
+                                                                    <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl {{ $mine ? 'bg-white/20' : 'bg-white' }}">
+                                                                        <x-heroicon-o-document class="h-5 w-5" />
+                                                                    </span>
+                                                                    <span class="min-w-0 flex-1">
+                                                                        <span class="block truncate text-xs font-black">{{ $attachment->original_name }}</span>
+                                                                        <span class="block text-[11px] font-bold opacity-70">{{ $attachment->sizeLabel() }}</span>
+                                                                    </span>
+                                                                </a>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @endif
                                             </div>
                                             <p class="mt-1 px-2 text-[11px] font-bold {{ $mine ? 'text-right text-slate-400' : 'text-slate-400' }}">{{ $message->created_at?->format('d/m H:i') }}</p>
                                         </div>
@@ -175,17 +248,25 @@
                             </div>
                         </div>
 
-                        <form method="POST" action="{{ route('teacher.discussions.messages.store', $selectedThread) }}" class="shrink-0 border-t border-slate-200 bg-white px-5 py-3">
+                        <form method="POST" action="{{ route('teacher.discussions.messages.store', $selectedThread) }}" enctype="multipart/form-data" class="shrink-0 border-t border-slate-200 bg-white px-5 py-3">
                             @csrf
+                            <input type="file" name="attachments[]" class="hidden" data-discussion-files multiple accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
                             <div class="mx-auto flex max-w-4xl items-end gap-2">
-                                <button type="button" class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-green-50 hover:text-green-700">
+                                <button type="button" class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-green-50 hover:text-green-700" data-discussion-file-trigger title="@lang('teacher-discussion::app.attach_files')">
                                     <x-heroicon-o-plus class="h-5 w-5" />
                                 </button>
 
                                 <div class="min-w-0 flex-1">
+                                    <div class="mb-2 hidden flex-wrap gap-2" data-discussion-file-preview></div>
                                     <textarea name="body" rows="1" maxlength="2000" placeholder="@lang('teacher-discussion::app.message_placeholder')" data-discussion-input class="block max-h-32 min-h-11 w-full resize-none rounded-3xl border-0 bg-slate-100 px-4 py-3 text-sm font-semibold leading-5 text-slate-800 outline-none transition placeholder:text-slate-400 focus:bg-slate-50 focus:ring-2 focus:ring-green-100">{{ old('body') }}</textarea>
                                     @error('body')<p class="mt-1.5 px-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+                                    @error('attachments')<p class="mt-1.5 px-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+                                    @error('attachments.*')<p class="mt-1.5 px-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
                                 </div>
+
+                                <button type="button" class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-green-50 hover:text-green-700" data-discussion-voice title="@lang('teacher-discussion::app.voice_input')">
+                                    <x-heroicon-o-microphone class="h-5 w-5" />
+                                </button>
 
                                 <button class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-green-600 text-white shadow-sm transition hover:bg-green-500">
                                     <x-heroicon-o-paper-airplane class="h-5 w-5" />
@@ -246,18 +327,36 @@
                                     <span>@lang('teacher-discussion::app.shared_files')</span>
                                     <x-heroicon-o-chevron-down class="h-4 w-4 text-slate-400 transition group-open:rotate-180" />
                                 </summary>
-                                <div class="mt-3 grid grid-cols-3 gap-2">
-                                    <div class="grid aspect-square place-items-center rounded-xl bg-white text-slate-300">
-                                        <x-heroicon-o-photo class="h-6 w-6" />
-                                    </div>
-                                    <div class="grid aspect-square place-items-center rounded-xl bg-white text-slate-300">
-                                        <x-heroicon-o-document class="h-6 w-6" />
-                                    </div>
-                                    <div class="grid aspect-square place-items-center rounded-xl bg-white text-slate-300">
-                                        <x-heroicon-o-folder class="h-6 w-6" />
-                                    </div>
+                                <div class="mt-3 space-y-2">
+                                    @forelse($attachments as $attachment)
+                                        <a href="{{ $attachment->url() }}" target="_blank" class="flex items-center gap-3 rounded-xl bg-white p-2.5 no-underline transition hover:bg-green-50">
+                                            @if($attachment->isImage())
+                                                <img src="{{ $attachment->url() }}" alt="{{ $attachment->original_name }}" class="h-11 w-11 shrink-0 rounded-xl object-cover">
+                                            @else
+                                                <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-500">
+                                                    <x-heroicon-o-document class="h-5 w-5" />
+                                                </span>
+                                            @endif
+                                            <span class="min-w-0 flex-1">
+                                                <span class="block truncate text-xs font-black text-slate-800">{{ $attachment->original_name }}</span>
+                                                <span class="block text-[11px] font-bold text-slate-400">{{ $attachment->sizeLabel() }}</span>
+                                            </span>
+                                        </a>
+                                    @empty
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <div class="grid aspect-square place-items-center rounded-xl bg-white text-slate-300">
+                                                <x-heroicon-o-photo class="h-6 w-6" />
+                                            </div>
+                                            <div class="grid aspect-square place-items-center rounded-xl bg-white text-slate-300">
+                                                <x-heroicon-o-document class="h-6 w-6" />
+                                            </div>
+                                            <div class="grid aspect-square place-items-center rounded-xl bg-white text-slate-300">
+                                                <x-heroicon-o-folder class="h-6 w-6" />
+                                            </div>
+                                        </div>
+                                        <p class="mt-3 text-xs font-bold leading-5 text-slate-400">@lang('teacher-discussion::app.no_shared_files')</p>
+                                    @endforelse
                                 </div>
-                                <p class="mt-3 text-xs font-bold leading-5 text-slate-400">@lang('teacher-discussion::app.no_shared_files')</p>
                             </details>
                         </div>
                     </aside>

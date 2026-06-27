@@ -26,8 +26,9 @@ class TeacherDiscussionController extends Controller
         $selectedThread = $this->service->selectedThread($teacher, request()->integer('thread'));
         $messages = $selectedThread ? $this->service->messages($selectedThread) : collect();
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
+        $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();
 
-        return view('teacher-discussion::index', compact('teacher', 'threads', 'selectedThread', 'messages', 'members'));
+        return view('teacher-discussion::index', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments'));
     }
 
     public function store(StoreDiscussionMessageRequest $request, DiscussionThread $thread): RedirectResponse
@@ -36,7 +37,7 @@ class TeacherDiscussionController extends Controller
 
         /** @var \Mindigo\Auth\Models\User $teacher */
         $teacher = Auth::user();
-        $this->service->send($thread, $teacher, $request->string('body')->toString());
+        $this->service->send($thread, $teacher, $request->input('body'), $request->file('attachments', []));
 
         return redirect()
             ->route('teacher.discussions.index', ['thread' => $thread->id])

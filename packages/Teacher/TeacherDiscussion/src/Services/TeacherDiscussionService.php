@@ -5,6 +5,7 @@ namespace Mindigo\TeacherDiscussion\Services;
 use Illuminate\Support\Collection;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
 use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 
@@ -60,9 +61,18 @@ class TeacherDiscussionService
     public function messages(DiscussionThread $thread): Collection
     {
         return $thread->messages()
-            ->with('sender:id,name,email,role')
+            ->with(['sender:id,name,email,role', 'attachments'])
             ->oldest('created_at')
             ->limit(120)
+            ->get();
+    }
+
+    public function attachments(DiscussionThread $thread): Collection
+    {
+        return DiscussionAttachment::query()
+            ->whereHas('message', fn ($query) => $query->where('thread_id', $thread->id))
+            ->latest('created_at')
+            ->limit(24)
             ->get();
     }
 
@@ -78,12 +88,24 @@ class TeacherDiscussionService
             ->get();
     }
 
-    public function send(DiscussionThread $thread, User $sender, string $body): DiscussionMessage
+    public function send(DiscussionThread $thread, User $sender, ?string $body, array $files = []): DiscussionMessage
     {
         $message = $thread->messages()->create([
             'sender_id' => $sender->getAuthIdentifier(),
-            'body' => trim($body),
+            'body' => trim((string) $body),
         ]);
+
+        foreach ($files as $file) {
+            $path = $file->store('teacher-discussions/' . $thread->id, 'public');
+
+            $message->attachments()->create([
+                'disk' => 'public',
+                'path' => $path,
+                'original_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getClientMimeType(),
+                'size' => $file->getSize() ?: 0,
+            ]);
+        }
 
         $thread->forceFill(['last_message_at' => $message->created_at])->save();
 

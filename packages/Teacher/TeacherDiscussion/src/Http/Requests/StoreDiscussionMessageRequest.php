@@ -14,15 +14,20 @@ class StoreDiscussionMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'body' => ['required', 'string', 'min:1', 'max:2000'],
+            'body' => ['nullable', 'required_without:attachments', 'string', 'max:2000'],
+            'attachments' => ['nullable', 'array', 'max:10'],
+            'attachments.*' => ['file', 'max:20480', 'mimes:jpg,jpeg,png,webp,gif,pdf,txt,doc,docx,xls,xlsx,ppt,pptx,zip,rar'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'body.required' => __('teacher-discussion::app.message_required'),
+            'body.required_without' => __('teacher-discussion::app.message_required'),
             'body.max' => __('teacher-discussion::app.message_max'),
+            'attachments.max' => __('teacher-discussion::app.attachment_count_max'),
+            'attachments.*.max' => __('teacher-discussion::app.attachment_size_max'),
+            'attachments.*.mimes' => __('teacher-discussion::app.attachment_mimes'),
         ];
     }
 }
