@@ -34,6 +34,14 @@ class DatabaseSeeder extends Seeder
             'role' => 'teacher',
         ]);
 
+        // Student account cố định để test
+        User::firstOrCreate(['email' => 'student@mindigo.com'], [
+            'name'     => 'Trần Văn Học',
+            'password' => Hash::make('123456'),
+            'role'     => 'student',
+            'is_active'=> true,
+        ]);
+
         // Student accounts
         User::factory(30)->create([
             'role' => 'student',
