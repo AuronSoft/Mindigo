@@ -2,6 +2,8 @@
 
 namespace Mindigo\TeacherExam\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Str;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -117,4 +119,17 @@ class TeacherExamController extends Controller
             'Bạn không có quyền truy cập đề thi này.'
         );
     }
+    // in pdf
+   public function print(Exam $exam): \Illuminate\Http\Response
+{
+    $this->authorizeOwnership($exam);
+
+    $exam->load('questions');
+
+    $pdf = app('dompdf.wrapper')
+        ->loadView('teacher-exam::print', compact('exam'))
+        ->setPaper('a4', 'portrait');
+
+    return $pdf->download(\Illuminate\Support\Str::slug($exam->title) . '.pdf');
+}
 }

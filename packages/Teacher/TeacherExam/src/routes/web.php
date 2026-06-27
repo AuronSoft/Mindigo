@@ -16,4 +16,5 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::post('/{exam}/publish', [TeacherExamController::class, 'publish'])->name('publish');
         Route::post('/{exam}/close', [TeacherExamController::class, 'close'])->name('close');
         Route::delete('/{exam}', [TeacherExamController::class, 'destroy'])->name('destroy');
+        Route::get('/{exam}/print', [TeacherExamController::class, 'print'])->name('print');
     });

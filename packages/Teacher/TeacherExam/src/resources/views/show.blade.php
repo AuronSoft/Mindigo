@@ -89,6 +89,11 @@
                     </button>
                 </form>
             @endif
+             {{-- NÚT IN--}}
+            <a href="{{ route('teacher.exams.print', $exam) }}"
+               class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline transition hover:bg-slate-50">
+                <x-heroicon-o-printer class="h-4 w-4" />@lang('teacher-exam::app.print')
+            </a>
             <form method="POST" action="{{ route('teacher.exams.destroy', $exam) }}"
                   data-mindigo-confirm-title="@lang('teacher-exam::app.delete_title')"
                   data-mindigo-confirm-message="@lang('teacher-exam::app.delete_confirm')"

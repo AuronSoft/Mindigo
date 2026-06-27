@@ -76,6 +76,7 @@ return [
     'info_questions' => 'Số câu',
     'info_score'     => 'Điểm đạt',
     'info_status'    => 'Trạng thái',
+    'print' => 'In đề thi', // in pdf
 
     // Misc
     'cancel'         => 'Hủy',
