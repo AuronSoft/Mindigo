@@ -6,14 +6,9 @@ return [
     'search'         => 'Tìm kiếm...',
     'dashboard'      => 'Dashboard',
     'my_classrooms'  => 'Lớp học của tôi',
-<<<<<<< HEAD
     'my_exams'       => 'Đề thi của tôi',
     'my_assignments' => 'Bài tập của tôi',
     'my_questions'   => 'Câu hỏi của tôi',
-=======
-    'my_exams'       => 'Quản lý đề thi',
-    'my_questions'   => 'Ngân hàng câu hỏi ',
->>>>>>> dev
     'results'        => 'Kết quả học sinh',
     'announcements'  => 'Thông báo',
     'courses'        => 'Quản lý khóa học',
