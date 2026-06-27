@@ -71,7 +71,6 @@
             @php
                 $teacherBase = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
                 $teacherInactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
-                $teacherSoon = 'flex min-h-9 cursor-not-allowed items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-300';
                 $teacherNavGroups = [
                     [
                         'name' => __('teacher-dashboard::app.group_overview'),
@@ -86,13 +85,11 @@
                         'desc' => __('teacher-dashboard::app.group_teaching_desc'),
                         'icon' => 'heroicon-o-academic-cap',
                         'items' => [
-                            ['route' => 'teacher.courses.index', 'match' => 'teacher.courses.*', 'label' => __('teacher-dashboard::app.courses'), 'icon' => 'heroicon-o-book-open'],
+                            ['route' => 'teacher.courses.index', 'fallback_route' => 'teacher.classrooms.index', 'match' => 'teacher.courses.*', 'label' => __('teacher-dashboard::app.courses'), 'icon' => 'heroicon-o-book-open'],
                             ['route' => 'teacher.classrooms.index', 'match' => 'teacher.classrooms.*', 'label' => __('teacher-dashboard::app.my_classrooms'), 'icon' => 'heroicon-o-user-group'],
                             ['route' => 'teacher.exams.index', 'match' => 'teacher.exams.*', 'label' => __('teacher-dashboard::app.my_exams'), 'icon' => 'heroicon-o-document-text'],
                             ['route' => 'teacher.assignments.index', 'match' => 'teacher.assignments.*', 'label' => __('teacher-dashboard::app.my_assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
                             ['route' => 'teacher.questions.index', 'match' => 'teacher.questions.*', 'label' => __('teacher-dashboard::app.my_questions'), 'icon' => 'heroicon-o-circle-stack'],
-                            ['route' => 'teacher.assignments.index', 'match' => 'teacher.assignments.*', 'label' => __('teacher-dashboard::app.assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
-                            ['route' => 'teacher.homework.index', 'match' => 'teacher.homework.*', 'label' => __('teacher-dashboard::app.homework'), 'icon' => 'heroicon-o-pencil-square'],
                         ],
                     ],
                     [
@@ -103,7 +100,7 @@
                             ['route' => 'teacher.results.index', 'match' => 'teacher.results.*', 'label' => __('teacher-dashboard::app.grading'), 'icon' => 'heroicon-o-check-badge'],
                             ['route' => 'teacher.results.index', 'match' => 'teacher.reports.*', 'label' => __('teacher-dashboard::app.reports'), 'icon' => 'heroicon-o-presentation-chart-line'],
                             ['route' => 'teacher.announcements.index', 'match' => 'teacher.announcements.*', 'label' => __('teacher-dashboard::app.announcements'), 'icon' => 'heroicon-o-megaphone'],
-                            ['route' => 'teacher.discussions.index', 'match' => 'teacher.discussions.*', 'label' => __('teacher-dashboard::app.discussions'), 'icon' => 'heroicon-o-chat-bubble-left-right'],
+                            ['route' => 'teacher.discussions.index', 'fallback_route' => 'teacher.announcements.index', 'match' => 'teacher.discussions.*', 'label' => __('teacher-dashboard::app.discussions'), 'icon' => 'heroicon-o-chat-bubble-left-right'],
                         ],
                     ],
                     [
@@ -131,16 +128,18 @@
                         </button>
                         <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
                             @foreach($group['items'] as $nav)
-                                @if(Route::has($nav['route']))
-                                    <a href="{{ route($nav['route']) }}" class="{{ $teacherBase }} {{ request()->routeIs($nav['match']) ? 'bg-green-50 text-green-700' : $teacherInactive }}" data-sidebar-search-item data-search-label="{{ $nav['label'] }}" data-sidebar-tooltip="{{ $nav['label'] }}" title="{{ $nav['label'] }}">
+                                @php
+                                    $teacherRoute = Route::has($nav['route'])
+                                        ? $nav['route']
+                                        : ($nav['fallback_route'] ?? null);
+                                    $teacherRoute = $teacherRoute && Route::has($teacherRoute) ? $teacherRoute : null;
+                                    $teacherActive = request()->routeIs($nav['match']);
+                                @endphp
+                                @if($teacherRoute)
+                                    <a href="{{ route($teacherRoute) }}" class="{{ $teacherBase }} {{ $teacherActive ? 'bg-green-50 text-green-700' : $teacherInactive }}" data-sidebar-search-item data-search-label="{{ $nav['label'] }}" data-sidebar-tooltip="{{ $nav['label'] }}" title="{{ $nav['label'] }}">
                                         <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
                                         <span data-sidebar-text>{{ $nav['label'] }}</span>
                                     </a>
-                                @else
-                                    <span class="{{ $teacherSoon }}" title="{{ $nav['label'] }}" data-sidebar-tooltip="{{ $nav['label'] }}">
-                                        <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
-                                        <span data-sidebar-text>{{ $nav['label'] }}</span>
-                                    </span>
                                 @endif
                             @endforeach
                         </div>
