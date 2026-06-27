@@ -23,9 +23,16 @@
             <h1 class="text-base font-black text-slate-950">@lang('teacher-question::app.edit')</h1>
         </div>
     </header>
+ 
+     <div class="question-page mx-auto w-full max-w-5xl p-6">
+    <form method="POST" action="{{ route('teacher.questions.update', $question) }}" class="w-full">
+        @csrf @method('PUT')
+        @include('Mindigo-question-bank::partials.form')
+    </form>
+</div>
 
-    <div class="p-6">
-        <form method="POST" action="{{ route('teacher.questions.update', $question) }}" class="w-full space-y-4">
+    <div class="mx-auto w-full max-w-5xl p-6">
+    <form method="POST" action="{{ route('teacher.questions.update', $question) }}" class="w-full space-y-4">
             @csrf @method('PUT')
             @include('Mindigo-question-bank::partials.form')
         </form>

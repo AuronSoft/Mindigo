@@ -2,7 +2,7 @@
 
 return [
     'title' => 'Bảng điều khiển quản trị',
-    'platform' => 'Nền tảng ôn thi',
+    'platform' => 'Nền tảng học tập trực tuyến',
     'search_placeholder' => 'Tìm chức năng...',
     'global_search' => 'Tìm đề thi, học viên, câu hỏi...',
     'notifications' => 'Thông báo',

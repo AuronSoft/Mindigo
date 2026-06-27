@@ -78,6 +78,23 @@
             @endif
         </div>
 
+        {{-- THÊM VÀO ĐÂY --}}
+        <div class="flex gap-1 border-b border-slate-200">
+            <button type="button" onclick="switchTab('detail')" id="tab-detail"
+                    class="px-4 py-2 text-sm font-black border-b-2 border-green-600 text-green-700 -mb-px transition">
+                Chi tiết
+            </button>
+            <button type="button" onclick="switchTab('history')" id="tab-history"
+                    class="px-4 py-2 text-sm font-black border-b-2 border-transparent text-slate-500 hover:text-slate-700 -mb-px transition">
+                Lịch sử
+                <span class="ml-1 rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-black text-slate-500">
+                    {{ $question->editHistories->count() }}
+                </span>
+            </button>
+        </div>
+
+        <div id="panel-detail" class="space-y-4">
+
         {{-- Content --}}
         <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <p class="mb-3 text-xs font-black uppercase tracking-wider text-slate-400">@lang('teacher-question::app.question_content')</p>
@@ -119,7 +136,79 @@
                 @endforeach
             </div>
         @endif
+        </div>
+        
+        {{--  BLOCK thêm --}} 
+        <div id="panel-history" class="hidden space-y-3">
+            @forelse($question->editHistories as $history)
+                <div class="rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="rounded-full px-2.5 py-0.5 text-[10px] font-black {{ $history->actionColor() }}">
+                                {{ $history->actionLabel() }}
+                            </span>
+                            <span class="text-sm font-bold text-slate-700">
+                                {{ $history->editor?->name ?? 'System' }}
+                            </span>
+                        </div>
+                        <span class="text-xs font-semibold text-slate-400">
+                            {{ $history->created_at->format('d/m/Y H:i') }}
+                        </span>
+                    </div>
 
+                    @if($history->changes && count($history->changes))
+                        <div class="mt-2 space-y-1.5">
+                            @foreach($history->changes as $field => $change)
+                                <div class="flex flex-wrap items-center gap-1.5 text-xs">
+                                    <span class="rounded bg-slate-100 px-1.5 py-0.5 font-black text-slate-500">
+                                        {{ $field }}
+                                    </span>
+                                    <span class="text-red-400 line-through">
+                                        {{ Str::limit((string)($change['old'] ?? '—'), 60) }}
+                                    </span>
+                                    <span class="text-slate-300">→</span>
+                                    <span class="font-bold text-green-700">
+                                        {{ Str::limit((string)($change['new'] ?? '—'), 60) }}
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if($history->note)
+                        <p class="mt-2 text-xs font-semibold italic text-slate-400">
+                            {{ $history->note }}
+                        </p>
+                    @endif
+                </div>
+            @empty
+                <div class="rounded-2xl border border-dashed border-slate-200 bg-white py-10 text-center">
+                    <p class="text-sm font-bold text-slate-400">Chưa có lịch sử chỉnh sửa.</p>
+                </div>
+            @endforelse
+        </div>
     </div>
 </div>
+    @section('scripts')
+    <script>
+    function switchTab(tab) {
+        const isDetail = tab === 'detail';
+        document.getElementById('panel-detail').classList.toggle('hidden', !isDetail);
+        document.getElementById('panel-history').classList.toggle('hidden', isDetail);
+
+        const tabDetail  = document.getElementById('tab-detail');
+        const tabHistory = document.getElementById('tab-history');
+
+        tabDetail.classList.toggle('border-green-600', isDetail);
+        tabDetail.classList.toggle('text-green-700',   isDetail);
+        tabDetail.classList.toggle('border-transparent', !isDetail);
+        tabDetail.classList.toggle('text-slate-500',   !isDetail);
+
+        tabHistory.classList.toggle('border-green-600', !isDetail);
+        tabHistory.classList.toggle('text-green-700',   !isDetail);
+        tabHistory.classList.toggle('border-transparent', isDetail);
+        tabHistory.classList.toggle('text-slate-500',   isDetail);
+    }
+    </script>
+    @endsection
 @endsection

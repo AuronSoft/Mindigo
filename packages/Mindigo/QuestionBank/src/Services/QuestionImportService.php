@@ -11,13 +11,17 @@ use Mindigo\SubjectManagement\Models\Subject;
 class QuestionImportService
 {
     public function rowsFromFile($file): array
-    {
-        $extension = strtolower($file->getClientOriginalExtension());
+{
+    $extension = strtolower($file->getClientOriginalExtension());
 
-        return $extension === 'json'
-            ? $this->parseJson((string) file_get_contents($file->getRealPath()))
-            : $this->parseCsv($file->getRealPath());
-    }
+    return match ($extension) {
+        'json'       => $this->parseJson((string) file_get_contents($file->getRealPath())),
+        'csv', 'txt' => $this->parseCsv($file->getRealPath()),
+        default      => throw ValidationException::withMessages([
+            'import_file' => 'File .docx cần được xử lý qua giao diện import, không phải upload trực tiếp.',
+        ]),
+    };
+}
 
     public function questionDataFromRow(array $row, User $user, string $defaultStatus, ?int $defaultFolderId, int $rowNumber): array
     {

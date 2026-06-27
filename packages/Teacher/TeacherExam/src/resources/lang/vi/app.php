@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title'       => 'Đề thi của tôi',
+    'title'       => 'Quản lý đề thi',
     'subtitle'    => 'Tạo, quản lý đề thi và theo dõi kết quả học sinh.',
     'create'      => 'Tạo đề thi',
     'edit'        => 'Chỉnh sửa đề',

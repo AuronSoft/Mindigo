@@ -110,6 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelectorAll('[data-question-builder]').forEach((builder) => {
+        const partLinks = [...builder.querySelectorAll('[data-question-part-link]')];
+        const partCards = [...builder.querySelectorAll('[data-question-part]')];
+        const questionIndex = builder.querySelector('[data-question-index]');
+        const questionMain = builder.querySelector('.question-studio-main');
         const typeField = builder.querySelector('[data-question-type]');
         const optionPanel = builder.querySelector('[data-option-panel]');
         const shortAnswerPanel = builder.querySelector('[data-short-answer-panel]');
@@ -117,6 +121,65 @@ document.addEventListener('DOMContentLoaded', () => {
         const optionList = builder.querySelector('[data-option-list]');
         const template = builder.querySelector('[data-option-template]');
         const addButton = builder.querySelector('[data-add-option]');
+
+        const visiblePartCard = (part) => partCards.find((card) => card.dataset.questionPart === part && !card.classList.contains('hidden'));
+
+        const setActiveQuestionIndex = (activeTarget) => {
+            questionIndex?.querySelectorAll('[data-question-index-button]').forEach((button) => {
+                button.classList.toggle('is-active', button.dataset.questionIndexButton === activeTarget.id);
+            });
+        };
+
+        const renderQuestionIndex = () => {
+            if (!questionIndex) {
+                return;
+            }
+
+            const targets = [...builder.querySelectorAll('[data-question-index-target]')];
+            questionIndex.innerHTML = '';
+
+            targets.forEach((target, index) => {
+                if (!target.id) {
+                    target.id = `question-item-${index + 1}`;
+                }
+
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = String(index + 1);
+                button.dataset.questionIndexButton = target.id;
+                button.classList.toggle('is-active', index === 0);
+                button.addEventListener('click', () => {
+                    setActiveQuestionIndex(target);
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+                questionIndex.append(button);
+            });
+        };
+
+        const setActivePart = (part) => {
+            partLinks.forEach((link) => {
+                link.classList.toggle('is-active', link.dataset.questionPartLink === part);
+            });
+
+            partCards.forEach((card) => {
+                card.classList.toggle('is-highlight', card.dataset.questionPart === part && !card.classList.contains('hidden'));
+            });
+        };
+
+        partLinks.forEach((link) => {
+            link.addEventListener('click', (event) => {
+                const part = link.dataset.questionPartLink;
+                const target = visiblePartCard(part);
+
+                if (!part || !target) {
+                    return;
+                }
+
+                event.preventDefault();
+                setActivePart(part);
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
 
         const syncOptionValues = () => {
             optionList?.querySelectorAll('[data-option-row]').forEach((row, index) => {
@@ -179,6 +242,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             addButton?.classList.toggle('hidden', isShort || isEssay || isTrueFalse);
             syncOptionValues();
+
+            const activePart = builder.querySelector('[data-question-part-link].is-active')?.dataset.questionPartLink || 'content';
+            setActivePart(activePart);
         };
 
         addButton?.addEventListener('click', () => {
@@ -209,5 +275,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         typeField?.addEventListener('change', setTypeMode);
         setTypeMode();
+        setActivePart('content');
+        renderQuestionIndex();
+
+        if (questionIndex) {
+            const indexObserver = new MutationObserver(renderQuestionIndex);
+            indexObserver.observe(questionMain || builder, { childList: true, subtree: true });
+        }
     });
 });

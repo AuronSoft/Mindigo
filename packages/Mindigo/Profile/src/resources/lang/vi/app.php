@@ -86,6 +86,11 @@ return [
     'delete_account' => 'Xoá tài khoản',
     'delete_account_desc' => 'Hành động này không thể hoàn tác. Dữ liệu tài khoản sẽ bị xoá vĩnh viễn.',
     'messages' => [
+        'profile_updated' => 'Hồ sơ đã được cập nhật thành công.',
+        'notifications_updated' => 'Cài đặt thông báo đã được cập nhật.',
+        'password_updated' => 'Mật khẩu đã được cập nhật thành công.',
+        'account_suspended' => 'Tài khoản của bạn đã bị đình chỉ.',
+        'account_deleted' => 'Tài khoản của bạn đã được xóa vĩnh viễn.',
         'invalid_image' => 'Vui lòng chọn file ảnh hợp lệ.',
         'image_too_large' => 'Ảnh không được vượt quá 2MB.',
         'delete_title' => 'Xóa tài khoản?',

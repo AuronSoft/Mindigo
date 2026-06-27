@@ -2,7 +2,7 @@
 
 return [
     'title'          => 'Teacher Dashboard',
-    'platform'       => 'LMS platform',
+    'platform'       => 'Online learning platform',
     'search'         => 'Search...',
     'dashboard'      => 'Dashboard',
     'my_classrooms'  => 'My Classrooms',
@@ -11,6 +11,12 @@ return [
     'my_questions'   => 'My Questions',
     'results'        => 'Student Results',
     'announcements'  => 'Announcements',
+    'courses'        => 'Course management',
+    'grading'        => 'Grading',
+    'assignments'    => 'Assignments',
+    'homework'       => 'Homework',
+    'reports'        => 'Reports',
+    'discussions'    => 'Discussions',
     'profile'        => 'Profile',
     'logout'         => 'Sign out',
     'logout_confirm' => 'Sign out',
@@ -20,7 +26,7 @@ return [
     'group_teaching' => 'Teaching',
     'group_teaching_desc' => 'Classes, exams, assignments, questions',
     'group_tracking' => 'Tracking',
-    'group_tracking_desc' => 'Results and announcements',
+    'group_tracking_desc' => 'Grading, reports, discussions',
     'group_account' => 'Account',
     'group_account_desc' => 'Profile and preferences',
 

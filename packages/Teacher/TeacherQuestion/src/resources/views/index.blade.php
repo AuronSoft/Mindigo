@@ -88,6 +88,12 @@
                                class="w-44 bg-transparent text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400">
                     </div>
                 </form>
+                {{-- chọn tất cả --}}
+                <button type="button" id="bulk-mode-btn"
+                    class="inline-flex h-9 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 transition hover:bg-slate-50">
+                <x-heroicon-o-check-circle class="h-4 w-4" />Chọn nhiều
+            </button>
+
                 <a href="{{ route('teacher.questions.import') }}"
                    class="inline-flex h-9 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">
                     <x-heroicon-o-arrow-up-tray class="h-4 w-4" />@lang('teacher-question::app.import')
@@ -114,6 +120,50 @@
             @endforeach
         </div>
 
+        {{-- Chọn tất cả --}}
+        <div id="bulk-bar" class="hidden items-center gap-3 border-b border-amber-100 bg-amber-50 px-5 py-2.5">
+    <label class="flex cursor-pointer items-center gap-2 text-xs font-black text-amber-700">
+        <input type="checkbox" id="bulk-select-all" class="h-4 w-4 accent-green-600 cursor-pointer">
+        Chọn tất cả
+    </label>
+    <span id="bulk-count" class="text-xs font-black text-amber-700">0 câu đã chọn</span>
+        <div class="ml-auto flex items-center gap-2">
+            {{-- Đổi độ khó --}}
+            <select id="bulk-difficulty-select"
+                    class="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 outline-none focus:border-green-400">
+                <option value="">Đổi độ khó...</option>
+                <option value="easy">Dễ</option>
+                <option value="medium">Trung bình</option>
+                <option value="hard">Khó</option>
+            </select>
+            <button type="button" id="bulk-difficulty-btn"
+                    class="inline-flex h-8 items-center gap-1.5 rounded-xl bg-green-600 px-3 text-xs font-black text-white transition hover:bg-green-500">
+                <x-heroicon-o-check class="h-3.5 w-3.5" />Áp dụng
+            </button>
+            <div class="h-4 w-px bg-slate-300"></div>
+            <select id="bulk-status-select"
+                    class="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 outline-none focus:border-green-400">
+                <option value="">Đổi trạng thái...</option>
+                <option value="draft">Bản nháp</option>
+                <option value="reviewing">Chờ duyệt</option>
+                <option value="approved">Đã duyệt</option>
+            </select>
+            <button type="button" id="bulk-status-btn"
+                    class="inline-flex h-8 items-center gap-1.5 rounded-xl bg-green-600 px-3 text-xs font-black text-white transition hover:bg-green-500">
+                <x-heroicon-o-check class="h-3.5 w-3.5" />Áp dụng
+            </button>
+            <div class="h-4 w-px bg-slate-300"></div>
+            <button type="button" id="bulk-delete-btn"
+                    class="inline-flex h-8 items-center gap-1.5 rounded-xl bg-red-50 px-3 text-xs font-black text-red-600 transition hover:bg-red-100">
+                <x-heroicon-o-trash class="h-3.5 w-3.5" />Xóa đã chọn
+            </button>
+            <button type="button" id="bulk-cancel-btn"
+                    class="inline-flex h-8 items-center rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-600 transition hover:bg-slate-50">
+                Hủy
+            </button>
+        </div>
+    </div>
+
         {{-- Question list --}}
         <div class="flex-1 p-5">
             @if($questions->isEmpty())
@@ -137,7 +187,15 @@
                 @endphp
                 <div class="space-y-2">
                     @foreach($questions as $q)
-                        <div class="group flex items-start gap-4 rounded-2xl border border-slate-100 bg-white px-4 py-3.5 shadow-sm transition hover:border-green-100 hover:shadow-md">
+                    {{-- chọn --}}
+                        <div class="group flex items-start gap-4 rounded-2xl border border-slate-100 bg-white px-4 py-3.5 shadow-sm transition hover:border-green-100 hover:shadow-md"
+                        data-question-id="{{ $q->id }}">
+
+                        {{-- Checkbox bulk --}}
+                        <label class="bulk-checkbox-wrap mt-1 hidden cursor-pointer shrink-0">
+                            <input type="checkbox" class="bulk-checkbox h-4 w-4 accent-green-600 cursor-pointer"
+                                value="{{ $q->id }}">
+                        </label>
                             {{-- Type badge --}}
                             <span class="mt-0.5 shrink-0 rounded-xl border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-black text-slate-500 whitespace-nowrap">
                                 @lang('teacher-question::app.' . $q->type)
@@ -209,4 +267,127 @@
         </div>
     </div>
 </div>
+{{-- Bulk forms --}}
+<form id="bulk-difficulty-form" method="POST" action="{{ route('teacher.questions.bulk.difficulty') }}">
+    @csrf @method('PATCH')
+    <input type="hidden" name="ids" id="bulk-ids-difficulty">
+    <input type="hidden" name="difficulty" id="bulk-difficulty-value">
+</form>
+
+<form id="bulk-delete-form" method="POST" action="{{ route('teacher.questions.bulk.destroy') }}">
+    @csrf @method('DELETE')
+    <input type="hidden" name="ids" id="bulk-ids-delete">
+</form>
+
+<form id="bulk-status-form" method="POST" action="{{ route('teacher.questions.bulk.status') }}">
+    @csrf @method('PATCH')
+    <input type="hidden" name="ids" id="bulk-ids-status">
+    <input type="hidden" name="status" id="bulk-status-value">
+</form>
+
+@section('scripts')
+<script>
+(function () {
+    const modeBtn    = document.getElementById('bulk-mode-btn');
+    const bar        = document.getElementById('bulk-bar');
+    const countEl    = document.getElementById('bulk-count');
+    const cancelBtn  = document.getElementById('bulk-cancel-btn');
+    const diffSelect = document.getElementById('bulk-difficulty-select');
+    const diffBtn    = document.getElementById('bulk-difficulty-btn');
+    const deleteBtn  = document.getElementById('bulk-delete-btn');
+
+    let bulkMode = false;
+
+    function getChecked() {
+        return [...document.querySelectorAll('.bulk-checkbox:checked')].map(el => el.value);
+    }
+
+    function updateBar() {
+        countEl.textContent = `${getChecked().length} câu đã chọn`;
+    }
+
+    function enterBulkMode() {
+        bulkMode = true;
+        document.querySelectorAll('.bulk-checkbox-wrap').forEach(w => w.classList.remove('hidden'));
+        bar.classList.remove('hidden');
+        bar.classList.add('flex');
+        modeBtn.classList.add('bg-green-50', 'text-green-700', 'border-green-300');
+    }
+
+    function exitBulkMode() {
+        bulkMode = false;
+        document.querySelectorAll('.bulk-checkbox-wrap').forEach(w => {
+            w.classList.add('hidden');
+            w.querySelector('input').checked = false;
+        });
+        const selectAll = document.getElementById('bulk-select-all');
+        if (selectAll) selectAll.checked = false;
+        bar.classList.add('hidden');
+        bar.classList.remove('flex');
+        modeBtn.classList.remove('bg-green-50', 'text-green-700', 'border-green-300');
+        updateBar();
+    }
+
+    modeBtn?.addEventListener('click', () => bulkMode ? exitBulkMode() : enterBulkMode());
+    cancelBtn?.addEventListener('click', exitBulkMode);
+
+    // Click vào card để toggle checkbox
+    document.querySelectorAll('[data-question-id]').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (!bulkMode) return;
+            if (e.target.closest('a, button, form, label')) return;
+            const cb = card.querySelector('.bulk-checkbox');
+            if (cb) { cb.checked = !cb.checked; updateBar(); }
+        });
+    });
+
+    document.querySelectorAll('.bulk-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateBar);
+    });
+
+    // Chọn tất cả / bỏ chọn tất cả
+    document.getElementById('bulk-select-all')?.addEventListener('change', (e) => {
+        document.querySelectorAll('.bulk-checkbox').forEach(cb => {
+            cb.checked = e.target.checked;
+        });
+        updateBar();
+    });
+
+    // Áp dụng 
+   // Áp dụng độ khó
+diffBtn?.addEventListener('click', () => {
+    const ids = getChecked();
+    const diff = diffSelect.value;
+    if (!ids.length) { alert('Chưa chọn câu hỏi nào.'); return; }
+    if (!diff)       { alert('Chưa chọn độ khó.'); return; }
+    document.getElementById('bulk-ids-difficulty').value = ids.join(',');
+    document.getElementById('bulk-difficulty-value').value = diff;
+    document.getElementById('bulk-difficulty-form').submit();
+});
+
+// Áp dụng trạng thái
+const statusSelect = document.getElementById('bulk-status-select');
+const statusBtn    = document.getElementById('bulk-status-btn');
+statusBtn?.addEventListener('click', () => {
+    const ids    = getChecked();
+    const status = statusSelect.value;
+    if (!ids.length) { alert('Chưa chọn câu hỏi nào.'); return; }
+    if (!status)     { alert('Chưa chọn trạng thái.'); return; }
+    if (!confirm(`Đổi ${ids.length} câu hỏi sang "${statusSelect.options[statusSelect.selectedIndex].text}"?`)) return;
+    document.getElementById('bulk-ids-status').value   = ids.join(',');
+    document.getElementById('bulk-status-value').value = status;
+    document.getElementById('bulk-status-form').submit();
+});
+
+    // Xóa hàng loạt
+    deleteBtn?.addEventListener('click', () => {
+        const ids = getChecked();
+        if (!ids.length) { alert('Chưa chọn câu hỏi nào.'); return; }
+        if (!confirm(`Xóa ${ids.length} câu hỏi đã chọn?`)) return;
+        document.getElementById('bulk-ids-delete').value = ids.join(',');
+        document.getElementById('bulk-delete-form').submit();
+    });
+})();
+</script>
+@endsection
 @endsection

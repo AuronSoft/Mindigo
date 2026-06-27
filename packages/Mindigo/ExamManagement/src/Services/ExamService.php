@@ -26,7 +26,7 @@ class ExamService
                 ...$request->examData(),
                 'created_by' => $request->user()->getAuthIdentifier(),
                 'slug' => $this->uniqueSlug($request->examData()['title']),
-                'status' => 'draft',
+                'status' => $request->shouldSubmitForReview() ? 'reviewing' : 'draft',
                 'generation_config' => $request->generationConfig(),
             ]);
 
@@ -45,10 +45,16 @@ class ExamService
         $oldValues = $exam->only($this->auditFields());
 
         DB::transaction(function () use ($request, $exam): void {
-            $exam->fill([
+            $data = [
                 ...$request->examData(),
                 'generation_config' => $request->generationConfig(),
-            ])->save();
+            ];
+
+            if ($request->shouldSubmitForReview()) {
+                $data['status'] = 'reviewing';
+            }
+
+            $exam->fill($data)->save();
 
             if ($request->shouldRegenerateQuestions()) {
                 $this->syncGeneratedQuestions($exam, $request->generationConfig());

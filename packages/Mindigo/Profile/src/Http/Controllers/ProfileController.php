@@ -27,7 +27,7 @@ class ProfileController extends Controller
 
         $roleProfile = $this->service->roleProfile($user->role);
 
-        // Nút "Về dashboard" trỏ đúng khu vực theo vai trò
+        // Send users back to the dashboard that matches their current role.
         $dashboardUrl = match (true) {
             $user->role === 'teacher' && Route::has('teacher.dashboard') => route('teacher.dashboard'),
             $user->isAdmin() && Route::has('dashboard')                  => route('dashboard'),
@@ -43,7 +43,7 @@ class ProfileController extends Controller
 
         return redirect()
             ->route('profile.index')
-            ->with('success', 'Há»“ sÆ¡ Ä‘Ã£ Ä‘Æ°á»£c cáº­p nháº­t thÃ nh cÃ´ng.');
+            ->with('success', __('Mindigo-profile::app.messages.profile_updated'));
     }
 
     public function updateNotifications(UpdateNotificationsRequest $request): RedirectResponse
@@ -52,7 +52,7 @@ class ProfileController extends Controller
 
         return redirect()
             ->to(route('profile.index') . '#email')
-            ->with('success', 'CÃ i Ä‘áº·t thÃ´ng bÃ¡o Ä‘Ã£ Ä‘Æ°á»£c cáº­p nháº­t.');
+            ->with('success', __('Mindigo-profile::app.messages.notifications_updated'));
     }
 
     public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
@@ -61,7 +61,7 @@ class ProfileController extends Controller
 
         return redirect()
             ->to(route('profile.index') . '#bao-mat')
-            ->with('success', 'Máº­t kháº©u Ä‘Ã£ Ä‘Æ°á»£c cáº­p nháº­t thÃ nh cÃ´ng.');
+            ->with('success', __('Mindigo-profile::app.messages.password_updated'));
     }
 
     public function suspend(Request $request): RedirectResponse
@@ -76,7 +76,7 @@ class ProfileController extends Controller
 
         return redirect()
             ->route('login')
-            ->with('warning', 'TÃ i khoáº£n cá»§a báº¡n Ä‘Ã£ bá»‹ Ä‘Ã¬nh chá»‰.');
+            ->with('warning', __('Mindigo-profile::app.messages.account_suspended'));
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -91,6 +91,6 @@ class ProfileController extends Controller
 
         return redirect()
             ->route('login')
-            ->with('info', 'TÃ i khoáº£n cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c xoÃ¡ vÄ©nh viá»…n.');
+            ->with('info', __('Mindigo-profile::app.messages.account_deleted'));
     }
 }

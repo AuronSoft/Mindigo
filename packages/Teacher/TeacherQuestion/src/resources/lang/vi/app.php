@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title'           => 'Câu hỏi của tôi',
+    'title'           => 'Ngân hàng câu hỏi ',
     'subtitle'        => 'Soạn và quản lý ngân hàng câu hỏi cá nhân.',
     'create'          => 'Thêm câu hỏi',
     'edit'            => 'Chỉnh sửa',
@@ -70,7 +70,7 @@ return [
     'import'           => 'Nhập từ file',
     'import_title'     => 'Nhập câu hỏi hàng loạt',
     'import_subtitle'  => 'Tải lên file CSV, TXT hoặc JSON để thêm nhiều câu hỏi cùng lúc.',
-    'import_file_desc' => 'Kéo thả hoặc nhấn để chọn file .csv / .txt / .json — tối đa 5 MB',
+    'import_file_desc' => 'Kéo thả hoặc nhấn để chọn file .csv / .txt / .json / .docx — tối đa 10 MB',//chỉnh
     'import_folder'    => 'Thư mục đích',
     'import_folder_ph' => 'Lấy từ file (mặc định)',
     'import_status'    => 'Trạng thái sau khi nhập',
@@ -86,7 +86,8 @@ return [
     'fmt_example_hd'   => 'Giá trị ví dụ',
     'fmt_badge_req'    => 'Bắt buộc',
     'fmt_badge_opt'    => 'Tùy chọn',
-    'fmt_file_types'   => 'CSV · TXT · JSON',
+    'fmt_file_types'   => 'CSV · TXT · JSON · DOCX',//chỉnh
+    'fmt_docx_note'    => 'File .docx cần theo đúng template: "Câu N: nội dung", "A. đáp án", "Đáp án: A"', //thêm
     'fmt_separator'    => 'Dùng dấu | để tách nhiều giá trị trong một cột. File JSON có thể là mảng hoặc object với key questions.',
     'ex_content'       => 'Câu hỏi của bạn ở đây',
     'ex_subject'       => 'Toán, Văn, Anh...',

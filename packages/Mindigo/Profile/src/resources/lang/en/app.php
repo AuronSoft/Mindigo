@@ -86,6 +86,11 @@ return [
     'delete_account' => 'Delete account',
     'delete_account_desc' => 'This action cannot be undone. Account data will be permanently deleted.',
     'messages' => [
+        'profile_updated' => 'Profile updated successfully.',
+        'notifications_updated' => 'Notification settings updated.',
+        'password_updated' => 'Password updated successfully.',
+        'account_suspended' => 'Your account has been suspended.',
+        'account_deleted' => 'Your account has been permanently deleted.',
         'invalid_image' => 'Please select a valid image file.',
         'image_too_large' => 'Image must not exceed 2MB.',
         'delete_title' => 'Delete account?',

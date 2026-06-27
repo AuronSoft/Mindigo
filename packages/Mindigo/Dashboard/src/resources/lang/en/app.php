@@ -2,7 +2,7 @@
 
 return [
     'title' => 'Admin Dashboard',
-    'platform' => 'Learning management platform',
+    'platform' => 'Online learning platform',
     'search_placeholder' => 'Search features...',
     'global_search' => 'Search exams, learners, questions...',
     'notifications' => 'Notifications',
