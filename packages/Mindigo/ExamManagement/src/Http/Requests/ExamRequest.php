@@ -102,6 +102,11 @@ class ExamRequest extends FormRequest
         return $this->boolean('regenerate_questions');
     }
 
+    public function shouldSubmitForReview(): bool
+    {
+        return $this->boolean('submit_for_review');
+    }
+
     private function generationCounts(): array
     {
         return collect($this->validated('counts', []))
