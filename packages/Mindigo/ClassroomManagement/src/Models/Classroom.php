@@ -19,6 +19,7 @@ class Classroom extends Model
     protected $fillable = [
         'created_by',
         'teacher_id',
+        'assistant_id',
         'name',
         'code',
         'slug',
@@ -54,4 +55,25 @@ class Classroom extends Model
         return $this->belongsToMany(Subject::class, 'classroom_subjects')
             ->withTimestamps();
     }
+
+    public function assistant(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assistant_id');
+    }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(\Mindigo\TeacherClassroom\Models\ClassroomAttendance::class, 'classroom_id');
+    }
+
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(\Mindigo\TeacherClassroom\Models\ClassroomSchedule::class, 'classroom_id');
+    }
+
+    public function announcements(): BelongsToMany
+    {
+        return $this->belongsToMany(\Mindigo\TeacherAnnouncement\Models\Announcement::class, 'announcement_classroom');
+    }
 }
+

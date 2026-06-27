@@ -36,6 +36,7 @@
         "mindigo/teacher-exam": "*",
         "mindigo/teacher-question": "*",
         "mindigo/teacher-result": "*",
+        "mindigo/teacher-course": "*",
         "mindigo/student-dashboard": "*",
         "mindigo/student-classroom": "*",
         "mindigo/student-exam": "*",
@@ -88,6 +89,7 @@
             "Mindigo\\TeacherAssignment\\": "packages/Teacher/TeacherAssignment/src/",
             "Mindigo\\TeacherQuestion\\": "packages/Teacher/TeacherQuestion/src/",
             "Mindigo\\TeacherResult\\": "packages/Teacher/TeacherResult/src/",
+            "Mindigo\\TeacherCourse\\": "packages/Teacher/TeacherCourse/src/",
             "Mindigo\\StudentDashboard\\": "packages/Students/StudentDashboard/src/",
             "Mindigo\\StudentClassroom\\": "packages/Students/StudentClassroom/src/",
             "Mindigo\\StudentExam\\": "packages/Students/StudentExam/src/",
@@ -199,6 +201,10 @@
         {
             "type": "path",
             "url": "packages/Teacher/TeacherResult"
+        },
+        {
+            "type": "path",
+            "url": "packages/Teacher/TeacherCourse"
         },
         {
             "type": "path",
