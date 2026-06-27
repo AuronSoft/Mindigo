@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title'           => 'Câu hỏi của tôi',
+    'title'           => 'Ngân hàng câu hỏi ',
     'subtitle'        => 'Soạn và quản lý ngân hàng câu hỏi cá nhân.',
     'create'          => 'Thêm câu hỏi',
     'edit'            => 'Chỉnh sửa',
