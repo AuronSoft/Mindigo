@@ -36,6 +36,18 @@
         "mindigo/teacher-exam": "*",
         "mindigo/teacher-question": "*",
         "mindigo/teacher-result": "*",
+        "mindigo/student-dashboard": "*",
+        "mindigo/student-classroom": "*",
+        "mindigo/student-exam": "*",
+        "mindigo/student-assignment": "*",
+        "mindigo/student-schedule": "*",
+        "mindigo/student-progress": "*",
+        "mindigo/student-history": "*",
+        "mindigo/student-notebook": "*",
+        "mindigo/student-practice": "*",
+        "mindigo/student-leaderboard": "*",
+        "mindigo/student-discussion": "*",
+        "mindigo/student-live-session": "*",
         "mindigo/user-management": "*",
         "tijsverkoyen/css-to-inline-styles": "^2.4"
     },
@@ -75,7 +87,19 @@
             "Mindigo\\TeacherAnnouncement\\": "packages/Teacher/TeacherAnnouncement/src/",
             "Mindigo\\TeacherAssignment\\": "packages/Teacher/TeacherAssignment/src/",
             "Mindigo\\TeacherQuestion\\": "packages/Teacher/TeacherQuestion/src/",
-            "Mindigo\\TeacherResult\\": "packages/Teacher/TeacherResult/src/"
+            "Mindigo\\TeacherResult\\": "packages/Teacher/TeacherResult/src/",
+            "Mindigo\\StudentDashboard\\": "packages/Students/StudentDashboard/src/",
+            "Mindigo\\StudentClassroom\\": "packages/Students/StudentClassroom/src/",
+            "Mindigo\\StudentExam\\": "packages/Students/StudentExam/src/",
+            "Mindigo\\StudentAssignment\\": "packages/Students/StudentAssignment/src/",
+            "Mindigo\\StudentSchedule\\": "packages/Students/StudentSchedule/src/",
+            "Mindigo\\StudentProgress\\": "packages/Students/StudentProgress/src/",
+            "Mindigo\\StudentHistory\\": "packages/Students/StudentHistory/src/",
+            "Mindigo\\StudentNotebook\\": "packages/Students/StudentNotebook/src/",
+            "Mindigo\\StudentPractice\\": "packages/Students/StudentPractice/src/",
+            "Mindigo\\StudentLeaderboard\\": "packages/Students/StudentLeaderboard/src/",
+            "Mindigo\\StudentDiscussion\\": "packages/Students/StudentDiscussion/src/",
+            "Mindigo\\StudentLiveSession\\": "packages/Students/StudentLiveSession/src/"
         }
     },
     "autoload-dev": {
@@ -175,6 +199,54 @@
         {
             "type": "path",
             "url": "packages/Teacher/TeacherResult"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentDashboard"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentClassroom"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentExam"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentAssignment"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentSchedule"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentProgress"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentHistory"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentNotebook"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentPractice"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentLeaderboard"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentDiscussion"
+        },
+        {
+            "type": "path",
+            "url": "packages/Students/StudentLiveSession"
         }
     ],
     "scripts": {

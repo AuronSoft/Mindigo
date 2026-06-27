@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/student-assignment",
+    "description": "Mindigo StudentAssignment Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\StudentAssignment\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\StudentAssignment\\Providers\\StudentAssignmentServiceProvider"
+            ]
+        }
+    }
+}

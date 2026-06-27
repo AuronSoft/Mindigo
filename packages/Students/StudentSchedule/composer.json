@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/student-schedule",
+    "description": "Mindigo StudentSchedule Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\StudentSchedule\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\StudentSchedule\\Providers\\StudentScheduleServiceProvider"
+            ]
+        }
+    }
+}

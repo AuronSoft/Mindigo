@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/student-exam",
+    "description": "Mindigo StudentExam Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\StudentExam\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\StudentExam\\Providers\\StudentExamServiceProvider"
+            ]
+        }
+    }
+}

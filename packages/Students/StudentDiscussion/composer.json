@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/student-discussion",
+    "description": "Mindigo StudentDiscussion Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\StudentDiscussion\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\StudentDiscussion\\Providers\\StudentDiscussionServiceProvider"
+            ]
+        }
+    }
+}

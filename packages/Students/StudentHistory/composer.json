@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/student-history",
+    "description": "Mindigo StudentHistory Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\StudentHistory\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\StudentHistory\\Providers\\StudentHistoryServiceProvider"
+            ]
+        }
+    }
+}

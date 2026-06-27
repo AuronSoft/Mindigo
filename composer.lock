@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "16780b8d3ede5f8b70b09ba394832e7c",
+    "content-hash": "2efa0aa5259e051074ff341e47526b9a",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -2471,7 +2471,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2501,7 +2501,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2567,7 +2567,7 @@
         },
         {
             "name": "mindigo/classroom-management",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ClassroomManagement",
@@ -2597,7 +2597,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2627,7 +2627,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2657,7 +2657,7 @@
         },
         {
             "name": "mindigo/exam-management",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ExamManagement",
@@ -2687,7 +2687,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -2717,7 +2717,7 @@
         },
         {
             "name": "mindigo/question-bank",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/QuestionBank",
@@ -2747,7 +2747,7 @@
         },
         {
             "name": "mindigo/report",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Report",
@@ -2777,7 +2777,7 @@
         },
         {
             "name": "mindigo/role-permission",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -2806,8 +2806,368 @@
             }
         },
         {
+            "name": "mindigo/student-assignment",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentAssignment",
+                "reference": "7728609445f50a1407adc109656fc26a64d99f5a"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentAssignment\\Providers\\StudentAssignmentServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentAssignment\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentAssignment Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-classroom",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentClassroom",
+                "reference": "25d5f4a785fb538be7dd969278172f3d5b102937"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentClassroom\\Providers\\StudentClassroomServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentClassroom\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentClassroom Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-dashboard",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentDashboard",
+                "reference": "3925b8cd0c8c3d28705374e3ba8dc8f417bb4573"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentDashboard\\Providers\\StudentDashboardServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentDashboard\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentDashboard Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-discussion",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentDiscussion",
+                "reference": "d3575210996dab9c9a613e2fe5f2c36fdebe8743"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentDiscussion\\Providers\\StudentDiscussionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentDiscussion\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentDiscussion Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-exam",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentExam",
+                "reference": "c415b2d91afecf9b43e260ee29f7fe68ce172521"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentExam\\Providers\\StudentExamServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentExam\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentExam Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-history",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentHistory",
+                "reference": "b784863547e67c22634d36796cfa19bf885a6110"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentHistory\\Providers\\StudentHistoryServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentHistory\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentHistory Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-leaderboard",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentLeaderboard",
+                "reference": "98314cb793bfb7c9a88ebf35394422a72d29327e"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentLeaderboard\\Providers\\StudentLeaderboardServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentLeaderboard\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentLeaderboard Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-live-session",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentLiveSession",
+                "reference": "d9e946117187bf8c50c602f583a32f155e4d7025"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentLiveSession\\Providers\\StudentLiveSessionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentLiveSession\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentLiveSession Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-notebook",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentNotebook",
+                "reference": "47109617eb1fb26ad5bce34ffb293256fe765a5b"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentNotebook\\Providers\\StudentNotebookServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentNotebook\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentNotebook Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-practice",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentPractice",
+                "reference": "e340b8bafec79f7b69c4194606fc25fc5ea93c23"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentPractice\\Providers\\StudentPracticeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentPractice\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentPractice Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-progress",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentProgress",
+                "reference": "d34009c5fba71cd9998ec9187159ca3af7241e91"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentProgress\\Providers\\StudentProgressServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentProgress\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentProgress Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/student-schedule",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Students/StudentSchedule",
+                "reference": "cf9b12e98dbb5eb0ed9f43dd7a61d26311c67b7e"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\StudentSchedule\\Providers\\StudentScheduleServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\StudentSchedule\\": "src/"
+                }
+            },
+            "description": "Mindigo StudentSchedule Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mindigo/subject-management",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SubjectManagement",
@@ -2837,7 +3197,7 @@
         },
         {
             "name": "mindigo/support-management",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SupportManagement",
@@ -2867,7 +3227,7 @@
         },
         {
             "name": "mindigo/system-setting",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",
@@ -2897,7 +3257,7 @@
         },
         {
             "name": "mindigo/teacher-announcement",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAnnouncement",
@@ -2927,7 +3287,7 @@
         },
         {
             "name": "mindigo/teacher-assignment",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAssignment",
@@ -2957,7 +3317,7 @@
         },
         {
             "name": "mindigo/teacher-classroom",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherClassroom",
@@ -2987,7 +3347,7 @@
         },
         {
             "name": "mindigo/teacher-dashboard",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDashboard",
@@ -3017,7 +3377,7 @@
         },
         {
             "name": "mindigo/teacher-discussion",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDiscussion",
@@ -3047,7 +3407,7 @@
         },
         {
             "name": "mindigo/teacher-exam",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherExam",
@@ -3077,7 +3437,7 @@
         },
         {
             "name": "mindigo/teacher-question",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherQuestion",
@@ -3107,7 +3467,7 @@
         },
         {
             "name": "mindigo/teacher-result",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherResult",
@@ -3137,7 +3497,7 @@
         },
         {
             "name": "mindigo/user-management",
-            "version": "dev-dev",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/UserManagement",

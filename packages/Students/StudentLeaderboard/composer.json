@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/student-leaderboard",
+    "description": "Mindigo StudentLeaderboard Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\StudentLeaderboard\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\StudentLeaderboard\\Providers\\StudentLeaderboardServiceProvider"
+            ]
+        }
+    }
+}
