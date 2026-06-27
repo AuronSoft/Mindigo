@@ -86,20 +86,18 @@
             margin-bottom: 8px;
         }
 
-        .question-number {
-            background: #0f172a;
-            color: #fff;
-            font-size: 10px;
-            font-weight: 900;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
+       .question-number {
+        background: #0f172a;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 900;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 22px;
+        flex-shrink: 0;
+                        }
 
         .question-content {
             font-weight: 700;
@@ -114,42 +112,46 @@
             margin-bottom: 8px;
         }
 
-        .options {
+            .options {
             margin-left: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            width: calc(100% - 32px);
         }
 
-        .option {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            font-size: 12px;
-            color: #334155;
+        .options-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .option-cell {
+            width: 50%;
+            padding: 3px 12px 3px 0;
+            vertical-align: top;
         }
 
         .option-label {
-            width: 20px;
-            height: 20px;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
             border: 1.5px solid #cbd5e1;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
+            text-align: center;
+            line-height: 16px;
+            font-size: 9px;
             font-weight: 900;
             color: #64748b;
-            flex-shrink: 0;
+            vertical-align: middle;
         }
 
         .option-label.square {
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         .option-text {
-            padding-top: 1px;
-            flex: 1;
+            font-size: 12px;
+            color: #334155;
+            vertical-align: middle;
+            padding-left: 4px;
         }
 
         .answer-blank {
@@ -233,7 +235,6 @@
                 <div class="question-number">{{ $index + 1 }}</div>
                 <div class="question-content">
                     {{ $question->content }}
-                    <span class="type-badge {{ $meta['badge'] }}">{{ $meta['vi'] }}</span>
                 </div>
             </div>
 
@@ -248,16 +249,25 @@
 
             {{-- Single / Multiple choice --}}
             @if(in_array($type, ['single_choice', 'multiple_choice']) && !empty($options))
-                <div class="options">
-                    @foreach($options as $i => $option)
-                        <div class="option">
-                            <div class="option-label {{ $type === 'multiple_choice' ? 'square' : '' }}">
-                                {{ $letters[$i] ?? ($i + 1) }}
-                            </div>
-                            <div class="option-text">{{ is_array($option) ? ($option['text'] ?? '') : $option }}</div>
-                        </div>
-                    @endforeach
-                </div>
+    @php $optionChunks = array_chunk($options, 2); @endphp
+    <div class="options">
+        <table class="options-table">
+            @foreach($optionChunks as $chunkIndex => $row)
+            <tr>
+                @foreach($row as $i => $option)
+                    @php $globalIndex = ($chunkIndex * 2) + $i; @endphp
+                    <td class="option-cell">
+                        <span class="option-label {{ $type === 'multiple_choice' ? 'square' : '' }}">{{ $letters[$globalIndex] ?? ($globalIndex + 1) }}</span>
+                        <span class="option-text">{{ is_array($option) ? ($option['text'] ?? '') : $option }}</span>
+                    </td>
+                @endforeach
+                @if(count($row) === 1)
+                    <td class="option-cell"></td>
+                @endif
+            </tr>
+            @endforeach
+        </table>
+    </div>
 
             {{-- True / False --}}
             @elseif($type === 'true_false')
