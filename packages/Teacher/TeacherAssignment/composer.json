@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/teacher-assignment",
+    "description": "Mindigo Teacher Assignment Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\TeacherAssignment\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\TeacherAssignment\\Providers\\TeacherAssignmentServiceProvider"
+            ]
+        }
+    }
+}

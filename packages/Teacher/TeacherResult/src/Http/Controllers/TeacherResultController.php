@@ -5,6 +5,7 @@ namespace Mindigo\TeacherResult\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
+use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\TeacherResult\Services\TeacherResultService;
 
@@ -17,16 +18,23 @@ class TeacherResultController extends Controller
         session()->forget('url.intended');
 
         /** @var \Mindigo\Auth\Models\User $teacher */
-        $teacher  = Auth::user();
-        $keyword  = request('q', '');
+        $teacher = Auth::user();
+        $keyword = request('q', '');
+        $classrooms = $this->service->getMyClassrooms($teacher);
+        $selectedClassroom = $this->selectedClassroom($teacher, $classrooms);
 
-        $overview      = $this->service->overview($teacher);
-        $examResults   = $this->service->examResults($teacher, $keyword);
-        $studentResults= $this->service->studentResults($teacher, $keyword);
-        $classrooms    = $this->service->getMyClassrooms($teacher);
+        $overview = $this->service->overview($teacher, $selectedClassroom);
+        $examResults = $this->service->examResults($teacher, $keyword, $selectedClassroom);
+        $studentResults = $this->service->studentResults($teacher, $keyword, $selectedClassroom);
 
         return view('teacher-result::index', compact(
-            'teacher', 'overview', 'examResults', 'studentResults', 'classrooms', 'keyword'
+            'teacher',
+            'overview',
+            'examResults',
+            'studentResults',
+            'classrooms',
+            'selectedClassroom',
+            'keyword'
         ));
     }
 
@@ -34,9 +42,11 @@ class TeacherResultController extends Controller
     {
         /** @var \Mindigo\Auth\Models\User $teacher */
         $teacher = Auth::user();
-        $result  = $this->service->examDetail($teacher, $exam);
+        $classrooms = $this->service->getMyClassrooms($teacher);
+        $selectedClassroom = $this->selectedClassroom($teacher, $classrooms, false);
+        $result = $this->service->examDetail($teacher, $exam, $selectedClassroom);
 
-        return view('teacher-result::by-exam', compact('exam', 'result'));
+        return view('teacher-result::by-exam', compact('exam', 'result', 'selectedClassroom'));
     }
 
     public function byStudent(User $user)
@@ -45,8 +55,24 @@ class TeacherResultController extends Controller
 
         /** @var \Mindigo\Auth\Models\User $teacher */
         $teacher = Auth::user();
-        $detail  = $this->service->studentDetail($teacher, $user);
+        $classrooms = $this->service->getMyClassrooms($teacher);
+        $selectedClassroom = $this->selectedClassroom($teacher, $classrooms, false);
+        $detail = $this->service->studentDetail($teacher, $user, $selectedClassroom);
 
-        return view('teacher-result::by-student', compact('user', 'detail'));
+        return view('teacher-result::by-student', compact('user', 'detail', 'selectedClassroom'));
+    }
+
+    private function selectedClassroom(User $teacher, $classrooms, bool $defaultFirst = true): ?Classroom
+    {
+        $requestedId = request()->integer('classroom_id');
+
+        if ($requestedId) {
+            return Classroom::query()
+                ->where('teacher_id', $teacher->getAuthIdentifier())
+                ->whereKey($requestedId)
+                ->firstOrFail();
+        }
+
+        return $defaultFirst ? $classrooms->first() : null;
     }
 }

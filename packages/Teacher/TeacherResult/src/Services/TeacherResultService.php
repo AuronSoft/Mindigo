@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherResult\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Mindigo\Auth\Models\User;
@@ -11,188 +12,201 @@ use Mindigo\ExamManagement\Models\ExamAttempt;
 
 class TeacherResultService
 {
-    /**
-     * Tổng quan kết quả toàn bộ đề thi của giáo viên.
-     */
-    public function overview(User $teacher): array
+    public function overview(User $teacher, ?Classroom $classroom = null): array
     {
-        $tid = $teacher->getAuthIdentifier();
+        $tid = (int) $teacher->getAuthIdentifier();
+        $studentIds = $this->studentIdsFor($teacher, $classroom);
 
-        $totalAttempts = ExamAttempt::whereHas('exam', fn ($q) => $q->where('created_by', $tid))
-            ->where('status', 'submitted')->count();
+        $submittedAttempts = $this->submittedAttemptsFor($teacher, $studentIds);
 
-        $passedAttempts = ExamAttempt::whereHas('exam', fn ($q) => $q->where('created_by', $tid))
-            ->where('status', 'submitted')->where('passed', true)->count();
+        $totalAttempts = (clone $submittedAttempts)->count();
+        $passedAttempts = (clone $submittedAttempts)->where('passed', true)->count();
+        $avgScore = ((clone $submittedAttempts)->avg('percentage') ?? 0) / 10;
 
-        $avgScore = ExamAttempt::whereHas('exam', fn ($q) => $q->where('created_by', $tid))
-            ->where('status', 'submitted')->avg('percentage') ?? 0;
+        $totalExamsQuery = Exam::query()->where('created_by', $tid);
+        if ($classroom) {
+            $totalExamsQuery->whereHas('attempts', fn (Builder $q) => $q->whereIn('user_id', $studentIds));
+        }
 
-        $totalExams = Exam::where('created_by', $tid)->count();
-        $totalStudents = DB::table('classroom_students')
-            ->join('classrooms', 'classrooms.id', '=', 'classroom_students.classroom_id')
-            ->where('classrooms.teacher_id', $tid)
-            ->whereNull('classrooms.deleted_at')
-            ->distinct('classroom_students.student_id')
-            ->count('classroom_students.student_id');
-
-        // Trend 14 ngày
-        $trend = ExamAttempt::whereHas('exam', fn ($q) => $q->where('created_by', $tid))
-            ->where('status', 'submitted')
+        $trend = (clone $submittedAttempts)
             ->where('submitted_at', '>=', now()->subDays(13)->startOfDay())
-            ->selectRaw('DATE(submitted_at) as date, COUNT(*) as count, ROUND(AVG(percentage),1) as avg_score')
-            ->groupBy('date')->orderBy('date')
-            ->get()->keyBy('date');
+            ->selectRaw('DATE(submitted_at) as date, COUNT(*) as count, ROUND(AVG(percentage) / 10, 1) as avg_score')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
 
         $trendData = collect(range(13, 0))->map(function ($i) use ($trend) {
-            $date = now()->subDays($i)->toDateString();
+            $day = now()->subDays($i);
+            $date = $day->toDateString();
+
             return [
-                'label'     => now()->subDays($i)->locale('vi')->isoFormat('D/M'),
-                'count'     => $trend[$date]->count ?? 0,
+                'label' => $day->locale('vi')->isoFormat('D/M'),
+                'count' => $trend[$date]->count ?? 0,
                 'avg_score' => $trend[$date]->avg_score ?? null,
             ];
         });
 
         return [
             'total_attempts' => $totalAttempts,
-            'passed_attempts'=> $passedAttempts,
-            'pass_rate'      => $totalAttempts > 0 ? round($passedAttempts / $totalAttempts * 100, 1) : 0,
-            'avg_score'      => round($avgScore, 1),
-            'total_exams'    => $totalExams,
-            'total_students' => $totalStudents,
-            'trend'          => $trendData,
+            'passed_attempts' => $passedAttempts,
+            'pass_rate' => $totalAttempts > 0 ? round($passedAttempts / $totalAttempts * 100, 1) : 0,
+            'avg_score' => round($avgScore, 1),
+            'total_exams' => (clone $totalExamsQuery)->count(),
+            'total_students' => $studentIds->count(),
+            'trend' => $trendData,
         ];
     }
 
-    /**
-     * Kết quả từng đề thi của giáo viên, kèm stats.
-     */
-    public function examResults(User $teacher, string $keyword = ''): Collection
+    public function examResults(User $teacher, string $keyword = '', ?Classroom $classroom = null): Collection
     {
-        $query = Exam::where('created_by', $teacher->getAuthIdentifier())
-            ->withCount(['attempts' => fn ($q) => $q->where('status', 'submitted')])
-            ->withAvg(['attempts' => fn ($q) => $q->where('status', 'submitted')], 'percentage')
-            ->orderByDesc('updated_at');
+        $studentIds = $this->studentIdsFor($teacher, $classroom);
 
-        if ($keyword) {
-            $query->where(fn ($q) => $q->where('title', 'like', "%{$keyword}%")->orWhere('subject', 'like', "%{$keyword}%"));
+        if ($classroom && $studentIds->isEmpty()) {
+            return collect();
         }
 
-        return $query->limit(20)->get()->map(function (Exam $exam) {
-            $passed = ExamAttempt::where('exam_id', $exam->id)->where('status', 'submitted')->where('passed', true)->count();
+        $attemptFilter = function (Builder $q) use ($studentIds, $classroom): void {
+            $q->where('status', 'submitted');
+            if ($classroom) {
+                $q->whereIn('user_id', $studentIds);
+            }
+        };
+
+        $query = Exam::query()
+            ->where('created_by', $teacher->getAuthIdentifier())
+            ->withCount(['attempts' => $attemptFilter])
+            ->withAvg(['attempts' => $attemptFilter], 'percentage')
+            ->orderByDesc('updated_at');
+
+        if ($classroom) {
+            $query->whereHas('attempts', fn (Builder $q) => $q->whereIn('user_id', $studentIds));
+        }
+
+        if ($keyword) {
+            $query->where(fn (Builder $q) => $q->where('title', 'like', "%{$keyword}%")->orWhere('subject', 'like', "%{$keyword}%"));
+        }
+
+        return $query->limit(20)->get()->map(function (Exam $exam) use ($studentIds, $classroom) {
+            $passedQuery = ExamAttempt::query()
+                ->where('exam_id', $exam->id)
+                ->where('status', 'submitted')
+                ->where('passed', true);
+
+            if ($classroom) {
+                $passedQuery->whereIn('user_id', $studentIds);
+            }
+
+            $passed = $passedQuery->count();
 
             return [
-                'exam'       => $exam,
-                'attempts'   => $exam->attempts_count,
-                'avg_score'  => round($exam->attempts_avg_percentage ?? 0, 1),
-                'pass_rate'  => $exam->attempts_count > 0 ? round($passed / $exam->attempts_count * 100, 1) : 0,
-                'passed'     => $passed,
+                'exam' => $exam,
+                'attempts' => $exam->attempts_count,
+                'avg_score' => round(($exam->attempts_avg_percentage ?? 0) / 10, 1),
+                'pass_rate' => $exam->attempts_count > 0 ? round($passed / $exam->attempts_count * 100, 1) : 0,
+                'passed' => $passed,
             ];
         });
     }
 
-    /**
-     * Danh sách học sinh trong các lớp của giáo viên, kèm thống kê.
-     */
-    public function studentResults(User $teacher, string $keyword = ''): Collection
+    public function studentResults(User $teacher, string $keyword = '', ?Classroom $classroom = null): Collection
     {
-        $tid = $teacher->getAuthIdentifier();
-
-        // Lấy IDs học sinh trong lớp của giáo viên
-        $studentIds = DB::table('classroom_students')
-            ->join('classrooms', 'classrooms.id', '=', 'classroom_students.classroom_id')
-            ->where('classrooms.teacher_id', $tid)
-            ->whereNull('classrooms.deleted_at')
-            ->pluck('classroom_students.student_id')
-            ->unique();
+        $studentIds = $this->studentIdsFor($teacher, $classroom);
 
         $query = User::students()
             ->whereIn('id', $studentIds)
             ->select('id', 'name', 'email');
 
         if ($keyword) {
-            $query->where(fn ($q) => $q->where('name', 'like', "%{$keyword}%")->orWhere('email', 'like', "%{$keyword}%"));
+            $query->where(fn (Builder $q) => $q->where('name', 'like', "%{$keyword}%")->orWhere('email', 'like', "%{$keyword}%"));
         }
 
-        return $query->limit(30)->get()->map(function (User $student) use ($tid) {
-            $attempts = ExamAttempt::where('user_id', $student->id)
-                ->whereHas('exam', fn ($q) => $q->where('created_by', $tid))
+        return $query->limit(50)->get()->map(function (User $student) use ($teacher) {
+            $attempts = ExamAttempt::query()
+                ->where('user_id', $student->id)
+                ->whereHas('exam', fn (Builder $q) => $q->where('created_by', $teacher->getAuthIdentifier()))
                 ->where('status', 'submitted');
 
-            $total  = (clone $attempts)->count();
+            $total = (clone $attempts)->count();
             $passed = (clone $attempts)->where('passed', true)->count();
-            $avg    = (clone $attempts)->avg('percentage') ?? 0;
-            $last   = (clone $attempts)->latest('submitted_at')->value('submitted_at');
+            $avg = ((clone $attempts)->avg('percentage') ?? 0) / 10;
+            $last = (clone $attempts)->latest('submitted_at')->value('submitted_at');
 
             return [
-                'student'    => $student,
-                'total'      => $total,
-                'passed'     => $passed,
-                'pass_rate'  => $total > 0 ? round($passed / $total * 100) : 0,
-                'avg_score'  => round($avg, 1),
-                'last_at'    => $last,
+                'student' => $student,
+                'total' => $total,
+                'passed' => $passed,
+                'pass_rate' => $total > 0 ? round($passed / $total * 100) : 0,
+                'avg_score' => round($avg, 1),
+                'last_at' => $last,
             ];
         })->sortByDesc('avg_score')->values();
     }
 
-    /**
-     * Chi tiết lịch sử làm bài của 1 học sinh trong đề thi của giáo viên.
-     */
-    public function studentDetail(User $teacher, User $student): array
+    public function studentDetail(User $teacher, User $student, ?Classroom $classroom = null): array
     {
-        $tid = $teacher->getAuthIdentifier();
+        if ($classroom) {
+            abort_unless(
+                $classroom->students()->whereKey($student->id)->exists(),
+                404
+            );
+        }
 
-        $history = ExamAttempt::where('user_id', $student->id)
-            ->whereHas('exam', fn ($q) => $q->where('created_by', $tid))
+        $history = ExamAttempt::query()
+            ->where('user_id', $student->id)
+            ->whereHas('exam', fn (Builder $q) => $q->where('created_by', $teacher->getAuthIdentifier()))
             ->where('status', 'submitted')
             ->with('exam:id,title,subject')
             ->orderByDesc('submitted_at')
             ->get();
 
         $bySubject = $history->whereNotNull('exam.subject')
-            ->groupBy(fn ($a) => $a->exam->subject)
-            ->map(fn ($g) => [
-                'subject'   => $g->first()->exam->subject,
-                'count'     => $g->count(),
-                'avg_score' => round($g->avg('percentage'), 1),
-                'pass_rate' => round($g->where('passed', true)->count() / max(1, $g->count()) * 100),
+            ->groupBy(fn ($attempt) => $attempt->exam->subject)
+            ->map(fn ($group) => [
+                'subject' => $group->first()->exam->subject,
+                'count' => $group->count(),
+                'avg_score' => round($group->avg('percentage') / 10, 1),
+                'pass_rate' => round($group->where('passed', true)->count() / max(1, $group->count()) * 100),
             ])->values();
 
         return [
-            'history'    => $history,
+            'history' => $history,
             'by_subject' => $bySubject,
-            'total'      => $history->count(),
-            'avg_score'  => round($history->avg('percentage') ?? 0, 1),
-            'pass_rate'  => $history->count() > 0 ? round($history->where('passed', true)->count() / $history->count() * 100, 1) : 0,
+            'total' => $history->count(),
+            'avg_score' => round(($history->avg('percentage') ?? 0) / 10, 1),
+            'pass_rate' => $history->count() > 0 ? round($history->where('passed', true)->count() / $history->count() * 100, 1) : 0,
         ];
     }
 
-    /**
-     * Chi tiết kết quả 1 đề thi.
-     */
-    public function examDetail(User $teacher, Exam $exam): array
+    public function examDetail(User $teacher, Exam $exam, ?Classroom $classroom = null): array
     {
         abort_unless($exam->created_by === (int) $teacher->getAuthIdentifier() || $teacher->isAdmin(), 403);
 
         $attempts = ExamAttempt::where('exam_id', $exam->id)->where('status', 'submitted');
-        $total    = (clone $attempts)->count();
-        $passed   = (clone $attempts)->where('passed', true)->count();
-        $avgScore = (clone $attempts)->avg('percentage') ?? 0;
+
+        if ($classroom) {
+            $attempts->whereIn('user_id', $this->studentIdsFor($teacher, $classroom));
+        }
+
+        $total = (clone $attempts)->count();
+        $passed = (clone $attempts)->where('passed', true)->count();
+        $avgScore = ((clone $attempts)->avg('percentage') ?? 0) / 10;
 
         $distribution = [];
-        foreach (['0–20' => [0,20], '20–40' => [20,40], '40–60' => [40,60], '60–80' => [60,80], '80–100' => [80,101]] as $label => [$min, $max]) {
+        foreach (['0-2' => [0, 20], '2-4' => [20, 40], '4-6' => [40, 60], '6-8' => [60, 80], '8-10' => [80, 101]] as $label => [$min, $max]) {
             $distribution[$label] = (clone $attempts)->where('percentage', '>=', $min)->where('percentage', '<', $max)->count();
         }
 
         $list = (clone $attempts)->with('user:id,name,email')->orderByDesc('percentage')->limit(50)->get();
 
         return [
-            'total'        => $total,
-            'passed'       => $passed,
-            'failed'       => $total - $passed,
-            'pass_rate'    => $total > 0 ? round($passed / $total * 100, 1) : 0,
-            'avg_score'    => round($avgScore, 1),
+            'total' => $total,
+            'passed' => $passed,
+            'failed' => $total - $passed,
+            'pass_rate' => $total > 0 ? round($passed / $total * 100, 1) : 0,
+            'avg_score' => round($avgScore, 1),
             'distribution' => $distribution,
-            'list'         => $list,
+            'list' => $list,
         ];
     }
 
@@ -202,5 +216,27 @@ class TeacherResultService
             ->withCount('students')
             ->orderBy('name')
             ->get();
+    }
+
+    private function studentIdsFor(User $teacher, ?Classroom $classroom = null): Collection
+    {
+        $query = DB::table('classroom_students')
+            ->join('classrooms', 'classrooms.id', '=', 'classroom_students.classroom_id')
+            ->where('classrooms.teacher_id', $teacher->getAuthIdentifier())
+            ->whereNull('classrooms.deleted_at');
+
+        if ($classroom) {
+            $query->where('classroom_students.classroom_id', $classroom->id);
+        }
+
+        return $query->pluck('classroom_students.student_id')->unique()->values();
+    }
+
+    private function submittedAttemptsFor(User $teacher, Collection $studentIds): Builder
+    {
+        return ExamAttempt::query()
+            ->whereHas('exam', fn (Builder $q) => $q->where('created_by', $teacher->getAuthIdentifier()))
+            ->whereIn('user_id', $studentIds)
+            ->where('status', 'submitted');
     }
 }

@@ -8,6 +8,7 @@ use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\QuestionBank\Models\Question;
+use Mindigo\TeacherAssignment\Models\Assignment;
 
 class TeacherDashboardService
 {
@@ -42,6 +43,23 @@ class TeacherDashboardService
             'totalAttempts', 'passedAttempts',
             'totalQuestions', 'pendingQuestions'
         );
+    }
+
+    public function getAssignmentStats(User $teacher): array
+    {
+        $total     = Assignment::where('teacher_id', $teacher->id)->count();
+        $published = Assignment::where('teacher_id', $teacher->id)->where('status', 'published')->count();
+        $draft     = Assignment::where('teacher_id', $teacher->id)->where('status', 'draft')->count();
+
+        return compact('total', 'published', 'draft');
+    }
+
+    public function getRecentAssignments(User $teacher, int $limit = 4)
+    {
+        return Assignment::where('teacher_id', $teacher->id)
+            ->latest('created_at')
+            ->limit($limit)
+            ->get();
     }
 
     public function getMyClassrooms(User $teacher, int $limit = 5): \Illuminate\Support\Collection

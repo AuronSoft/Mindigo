@@ -28,6 +28,7 @@
         "mindigo/support-management": "*",
         "mindigo/system-setting": "*",
         "mindigo/teacher-announcement": "*",
+        "mindigo/teacher-assignment": "*",
         "mindigo/teacher-classroom": "*",
         "mindigo/teacher-dashboard": "*",
         "mindigo/teacher-exam": "*",
@@ -69,6 +70,7 @@
             "Mindigo\\TeacherClassroom\\": "packages/Teacher/TeacherClassroom/src/",
             "Mindigo\\TeacherExam\\": "packages/Teacher/TeacherExam/src/",
             "Mindigo\\TeacherAnnouncement\\": "packages/Teacher/TeacherAnnouncement/src/",
+            "Mindigo\\TeacherAssignment\\": "packages/Teacher/TeacherAssignment/src/",
             "Mindigo\\TeacherQuestion\\": "packages/Teacher/TeacherQuestion/src/",
             "Mindigo\\TeacherResult\\": "packages/Teacher/TeacherResult/src/"
         }
@@ -154,6 +156,10 @@
         {
             "type": "path",
             "url": "packages/Teacher/TeacherAnnouncement"
+        },
+        {
+            "type": "path",
+            "url": "packages/Teacher/TeacherAssignment"
         },
         {
             "type": "path",

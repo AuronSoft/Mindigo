@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e9e31df4011c5fdc02db53b3ee9f6b0",
+    "content-hash": "7009022628411aad986d961b6b956840",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2172,7 +2172,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2202,7 +2202,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2268,7 +2268,7 @@
         },
         {
             "name": "mindigo/classroom-management",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ClassroomManagement",
@@ -2298,7 +2298,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2328,7 +2328,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2358,11 +2358,11 @@
         },
         {
             "name": "mindigo/exam-management",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ExamManagement",
-                "reference": "5f03cf2418c08270c9634d482622616413cfe2de"
+                "reference": "0b221ca429254e6f6ebb717aa59cafe441db4a76"
             },
             "require": {
                 "illuminate/support": "^12.0",
@@ -2388,7 +2388,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -2418,7 +2418,7 @@
         },
         {
             "name": "mindigo/question-bank",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/QuestionBank",
@@ -2448,7 +2448,7 @@
         },
         {
             "name": "mindigo/report",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Report",
@@ -2478,7 +2478,7 @@
         },
         {
             "name": "mindigo/role-permission",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -2508,7 +2508,7 @@
         },
         {
             "name": "mindigo/subject-management",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SubjectManagement",
@@ -2538,7 +2538,7 @@
         },
         {
             "name": "mindigo/support-management",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SupportManagement",
@@ -2568,7 +2568,7 @@
         },
         {
             "name": "mindigo/system-setting",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",
@@ -2598,7 +2598,7 @@
         },
         {
             "name": "mindigo/teacher-announcement",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAnnouncement",
@@ -2627,8 +2627,38 @@
             }
         },
         {
+            "name": "mindigo/teacher-assignment",
+            "version": "dev-baitap-baitapvenha",
+            "dist": {
+                "type": "path",
+                "url": "packages/Teacher/TeacherAssignment",
+                "reference": "b5347df715cde2612c7d32c04377221eefb9c0ec"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\TeacherAssignment\\Providers\\TeacherAssignmentServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\TeacherAssignment\\": "src/"
+                }
+            },
+            "description": "Mindigo Teacher Assignment Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mindigo/teacher-classroom",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherClassroom",
@@ -2658,7 +2688,7 @@
         },
         {
             "name": "mindigo/teacher-dashboard",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDashboard",
@@ -2688,7 +2718,7 @@
         },
         {
             "name": "mindigo/teacher-exam",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherExam",
@@ -2718,7 +2748,7 @@
         },
         {
             "name": "mindigo/teacher-question",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherQuestion",
@@ -2748,7 +2778,7 @@
         },
         {
             "name": "mindigo/teacher-result",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherResult",
@@ -2778,7 +2808,7 @@
         },
         {
             "name": "mindigo/user-management",
-            "version": "dev-dev",
+            "version": "dev-baitap-baitapvenha",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/UserManagement",

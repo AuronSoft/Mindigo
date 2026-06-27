@@ -88,6 +88,7 @@
                         'items' => [
                             ['route' => 'teacher.classrooms.index', 'match' => 'teacher.classrooms.*', 'label' => __('teacher-dashboard::app.my_classrooms'), 'icon' => 'heroicon-o-user-group'],
                             ['route' => 'teacher.exams.index', 'match' => 'teacher.exams.*', 'label' => __('teacher-dashboard::app.my_exams'), 'icon' => 'heroicon-o-document-text'],
+                            ['route' => 'teacher.assignments.index', 'match' => 'teacher.assignments.*', 'label' => __('teacher-dashboard::app.my_assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
                             ['route' => 'teacher.questions.index', 'match' => 'teacher.questions.*', 'label' => __('teacher-dashboard::app.my_questions'), 'icon' => 'heroicon-o-circle-stack'],
                         ],
                     ],
