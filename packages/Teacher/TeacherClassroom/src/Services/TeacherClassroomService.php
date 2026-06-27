@@ -86,10 +86,77 @@ class TeacherClassroomService
     public function formData(): array
     {
         return [
-            'statuses' => Classroom::STATUSES,
-            'students' => User::query()->students()->active()->orderBy('name')->get(['id', 'name', 'email']),
-            'subjects' => Subject::query()->where('status', 'active')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
+            'statuses'   => Classroom::STATUSES,
+            'students'   => User::query()->students()->active()->orderBy('name')->get(['id', 'name', 'email']),
+            'subjects'   => Subject::query()->where('status', 'active')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
+            'assistants' => User::query()->teachers()->active()->orderBy('name')->get(['id', 'name', 'email']),
         ];
+    }
+
+    public function saveAttendance(Classroom $classroom, string $date, array $records): void
+    {
+        foreach ($records as $studentId => $record) {
+            \Mindigo\TeacherClassroom\Models\ClassroomAttendance::query()->updateOrCreate(
+                [
+                    'classroom_id' => $classroom->id,
+                    'student_id'   => (int) $studentId,
+                    'session_date' => $date,
+                ],
+                [
+                    'status'  => $record['status'] ?? 'present',
+                    'remarks' => $record['remarks'] ?? null,
+                ]
+            );
+        }
+    }
+
+    public function getAttendanceByDate(Classroom $classroom, string $date)
+    {
+        return \Mindigo\TeacherClassroom\Models\ClassroomAttendance::query()
+            ->where('classroom_id', $classroom->id)
+            ->where('session_date', $date)
+            ->get()
+            ->keyBy('student_id');
+    }
+
+    public function getAttendanceHistory(Classroom $classroom)
+    {
+        return \Mindigo\TeacherClassroom\Models\ClassroomAttendance::query()
+            ->where('classroom_id', $classroom->id)
+            ->with('student:id,name,email')
+            ->orderBy('session_date', 'desc')
+            ->orderBy('student_id')
+            ->get();
+    }
+
+    public function addSchedule(Classroom $classroom, array $data): \Mindigo\TeacherClassroom\Models\ClassroomSchedule
+    {
+        return \Mindigo\TeacherClassroom\Models\ClassroomSchedule::query()->create([
+            'classroom_id' => $classroom->id,
+            'title'        => $data['title'],
+            'session_date' => $data['session_date'],
+            'start_time'   => $data['start_time'],
+            'end_time'     => $data['end_time'],
+            'description'  => $data['description'] ?? null,
+        ]);
+    }
+
+    public function updateSchedule(\Mindigo\TeacherClassroom\Models\ClassroomSchedule $schedule, array $data): \Mindigo\TeacherClassroom\Models\ClassroomSchedule
+    {
+        $schedule->update([
+            'title'        => $data['title'],
+            'session_date' => $data['session_date'],
+            'start_time'   => $data['start_time'],
+            'end_time'     => $data['end_time'],
+            'description'  => $data['description'] ?? null,
+        ]);
+
+        return $schedule;
+    }
+
+    public function deleteSchedule(\Mindigo\TeacherClassroom\Models\ClassroomSchedule $schedule): void
+    {
+        $schedule->delete();
     }
 
     private function uniqueSlug(string $name, ?Classroom $ignore = null): string

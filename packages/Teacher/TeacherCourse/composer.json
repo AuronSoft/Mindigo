@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/teacher-course",
+    "description": "Mindigo Teacher Course Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\TeacherCourse\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\TeacherCourse\\Providers\\TeacherCourseServiceProvider"
+            ]
+        }
+    }
+}

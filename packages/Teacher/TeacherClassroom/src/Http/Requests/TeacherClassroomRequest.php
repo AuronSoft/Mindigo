@@ -24,6 +24,7 @@ class TeacherClassroomRequest extends FormRequest
             'school_year' => ['nullable', 'string', 'max:40'],
             'description' => ['nullable', 'string', 'max:3000'],
             'status'      => ['required', Rule::in(Classroom::STATUSES)],
+            'assistant_id' => ['nullable', 'integer', 'exists:users,id'],
         ];
     }
 

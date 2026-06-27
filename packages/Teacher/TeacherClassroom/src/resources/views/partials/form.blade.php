@@ -60,6 +60,25 @@
         </div>
     </div>
 
+    {{-- Assistant --}}
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">Trợ giảng</label>
+        <select name="assistant_id"
+                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-50">
+            <option value="">-- Không có trợ giảng --</option>
+            @foreach($assistants as $assistant)
+                <option value="{{ $assistant->id }}" @selected(old('assistant_id', $sel?->assistant_id) == $assistant->id)>
+                    {{ $assistant->name }} ({{ $assistant->email }})
+                </option>
+            @endforeach
+        </select>
+        @error('assistant_id')
+            <p class="mt-1.5 flex items-center gap-1 text-xs font-bold text-red-600">
+                <x-heroicon-o-exclamation-circle class="h-3.5 w-3.5" />{{ $message }}
+            </p>
+        @enderror
+    </div>
+
     {{-- Description --}}
     <div>
         <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.description')</label>
@@ -69,3 +88,4 @@
     </div>
 
 </div>
+

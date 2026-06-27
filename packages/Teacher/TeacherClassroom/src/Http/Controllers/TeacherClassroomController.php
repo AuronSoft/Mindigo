@@ -45,9 +45,27 @@ class TeacherClassroomController extends Controller
     {
         $this->authorizeOwnership($classroom);
 
-        $classroom->load(['students:id,name,email', 'subjects:id,name,color']);
+        $classroom->load(['students:id,name,email', 'subjects:id,name,color', 'assistant:id,name,email']);
 
-        return view('teacher-classroom::show', compact('classroom'));
+        $formData = $this->service->formData();
+
+        $selectedDate = request('attendance_date', now()->toDateString());
+        $attendanceRecords = $this->service->getAttendanceByDate($classroom, $selectedDate);
+        $attendanceHistory = $this->service->getAttendanceHistory($classroom);
+
+        $schedules = $classroom->schedules()->orderBy('session_date', 'desc')->orderBy('start_time', 'desc')->get();
+        $announcements = $classroom->announcements()->latest('published_at')->get();
+
+        return view('teacher-classroom::show', [
+            'classroom'          => $classroom,
+            'allStudents'        => $formData['students'],
+            'assistants'         => $formData['assistants'],
+            'selectedDate'       => $selectedDate,
+            'attendanceRecords'  => $attendanceRecords,
+            'attendanceHistory'  => $attendanceHistory,
+            'schedules'          => $schedules,
+            'announcements'      => $announcements,
+        ]);
     }
 
     public function edit(Classroom $classroom)
@@ -93,8 +111,86 @@ class TeacherClassroomController extends Controller
         $this->service->syncStudents($classroom, $validated['student_ids'] ?? []);
 
         return redirect()
-            ->route('teacher.classrooms.show', $classroom)
+            ->route('teacher.classrooms.show', [$classroom, 'tab' => 'students'])
             ->with('success', __('teacher-classroom::app.students_updated'));
+    }
+
+    public function saveAttendance(Request $request, Classroom $classroom): RedirectResponse
+    {
+        $this->authorizeOwnership($classroom);
+
+        $validated = $request->validate([
+            'attendance_date' => ['required', 'date'],
+            'records'         => ['required', 'array'],
+            'records.*.status' => ['required', 'string', 'in:present,absent,late,excused'],
+            'records.*.remarks' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $this->service->saveAttendance($classroom, $validated['attendance_date'], $validated['records']);
+
+        return redirect()
+            ->route('teacher.classrooms.show', [$classroom, 'tab' => 'attendance', 'attendance_date' => $validated['attendance_date']])
+            ->with('success', 'Đã lưu thông tin điểm danh.');
+    }
+
+    public function getAttendance(Classroom $classroom)
+    {
+        $this->authorizeOwnership($classroom);
+        $date = request('attendance_date', now()->toDateString());
+        $records = $this->service->getAttendanceByDate($classroom, $date);
+
+        return response()->json($records);
+    }
+
+    public function storeSchedule(Request $request, Classroom $classroom): RedirectResponse
+    {
+        $this->authorizeOwnership($classroom);
+
+        $validated = $request->validate([
+            'title'        => ['required', 'string', 'max:255'],
+            'session_date' => ['required', 'date'],
+            'start_time'   => ['required', 'string'],
+            'end_time'     => ['required', 'string'],
+            'description'  => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $this->service->addSchedule($classroom, $validated);
+
+        return redirect()
+            ->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
+            ->with('success', 'Đã thêm buổi học mới vào lịch.');
+    }
+
+    public function updateSchedule(Request $request, \Mindigo\TeacherClassroom\Models\ClassroomSchedule $schedule): RedirectResponse
+    {
+        $classroom = $schedule->classroom;
+        $this->authorizeOwnership($classroom);
+
+        $validated = $request->validate([
+            'title'        => ['required', 'string', 'max:255'],
+            'session_date' => ['required', 'date'],
+            'start_time'   => ['required', 'string'],
+            'end_time'     => ['required', 'string'],
+            'description'  => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $this->service->updateSchedule($schedule, $validated);
+
+        return redirect()
+            ->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
+            ->with('success', 'Đã cập nhật thông tin buổi học.');
+    }
+
+    public function destroySchedule(\Mindigo\TeacherClassroom\Models\ClassroomSchedule $schedule): RedirectResponse
+    {
+        $classroom = $schedule->classroom;
+        $this->authorizeOwnership($classroom);
+
+        $this->service->deleteSchedule($schedule);
+
+        return redirect()
+            ->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
+            ->with('success', 'Đã xóa buổi học khỏi lịch.');
     }
 
     /**
