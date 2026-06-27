@@ -182,6 +182,7 @@
                             ['route' => 'teacher.exams.index', 'match' => 'teacher.exams.*', 'label' => __('teacher-dashboard::app.my_exams'), 'icon' => 'heroicon-o-document-text'],
                             ['route' => 'teacher.assignments.index', 'match' => 'teacher.assignments.*', 'label' => __('teacher-dashboard::app.my_assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
                             ['route' => 'teacher.questions.index', 'match' => 'teacher.questions.*', 'label' => __('teacher-dashboard::app.my_questions'), 'icon' => 'heroicon-o-circle-stack'],
+                            ['route' => 'teacher.live-sessions.index', 'match' => 'teacher.live-sessions.*', 'label' => __('teacher-dashboard::app.live_sessions'), 'icon' => 'heroicon-o-video-camera'],
                         ],
                     ],
                     [

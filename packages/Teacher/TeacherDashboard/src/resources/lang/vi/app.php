@@ -9,6 +9,7 @@ return [
     'my_exams'       => 'Đề thi của tôi',
     'my_assignments' => 'Bài tập của tôi',
     'my_questions'   => 'Câu hỏi của tôi',
+    'live_sessions'  => 'Học trực tuyến',
     'results'        => 'Kết quả học sinh',
     'announcements'  => 'Thông báo',
     'courses'        => 'Quản lý khóa học',

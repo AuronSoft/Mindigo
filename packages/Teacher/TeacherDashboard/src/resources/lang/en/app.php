@@ -9,6 +9,7 @@ return [
     'my_exams'       => 'My Exams',
     'my_assignments' => 'My Assignments',
     'my_questions'   => 'My Questions',
+    'live_sessions'  => 'Live Sessions',
     'results'        => 'Student Results',
     'announcements'  => 'Announcements',
     'courses'        => 'Course management',

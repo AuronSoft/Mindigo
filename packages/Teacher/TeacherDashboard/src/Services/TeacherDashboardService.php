@@ -3,12 +3,14 @@
 namespace Mindigo\TeacherDashboard\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\TeacherAssignment\Models\Assignment;
+use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 
 class TeacherDashboardService
 {
@@ -50,14 +52,28 @@ class TeacherDashboardService
         $total     = Assignment::where('teacher_id', $teacher->id)->count();
         $published = Assignment::where('teacher_id', $teacher->id)->where('status', 'published')->count();
         $draft     = Assignment::where('teacher_id', $teacher->id)->where('status', 'draft')->count();
+        $pendingSubmissions = AssignmentSubmission::whereHas('assignment', fn ($q) => $q->where('teacher_id', $teacher->id))
+            ->whereNull('graded_at')
+            ->count();
 
-        return compact('total', 'published', 'draft');
+        return compact('total', 'published', 'draft', 'pendingSubmissions');
     }
 
     public function getRecentAssignments(User $teacher, int $limit = 4)
     {
         return Assignment::where('teacher_id', $teacher->id)
+            ->with(['classroom:id,name'])
+            ->withCount('submissions')
             ->latest('created_at')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getRecentAssignmentSubmissions(User $teacher, int $limit = 5): \Illuminate\Support\Collection
+    {
+        return AssignmentSubmission::with(['assignment:id,title,teacher_id,classroom_id,max_score', 'assignment.classroom:id,name', 'student:id,name'])
+            ->whereHas('assignment', fn ($q) => $q->where('teacher_id', $teacher->id))
+            ->latest('submitted_at')
             ->limit($limit)
             ->get();
     }
@@ -126,5 +142,78 @@ class TeacherDashboardService
         }
 
         return compact('labels', 'counts');
+    }
+
+    public function getUpcomingActivities(User $teacher, int $limit = 5): \Illuminate\Support\Collection
+    {
+        $assignments = Assignment::where('teacher_id', $teacher->id)
+            ->whereNotNull('due_date')
+            ->where('due_date', '>=', now()->startOfDay())
+            ->with('classroom:id,name')
+            ->orderBy('due_date')
+            ->limit($limit)
+            ->get()
+            ->map(fn ($assignment) => (object) [
+                'type' => 'assignment',
+                'title' => $assignment->title,
+                'subtitle' => $assignment->classroom?->name ?? 'Bài tập',
+                'time' => $assignment->due_date,
+                'route' => Route::has('teacher.assignments.submissions.index')
+                    ? route('teacher.assignments.submissions.index', $assignment)
+                    : '#',
+            ]);
+
+        $exams = Exam::where('created_by', $teacher->id)
+            ->whereNotNull('starts_at')
+            ->where('starts_at', '>=', now()->startOfDay())
+            ->orderBy('starts_at')
+            ->limit($limit)
+            ->get(['id', 'title', 'subject', 'starts_at'])
+            ->map(fn ($exam) => (object) [
+                'type' => 'exam',
+                'title' => $exam->title,
+                'subtitle' => $exam->subject ?: 'Đề thi',
+                'time' => $exam->starts_at,
+                'route' => Route::has('teacher.exams.show')
+                    ? route('teacher.exams.show', $exam)
+                    : '#',
+            ]);
+
+        return $assignments
+            ->concat($exams)
+            ->sortBy('time')
+            ->take($limit)
+            ->values();
+    }
+
+    public function getPerformanceOverview(User $teacher): array
+    {
+        $rows = Classroom::where('teacher_id', $teacher->id)
+            ->withCount('students')
+            ->latest()
+            ->limit(5)
+            ->get(['id', 'name']);
+
+        $labels = [];
+        $averages = [];
+        $studentCounts = [];
+
+        foreach ($rows as $classroom) {
+            $labels[] = $classroom->name;
+            $studentCounts[] = (int) $classroom->students_count;
+
+            $studentIds = DB::table('classroom_students')
+                ->where('classroom_id', $classroom->id)
+                ->pluck('student_id');
+
+            $average = ExamAttempt::whereIn('user_id', $studentIds)
+                ->whereHas('exam', fn ($q) => $q->where('created_by', $teacher->id))
+                ->where('status', 'submitted')
+                ->avg('percentage');
+
+            $averages[] = $average ? round($average, 1) : 0;
+        }
+
+        return compact('labels', 'averages', 'studentCounts');
     }
 }

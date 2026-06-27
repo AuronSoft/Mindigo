@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/teacher-live-session",
+    "description": "Mindigo Teacher Live Session Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\TeacherLiveSession\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\TeacherLiveSession\\Providers\\TeacherLiveSessionServiceProvider"
+            ]
+        }
+    }
+}
