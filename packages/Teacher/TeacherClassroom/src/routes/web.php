@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherClassroom\Http\Controllers\TeacherClassroomController;
+use Mindigo\TeacherClassroom\Http\Controllers\ClassroomAttendanceController;
+use Mindigo\TeacherClassroom\Http\Controllers\ClassroomScheduleController;
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])
     ->prefix('teacher/classrooms')
@@ -17,11 +19,11 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::delete('/{classroom}', [TeacherClassroomController::class, 'destroy'])->name('destroy');
 
         // Attendance routes
-        Route::get('/{classroom}/attendance', [TeacherClassroomController::class, 'getAttendance'])->name('attendance.index');
-        Route::post('/{classroom}/attendance', [TeacherClassroomController::class, 'saveAttendance'])->name('attendance.save');
+        Route::get('/{classroom}/attendance', [ClassroomAttendanceController::class, 'getAttendance'])->name('attendance.index');
+        Route::post('/{classroom}/attendance', [ClassroomAttendanceController::class, 'saveAttendance'])->name('attendance.save');
 
         // Schedule routes
-        Route::post('/{classroom}/schedules', [TeacherClassroomController::class, 'storeSchedule'])->name('schedules.store');
-        Route::put('/schedules/{schedule}', [TeacherClassroomController::class, 'updateSchedule'])->name('schedules.update');
-        Route::delete('/schedules/{schedule}', [TeacherClassroomController::class, 'destroySchedule'])->name('schedules.destroy');
+        Route::post('/{classroom}/schedules', [ClassroomScheduleController::class, 'storeSchedule'])->name('schedules.store');
+        Route::put('/schedules/{schedule}', [ClassroomScheduleController::class, 'updateSchedule'])->name('schedules.update');
+        Route::delete('/schedules/{schedule}', [ClassroomScheduleController::class, 'destroySchedule'])->name('schedules.destroy');
     });
