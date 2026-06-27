@@ -36,6 +36,11 @@
         : 0;
 
     $safeRoute = fn (string $route, array $params = []) => Route::has($route) ? route($route, $params) : '#';
+    $teacherHeroImage = match ($teacher->gender) {
+        'female' => asset('image/Teacher1.png'),
+        'male' => asset('image/Teacher2.png'),
+        default => asset('image/Teacher2.png'),
+    };
 
     $quickLinks = [
         ['label' => 'Danh sách lớp', 'icon' => 'heroicon-o-user-group', 'route' => 'teacher.classrooms.index', 'tone' => 'text-blue-600 bg-blue-50'],
@@ -109,18 +114,11 @@
             </div>
 
             <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
-                <article class="relative overflow-hidden rounded-2xl border border-green-100 bg-white p-6 shadow-sm">
+                <article class="relative rounded-2xl border border-green-100 bg-white p-6 shadow-sm">
                     <div class="absolute inset-y-0 right-0 w-56 bg-gradient-to-l from-green-50 to-transparent"></div>
                     <div class="relative z-10 flex min-h-44 items-center gap-6">
-                        <div class="hidden h-36 w-36 shrink-0 items-end justify-center rounded-2xl bg-gradient-to-br from-green-50 to-blue-50 ring-1 ring-green-100 sm:flex">
-                            <div class="relative mb-5 h-24 w-24">
-                                <span class="absolute left-5 top-0 h-14 w-14 rounded-full bg-amber-100 ring-4 ring-white"></span>
-                                <span class="absolute left-2 top-14 h-12 w-20 rounded-t-[2rem] bg-blue-200 ring-4 ring-white"></span>
-                                <span class="absolute left-12 top-12 h-10 w-14 rounded-lg bg-slate-700 shadow-sm"></span>
-                                <span class="absolute left-9 top-5 h-2 w-2 rounded-full bg-slate-700"></span>
-                                <span class="absolute left-16 top-5 h-2 w-2 rounded-full bg-slate-700"></span>
-                                <span class="absolute left-10 top-9 h-2 w-8 rounded-full bg-rose-300"></span>
-                            </div>
+                        <div class="hidden h-48 w-44 shrink-0 items-end justify-center overflow-visible sm:flex">
+                            <img src="{{ $teacherHeroImage }}" alt="{{ $teacher->name }}" class="max-h-[13.5rem] w-auto object-contain object-bottom">
                         </div>
                         <div class="min-w-0">
                             <p class="text-sm font-extrabold text-green-700">Chào buổi tốt lành, {{ $teacher->name }}.</p>

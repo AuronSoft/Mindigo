@@ -9,6 +9,12 @@
 @endsection
 
 @section('content')
+    @php
+        $selectedClassroom = request('classroom_id')
+            ? $classrooms->firstWhere('id', (int) request('classroom_id'))
+            : null;
+    @endphp
+
     <div class="flex min-h-screen flex-col bg-slate-50">
 
         {{-- Header --}}
@@ -20,45 +26,39 @@
                 </p>
                 <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-live-session::app.subtitle')</h1>
             </div>
-            <a href="{{ route('teacher.live-sessions.create') }}"
-                class="inline-flex h-10 items-center gap-2 rounded-full bg-green-600 px-5 text-sm font-black text-white no-underline shadow-sm shadow-green-200 transition hover:bg-green-500">
-                <x-heroicon-o-plus class="h-4 w-4" />
-                @lang('teacher-live-session::app.create')
-            </a>
+            <div class="flex items-center gap-2">
+                <button type="button" data-live-filter-open
+                    class="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 shadow-sm transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
+                    <x-heroicon-o-adjustments-horizontal class="h-4 w-4" />
+                    Bộ lọc
+                    @if($selectedClassroom)
+                        <span class="grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[10px] text-white">1</span>
+                    @endif
+                </button>
+                <a href="{{ route('teacher.live-sessions.create') }}"
+                    class="inline-flex h-10 items-center gap-2 rounded-full bg-green-600 px-5 text-sm font-black text-white no-underline shadow-sm shadow-green-200 transition hover:bg-green-500">
+                    <x-heroicon-o-plus class="h-4 w-4" />
+                    @lang('teacher-live-session::app.create')
+                </a>
+            </div>
         </header>
 
         <div class="flex flex-1 flex-col gap-5 p-6">
-
-            {{-- Filter --}}
-            <form action="{{ route('teacher.live-sessions.index') }}" method="GET"
-                class="grid grid-cols-1 gap-4 sm:grid-cols-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm items-end">
-                <div class="space-y-1 sm:col-span-2">
-                    <label class="text-xs font-bold text-slate-500 block">@lang('teacher-live-session::app.filter_classroom_label')</label>
-                    <select name="classroom_id" class="block h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 outline-none transition focus:border-green-300">
-                        <option value="">-- @lang('teacher-live-session::app.all_classrooms') --</option>
-                        @foreach($classrooms as $class)
-                            <option value="{{ $class->id }}" {{ request('classroom_id') == $class->id ? 'selected' : '' }}>
-                                {{ $class->name }} ({{ $class->code }})
-                            </option>
-                        @endforeach
-                    </select>
+            @if($selectedClassroom)
+                <div class="flex flex-wrap items-center gap-2 rounded-2xl border border-green-100 bg-green-50 px-4 py-3">
+                    <span class="text-xs font-black uppercase tracking-wider text-green-700">Đang lọc</span>
+                    <span class="inline-flex min-h-8 items-center gap-2 rounded-full bg-white px-3 text-xs font-black text-slate-700 ring-1 ring-green-100">
+                        <x-heroicon-o-user-group class="h-4 w-4 text-green-600" />
+                        {{ $selectedClassroom->name }}
+                        <a href="{{ route('teacher.live-sessions.index') }}" class="grid h-5 w-5 place-items-center rounded-full text-slate-400 no-underline transition hover:bg-slate-100 hover:text-red-500" title="{{ __('teacher-live-session::app.clear_filter') }}">
+                            <x-heroicon-o-x-mark class="h-3.5 w-3.5" />
+                        </a>
+                    </span>
                 </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="flex-1 inline-flex h-10 items-center justify-center gap-1.5 rounded-xl bg-green-600 px-4 text-xs font-black text-white shadow-sm transition hover:bg-green-500">
-                        @lang('teacher-live-session::app.filter_submit')
-                    </button>
-                    @if(request('classroom_id'))
-                        <button type="button" onclick="window.location.href='{{ route('teacher.live-sessions.index') }}'"
-                            class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100"
-                            title="{{ __('teacher-live-session::app.clear_filter') }}">
-                            <x-heroicon-o-x-mark class="h-4 w-4" />
-                        </button>
-                    @endif
-                </div>
-            </form>
+            @endif
 
             @if($sessions->isEmpty())
-                <div class="flex flex-1 flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-slate-200 bg-white py-20">
+                <div class="flex min-h-[430px] flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-slate-200 bg-white px-6 py-16">
                     <span class="grid h-20 w-20 place-items-center rounded-full bg-slate-50 text-slate-300">
                         <x-heroicon-o-video-camera class="h-10 w-10" />
                     </span>
@@ -180,5 +180,99 @@
                 @endif
             @endif
         </div>
+
+        <div data-live-filter-overlay class="fixed inset-0 z-40 hidden bg-slate-950/45 opacity-0 backdrop-blur-sm transition-opacity duration-200"></div>
+        <aside data-live-filter-panel
+            class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl shadow-slate-950/20 transition-transform duration-200"
+            style="transform: translateX(100%);">
+            <div class="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-wider text-green-700">Bộ lọc</p>
+                    <h2 class="mt-1 text-lg font-black text-slate-950">Lọc buổi học trực tuyến</h2>
+                    <p class="mt-1 text-sm font-semibold text-slate-400">Chọn lớp để thu gọn danh sách buổi học.</p>
+                </div>
+                <button type="button" data-live-filter-close
+                    class="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
+                    <x-heroicon-o-x-mark class="h-5 w-5" />
+                </button>
+            </div>
+
+            <form action="{{ route('teacher.live-sessions.index') }}" method="GET" class="flex flex-1 flex-col">
+                <div class="flex-1 space-y-5 overflow-y-auto px-5 py-5">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500">@lang('teacher-live-session::app.filter_classroom_label')</label>
+                        <select name="classroom_id" class="block h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 outline-none transition focus:border-green-300 focus:ring-4 focus:ring-green-100">
+                            <option value="">-- @lang('teacher-live-session::app.all_classrooms') --</option>
+                            @foreach($classrooms as $class)
+                                <option value="{{ $class->id }}" {{ request('classroom_id') == $class->id ? 'selected' : '' }}>
+                                    {{ $class->name }} ({{ $class->code }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="rounded-2xl bg-slate-50 p-4">
+                        <div class="flex items-center gap-3">
+                            <span class="grid h-10 w-10 place-items-center rounded-xl bg-green-100 text-green-700">
+                                <x-heroicon-o-information-circle class="h-5 w-5" />
+                            </span>
+                            <div>
+                                <p class="text-sm font-black text-slate-800">Gợi ý</p>
+                                <p class="mt-0.5 text-xs font-semibold leading-5 text-slate-500">Bộ lọc được đặt trong drawer để khu vực dữ liệu chính luôn rộng và dễ nhìn.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 border-t border-slate-100 p-5">
+                    <a href="{{ route('teacher.live-sessions.index') }}"
+                        class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">
+                        Xóa lọc
+                    </a>
+                    <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 text-sm font-black text-white shadow-sm transition hover:bg-green-500">
+                        <x-heroicon-o-funnel class="h-4 w-4" />
+                        @lang('teacher-live-session::app.filter_submit')
+                    </button>
+                </div>
+            </form>
+        </aside>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        (() => {
+            const openButtons = document.querySelectorAll('[data-live-filter-open]');
+            const closeButtons = document.querySelectorAll('[data-live-filter-close]');
+            const overlay = document.querySelector('[data-live-filter-overlay]');
+            const panel = document.querySelector('[data-live-filter-panel]');
+
+            if (!overlay || !panel) {
+                return;
+            }
+
+            const open = () => {
+                overlay.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    overlay.classList.remove('opacity-0');
+                    panel.style.transform = 'translateX(0)';
+                });
+            };
+
+            const close = () => {
+                overlay.classList.add('opacity-0');
+                panel.style.transform = 'translateX(100%)';
+                window.setTimeout(() => overlay.classList.add('hidden'), 180);
+            };
+
+            openButtons.forEach((button) => button.addEventListener('click', open));
+            closeButtons.forEach((button) => button.addEventListener('click', close));
+            overlay.addEventListener('click', close);
+            window.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    close();
+                }
+            });
+        })();
+    </script>
 @endsection
