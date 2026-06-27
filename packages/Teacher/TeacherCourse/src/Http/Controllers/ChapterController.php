@@ -6,18 +6,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Mindigo\TeacherCourse\Http\Requests\ChapterRequest;
 use Mindigo\TeacherCourse\Models\Chapter;
 use Mindigo\TeacherCourse\Models\Course;
 
 class ChapterController extends Controller
 {
-    public function store(Request $request, Course $course): RedirectResponse
+    public function store(ChapterRequest $request, Course $course): RedirectResponse
     {
         $this->authorizeOwnership($course);
 
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-        ]);
+        $data = $request->validated();
 
         $maxOrder = $course->chapters()->max('sort_order') ?? 0;
 
@@ -28,22 +27,20 @@ class ChapterController extends Controller
 
         return redirect()
             ->route('teacher.courses.show', $course)
-            ->with('success', 'Đã thêm chương học mới.');
+            ->with('success', __('teacher-course::app.chapter_created'));
     }
 
-    public function update(Request $request, Course $course, Chapter $chapter): RedirectResponse
+    public function update(ChapterRequest $request, Course $course, Chapter $chapter): RedirectResponse
     {
         $this->authorizeOwnership($course);
 
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-        ]);
+        $data = $request->validated();
 
         $chapter->update(['name' => $data['name']]);
 
         return redirect()
             ->route('teacher.courses.show', $course)
-            ->with('success', 'Đã cập nhật tên chương.');
+            ->with('success', __('teacher-course::app.chapter_updated'));
     }
 
     public function destroy(Course $course, Chapter $chapter): RedirectResponse
@@ -54,7 +51,7 @@ class ChapterController extends Controller
 
         return redirect()
             ->route('teacher.courses.show', $course)
-            ->with('success', 'Đã xóa chương học và toàn bộ bài học bên trong.');
+            ->with('success', __('teacher-course::app.chapter_deleted'));
     }
 
     private function authorizeOwnership(Course $course): void
@@ -63,7 +60,7 @@ class ChapterController extends Controller
         abort_unless(
             $user->isAdmin() || $course->teacher_id === (int) $user->getAuthIdentifier(),
             403,
-            'Bạn không có quyền thao tác với khóa học này.'
+            __('teacher-course::app.unauthorized_course_action')
         );
     }
 }

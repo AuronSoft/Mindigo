@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Mindigo\TeacherCourse\Http\Requests\LessonRequest;
 use Mindigo\TeacherCourse\Models\Chapter;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\Lesson;
@@ -30,20 +31,11 @@ class LessonController extends Controller
         return view('teacher-course::lessons.create', compact('course', 'chapter', 'assignments', 'existingLessons'));
     }
 
-    public function store(Request $request, Course $course, Chapter $chapter): RedirectResponse
+    public function store(LessonRequest $request, Course $course, Chapter $chapter): RedirectResponse
     {
         $this->authorizeOwnership($course);
 
-        $data = $request->validate([
-            'name'                   => ['required', 'string', 'max:255'],
-            'description'            => ['nullable', 'string'],
-            'content'                => ['nullable', 'string'],
-            'video'                  => ['nullable', 'file', 'mimes:mp4,mov,avi,webm', 'max:512000'],
-            'attachments'            => ['nullable', 'array'],
-            'attachments.*'          => ['file', 'mimes:pdf,doc,docx,ppt,pptx', 'max:20480'],
-            'assignment_id'          => ['nullable', 'integer', 'exists:assignments,id'],
-            'prerequisite_lesson_id' => ['nullable', 'integer', 'exists:lessons,id'],
-        ]);
+        $data = $request->validated();
 
         $maxOrder = $chapter->lessons()->max('sort_order') ?? 0;
 
@@ -77,7 +69,7 @@ class LessonController extends Controller
 
         return redirect()
             ->route('teacher.courses.show', $course)
-            ->with('success', 'Đã thêm bài học mới.');
+            ->with('success', __('teacher-course::app.lesson_created'));
     }
 
     public function edit(Lesson $lesson)
@@ -99,25 +91,13 @@ class LessonController extends Controller
         return view('teacher-course::lessons.edit', compact('course', 'chapter', 'lesson', 'assignments', 'existingLessons'));
     }
 
-    public function update(Request $request, Lesson $lesson): RedirectResponse
+    public function update(LessonRequest $request, Lesson $lesson): RedirectResponse
     {
         $chapter = $lesson->chapter;
         $course  = $chapter->course;
         $this->authorizeOwnership($course);
 
-        $data = $request->validate([
-            'name'                   => ['required', 'string', 'max:255'],
-            'description'            => ['nullable', 'string'],
-            'content'                => ['nullable', 'string'],
-            'video'                  => ['nullable', 'file', 'mimes:mp4,mov,avi,webm', 'max:512000'],
-            'remove_video'           => ['nullable', 'boolean'],
-            'attachments'            => ['nullable', 'array'],
-            'attachments.*'          => ['file', 'mimes:pdf,doc,docx,ppt,pptx', 'max:20480'],
-            'remove_attachments'     => ['nullable', 'array'],
-            'remove_attachments.*'   => ['string'],
-            'assignment_id'          => ['nullable', 'integer', 'exists:assignments,id'],
-            'prerequisite_lesson_id' => ['nullable', 'integer', 'exists:lessons,id'],
-        ]);
+        $data = $request->validated();
 
         // Handle video
         $videoPath = $lesson->video_path;
@@ -168,7 +148,7 @@ class LessonController extends Controller
 
         return redirect()
             ->route('teacher.courses.show', $course)
-            ->with('success', 'Đã cập nhật bài học.');
+            ->with('success', __('teacher-course::app.lesson_updated'));
     }
 
     public function destroy(Lesson $lesson): RedirectResponse
@@ -191,7 +171,7 @@ class LessonController extends Controller
 
         return redirect()
             ->route('teacher.courses.show', $course)
-            ->with('success', 'Đã xóa bài học.');
+            ->with('success', __('teacher-course::app.lesson_deleted'));
     }
 
     private function authorizeOwnership(Course $course): void
@@ -200,7 +180,7 @@ class LessonController extends Controller
         abort_unless(
             $user->isAdmin() || $course->teacher_id === (int) $user->getAuthIdentifier(),
             403,
-            'Bạn không có quyền thao tác với bài học này.'
+            __('teacher-course::app.unauthorized_course_action')
         );
     }
 }

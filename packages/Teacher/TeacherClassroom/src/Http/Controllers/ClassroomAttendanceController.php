@@ -1,0 +1,50 @@
+<?php
+
+namespace Mindigo\TeacherClassroom\Http\Controllers;
+
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Http\Requests\ClassroomAttendanceRequest;
+use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
+
+class ClassroomAttendanceController extends Controller
+{
+    public function __construct(private readonly TeacherClassroomService $service) {}
+
+    public function saveAttendance(ClassroomAttendanceRequest $request, Classroom $classroom): RedirectResponse
+    {
+        $this->authorizeOwnership($classroom);
+
+        $validated = $request->validated();
+
+        $this->service->saveAttendance($classroom, $validated['attendance_date'], $validated['records']);
+
+        return redirect()
+            ->route('teacher.classrooms.show', [$classroom, 'tab' => 'attendance', 'attendance_date' => $validated['attendance_date']])
+            ->with('success', __('teacher-classroom::app.attendance_saved', ['date' => date('d/m/Y', strtotime($validated['attendance_date']))]));
+    }
+
+    public function getAttendance(Classroom $classroom)
+    {
+        $this->authorizeOwnership($classroom);
+        $date = request('attendance_date', now()->toDateString());
+        $records = $this->service->getAttendanceByDate($classroom, $date);
+
+        return response()->json($records);
+    }
+
+    private function authorizeOwnership(Classroom $classroom): void
+    {
+        /** @var \Mindigo\Auth\Models\User $user */
+        $user = Auth::user();
+
+        abort_unless(
+            $user->isAdmin() || $classroom->teacher_id === (int) $user->getAuthIdentifier(),
+            403,
+            'Bạn không có quyền truy cập lớp học này.'
+        );
+    }
+}

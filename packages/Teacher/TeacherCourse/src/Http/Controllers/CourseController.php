@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Mindigo\TeacherCourse\Http\Requests\CourseRequest;
 use Mindigo\TeacherCourse\Models\Course;
 
 class CourseController extends Controller
@@ -40,14 +41,9 @@ class CourseController extends Controller
         return view('teacher-course::create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(CourseRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'status'      => ['required', 'in:active,inactive'],
-            'cover_image' => ['nullable', 'image', 'max:2048'],
-        ]);
+        $data = $request->validated();
 
         $user = Auth::user();
         $slug = $this->uniqueSlug($data['name']);
@@ -68,7 +64,7 @@ class CourseController extends Controller
 
         return redirect()
             ->route('teacher.courses.show', $course)
-            ->with('success', 'Đã tạo khóa học thành công!');
+            ->with('success', __('teacher-course::app.course_created'));
     }
 
     public function show(Course $course)
@@ -87,16 +83,11 @@ class CourseController extends Controller
         return view('teacher-course::edit', compact('course'));
     }
 
-    public function update(Request $request, Course $course): RedirectResponse
+    public function update(CourseRequest $request, Course $course): RedirectResponse
     {
         $this->authorizeOwnership($course);
 
-        $data = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'status'      => ['required', 'in:active,inactive'],
-            'cover_image' => ['nullable', 'image', 'max:2048'],
-        ]);
+        $data = $request->validated();
 
         $slug = $course->name === $data['name'] ? $course->slug : $this->uniqueSlug($data['name'], $course);
 
@@ -118,7 +109,7 @@ class CourseController extends Controller
 
         return redirect()
             ->route('teacher.courses.show', $course)
-            ->with('success', 'Đã cập nhật khóa học.');
+            ->with('success', __('teacher-course::app.course_updated'));
     }
 
     public function destroy(Course $course): RedirectResponse
@@ -128,7 +119,7 @@ class CourseController extends Controller
 
         return redirect()
             ->route('teacher.courses.index')
-            ->with('success', 'Đã xóa khóa học.');
+            ->with('success', __('teacher-course::app.course_deleted'));
     }
 
     private function authorizeOwnership(Course $course): void
@@ -137,7 +128,7 @@ class CourseController extends Controller
         abort_unless(
             $user->isAdmin() || $course->teacher_id === (int) $user->getAuthIdentifier(),
             403,
-            'Bạn không có quyền truy cập khóa học này.'
+            __('teacher-course::app.unauthorized_course')
         );
     }
 
