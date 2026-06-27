@@ -83,11 +83,11 @@
 
         <section class="flex justify-end">
             <label class="relative block w-full sm:w-96">
-                <span class="sr-only">Tìm học sinh</span>
+                <span class="sr-only">@lang('teacher-assignment::app.submission.search_label')</span>
                 <x-heroicon-o-magnifying-glass class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input id="submissionSearch" type="search"
                        class="h-11 w-full rounded-full border border-slate-200 bg-white pl-10 pr-4 text-sm font-semibold text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-green-300 focus:ring-2 focus:ring-green-50"
-                       placeholder="Tìm học sinh hoặc email">
+                       placeholder="{{ __('teacher-assignment::app.submission.search_placeholder') }}">
             </label>
         </section>
 
@@ -231,7 +231,7 @@
                                       class="flex h-full flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
                                     @csrf
                                     <div class="flex items-center justify-between gap-3">
-                                        <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Chấm bài</p>
+                                        <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-assignment::app.submission.grade_panel_title')</p>
                                         @if($submission->score !== null)
                                             <span class="rounded-full bg-white px-2.5 py-1 text-xs font-black text-slate-700 shadow-xs">
                                                 {{ $submission->score }}/{{ $assignment->max_score }}
@@ -279,8 +279,8 @@
 
             <div id="submissionEmptyState" class="hidden rounded-3xl border border-dashed border-slate-200 bg-white px-6 py-14 text-center shadow-sm">
                 <x-heroicon-o-magnifying-glass class="mx-auto h-10 w-10 text-slate-300" />
-                <p class="mt-3 text-base font-black text-slate-700">Không tìm thấy học sinh phù hợp.</p>
-                <p class="mt-1 text-sm font-semibold text-slate-400">Hãy đổi bộ lọc hoặc từ khóa tìm kiếm.</p>
+                <p class="mt-3 text-base font-black text-slate-700">@lang('teacher-assignment::app.submission.empty_state_title')</p>
+                <p class="mt-1 text-sm font-semibold text-slate-400">@lang('teacher-assignment::app.submission.empty_state_subtitle')</p>
             </div>
         </section>
     </main>
