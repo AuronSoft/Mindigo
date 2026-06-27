@@ -45,14 +45,14 @@ if (performanceData.labels && typeof Chart !== 'undefined') {
                 labels: performanceData.labels,
                 datasets: [
                     {
-                        label: 'Điểm trung bình',
+                        label: performanceData.averageLabel || 'Average score',
                         data: performanceData.averages,
                         backgroundColor: '#2563eb',
                         borderRadius: 8,
                         borderSkipped: false,
                     },
                     {
-                        label: 'Số học sinh',
+                        label: performanceData.studentCountLabel || 'Student count',
                         data: performanceData.studentCounts,
                         backgroundColor: '#93c5fd',
                         borderRadius: 8,

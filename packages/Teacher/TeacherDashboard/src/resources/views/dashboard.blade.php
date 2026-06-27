@@ -1,6 +1,6 @@
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', 'Bảng điều khiển giáo viên')
+@section('title', __('teacher-dashboard::app.title'))
 
 @section('styles')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -23,6 +23,8 @@
             labels: {{ Illuminate\Support\Js::from($performance['labels'] ?? []) }},
             averages: {{ Illuminate\Support\Js::from($performance['averages'] ?? []) }},
             studentCounts: {{ Illuminate\Support\Js::from($performance['studentCounts'] ?? []) }},
+            averageLabel: {{ Illuminate\Support\Js::from(__('teacher-dashboard::app.chart_avg_score')) }},
+            studentCountLabel: {{ Illuminate\Support\Js::from(__('teacher-dashboard::app.chart_student_count')) }},
         };
     </script>
 @endsection
@@ -43,45 +45,45 @@
     };
 
     $quickLinks = [
-        ['label' => 'Danh sách lớp', 'icon' => 'heroicon-o-user-group', 'route' => 'teacher.classrooms.index', 'tone' => 'text-blue-600 bg-blue-50'],
-        ['label' => 'Khóa học', 'icon' => 'heroicon-o-book-open', 'route' => 'teacher.courses.index', 'tone' => 'text-emerald-700 bg-emerald-50'],
-        ['label' => 'Đề thi', 'icon' => 'heroicon-o-document-text', 'route' => 'teacher.exams.index', 'tone' => 'text-violet-600 bg-violet-50'],
-        ['label' => 'Bài tập', 'icon' => 'heroicon-o-clipboard-document-list', 'route' => 'teacher.assignments.index', 'tone' => 'text-amber-600 bg-amber-50'],
-        ['label' => 'Câu hỏi', 'icon' => 'heroicon-o-circle-stack', 'route' => 'teacher.questions.index', 'tone' => 'text-cyan-600 bg-cyan-50'],
-        ['label' => 'Kết quả', 'icon' => 'heroicon-o-check-badge', 'route' => 'teacher.results.index', 'tone' => 'text-green-700 bg-green-50'],
-        ['label' => 'Báo cáo', 'icon' => 'heroicon-o-presentation-chart-line', 'route' => 'teacher.reports.index', 'tone' => 'text-slate-600 bg-slate-100'],
-        ['label' => 'Trao đổi', 'icon' => 'heroicon-o-chat-bubble-left-right', 'route' => 'teacher.discussions.index', 'tone' => 'text-rose-600 bg-rose-50'],
+        ['label' => __('teacher-dashboard::app.quick_classrooms'), 'icon' => 'heroicon-o-user-group', 'route' => 'teacher.classrooms.index', 'tone' => 'text-blue-600 bg-blue-50'],
+        ['label' => __('teacher-dashboard::app.quick_courses'), 'icon' => 'heroicon-o-book-open', 'route' => 'teacher.courses.index', 'tone' => 'text-emerald-700 bg-emerald-50'],
+        ['label' => __('teacher-dashboard::app.quick_exams'), 'icon' => 'heroicon-o-document-text', 'route' => 'teacher.exams.index', 'tone' => 'text-violet-600 bg-violet-50'],
+        ['label' => __('teacher-dashboard::app.quick_assignments'), 'icon' => 'heroicon-o-clipboard-document-list', 'route' => 'teacher.assignments.index', 'tone' => 'text-amber-600 bg-amber-50'],
+        ['label' => __('teacher-dashboard::app.quick_questions'), 'icon' => 'heroicon-o-circle-stack', 'route' => 'teacher.questions.index', 'tone' => 'text-cyan-600 bg-cyan-50'],
+        ['label' => __('teacher-dashboard::app.quick_results'), 'icon' => 'heroicon-o-check-badge', 'route' => 'teacher.results.index', 'tone' => 'text-green-700 bg-green-50'],
+        ['label' => __('teacher-dashboard::app.quick_reports'), 'icon' => 'heroicon-o-presentation-chart-line', 'route' => 'teacher.reports.index', 'tone' => 'text-slate-600 bg-slate-100'],
+        ['label' => __('teacher-dashboard::app.quick_discussions'), 'icon' => 'heroicon-o-chat-bubble-left-right', 'route' => 'teacher.discussions.index', 'tone' => 'text-rose-600 bg-rose-50'],
     ];
 
     $statCards = [
         [
-            'label' => 'Lớp đang dạy',
+            'label' => __('teacher-dashboard::app.total_classrooms'),
             'value' => number_format($stats['totalClassrooms'] ?? 0),
-            'sub' => number_format($stats['totalStudents'] ?? 0) . ' học sinh',
+            'sub' => __('teacher-dashboard::app.classrooms_sub', ['count' => number_format($stats['totalStudents'] ?? 0)]),
             'icon' => 'heroicon-o-calendar-days',
             'tone' => 'bg-blue-50 text-blue-600',
             'line' => 'bg-blue-500',
         ],
         [
-            'label' => 'Học sinh',
+            'label' => __('teacher-dashboard::app.total_students'),
             'value' => number_format($stats['totalStudents'] ?? 0),
-            'sub' => 'trong các lớp active',
+            'sub' => __('teacher-dashboard::app.students_sub'),
             'icon' => 'heroicon-o-users',
             'tone' => 'bg-green-50 text-green-700',
             'line' => 'bg-green-500',
         ],
         [
-            'label' => 'Cần chấm',
+            'label' => __('teacher-dashboard::app.pending_grading'),
             'value' => number_format($pendingGrading),
-            'sub' => 'bài nộp đang chờ',
+            'sub' => __('teacher-dashboard::app.pending_grading_sub'),
             'icon' => 'heroicon-o-clipboard-document-check',
             'tone' => 'bg-violet-50 text-violet-600',
             'line' => 'bg-violet-500',
         ],
         [
-            'label' => 'Tỉ lệ đạt',
+            'label' => __('teacher-dashboard::app.pass_rate'),
             'value' => $passRate . '%',
-            'sub' => number_format($stats['totalAttempts'] ?? 0) . ' lượt làm bài',
+            'sub' => __('teacher-dashboard::app.attempts_sub', ['count' => number_format($stats['totalAttempts'] ?? 0)]),
             'icon' => 'heroicon-o-chart-bar',
             'tone' => 'bg-amber-50 text-amber-600',
             'line' => 'bg-amber-500',
@@ -94,20 +96,20 @@
         <section class="min-w-0 space-y-5">
             <div class="flex items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs font-black uppercase text-slate-400">Teacher Dashboard</p>
-                    <h1 class="text-xl font-black text-slate-950">Bảng điều khiển giáo viên</h1>
+                    <p class="text-xs font-black uppercase text-slate-400">@lang('teacher-dashboard::app.teacher_dashboard')</p>
+                    <h1 class="text-xl font-black text-slate-950">@lang('teacher-dashboard::app.title')</h1>
                 </div>
                 <div class="flex flex-wrap items-center justify-end gap-2">
                     @if(Route::has('teacher.exams.create'))
                         <a href="{{ route('teacher.exams.create') }}" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white no-underline shadow-lg shadow-green-600/20 transition hover:bg-green-700">
                             <x-heroicon-o-plus class="h-4 w-4" />
-                            Tạo đề thi
+                            @lang('teacher-dashboard::app.create_exam')
                         </a>
                     @endif
                     @if(Route::has('teacher.assignments.create'))
                         <a href="{{ route('teacher.assignments.create') }}" class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline transition hover:border-green-200 hover:text-green-700">
                             <x-heroicon-o-clipboard-document-list class="h-4 w-4" />
-                            Giao bài
+                            @lang('teacher-dashboard::app.assign_homework')
                         </a>
                     @endif
                 </div>
@@ -121,14 +123,14 @@
                             <img src="{{ $teacherHeroImage }}" alt="{{ $teacher->name }}" class="max-h-[13.5rem] w-auto object-contain object-bottom">
                         </div>
                         <div class="min-w-0">
-                            <p class="text-sm font-extrabold text-green-700">Chào buổi tốt lành, {{ $teacher->name }}.</p>
-                            <h2 class="mt-2 text-3xl font-black leading-tight text-slate-950 max-md:text-2xl">Hôm nay tập trung vào lớp học, bài nộp và tiến độ học sinh.</h2>
+                            <p class="text-sm font-extrabold text-green-700">@lang('teacher-dashboard::app.hero_greeting', ['name' => $teacher->name])</p>
+                            <h2 class="mt-2 text-3xl font-black leading-tight text-slate-950 max-md:text-2xl">@lang('teacher-dashboard::app.hero_title')</h2>
                             <p class="mt-3 max-w-2xl text-sm font-semibold leading-6 text-slate-500">
-                                Bạn có {{ $totalTodayClasses }} lớp đang hoạt động, {{ number_format($pendingGrading) }} bài cần chấm và {{ number_format($stats['pendingQuestions'] ?? 0) }} câu hỏi chờ duyệt.
+                                @lang('teacher-dashboard::app.hero_summary', ['classes' => $totalTodayClasses, 'pending' => number_format($pendingGrading), 'questions' => number_format($stats['pendingQuestions'] ?? 0)])
                             </p>
                             @if(Route::has('teacher.classrooms.index'))
                                 <a href="{{ route('teacher.classrooms.index') }}" class="mt-5 inline-flex h-10 items-center gap-2 rounded-xl bg-blue-600 px-4 text-xs font-black text-white no-underline shadow-lg shadow-blue-600/20 transition hover:bg-blue-700">
-                                    Xem lớp của tôi
+                                    @lang('teacher-dashboard::app.view_my_classes')
                                     <x-heroicon-o-arrow-right class="h-4 w-4" />
                                 </a>
                             @endif
@@ -143,8 +145,8 @@
                                 <x-heroicon-o-sparkles class="h-6 w-6" />
                             </span>
                             <span class="min-w-0">
-                                <span class="block text-sm font-black text-slate-950">Tạo đề nhanh</span>
-                                <span class="mt-1 block text-xs font-semibold leading-5 text-slate-500">Lên cấu trúc đề kiểm tra theo môn và chủ đề.</span>
+                                <span class="block text-sm font-black text-slate-950">@lang('teacher-dashboard::app.quick_create_exam')</span>
+                                <span class="mt-1 block text-xs font-semibold leading-5 text-slate-500">@lang('teacher-dashboard::app.quick_create_exam_desc')</span>
                             </span>
                             <x-heroicon-o-chevron-right class="ml-auto h-4 w-4 shrink-0 text-slate-300 transition group-hover:text-green-600" />
                         </div>
@@ -155,8 +157,8 @@
                                 <x-heroicon-o-document-plus class="h-6 w-6" />
                             </span>
                             <span class="min-w-0">
-                                <span class="block text-sm font-black text-slate-950">Bổ sung ngân hàng câu hỏi</span>
-                                <span class="mt-1 block text-xs font-semibold leading-5 text-slate-500">Thêm câu hỏi mới cho đề thi và khóa học.</span>
+                                <span class="block text-sm font-black text-slate-950">@lang('teacher-dashboard::app.quick_add_questions')</span>
+                                <span class="mt-1 block text-xs font-semibold leading-5 text-slate-500">@lang('teacher-dashboard::app.quick_add_questions_desc')</span>
                             </span>
                             <x-heroicon-o-chevron-right class="ml-auto h-4 w-4 shrink-0 text-slate-300 transition group-hover:text-violet-600" />
                         </div>
@@ -186,8 +188,8 @@
 
             <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div class="mb-4 flex items-center justify-between">
-                    <h2 class="text-sm font-black text-slate-950">Liên kết nhanh</h2>
-                    <span class="text-xs font-bold text-slate-400">Công cụ giảng dạy</span>
+                    <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.quick_links')</h2>
+                    <span class="text-xs font-bold text-slate-400">@lang('teacher-dashboard::app.teaching_tools')</span>
                 </div>
                 <div class="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
                     @foreach($quickLinks as $link)
@@ -206,9 +208,9 @@
             <div class="grid gap-5 lg:grid-cols-[20rem_minmax(0,1fr)]">
                 <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="mb-4 flex items-center justify-between">
-                        <h2 class="text-sm font-black text-slate-950">Hoạt động sắp tới</h2>
+                        <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.upcoming_activities')</h2>
                         @if(Route::has('teacher.assignments.index'))
-                            <a href="{{ route('teacher.assignments.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">Xem tất cả</a>
+                            <a href="{{ route('teacher.assignments.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">@lang('teacher-dashboard::app.view_all')</a>
                         @endif
                     </div>
                     <div class="space-y-3">
@@ -226,7 +228,7 @@
                         @empty
                             <div class="py-8 text-center">
                                 <x-heroicon-o-calendar-days class="mx-auto h-10 w-10 text-slate-200" />
-                                <p class="mt-2 text-sm font-bold text-slate-400">Chưa có hoạt động sắp tới</p>
+                                <p class="mt-2 text-sm font-bold text-slate-400">@lang('teacher-dashboard::app.no_upcoming_activities')</p>
                             </div>
                         @endforelse
                     </div>
@@ -235,9 +237,9 @@
                 <section class="grid gap-5 xl:grid-cols-2">
                     <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                         <div class="mb-4 flex items-center justify-between">
-                            <h2 class="text-sm font-black text-slate-950">Bài nộp gần đây</h2>
+                            <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.recent_assignment_submissions')</h2>
                             @if(Route::has('teacher.assignments.index'))
-                                <a href="{{ route('teacher.assignments.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">Xem tất cả</a>
+                                <a href="{{ route('teacher.assignments.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">@lang('teacher-dashboard::app.view_all')</a>
                             @endif
                         </div>
                         <div class="space-y-3">
@@ -245,17 +247,17 @@
                                 <div class="flex items-center gap-3">
                                     <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-green-50 text-sm font-black text-green-700">{{ mb_substr($submission->student?->name ?? '?', 0, 1) }}</span>
                                     <span class="min-w-0 flex-1">
-                                        <span class="block truncate text-sm font-black text-slate-900">{{ $submission->student?->name ?? 'Học sinh' }}</span>
-                                        <span class="block truncate text-xs font-bold text-slate-400">{{ $submission->assignment?->title ?? 'Bài tập' }}</span>
+                                        <span class="block truncate text-sm font-black text-slate-900">{{ $submission->student?->name ?? __('teacher-dashboard::app.student_fallback') }}</span>
+                                        <span class="block truncate text-xs font-bold text-slate-400">{{ $submission->assignment?->title ?? __('teacher-dashboard::app.assignment_fallback') }}</span>
                                     </span>
                                     <span class="rounded-full {{ $submission->isGraded() ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700' }} px-2.5 py-1 text-[11px] font-black">
-                                        {{ $submission->isGraded() ? 'Đã chấm' : 'Chờ chấm' }}
+                                        {{ $submission->isGraded() ? __('teacher-dashboard::app.graded') : __('teacher-dashboard::app.waiting_grading') }}
                                     </span>
                                 </div>
                             @empty
                                 <div class="py-8 text-center">
                                     <x-heroicon-o-inbox class="mx-auto h-10 w-10 text-slate-200" />
-                                    <p class="mt-2 text-sm font-bold text-slate-400">Chưa có bài nộp mới</p>
+                                    <p class="mt-2 text-sm font-bold text-slate-400">@lang('teacher-dashboard::app.no_recent_submissions')</p>
                                 </div>
                             @endforelse
                         </div>
@@ -263,8 +265,8 @@
 
                     <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                         <div class="mb-4 flex items-center justify-between">
-                            <h2 class="text-sm font-black text-slate-950">Tổng quan hiệu suất</h2>
-                            <span class="text-xs font-bold text-slate-400">Theo lớp</span>
+                            <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.performance_overview')</h2>
+                            <span class="text-xs font-bold text-slate-400">@lang('teacher-dashboard::app.by_class')</span>
                         </div>
                         <div class="h-52">
                             <canvas id="teacherPerformanceChart"></canvas>
@@ -276,9 +278,9 @@
             <div class="grid gap-5 lg:grid-cols-2">
                 <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="mb-4 flex items-center justify-between">
-                        <h2 class="text-sm font-black text-slate-950">Cảnh báo học tập</h2>
+                        <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.learning_alerts')</h2>
                         @if(Route::has('teacher.results.index'))
-                            <a href="{{ route('teacher.results.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">Xem kết quả</a>
+                            <a href="{{ route('teacher.results.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">@lang('teacher-dashboard::app.view_results')</a>
                         @endif
                     </div>
                     <div class="space-y-3">
@@ -287,22 +289,22 @@
                                 <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-sm font-black text-slate-700 ring-1 ring-slate-100">{{ mb_substr($student->name, 0, 1) }}</span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block truncate text-sm font-black text-slate-900">{{ $student->name }}</span>
-                                    <span class="block text-xs font-bold text-slate-400">{{ $student->attempt_count }} lượt làm bài</span>
+                                    <span class="block text-xs font-bold text-slate-400">{{ $student->attempt_count }} @lang('teacher-dashboard::app.attempts_unit')</span>
                                 </span>
                                 <span class="rounded-full {{ $student->avg_score >= 80 ? 'bg-green-50 text-green-700' : ($student->avg_score >= 50 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-600') }} px-2.5 py-1 text-[11px] font-black">
                                     {{ $student->avg_score }}%
                                 </span>
                             </div>
                         @empty
-                            <p class="py-8 text-center text-sm font-bold text-slate-400">Chưa có dữ liệu học sinh</p>
+                            <p class="py-8 text-center text-sm font-bold text-slate-400">@lang('teacher-dashboard::app.no_student_data')</p>
                         @endforelse
                     </div>
                 </section>
 
                 <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="mb-4 flex items-center justify-between">
-                        <h2 class="text-sm font-black text-slate-950">Thông báo hoạt động</h2>
-                        <span class="text-xs font-bold text-slate-400">7 ngày</span>
+                        <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.activity_notifications')</h2>
+                        <span class="text-xs font-bold text-slate-400">@lang('teacher-dashboard::app.seven_days')</span>
                     </div>
                     <div class="h-52">
                         <canvas id="teacherTrendChart"></canvas>
@@ -314,11 +316,11 @@
         <aside class="space-y-5">
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div class="mb-5 flex items-center justify-between">
-                    <h2 class="text-sm font-black text-slate-950">Lịch</h2>
-                    <span class="text-xs font-black text-slate-400">{{ now()->locale('vi')->translatedFormat('F Y') }}</span>
+                    <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.calendar')</h2>
+                    <span class="text-xs font-black text-slate-400">{{ now()->locale(app()->getLocale())->translatedFormat('F Y') }}</span>
                 </div>
                 <div class="grid grid-cols-7 gap-2 text-center">
-                    @foreach(['T2','T3','T4','T5','T6','T7','CN'] as $day)
+                    @foreach(__('teacher-dashboard::app.weekdays_short') as $day)
                         <span class="text-[10px] font-black uppercase text-slate-400">{{ $day }}</span>
                     @endforeach
                     @php
@@ -336,9 +338,9 @@
 
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div class="mb-4 flex items-center justify-between">
-                    <h2 class="text-sm font-black text-slate-950">Lịch hôm nay</h2>
+                    <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.today_schedule')</h2>
                     @if(Route::has('teacher.classrooms.index'))
-                        <a href="{{ route('teacher.classrooms.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">Xem lớp</a>
+                        <a href="{{ route('teacher.classrooms.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">@lang('teacher-dashboard::app.view_class')</a>
                     @endif
                 </div>
                 <div class="space-y-3">
@@ -347,20 +349,20 @@
                             <span class="w-16 shrink-0 text-xs font-black text-slate-500">{{ now()->copy()->setTime(8 + $index, 30)->format('H:i') }}</span>
                             <span class="min-w-0">
                                 <span class="block truncate text-sm font-black text-slate-900">{{ $classroom->name }}</span>
-                                <span class="block text-xs font-bold text-slate-400">{{ $classroom->students_count }} học sinh</span>
+                                <span class="block text-xs font-bold text-slate-400">{{ $classroom->students_count }} @lang('teacher-dashboard::app.students_unit')</span>
                             </span>
                         </a>
                     @empty
-                        <p class="py-6 text-center text-sm font-bold text-slate-400">Chưa có lớp hiển thị</p>
+                        <p class="py-6 text-center text-sm font-bold text-slate-400">@lang('teacher-dashboard::app.no_visible_classrooms')</p>
                     @endforelse
                 </div>
             </section>
 
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div class="mb-4 flex items-center justify-between">
-                    <h2 class="text-sm font-black text-slate-950">Nhắc việc thông minh</h2>
+                    <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.smart_reminders')</h2>
                     @if(Route::has('teacher.reports.index'))
-                        <a href="{{ route('teacher.reports.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">Báo cáo</a>
+                        <a href="{{ route('teacher.reports.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">@lang('teacher-dashboard::app.reports')</a>
                     @endif
                 </div>
                 <div class="space-y-3">
@@ -369,8 +371,8 @@
                             <x-heroicon-o-clock class="h-5 w-5" />
                         </span>
                         <span class="min-w-0 flex-1">
-                            <span class="block text-sm font-black text-slate-900">Bài cần chấm</span>
-                            <span class="block text-xs font-bold text-slate-400">{{ number_format($pendingGrading) }} bài nộp đang chờ xử lý</span>
+                            <span class="block text-sm font-black text-slate-900">@lang('teacher-dashboard::app.pending_grading_title')</span>
+                            <span class="block text-xs font-bold text-slate-400">@lang('teacher-dashboard::app.pending_grading_desc', ['count' => number_format($pendingGrading)])</span>
                         </span>
                         <x-heroicon-o-chevron-right class="h-4 w-4 text-slate-300" />
                     </a>
@@ -379,8 +381,8 @@
                             <x-heroicon-o-circle-stack class="h-5 w-5" />
                         </span>
                         <span class="min-w-0 flex-1">
-                            <span class="block text-sm font-black text-slate-900">Câu hỏi chờ duyệt</span>
-                            <span class="block text-xs font-bold text-slate-400">{{ number_format($stats['pendingQuestions'] ?? 0) }} câu hỏi cần kiểm tra</span>
+                            <span class="block text-sm font-black text-slate-900">@lang('teacher-dashboard::app.pending_questions_title')</span>
+                            <span class="block text-xs font-bold text-slate-400">@lang('teacher-dashboard::app.pending_questions_desc', ['count' => number_format($stats['pendingQuestions'] ?? 0)])</span>
                         </span>
                         <x-heroicon-o-chevron-right class="h-4 w-4 text-slate-300" />
                     </a>
@@ -389,8 +391,8 @@
                             <x-heroicon-o-document-check class="h-5 w-5" />
                         </span>
                         <span class="min-w-0 flex-1">
-                            <span class="block text-sm font-black text-slate-900">Đề đã xuất bản</span>
-                            <span class="block text-xs font-bold text-slate-400">{{ number_format($stats['publishedExams'] ?? 0) }} đề đang mở cho học sinh</span>
+                            <span class="block text-sm font-black text-slate-900">@lang('teacher-dashboard::app.published_exams_title')</span>
+                            <span class="block text-xs font-bold text-slate-400">@lang('teacher-dashboard::app.published_exams_desc', ['count' => number_format($stats['publishedExams'] ?? 0)])</span>
                         </span>
                         <x-heroicon-o-chevron-right class="h-4 w-4 text-slate-300" />
                     </a>

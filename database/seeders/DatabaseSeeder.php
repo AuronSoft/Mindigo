@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Student account cố định để test
-        User::firstOrCreate(['email' => ' '], [
+        User::firstOrCreate(['email' => 'student@mindigo.com'], [
             'name'     => 'Trần Văn Học',
             'password' => Hash::make('123456'),
             'role'     => 'student',

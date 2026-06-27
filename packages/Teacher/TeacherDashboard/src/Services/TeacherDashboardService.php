@@ -137,7 +137,7 @@ class TeacherDashboardService
 
         for ($i = 6; $i >= 0; $i--) {
             $date     = now()->subDays($i)->toDateString();
-            $labels[] = now()->subDays($i)->locale('vi')->isoFormat('dd');
+            $labels[] = now()->subDays($i)->locale(app()->getLocale())->isoFormat('dd');
             $counts[] = $rows[$date]->count ?? 0;
         }
 
@@ -156,7 +156,7 @@ class TeacherDashboardService
             ->map(fn ($assignment) => (object) [
                 'type' => 'assignment',
                 'title' => $assignment->title,
-                'subtitle' => $assignment->classroom?->name ?? 'Bài tập',
+                'subtitle' => $assignment->classroom?->name ?? __('teacher-dashboard::app.assignment_scope'),
                 'time' => $assignment->due_date,
                 'route' => Route::has('teacher.assignments.submissions.index')
                     ? route('teacher.assignments.submissions.index', $assignment)
@@ -172,7 +172,7 @@ class TeacherDashboardService
             ->map(fn ($exam) => (object) [
                 'type' => 'exam',
                 'title' => $exam->title,
-                'subtitle' => $exam->subject ?: 'Đề thi',
+                'subtitle' => $exam->subject ?: __('teacher-dashboard::app.exam_scope'),
                 'time' => $exam->starts_at,
                 'route' => Route::has('teacher.exams.show')
                     ? route('teacher.exams.show', $exam)
