@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
+use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherResult\Services\TeacherResultService;
 
 class TeacherResultController extends Controller
@@ -75,4 +76,48 @@ class TeacherResultController extends Controller
 
         return $defaultFirst ? $classrooms->first() : null;
     }
+    // Chấm điểm thủ công
+    public function reviewAttempt(ExamAttempt $attempt)
+{
+    /** @var \Mindigo\Auth\Models\User $teacher */
+    $teacher = Auth::user();
+
+    // Chỉ teacher sở hữu đề thi mới được chấm
+    abort_unless(
+        $teacher->isAdmin() || $attempt->exam?->created_by === (int) $teacher->getAuthIdentifier(),
+        403
+    );
+
+    $attempt->load(['exam', 'answers.question', 'user']);
+
+    $pendingAnswers = $attempt->answers
+        ->where('needs_review', true)
+        ->sortBy('id')
+        ->values();
+
+    return view('teacher-result::review-attempt', compact('attempt', 'pendingAnswers'));
+}
+
+public function gradeAttempt(ExamAttempt $attempt)
+{
+    /** @var \Mindigo\Auth\Models\User $teacher */
+    $teacher = Auth::user();
+
+    abort_unless(
+        $teacher->isAdmin() || $attempt->exam?->created_by === (int) $teacher->getAuthIdentifier(),
+        403
+    );
+
+    request()->validate([
+        'grades'   => ['required', 'array'],
+        'grades.*' => ['required', 'numeric', 'min:0'],
+    ]);
+
+    $this->service->gradeManualAnswers($attempt, request()->input('grades'));
+
+    return redirect()
+        ->route('teacher.results.by_exam', ['exam' => $attempt->exam_id])
+        ->with('success', 'Đã chấm điểm thành công.');
+}
+
 }
