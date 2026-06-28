@@ -27,7 +27,7 @@
         </div>
         <div class="flex items-center gap-2">
             {{-- Type filter --}}
-            <select onchange="location.href=this.value"
+            <select data-mindigo-select-url
                     class="h-9 rounded-full border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 outline-none">
                 <option value="{{ route('teacher.announcements.index') }}" @selected(!($filters['type']??''))>@lang('teacher-announcement::app.all_types')</option>
                 @foreach(Mindigo\TeacherAnnouncement\Models\Announcement::TYPES as $t)

@@ -81,7 +81,7 @@
 
                 {{-- STEP 2: Nhập OTP --}}
                 <div id="step-otp" style="display:none">
-                    <button class="flex items-center gap-1 text-sm text-gray-400 font-bold hover:text-green-600 transition mb-6" onclick="goTo('step-email')">
+                    <button type="button" class="flex items-center gap-1 text-sm text-gray-400 font-bold hover:text-green-600 transition mb-6" data-forgot-step="step-email">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
                         @lang('Mindigo-auth::app.navigation.back')
                     </button>
@@ -106,7 +106,7 @@
 
                     <div class="text-sm text-gray-400 mb-5">
                         @lang('Mindigo-auth::app.steps.otp.not_received')
-                        <button id="btn-resend" class="text-green-600 font-black hover:underline" onclick="resendOtp()">
+                        <button id="btn-resend" type="button" class="text-green-600 font-black hover:underline" data-forgot-resend-otp>
                             @lang('Mindigo-auth::app.steps.otp.resend')
                         </button>
                         <span id="resend-timer" style="display:none" class="text-gray-400">
@@ -122,7 +122,7 @@
 
                 {{-- STEP 3: Đặt lại mật khẩu --}}
                 <div id="step-reset" style="display:none">
-                    <button class="flex items-center gap-1 text-sm text-gray-400 font-bold hover:text-green-600 transition mb-6" onclick="goTo('step-otp')">
+                    <button type="button" class="flex items-center gap-1 text-sm text-gray-400 font-bold hover:text-green-600 transition mb-6" data-forgot-step="step-otp">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
                         @lang('Mindigo-auth::app.navigation.back')
                     </button>
@@ -762,6 +762,12 @@
         MindigoToast(msg, 'error', 4200);
     }
     function hideAlert(id) { return id; }
+
+    document.querySelectorAll('[data-forgot-step]').forEach(button => {
+        button.addEventListener('click', () => goTo(button.dataset.forgotStep));
+    });
+
+    document.querySelector('[data-forgot-resend-otp]')?.addEventListener('click', () => resendOtp());
 
     function setLoading(btnId, loading) {
         const btn = document.getElementById(btnId);

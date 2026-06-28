@@ -7,6 +7,7 @@
         'packages/Mindigo/Dashboard/src/resources/css/app.css',
         'packages/Mindigo/Dashboard/src/resources/js/app.js',
         'packages/Teacher/TeacherClassroom/src/resources/css/app.css',
+        'packages/Teacher/TeacherClassroom/src/resources/js/app.js',
     ])
     <style>
         .tab-btn.active {
@@ -23,7 +24,7 @@
 @php
     $currentTab = request('tab', 'students');
 @endphp
-<div class="flex min-h-screen flex-col bg-slate-50" id="classroom-detail-page">
+<div class="flex min-h-screen flex-col bg-slate-50" id="classroom-detail-page" data-mindigo-tabs>
 
     {{-- Header --}}
     <header class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-slate-200 bg-white/90 px-6 py-4 backdrop-blur">
@@ -98,16 +99,16 @@
         {{-- Tabs Navigation --}}
         <div class="border-b border-slate-200 bg-white rounded-t-3xl px-6 pt-3 shadow-sm">
             <nav class="-mb-px flex gap-6" aria-label="Tabs">
-                <button onclick="switchTab('students')" id="tab-btn-students" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'students' ? 'active' : '' }}">
+                <button type="button" data-mindigo-tab-target="students" data-mindigo-tab-sync-url="true" id="tab-btn-students" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'students' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'students' ? 'true' : 'false' }}">
                     @lang('teacher-classroom::app.students_and_assistants')
                 </button>
-                <button onclick="switchTab('attendance')" id="tab-btn-attendance" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'attendance' ? 'active' : '' }}">
+                <button type="button" data-mindigo-tab-target="attendance" data-mindigo-tab-sync-url="true" id="tab-btn-attendance" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'attendance' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'attendance' ? 'true' : 'false' }}">
                     @lang('teacher-classroom::app.attendance')
                 </button>
-                <button onclick="switchTab('schedule')" id="tab-btn-schedule" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'schedule' ? 'active' : '' }}">
+                <button type="button" data-mindigo-tab-target="schedule" data-mindigo-tab-sync-url="true" id="tab-btn-schedule" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'schedule' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'schedule' ? 'true' : 'false' }}">
                     @lang('teacher-classroom::app.schedule')
                 </button>
-                <button onclick="switchTab('announcements')" id="tab-btn-announcements" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'announcements' ? 'active' : '' }}">
+                <button type="button" data-mindigo-tab-target="announcements" data-mindigo-tab-sync-url="true" id="tab-btn-announcements" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'announcements' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'announcements' ? 'true' : 'false' }}">
                     @lang('teacher-classroom::app.announcements')
                 </button>
             </nav>
@@ -117,13 +118,13 @@
         <div class="bg-white rounded-b-3xl border border-slate-200 border-t-0 p-6 shadow-sm min-h-[400px]">
 
             {{-- Tab 1: Students & Assistants --}}
-            <div id="tab-content-students" class="tab-content {{ $currentTab === 'students' ? '' : 'hidden' }}">
+            <div id="tab-content-students" data-mindigo-tab-panel="students" class="tab-content {{ $currentTab === 'students' ? '' : 'hidden' }}">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                     <div>
                         <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.student_list_title')</h2>
                         <p class="text-xs font-bold text-slate-400">@lang('teacher-classroom::app.student_list_subtitle')</p>
                     </div>
-                    <button onclick="openModal('students-modal')" class="inline-flex h-9 items-center gap-2 rounded-full bg-green-600 px-4 text-xs font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-100">
+                    <button type="button" data-mindigo-modal-open="students-modal" class="inline-flex h-9 items-center gap-2 rounded-full bg-green-600 px-4 text-xs font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-100">
                         <x-heroicon-o-user-plus class="h-4 w-4" /> @lang('teacher-classroom::app.manage_students')
                     </button>
                 </div>
@@ -183,7 +184,7 @@
             </div>
 
             {{-- Tab 2: Attendance --}}
-            <div id="tab-content-attendance" class="tab-content {{ $currentTab === 'attendance' ? '' : 'hidden' }}">
+            <div id="tab-content-attendance" data-mindigo-tab-panel="attendance" class="tab-content {{ $currentTab === 'attendance' ? '' : 'hidden' }}">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-3">
                     <div>
                         <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.attendance_title')</h2>
@@ -191,7 +192,7 @@
                     </div>
                     <form method="GET" action="{{ route('teacher.classrooms.show', $classroom) }}" class="flex items-center gap-2">
                         <input type="hidden" name="tab" value="attendance">
-                        <input type="date" name="attendance_date" value="{{ $selectedDate }}" onchange="this.form.submit()"
+                        <input type="date" name="attendance_date" value="{{ $selectedDate }}" data-mindigo-auto-submit
                                class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
                     </form>
                 </div>
@@ -310,13 +311,20 @@
             </div>
 
             {{-- Tab 3: Schedule --}}
-            <div id="tab-content-schedule" class="tab-content {{ $currentTab === 'schedule' ? '' : 'hidden' }}">
+            <div id="tab-content-schedule" data-mindigo-tab-panel="schedule" class="tab-content {{ $currentTab === 'schedule' ? '' : 'hidden' }}">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                     <div>
                         <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.schedule_title')</h2>
                         <p class="text-xs font-bold text-slate-400">@lang('teacher-classroom::app.schedule_subtitle')</p>
                     </div>
-                    <button onclick="openModal('schedule-modal')" class="inline-flex h-9 items-center gap-2 rounded-full bg-green-600 px-4 text-xs font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-100">
+                    <button type="button"
+                            data-schedule-add
+                            data-store-url="{{ route('teacher.classrooms.schedules.store', $classroom) }}"
+                            data-modal-title="{{ __('teacher-classroom::app.add_schedule_title') }}"
+                            data-default-date="{{ now()->toDateString() }}"
+                            data-default-start="08:00"
+                            data-default-end="10:00"
+                            class="inline-flex h-9 items-center gap-2 rounded-full bg-green-600 px-4 text-xs font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-100">
                         <x-heroicon-o-plus class="h-4 w-4" /> @lang('teacher-classroom::app.add_schedule')
                     </button>
                 </div>
@@ -353,7 +361,16 @@
                                             @endif
                                         </div>
                                         <div class="flex items-center gap-1">
-                                            <button onclick="openEditScheduleModal({{ json_encode($sched) }})" class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800">
+                                            <button type="button"
+                                                    data-schedule-edit
+                                                    data-modal-title="{{ __('teacher-classroom::app.edit_schedule_title') }}"
+                                                    data-update-url="{{ route('teacher.classrooms.schedules.update', $sched) }}"
+                                                    data-title="{{ $sched->title }}"
+                                                    data-session-date="{{ $sched->session_date->toDateString() }}"
+                                                    data-start-time="{{ $sched->start_time }}"
+                                                    data-end-time="{{ $sched->end_time }}"
+                                                    data-description="{{ $sched->description }}"
+                                                    class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800">
                                                 <x-heroicon-o-pencil class="h-3.5 w-3.5" />
                                             </button>
                                             <form method="POST" action="{{ route('teacher.classrooms.schedules.destroy', $sched) }}"
@@ -377,7 +394,7 @@
             </div>
 
             {{-- Tab 4: Announcements --}}
-            <div id="tab-content-announcements" class="tab-content {{ $currentTab === 'announcements' ? '' : 'hidden' }}">
+            <div id="tab-content-announcements" data-mindigo-tab-panel="announcements" class="tab-content {{ $currentTab === 'announcements' ? '' : 'hidden' }}">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                     <div>
                         <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.announcements_title')</h2>
@@ -433,11 +450,11 @@
 </div>
 
 {{-- MODAL 1: QUẢN LÝ HỌC SINH --}}
-<div id="students-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur hidden">
+<div id="students-modal" data-mindigo-modal aria-hidden="true" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur">
     <div class="w-full max-w-2xl bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
         <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
             <h3 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.manage_students_title')</h3>
-            <button onclick="closeModal('students-modal')" class="text-slate-400 hover:text-slate-600">
+            <button type="button" data-mindigo-modal-close="students-modal" class="text-slate-400 hover:text-slate-600">
                 <x-heroicon-o-x-mark class="h-6 w-6" />
             </button>
         </div>
@@ -458,7 +475,7 @@
                 @endforeach
             </div>
             <div class="mt-6 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
-                <button type="button" onclick="closeModal('students-modal')" class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">@lang('teacher-classroom::app.cancel')</button>
+                <button type="button" data-mindigo-modal-close="students-modal" class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">@lang('teacher-classroom::app.cancel')</button>
                 <button type="submit" class="inline-flex h-9 items-center rounded-xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-500 shadow-sm shadow-green-100">@lang('teacher-classroom::app.save_list')</button>
             </div>
         </form>
@@ -466,15 +483,22 @@
 </div>
 
 {{-- MODAL 2: THÊM/SỬA BUỔI HỌC (SCHEDULE) --}}
-<div id="schedule-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur hidden">
+<div id="schedule-modal" data-mindigo-modal aria-hidden="true" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur">
     <div class="w-full max-w-lg bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden flex flex-col">
         <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
             <h3 id="schedule-modal-title" class="text-base font-black text-slate-900">@lang('teacher-classroom::app.add_schedule_title')</h3>
-            <button onclick="closeModal('schedule-modal')" class="text-slate-400 hover:text-slate-600">
+            <button type="button" data-mindigo-modal-close="schedule-modal" class="text-slate-400 hover:text-slate-600">
                 <x-heroicon-o-x-mark class="h-6 w-6" />
             </button>
         </div>
-        <form id="schedule-form" method="POST" action="{{ route('teacher.classrooms.schedules.store', $classroom) }}" class="p-6 space-y-4">
+        <form id="schedule-form"
+              method="POST"
+              action="{{ route('teacher.classrooms.schedules.store', $classroom) }}"
+              data-store-url="{{ route('teacher.classrooms.schedules.store', $classroom) }}"
+              data-default-date="{{ now()->toDateString() }}"
+              data-default-start="08:00"
+              data-default-end="10:00"
+              class="p-6 space-y-4">
             @csrf
             <input type="hidden" name="_method" id="schedule-form-method" value="POST">
 
@@ -509,101 +533,11 @@
             </div>
 
             <div class="mt-6 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
-                <button type="button" onclick="closeModal('schedule-modal')" class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">@lang('teacher-classroom::app.cancel')</button>
+                <button type="button" data-mindigo-modal-close="schedule-modal" class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">@lang('teacher-classroom::app.cancel')</button>
                 <button type="submit" class="inline-flex h-9 items-center rounded-xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-500 shadow-sm shadow-green-100">@lang('teacher-classroom::app.save_schedule')</button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-    // Tab switching logic
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.add('hidden');
-        });
-
-        const activeBtn = document.getElementById('tab-btn-' + tabId);
-        const activeContent = document.getElementById('tab-content-' + tabId);
-
-        if (activeBtn && activeContent) {
-            activeBtn.classList.add('active');
-            activeContent.classList.remove('hidden');
-
-            // Save tab state in URL without full reload
-            const url = new URL(window.location.href);
-            url.searchParams.set('tab', tabId);
-            window.history.replaceState(null, null, url);
-        }
-    }
-
-    // Modal management
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.remove('hidden');
-        }
-    }
-
-    // Modal management
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.add('hidden');
-        }
-    }
-
-    // Schedule modals logic
-    function openEditScheduleModal(sched) {
-        document.getElementById('schedule-modal-title').innerText = "{{ __('teacher-classroom::app.edit_schedule_title') }}";
-        document.getElementById('schedule-form-method').value = 'PUT';
-
-        // Set form action
-        const actionUrl = "{{ route('teacher.classrooms.schedules.update', ':id') }}".replace(':id', sched.id);
-        document.getElementById('schedule-form').action = actionUrl;
-
-        // Set inputs
-        document.getElementById('schedule-title').value = sched.title;
-        // Format date string from MySQL date format if required (YYYY-MM-DD)
-        const dateObj = new Date(sched.session_date);
-        const yyyy = dateObj.getFullYear();
-        const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const dd = String(dateObj.getDate()).padStart(2, '0');
-        document.getElementById('schedule-date').value = `${yyyy}-${mm}-${dd}`;
-
-        document.getElementById('schedule-start').value = sched.start_time.substring(0, 5);
-        document.getElementById('schedule-end').value = sched.end_time.substring(0, 5);
-        document.getElementById('schedule-desc').value = sched.description || '';
-
-        openModal('schedule-modal');
-    }
-
-    // Reset schedule form when clicking "Add Session"
-    window.addEventListener('click', function(e) {
-        // If clicking background of modals, close them
-        document.querySelectorAll('.modal').forEach(modal => {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-            }
-        });
-    });
-
-    // Handle schedule form reset on open addition
-    const addSchedBtn = document.querySelector('[onclick="openModal(\'schedule-modal\')"]');
-    if (addSchedBtn) {
-        addSchedBtn.addEventListener('click', function() {
-            document.getElementById('schedule-modal-title').innerText = "{{ __('teacher-classroom::app.add_schedule_title') }}";
-            document.getElementById('schedule-form-method').value = 'POST';
-            document.getElementById('schedule-form').action = "{{ route('teacher.classrooms.schedules.store', $classroom) }}";
-            document.getElementById('schedule-title').value = '';
-            document.getElementById('schedule-date').value = "{{ now()->toDateString() }}";
-            document.getElementById('schedule-start').value = '08:00';
-            document.getElementById('schedule-end').value = '10:00';
-            document.getElementById('schedule-desc').value = '';
-        });
-    }
-</script>
 @endsection

@@ -6,6 +6,8 @@
     @vite([
         'packages/Mindigo/Dashboard/src/resources/css/app.css',
         'packages/Mindigo/Dashboard/src/resources/js/app.js',
+        'packages/Teacher/TeacherCourse/src/resources/css/app.css',
+        'packages/Teacher/TeacherCourse/src/resources/js/app.js',
     ])
 @endsection
 
@@ -31,7 +33,7 @@
             <input type="text" name="search" value="{{ $filters['search'] ?? '' }}"
                    placeholder="{{ __('teacher-course::app.search_placeholder') }}"
                    class="h-9 rounded-full border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-50 min-w-[220px]">
-            <select name="status" onchange="this.form.submit()"
+            <select name="status" data-mindigo-auto-submit
                     class="h-9 rounded-full border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 outline-none">
                 <option value="">@lang('teacher-course::app.all_status')</option>
                 <option value="active" @selected(($filters['status'] ?? '') === 'active')>@lang('teacher-course::app.active')</option>

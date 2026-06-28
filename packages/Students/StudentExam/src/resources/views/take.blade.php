@@ -7,6 +7,8 @@
     @vite([
         'packages/Mindigo/Dashboard/src/resources/css/app.css',
         'packages/Mindigo/Dashboard/src/resources/js/app.js',
+        'packages/Students/StudentExam/src/resources/css/app.css',
+        'packages/Students/StudentExam/src/resources/js/app.js',
     ])
     <style>
         [x-cloak] { display: none !important; }
@@ -217,7 +219,6 @@
 
 </div>
 @endsection
-
 @push('scripts')
 <script>
 function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUrl, csrfToken }) {
@@ -344,3 +345,4 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
 }
 </script>
 @endpush
+

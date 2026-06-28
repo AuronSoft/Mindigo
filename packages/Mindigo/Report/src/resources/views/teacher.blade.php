@@ -117,7 +117,7 @@
             </div>
 
             <form method="GET" class="flex flex-wrap items-center gap-2">
-                <select name="classroom_id" class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-700 outline-none transition focus:border-green-300 focus:ring-2 focus:ring-green-100" onchange="this.form.submit()">
+                <select name="classroom_id" class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-700 outline-none transition focus:border-green-300 focus:ring-2 focus:ring-green-100" data-mindigo-auto-submit>
                     <option value="">@lang('Mindigo-report::app.all_classrooms')</option>
                     @foreach($classrooms as $classroom)
                         <option value="{{ $classroom->id }}" @selected($selectedClassroom?->id === $classroom->id)>{{ $classroom->name }}</option>

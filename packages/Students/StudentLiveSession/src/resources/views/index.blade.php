@@ -9,45 +9,6 @@
     ])
 @endsection
 
-@section('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const openButtons = document.querySelectorAll('[data-student-live-filter-open]');
-            const closeButtons = document.querySelectorAll('[data-student-live-filter-close]');
-            const overlay = document.querySelector('[data-student-live-filter-overlay]');
-            const panel = document.querySelector('[data-student-live-filter-panel]');
-
-            if (!overlay || !panel) {
-                return;
-            }
-
-            const open = () => {
-                overlay.classList.remove('hidden');
-
-                requestAnimationFrame(() => {
-                    overlay.classList.remove('opacity-0');
-                    panel.style.transform = 'translateX(0)';
-                });
-            };
-
-            const close = () => {
-                overlay.classList.add('opacity-0');
-                panel.style.transform = 'translateX(100%)';
-                window.setTimeout(() => overlay.classList.add('hidden'), 180);
-            };
-
-            openButtons.forEach((button) => button.addEventListener('click', open));
-            closeButtons.forEach((button) => button.addEventListener('click', close));
-            overlay.addEventListener('click', close);
-            window.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') {
-                    close();
-                }
-            });
-        });
-    </script>
-@endsection
-
 @section('content')
     @php
         $selectedClassroom = request('classroom_id')
@@ -66,7 +27,7 @@
                 <p class="text-xs font-semibold text-slate-400">@lang('student-live-session::app.subtitle')</p>
             </div>
             <div class="flex items-center gap-3">
-                <button type="button" data-student-live-filter-open
+                <button type="button" data-mindigo-drawer-open="student-live-filter"
                     class="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 shadow-sm transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
                     <x-heroicon-o-adjustments-horizontal class="h-4 w-4" />
                     @lang('student-live-session::app.filter_button')
@@ -184,10 +145,10 @@
             @endif
         </div>
 
-        <div data-student-live-filter-overlay
+        <div data-mindigo-drawer="student-live-filter"
             class="fixed inset-0 z-40 hidden bg-slate-950/45 opacity-0 backdrop-blur-sm transition-opacity duration-200">
         </div>
-        <aside data-student-live-filter-panel
+        <aside data-mindigo-drawer-panel="student-live-filter"
             class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl shadow-slate-950/20 transition-transform duration-200"
             style="transform: translateX(100%);">
             <div class="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
@@ -202,7 +163,7 @@
                         @lang('student-live-session::app.filter_desc')
                     </p>
                 </div>
-                <button type="button" data-student-live-filter-close
+                <button type="button" data-mindigo-drawer-close="student-live-filter"
                     class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-800">
                     <x-heroicon-o-x-mark class="h-5 w-5" />
                 </button>

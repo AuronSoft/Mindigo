@@ -175,6 +175,262 @@ function bindMindigoConfirmForms() {
 window.MindigoProcessToastNodes = processMindigoToastNodes;
 window.MindigoBindConfirmForms = bindMindigoConfirmForms;
 
+window.MindigoOpenModal = function(id) {
+    const modal = document.getElementById(id);
+
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+};
+
+window.MindigoCloseModal = function(id) {
+    const modal = document.getElementById(id);
+
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    modal.style.display = '';
+    modal.setAttribute('aria-hidden', 'true');
+};
+
+function bindMindigoModals() {
+    if (document.__MindigoModalsBound) {
+        return;
+    }
+
+    document.__MindigoModalsBound = true;
+
+    document.addEventListener('click', (event) => {
+        const openTrigger = event.target.closest('[data-mindigo-modal-open]');
+        if (openTrigger) {
+            event.preventDefault();
+            window.MindigoOpenModal(openTrigger.dataset.mindigoModalOpen);
+            return;
+        }
+
+        const closeTrigger = event.target.closest('[data-mindigo-modal-close]');
+        if (closeTrigger) {
+            event.preventDefault();
+            const target = closeTrigger.dataset.mindigoModalClose || closeTrigger.closest('[data-mindigo-modal]')?.id;
+            window.MindigoCloseModal(target);
+            return;
+        }
+
+        const modal = event.target.closest('[data-mindigo-modal]');
+        if (modal && event.target === modal) {
+            window.MindigoCloseModal(modal.id);
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        document.querySelectorAll('[data-mindigo-modal]:not(.hidden)').forEach((modal) => {
+            window.MindigoCloseModal(modal.id);
+        });
+    });
+}
+
+function getMindigoDrawer(id) {
+    if (!id) {
+        return {};
+    }
+
+    const overlay = Array.from(document.querySelectorAll('[data-mindigo-drawer]'))
+        .find((element) => element.dataset.mindigoDrawer === id);
+    const panel = Array.from(document.querySelectorAll('[data-mindigo-drawer-panel]'))
+        .find((element) => element.dataset.mindigoDrawerPanel === id);
+
+    return { overlay, panel };
+}
+
+window.MindigoOpenDrawer = function(id) {
+    const { overlay, panel } = getMindigoDrawer(id);
+
+    if (!overlay || !panel) {
+        return;
+    }
+
+    overlay.classList.remove('hidden');
+
+    requestAnimationFrame(() => {
+        overlay.classList.remove('opacity-0');
+        panel.style.transform = 'translateX(0)';
+    });
+};
+
+window.MindigoCloseDrawer = function(id) {
+    const { overlay, panel } = getMindigoDrawer(id);
+
+    if (!overlay || !panel) {
+        return;
+    }
+
+    overlay.classList.add('opacity-0');
+    panel.style.transform = 'translateX(100%)';
+    window.setTimeout(() => overlay.classList.add('hidden'), 180);
+};
+
+function bindMindigoDrawers() {
+    if (document.__MindigoDrawersBound) {
+        return;
+    }
+
+    document.__MindigoDrawersBound = true;
+
+    document.addEventListener('click', (event) => {
+        const openTrigger = event.target.closest('[data-mindigo-drawer-open]');
+        if (openTrigger) {
+            event.preventDefault();
+            window.MindigoOpenDrawer(openTrigger.dataset.mindigoDrawerOpen);
+            return;
+        }
+
+        const closeTrigger = event.target.closest('[data-mindigo-drawer-close]');
+        if (closeTrigger) {
+            event.preventDefault();
+            window.MindigoCloseDrawer(closeTrigger.dataset.mindigoDrawerClose);
+            return;
+        }
+
+        const overlay = event.target.closest('[data-mindigo-drawer]');
+        if (overlay && event.target === overlay) {
+            window.MindigoCloseDrawer(overlay.dataset.mindigoDrawer);
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        document.querySelectorAll('[data-mindigo-drawer]:not(.hidden)').forEach((overlay) => {
+            window.MindigoCloseDrawer(overlay.dataset.mindigoDrawer);
+        });
+    });
+}
+
+function bindMindigoAutoSubmit() {
+    if (document.__MindigoAutoSubmitBound) {
+        return;
+    }
+
+    document.__MindigoAutoSubmitBound = true;
+
+    document.addEventListener('change', (event) => {
+        const field = event.target.closest('[data-mindigo-auto-submit]');
+
+        if (!field) {
+            return;
+        }
+
+        field.form?.submit();
+    });
+}
+
+function bindMindigoUrlSelects() {
+    if (document.__MindigoUrlSelectsBound) {
+        return;
+    }
+
+    document.__MindigoUrlSelectsBound = true;
+
+    document.addEventListener('change', (event) => {
+        const field = event.target.closest('[data-mindigo-select-url]');
+
+        if (!field || !field.value) {
+            return;
+        }
+
+        window.location.href = field.value;
+    });
+}
+
+function bindMindigoTabs() {
+    if (document.__MindigoTabsBound) {
+        return;
+    }
+
+    document.__MindigoTabsBound = true;
+
+    document.addEventListener('click', (event) => {
+        const trigger = event.target.closest('[data-mindigo-tab-target]');
+
+        if (!trigger) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const group = trigger.closest('[data-mindigo-tabs]');
+        const tab = trigger.dataset.mindigoTabTarget;
+
+        if (!group || !tab) {
+            return;
+        }
+
+        group.querySelectorAll('[data-mindigo-tab-target]').forEach((button) => {
+            const active = button === trigger;
+            const activeClasses = (button.dataset.mindigoTabActiveClass || '').split(/\s+/).filter(Boolean);
+            const inactiveClasses = (button.dataset.mindigoTabInactiveClass || '').split(/\s+/).filter(Boolean);
+
+            button.classList.toggle('active', active);
+            activeClasses.forEach((className) => button.classList.toggle(className, active));
+            inactiveClasses.forEach((className) => button.classList.toggle(className, !active));
+            button.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+
+        group.querySelectorAll('[data-mindigo-tab-panel]').forEach((panel) => {
+            panel.classList.toggle('hidden', panel.dataset.mindigoTabPanel !== tab);
+        });
+
+        if (trigger.dataset.mindigoTabSyncUrl === 'true') {
+            const url = new URL(window.location.href);
+            url.searchParams.set(trigger.dataset.mindigoTabParam || 'tab', tab);
+            window.history.replaceState(null, '', url);
+        }
+    });
+}
+
+function bindMindigoValueSetters() {
+    if (document.__MindigoValueSettersBound) {
+        return;
+    }
+
+    document.__MindigoValueSettersBound = true;
+
+    document.addEventListener('click', (event) => {
+        const trigger = event.target.closest('[data-mindigo-set-value]');
+
+        if (!trigger) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const scope = trigger.dataset.mindigoSetScope
+            ? trigger.closest(trigger.dataset.mindigoSetScope)
+            : document;
+        const target = scope?.querySelector(trigger.dataset.mindigoSetTarget || 'input');
+
+        if (target) {
+            target.value = trigger.dataset.mindigoSetValue ?? '';
+            target.dispatchEvent(new Event('input', { bubbles: true }));
+            target.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    });
+}
+
 window.MindigoConfirm = function({
     title = 'Confirm action',
     message = 'Are you sure you want to continue?',
@@ -257,6 +513,12 @@ window.MindigoConfirm = function({
 
 function initMindigoUi() {
     bindMindigoConfirmForms();
+    bindMindigoModals();
+    bindMindigoDrawers();
+    bindMindigoAutoSubmit();
+    bindMindigoUrlSelects();
+    bindMindigoTabs();
+    bindMindigoValueSetters();
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => processMindigoToastNodes(), { once: true });

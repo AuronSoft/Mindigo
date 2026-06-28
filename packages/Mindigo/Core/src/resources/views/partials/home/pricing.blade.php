@@ -11,12 +11,12 @@
             {{-- Toggle --}}
             <div class="inline-flex items-center gap-3 mt-8 bg-gray-100 rounded-2xl p-1.5">
                 <button id="toggle-monthly"
-                    onclick="setPricingPeriod('monthly')"
+                    data-pricing-period="monthly"
                     class="text-sm font-black px-5 py-2 rounded-xl transition-all bg-white text-green-600 shadow-sm">
                     @lang('core::app.pricing.toggle_monthly')
                 </button>
                 <button id="toggle-yearly"
-                    onclick="setPricingPeriod('yearly')"
+                    data-pricing-period="yearly"
                     class="text-sm font-black px-5 py-2 rounded-xl transition-all text-gray-400 hover:text-gray-600">
                     @lang('core::app.pricing.toggle_yearly')
                     <span class="ml-1.5 bg-green-500 text-white text-xs font-black px-2 py-0.5 rounded-full">@lang('core::app.pricing.save_percent')</span>
@@ -301,6 +301,10 @@
             monthlyNotes.forEach(el => el.classList.remove('hidden'));
         }
     }
+
+    document.querySelectorAll('[data-pricing-period]').forEach(button => {
+        button.addEventListener('click', () => setPricingPeriod(button.dataset.pricingPeriod));
+    });
 
     document.getElementById('btn-contact-from-pricing')?.addEventListener('click', function(e) {
         e.preventDefault();

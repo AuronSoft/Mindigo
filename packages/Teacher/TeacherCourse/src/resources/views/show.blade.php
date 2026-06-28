@@ -6,13 +6,9 @@
     @vite([
         'packages/Mindigo/Dashboard/src/resources/css/app.css',
         'packages/Mindigo/Dashboard/src/resources/js/app.js',
+        'packages/Teacher/TeacherCourse/src/resources/css/app.css',
+        'packages/Teacher/TeacherCourse/src/resources/js/app.js',
     ])
-    <style>
-        .chapter-block { transition: box-shadow 0.15s; }
-        .chapter-block:hover { box-shadow: 0 4px 24px 0 rgba(16,185,129,0.07); }
-        .lesson-row { transition: background 0.1s; }
-        .modal-bg { backdrop-filter: blur(4px); }
-    </style>
 @endsection
 
 @section('content')
@@ -94,7 +90,7 @@
                     <h2 class="text-sm font-black text-slate-900">@lang('teacher-course::app.curriculum')</h2>
                     <p class="text-xs text-slate-400 font-bold mt-0.5">@lang('teacher-course::app.curriculum_desc')</p>
                 </div>
-                <button onclick="openModal('add-chapter-modal')"
+                <button type="button" data-mindigo-modal-open="add-chapter-modal"
                         class="inline-flex h-9 items-center gap-2 rounded-full bg-green-600 px-4 text-xs font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-100">
                     <x-heroicon-o-plus class="h-4 w-4" /> @lang('teacher-course::app.add_chapter')
                 </button>
@@ -105,7 +101,7 @@
                     <x-heroicon-o-squares-2x2 class="h-16 w-16 text-slate-200" />
                     <p class="text-base font-black text-slate-600">@lang('teacher-course::app.no_chapters')</p>
                     <p class="text-sm font-bold text-slate-400">@lang('teacher-course::app.no_chapters_desc')</p>
-                    <button onclick="openModal('add-chapter-modal')"
+                    <button type="button" data-mindigo-modal-open="add-chapter-modal"
                             class="mt-2 inline-flex h-10 items-center gap-2 rounded-full bg-green-600 px-5 text-sm font-black text-white hover:bg-green-500">
                         <x-heroicon-o-plus class="h-4 w-4" /> @lang('teacher-course::app.add_chapter_btn')
                     </button>
@@ -126,7 +122,11 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-1.5">
-                                    <button onclick='openEditChapterModal(@json($chapter))'
+                                    <button type="button"
+                                            data-course-chapter-edit
+                                            data-chapter-id="{{ $chapter->id }}"
+                                            data-chapter-name="{{ $chapter->name }}"
+                                            data-update-url="{{ route('teacher.courses.chapters.update', [$course, ':chapter']) }}"
                                             class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50">
                                         <x-heroicon-o-pencil class="h-3.5 w-3.5" />
                                     </button>
@@ -219,11 +219,11 @@
 </div>
 
 {{-- MODAL: ADD CHAPTER --}}
-<div id="add-chapter-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 modal-bg p-4" style="display:none">
+<div id="add-chapter-modal" data-mindigo-modal aria-hidden="true" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 modal-bg p-4">
     <div class="w-full max-w-md rounded-3xl border border-slate-200 bg-white shadow-xl overflow-hidden">
         <div class="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-6 py-4">
             <h3 class="text-base font-black text-slate-900">@lang('teacher-course::app.add_chapter_modal_title')</h3>
-            <button onclick="closeModal('add-chapter-modal')" class="text-slate-400 hover:text-slate-600">
+            <button type="button" data-mindigo-modal-close="add-chapter-modal" class="text-slate-400 hover:text-slate-600">
                 <x-heroicon-o-x-mark class="h-6 w-6" />
             </button>
         </div>
@@ -235,7 +235,7 @@
                        class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button type="button" onclick="closeModal('add-chapter-modal')"
+                <button type="button" data-mindigo-modal-close="add-chapter-modal"
                         class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">@lang('teacher-course::app.cancel')</button>
                 <button type="submit"
                         class="inline-flex h-9 items-center rounded-xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-500 shadow-sm">@lang('teacher-course::app.add_chapter_btn')</button>
@@ -245,11 +245,11 @@
 </div>
 
 {{-- MODAL: EDIT CHAPTER --}}
-<div id="edit-chapter-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 modal-bg p-4" style="display:none">
+<div id="edit-chapter-modal" data-mindigo-modal aria-hidden="true" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 modal-bg p-4">
     <div class="w-full max-w-md rounded-3xl border border-slate-200 bg-white shadow-xl overflow-hidden">
         <div class="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-6 py-4">
             <h3 class="text-base font-black text-slate-900">@lang('teacher-course::app.edit_chapter_modal_title')</h3>
-            <button onclick="closeModal('edit-chapter-modal')" class="text-slate-400 hover:text-slate-600">
+            <button type="button" data-mindigo-modal-close="edit-chapter-modal" class="text-slate-400 hover:text-slate-600">
                 <x-heroicon-o-x-mark class="h-6 w-6" />
             </button>
         </div>
@@ -261,7 +261,7 @@
                        class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button type="button" onclick="closeModal('edit-chapter-modal')"
+                <button type="button" data-mindigo-modal-close="edit-chapter-modal"
                         class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">@lang('teacher-course::app.cancel')</button>
                 <button type="submit"
                         class="inline-flex h-9 items-center rounded-xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-500 shadow-sm">@lang('teacher-course::app.save_changes')</button>
@@ -270,26 +270,4 @@
     </div>
 </div>
 
-<script>
-function openModal(id) {
-    const el = document.getElementById(id);
-    if (el) { el.style.display = 'flex'; }
-}
-function closeModal(id) {
-    const el = document.getElementById(id);
-    if (el) { el.style.display = 'none'; }
-}
-function openEditChapterModal(chapter) {
-    const baseUrl = "{{ route('teacher.courses.chapters.update', [$course, ':chapter']) }}";
-    document.getElementById('edit-chapter-form').action = baseUrl.replace(':chapter', chapter.id);
-    document.getElementById('edit-chapter-name').value = chapter.name;
-    openModal('edit-chapter-modal');
-}
-// Close modals on backdrop click
-document.querySelectorAll('[id$="-modal"]').forEach(modal => {
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) closeModal(modal.id);
-    });
-});
-</script>
 @endsection

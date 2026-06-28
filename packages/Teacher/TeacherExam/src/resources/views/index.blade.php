@@ -53,7 +53,7 @@
                        placeholder="@lang('teacher-exam::app.search')"
                        class="min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400">
             </div>
-            <select name="status" onchange="this.form.submit()"
+            <select name="status" data-mindigo-auto-submit
                     class="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-600 shadow-sm outline-none">
                 <option value="">@lang('teacher-exam::app.all_status')</option>
                 @foreach(['published', 'draft', 'reviewing', 'closed'] as $st)

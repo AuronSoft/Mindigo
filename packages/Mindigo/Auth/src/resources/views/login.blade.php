@@ -22,7 +22,7 @@
 
 <div class="min-h-screen flex">
 
-    {{-- ── LEFT: Form ── --}}
+    {{-- LEFT: Form --}}
     <div class="w-full lg:w-1/2 flex flex-col min-h-screen bg-white">
 
         {{-- Logo --}}
@@ -113,7 +113,7 @@
                 </form>
 
                 {{-- Mindigo ID --}}
-                <a href="#" onclick="event.preventDefault(); nidOpen()" class="mt-4 w-full flex items-center justify-center gap-2 border-2 border-green-500 text-green-600 font-black text-sm py-3 rounded-xl hover:bg-green-50 transition">
+                <a href="#" data-nid-action="open" class="mt-4 w-full flex items-center justify-center gap-2 border-2 border-green-500 text-green-600 font-black text-sm py-3 rounded-xl hover:bg-green-50 transition">
                     <svg width="18" height="18" viewBox="0 0 200 220" fill="none">
                         <circle cx="105" cy="145" r="90" fill="#22c55e" stroke="#14532d" stroke-width="3"/>
                         <circle cx="82" cy="135" r="20" fill="white" stroke="#14532d" stroke-width="2"/>
@@ -161,7 +161,7 @@
         </div>
     </div>
 
-    {{-- ── RIGHT: Visual ── --}}
+    {{-- RIGHT: Visual --}}
     <div class="hidden lg:flex flex-1 relative overflow-hidden" style="background:linear-gradient(160deg,#dcfce7 0%,#bbf7d0 30%,#4ade80 70%,#16a34a 100%)">
 
         <div id="floatStage" class="absolute inset-0" style="pointer-events:none"></div>
@@ -552,7 +552,7 @@
         return c;
     }
 
-    /* ─── Cubes ─── */
+    /* Cubes */
     function makeCube(bg, dark, mid, label, size) {
         const d = Math.round(size * 0.17);
         const ns = 'http://www.w3.org/2000/svg';
@@ -618,7 +618,7 @@
         return wrap;
     }
 
-    /* ─── Gems ─── */
+    /* Gems */
     function makeGem(color, size) {
         const ns = 'http://www.w3.org/2000/svg';
         const svg = document.createElementNS(ns,'svg');

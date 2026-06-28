@@ -14,6 +14,12 @@ return [
     'all_classrooms'         => 'Tất cả lớp',
     'filter_submit'          => 'Lọc',
     'clear_filter'           => 'Xoá lọc',
+    'filter_button'          => 'Bộ lọc',
+    'filter_active'          => 'Đang lọc',
+    'filter_title'           => 'Lọc buổi học trực tuyến',
+    'filter_desc'            => 'Chọn lớp để thu gọn danh sách buổi học.',
+    'filter_hint_title'      => 'Gợi ý',
+    'filter_hint_desc'       => 'Bộ lọc được đặt trong drawer để khu vực dữ liệu chính luôn rộng và dễ nhìn.',
 
     // Empty
     'empty_title' => 'Chưa có buổi học trực tuyến',

@@ -1,0 +1,16 @@
+@import "tailwindcss";
+.chapter-block {
+    transition: box-shadow 0.15s;
+}
+
+.chapter-block:hover {
+    box-shadow: 0 4px 24px 0 rgba(16, 185, 129, 0.07);
+}
+
+.lesson-row {
+    transition: background 0.1s;
+}
+
+.modal-bg {
+    backdrop-filter: blur(4px);
+}
