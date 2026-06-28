@@ -8,7 +8,54 @@
     ])
 @endsection
 
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const openButtons = document.querySelectorAll('[data-assignment-filter-open]');
+            const closeButtons = document.querySelectorAll('[data-assignment-filter-close]');
+            const overlay = document.querySelector('[data-assignment-filter-overlay]');
+            const panel = document.querySelector('[data-assignment-filter-panel]');
+
+            if (!overlay || !panel) {
+                return;
+            }
+
+            const open = () => {
+                overlay.classList.remove('hidden');
+
+                requestAnimationFrame(() => {
+                    overlay.classList.remove('opacity-0');
+                    panel.style.transform = 'translateX(0)';
+                });
+            };
+
+            const close = () => {
+                overlay.classList.add('opacity-0');
+                panel.style.transform = 'translateX(100%)';
+                window.setTimeout(() => overlay.classList.add('hidden'), 180);
+            };
+
+            openButtons.forEach((button) => button.addEventListener('click', open));
+            closeButtons.forEach((button) => button.addEventListener('click', close));
+            overlay.addEventListener('click', close);
+            window.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    close();
+                }
+            });
+        });
+    </script>
+@endsection
+
 @section('content')
+    @php
+        $selectedClassroom = request('classroom_id')
+            ? $classrooms->firstWhere('id', (int) request('classroom_id'))
+            : null;
+        $hasAssignmentFilters = filled(request('search_title')) || filled(request('classroom_id'));
+        $assignmentFilterCount = (int) filled(request('search_title')) + (int) filled(request('classroom_id'));
+    @endphp
+
     <div class="flex min-h-screen flex-col bg-slate-50">
 
         {{-- Header --}}
@@ -21,57 +68,54 @@
                 <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-assignment::app.assignment.subtitle')
                 </h1>
             </div>
-            <a href="{{ route('teacher.assignments.create') }}"
-                class="inline-flex h-10 items-center gap-2 rounded-full bg-green-600 px-5 text-sm font-black text-white no-underline shadow-sm shadow-green-200 transition hover:bg-green-500">
-                <x-heroicon-o-plus class="h-4 w-4" />
-                @lang('teacher-assignment::app.assignment.create')
-            </a>
+            <div class="flex items-center gap-3">
+                <button type="button" data-assignment-filter-open
+                    class="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 shadow-sm transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
+                    <x-heroicon-o-adjustments-horizontal class="h-4 w-4" />
+                    @lang('teacher-assignment::app.assignment.filter_button')
+                    @if($hasAssignmentFilters)
+                        <span class="grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[11px] text-white">
+                            {{ $assignmentFilterCount }}
+                        </span>
+                    @endif
+                </button>
+                <a href="{{ route('teacher.assignments.create') }}"
+                    class="inline-flex h-10 items-center gap-2 rounded-full bg-green-600 px-5 text-sm font-black text-white no-underline shadow-sm shadow-green-200 transition hover:bg-green-500">
+                    <x-heroicon-o-plus class="h-4 w-4" />
+                    @lang('teacher-assignment::app.assignment.create')
+                </a>
+            </div>
         </header>
 
         <div class="flex flex-1 flex-col gap-5 p-6">
-            <form action="{{ route('teacher.assignments.index') }}" method="GET" class="grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm items-end">
-                
-                {{-- Lọc theo Tiêu đề --}}
-                <div class="space-y-1 sm:col-span-1 md:col-span-2">
-                    <label class="text-xs font-bold text-slate-500 block">@lang('teacher-assignment::app.assignment.search_title_label')</label>
-                    <div class="relative">
-                        <x-heroicon-o-magnifying-glass class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                        <input type="text" name="search_title" value="{{ request('search_title') }}"
-                               class="h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-4 text-sm font-semibold text-slate-700 outline-none transition focus:border-green-300 focus:ring-2 focus:ring-green-50"
-                               placeholder="{{ __('teacher-assignment::app.assignment.search_title_placeholder') }}">
-                    </div>
-                </div>
-
-                {{-- Lọc theo Lớp học --}}
-                <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-500 block">@lang('teacher-assignment::app.assignment.filter_classroom_label')</label>
-                    <select name="classroom_id" class="block h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 outline-none transition focus:border-green-300">
-                        <option value="">-- @lang('teacher-assignment::app.assignment.all_classrooms') --</option>
-                        @foreach($classrooms as $class)
-                            <option value="{{ $class->id }}" {{ request('classroom_id') == $class->id ? 'selected' : '' }}>
-                                {{ $class->name }} ({{ $class->code }})
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                {{-- Nút hành động --}}
-                <div class="flex gap-2 min-w-[140px]">
-                    <button type="submit" id="btn-submit-filter" class="flex-1 inline-flex h-10 items-center justify-center gap-1.5 rounded-xl bg-green-600 px-4 text-xs font-black text-white shadow-sm transition hover:bg-green-500">
-                        @lang('teacher-assignment::app.assignment.filter_submit')
-                    </button>
-                    
-                    @if(request('search_title') || request('classroom_id'))
-                        <button type="button" onclick="window.location.href='{{ route('teacher.assignments.index') }}'" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100" title="{{ __('teacher-assignment::app.assignment.clear_filter') }}">
-                            <x-heroicon-o-x-mark class="h-4 w-4" />
-                        </button>
+            @if($hasAssignmentFilters)
+                <div class="flex flex-wrap items-center gap-2 rounded-2xl border border-green-100 bg-green-50 px-4 py-3">
+                    <span class="text-xs font-black uppercase tracking-wider text-green-700">
+                        @lang('teacher-assignment::app.assignment.filter_active')
+                    </span>
+                    @if(request('search_title'))
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600 shadow-sm">
+                            <x-heroicon-o-magnifying-glass class="h-3.5 w-3.5 text-green-600" />
+                            {{ request('search_title') }}
+                        </span>
                     @endif
+                    @if($selectedClassroom)
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600 shadow-sm">
+                            <x-heroicon-o-user-group class="h-3.5 w-3.5 text-green-600" />
+                            {{ $selectedClassroom->name }}
+                        </span>
+                    @endif
+                    <a href="{{ route('teacher.assignments.index') }}"
+                        class="ml-auto inline-flex h-8 items-center gap-1.5 rounded-full border border-green-200 bg-white px-3 text-xs font-black text-green-700 no-underline transition hover:bg-green-100">
+                        <x-heroicon-o-x-mark class="h-3.5 w-3.5" />
+                        @lang('teacher-assignment::app.assignment.clear_filter')
+                    </a>
                 </div>
-            </form>
+            @endif
 
             @if($assignments->isEmpty())
                 <div
-                    class="flex flex-1 flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-slate-200 bg-white py-20">
+                    class="flex min-h-[430px] flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-slate-200 bg-white px-6 py-16">
                     <span class="grid h-20 w-20 place-items-center rounded-full bg-slate-50 text-slate-300">
                         <x-heroicon-o-clipboard-document-list class="h-10 w-10" />
                     </span>
@@ -204,5 +248,74 @@
                 @endif
             @endif
         </div>
+
+        <div data-assignment-filter-overlay
+            class="fixed inset-0 z-40 hidden bg-slate-950/45 opacity-0 backdrop-blur-sm transition-opacity duration-200">
+        </div>
+        <aside data-assignment-filter-panel
+            class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl shadow-slate-950/20 transition-transform duration-200"
+            style="transform: translateX(100%);">
+            <div class="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-wider text-green-700">
+                        @lang('teacher-assignment::app.assignment.filter_button')
+                    </p>
+                    <h2 class="mt-1 text-xl font-black text-slate-950">
+                        @lang('teacher-assignment::app.assignment.filter_title')
+                    </h2>
+                    <p class="mt-1 text-sm font-semibold leading-relaxed text-slate-500">
+                        @lang('teacher-assignment::app.assignment.filter_desc')
+                    </p>
+                </div>
+                <button type="button" data-assignment-filter-close
+                    class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-800">
+                    <x-heroicon-o-x-mark class="h-5 w-5" />
+                </button>
+            </div>
+
+            <form action="{{ route('teacher.assignments.index') }}" method="GET" class="flex flex-1 flex-col">
+                <div class="flex-1 space-y-5 overflow-y-auto px-5 py-5">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500">
+                            @lang('teacher-assignment::app.assignment.search_title_label')
+                        </label>
+                        <div class="relative">
+                            <x-heroicon-o-magnifying-glass
+                                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                            <input type="text" name="search_title" value="{{ request('search_title') }}"
+                                class="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-10 pr-4 text-sm font-semibold text-slate-700 outline-none transition focus:border-green-300 focus:ring-4 focus:ring-green-50"
+                                placeholder="{{ __('teacher-assignment::app.assignment.search_title_placeholder') }}">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500">
+                            @lang('teacher-assignment::app.assignment.filter_classroom_label')
+                        </label>
+                        <select name="classroom_id"
+                            class="block h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 outline-none transition focus:border-green-300 focus:ring-4 focus:ring-green-50">
+                            <option value="">-- @lang('teacher-assignment::app.assignment.all_classrooms') --</option>
+                            @foreach($classrooms as $class)
+                                <option value="{{ $class->id }}" {{ request('classroom_id') == $class->id ? 'selected' : '' }}>
+                                    {{ $class->name }} ({{ $class->code }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 border-t border-slate-100 p-5">
+                    <a href="{{ route('teacher.assignments.index') }}"
+                        class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">
+                        @lang('teacher-assignment::app.assignment.clear_filter')
+                    </a>
+                    <button type="submit"
+                        class="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-green-600 px-4 text-sm font-black text-white shadow-sm shadow-green-200 transition hover:bg-green-500">
+                        <x-heroicon-o-funnel class="h-4 w-4" />
+                        @lang('teacher-assignment::app.assignment.filter_submit')
+                    </button>
+                </div>
+            </form>
+        </aside>
     </div>
 @endsection

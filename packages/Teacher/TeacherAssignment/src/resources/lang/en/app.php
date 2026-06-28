@@ -66,6 +66,10 @@ return [
         'filter_classroom_label' => 'Filter by classroom',
         'all_classrooms' => 'All classrooms',
         'filter_submit' => 'Filter data',
+        'filter_button' => 'Filters',
+        'filter_title' => 'Filter assignments',
+        'filter_desc' => 'Search by title or filter assignments by classroom.',
+        'filter_active' => 'Active filter',
         'clear_filter' => 'Clear filter',
 
         'col_number' => '#',

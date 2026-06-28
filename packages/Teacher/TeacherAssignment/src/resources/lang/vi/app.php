@@ -66,6 +66,10 @@ return [
         'filter_classroom_label' => 'Lọc theo lớp học',
         'all_classrooms' => 'Tất cả lớp học',
         'filter_submit' => 'Lọc dữ liệu',
+        'filter_button' => 'Bộ lọc',
+        'filter_title' => 'Lọc bài tập',
+        'filter_desc' => 'Tìm theo tiêu đề hoặc lọc bài tập theo lớp học.',
+        'filter_active' => 'Đang lọc',
         'clear_filter' => 'Xóa bộ lọc',
 
         'col_number' => '#',
