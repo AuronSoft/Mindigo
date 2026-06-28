@@ -5,6 +5,9 @@ return [
     'subtitle' => 'Tất cả thông báo của bạn',
     'area'     => 'Thông báo',
 
+    'view_all'      => 'Xem tất cả',
+    'unread_count'  => ':count thông báo mới',
+    'all_read'      => 'Không có thông báo mới',
     'filter_all'    => 'Tất cả',
     'filter_unread' => 'Chưa đọc',
     'mark_all_read' => 'Đánh dấu tất cả đã đọc',

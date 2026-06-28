@@ -5,6 +5,9 @@ return [
     'subtitle' => 'All your notifications',
     'area'     => 'Notifications',
 
+    'view_all'      => 'View all',
+    'unread_count'  => ':count new notifications',
+    'all_read'      => 'No new notifications',
     'filter_all'    => 'All',
     'filter_unread' => 'Unread',
     'mark_all_read' => 'Mark all as read',

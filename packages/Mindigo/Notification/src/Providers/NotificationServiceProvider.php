@@ -13,15 +13,24 @@ class NotificationServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'notification');
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'notification');
 
-        // Chia sẻ số thông báo chưa đọc cho mọi view (chuông + badge trên sidebar)
+        // Chia sẻ thông báo cho mọi view (chuông + badge + dropdown xem nhanh trên sidebar).
         // Cache trong 1 request để không query lặp ở mỗi view.
         View::composer('*', function ($view) {
             if (! auth()->check()) {
                 return;
             }
 
-            $count = once(fn () => auth()->user()->unreadNotifications()->count());
+            [$count, $recent] = once(function () {
+                $user = auth()->user();
+
+                return [
+                    $user->unreadNotifications()->count(),
+                    $user->notifications()->latest()->limit(6)->get(),
+                ];
+            });
+
             $view->with('globalUnreadNotifications', $count);
+            $view->with('globalRecentNotifications', $recent);
         });
     }
 }

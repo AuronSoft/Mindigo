@@ -125,7 +125,6 @@
                         'desc' => __('student-dashboard::app.group_personal_desc'),
                         'icon' => 'heroicon-o-cog-6-tooth',
                         'items' => [
-                            ['route' => 'notifications.index', 'match' => 'notifications.*', 'label' => __('notification::app.title'), 'icon' => 'heroicon-o-bell', 'badge' => ($globalUnreadNotifications ?? 0)],
                             ['route' => 'student.notebook.index', 'match' => 'student.notebook.*', 'label' => __('student-dashboard::app.nav_notebook'), 'icon' => 'heroicon-o-book-open'],
                             ['route' => 'profile.index', 'match' => 'profile.*', 'label' => __('student-dashboard::app.nav_profile'), 'icon' => 'heroicon-o-user-circle'],
                         ],
@@ -376,7 +375,79 @@
             </nav>
         </div>
 
-        <button class="mt-auto flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left" id="sidebar-avatar-btn" type="button">
+        {{-- ── Chuông thông báo (luôn hiện số; 0 nếu không có) ── --}}
+        @php $unreadCount = $globalUnreadNotifications ?? 0; @endphp
+        <div class="relative mt-auto">
+            <button id="dashboard-notification-btn" type="button" aria-expanded="false" aria-haspopup="true"
+                class="flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left text-slate-700 transition hover:text-green-700">
+                <span class="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600">
+                    <x-heroicon-o-bell class="h-5 w-5" />
+                    <span class="absolute -right-1 -top-1 grid h-4.5 min-w-4.5 place-items-center rounded-full px-1 text-[10px] font-black text-white {{ $unreadCount > 0 ? 'bg-green-600' : 'bg-slate-300' }}">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
+                </span>
+                <span class="hidden min-w-0 flex-1 whitespace-nowrap" data-sidebar-text>
+                    <span class="block truncate text-sm font-black text-slate-900">@lang('notification::app.title')</span>
+                    <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">{{ $unreadCount > 0 ? __('notification::app.unread_count', ['count' => $unreadCount]) : __('notification::app.all_read') }}</span>
+                </span>
+            </button>
+
+            {{-- Dropdown xem nhanh --}}
+            <div id="dashboard-notification-menu" class="absolute bottom-full left-0 z-50 mb-2 hidden w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10">
+                <div class="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-3">
+                    <span class="text-sm font-black text-slate-900">@lang('notification::app.title')</span>
+                    @if($unreadCount > 0)
+                        <span class="grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[10px] font-black text-white">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
+                    @endif
+                </div>
+
+                <div class="max-h-80 overflow-y-auto">
+                    @forelse(($globalRecentNotifications ?? collect()) as $note)
+                        @php
+                            $d = $note->data;
+                            $isUnread = is_null($note->read_at);
+                            $icon = match($d['icon'] ?? '') {
+                                'megaphone'       => 'heroicon-o-megaphone',
+                                'clipboard-check' => 'heroicon-o-clipboard-document-check',
+                                default           => 'heroicon-o-bell',
+                            };
+                            $tone = match($d['tone'] ?? '') {
+                                'blue'  => 'bg-blue-50 text-blue-600',
+                                'green' => 'bg-green-50 text-green-600',
+                                'amber' => 'bg-amber-50 text-amber-600',
+                                default => 'bg-slate-100 text-slate-500',
+                            };
+                        @endphp
+                        <a href="{{ route('notifications.read', $note->id) }}"
+                           class="flex items-start gap-3 px-4 py-3 no-underline transition hover:bg-slate-50 {{ $isUnread ? 'bg-green-50/40' : '' }}">
+                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl {{ $tone }}">
+                                <x-dynamic-component :component="$icon" class="h-4 w-4" />
+                            </span>
+                            <span class="min-w-0 flex-1">
+                                <span class="flex items-center gap-1.5">
+                                    <span class="truncate text-sm font-black text-slate-800">{{ $d['title'] ?? '—' }}</span>
+                                    @if($isUnread)<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-green-600"></span>@endif
+                                </span>
+                                @if(!empty($d['message']))
+                                    <span class="line-clamp-1 text-xs font-semibold text-slate-500">{{ $d['message'] }}</span>
+                                @endif
+                                <span class="text-[10px] font-bold text-slate-400">{{ $note->created_at?->diffForHumans() }}</span>
+                            </span>
+                        </a>
+                    @empty
+                        <div class="flex flex-col items-center gap-2 px-4 py-10 text-center">
+                            <span class="grid h-12 w-12 place-items-center rounded-full bg-slate-50 text-slate-300"><x-heroicon-o-bell class="h-6 w-6" /></span>
+                            <p class="text-xs font-bold text-slate-400">@lang('notification::app.empty_title')</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <a href="{{ route('notifications.index') }}" class="flex items-center justify-center gap-1.5 border-t border-slate-100 px-4 py-3 text-xs font-black text-green-700 no-underline transition hover:bg-green-50">
+                    @lang('notification::app.view_all')
+                    <x-heroicon-o-arrow-right class="h-3.5 w-3.5" />
+                </a>
+            </div>
+        </div>
+
+        <button class="flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left" id="sidebar-avatar-btn" type="button">
             <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-green-100 text-sm font-black text-green-700">{{ mb_substr($currentUser?->name ?? 'A', 0, 1) }}</span>
             <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
                 <span class="block max-w-44 truncate text-sm font-black text-slate-900">{{ $currentUser?->name ?? 'Guest' }}</span>
