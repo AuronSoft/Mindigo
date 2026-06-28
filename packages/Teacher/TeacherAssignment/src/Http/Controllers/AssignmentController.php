@@ -45,6 +45,42 @@ class AssignmentController extends Controller
         return view('teacher-assignment::create', compact('classrooms'));
     }
 
+    public function grading()
+    {
+        $assignments = Assignment::query()
+            ->where('teacher_id', auth()->id())
+            ->with('classroom:id,name,code')
+            ->withCount([
+                'submissions',
+                'submissions as pending_submissions_count' => fn ($query) => $query->where('status', 'submitted'),
+                'submissions as graded_submissions_count' => fn ($query) => $query->whereIn('status', ['graded', 'returned']),
+                'submissions as late_submissions_count' => fn ($query) => $query->where('is_late', true),
+            ])
+            ->whereHas('submissions')
+            ->latest()
+            ->paginate(12);
+
+        $summary = [
+            'assignments' => Assignment::query()
+                ->where('teacher_id', auth()->id())
+                ->whereHas('submissions')
+                ->count(),
+            'pending' => \Mindigo\TeacherAssignment\Models\AssignmentSubmission::query()
+                ->whereHas('assignment', fn ($query) => $query->where('teacher_id', auth()->id()))
+                ->where('status', 'submitted')
+                ->count(),
+            'graded' => \Mindigo\TeacherAssignment\Models\AssignmentSubmission::query()
+                ->whereHas('assignment', fn ($query) => $query->where('teacher_id', auth()->id()))
+                ->whereIn('status', ['graded', 'returned'])
+                ->count(),
+            'submitted' => \Mindigo\TeacherAssignment\Models\AssignmentSubmission::query()
+                ->whereHas('assignment', fn ($query) => $query->where('teacher_id', auth()->id()))
+                ->count(),
+        ];
+
+        return view('teacher-assignment::grading', compact('assignments', 'summary'));
+    }
+
     public function store(AssignmentRequest $request)
     {
         $data = $request->except('files');

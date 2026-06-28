@@ -120,6 +120,26 @@ return [
         'empty_state_subtitle' => 'Hãy đổi bộ lọc hoặc từ khóa tìm kiếm.',
     ],
 
+    'grading' => [
+        'eyebrow' => 'Chấm điểm',
+        'title' => 'Chấm điểm bài tập',
+        'subtitle' => 'Theo dõi các bài nộp đang chờ chấm và mở đúng màn chấm bài.',
+        'stat_assignments' => 'Bài có nộp',
+        'stat_pending' => 'Chờ chấm',
+        'stat_graded' => 'Đã chấm',
+        'stat_submitted' => 'Tổng bài nộp',
+        'empty_title' => 'Chưa có bài nộp cần chấm',
+        'empty_desc' => 'Khi học sinh nộp bài tập, danh sách chấm điểm sẽ hiển thị tại đây.',
+        'pending_count' => ':count chờ chấm',
+        'late_count' => ':count nộp trễ',
+        'all_graded' => 'Đã chấm xong',
+        'submitted' => 'Đã nộp',
+        'pending' => 'Chờ chấm',
+        'graded' => 'Đã chấm',
+        'progress' => 'Tiến độ chấm',
+        'open_grading' => 'Chấm bài',
+    ],
+
     'validation' => [
         'title_required' => 'Vui lòng nhập tiêu đề bài tập.',
         'classroom_required' => 'Vui lòng chọn lớp học.',

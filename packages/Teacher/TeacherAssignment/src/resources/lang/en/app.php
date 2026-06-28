@@ -121,6 +121,26 @@ return [
 
     ],
 
+    'grading' => [
+        'eyebrow' => 'Grading',
+        'title' => 'Assignment grading',
+        'subtitle' => 'Track pending submissions and open the correct grading workspace.',
+        'stat_assignments' => 'Assignments with submissions',
+        'stat_pending' => 'Pending',
+        'stat_graded' => 'Graded',
+        'stat_submitted' => 'Total submissions',
+        'empty_title' => 'No submissions to grade yet',
+        'empty_desc' => 'When students submit assignments, the grading list will appear here.',
+        'pending_count' => ':count pending',
+        'late_count' => ':count late',
+        'all_graded' => 'All graded',
+        'submitted' => 'Submitted',
+        'pending' => 'Pending',
+        'graded' => 'Graded',
+        'progress' => 'Grading progress',
+        'open_grading' => 'Grade submissions',
+    ],
+
     'validation' => [
         'title_required' => 'Please enter an assignment title.',
         'classroom_required' => 'Please select a classroom.',

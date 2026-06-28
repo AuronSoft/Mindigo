@@ -366,7 +366,7 @@
                     @endif
                 </div>
                 <div class="space-y-3">
-                    <a href="{{ $safeRoute('teacher.assignments.index') }}" class="flex items-center gap-3 rounded-xl p-3 no-underline transition hover:bg-slate-50">
+                    <a href="{{ $safeRoute('teacher.assignments.grading') }}" class="flex items-center gap-3 rounded-xl p-3 no-underline transition hover:bg-slate-50">
                         <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-violet-50 text-violet-600">
                             <x-heroicon-o-clock class="h-5 w-5" />
                         </span>

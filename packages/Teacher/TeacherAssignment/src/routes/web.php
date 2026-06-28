@@ -7,6 +7,7 @@ use Mindigo\TeacherAssignment\Http\Controllers\SubmissionController;
 Route::middleware(['web', 'auth'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::prefix('assignments')->name('assignments.')->group(function () {
         Route::get('/', [AssignmentController::class, 'index'])->name('index');
+        Route::get('/grading', [AssignmentController::class, 'grading'])->name('grading');
         Route::get('/create', [AssignmentController::class, 'create'])->name('create');
         Route::post('/', [AssignmentController::class, 'store'])->name('store');
         Route::get('/{assignment}/files/{fileIndex}', [AssignmentController::class, 'file'])->whereNumber('fileIndex')->name('files.show');

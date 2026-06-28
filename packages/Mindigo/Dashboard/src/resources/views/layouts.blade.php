@@ -180,7 +180,7 @@
                             ['route' => 'teacher.courses.index', 'fallback_route' => 'teacher.classrooms.index', 'match' => 'teacher.courses.*', 'label' => __('teacher-dashboard::app.courses'), 'icon' => 'heroicon-o-book-open'],
                             ['route' => 'teacher.classrooms.index', 'match' => 'teacher.classrooms.*', 'label' => __('teacher-dashboard::app.my_classrooms'), 'icon' => 'heroicon-o-user-group'],
                             ['route' => 'teacher.exams.index', 'match' => 'teacher.exams.*', 'label' => __('teacher-dashboard::app.my_exams'), 'icon' => 'heroicon-o-document-text'],
-                            ['route' => 'teacher.assignments.index', 'match' => 'teacher.assignments.*', 'label' => __('teacher-dashboard::app.my_assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
+                            ['route' => 'teacher.assignments.index', 'match' => 'teacher.assignments.index', 'label' => __('teacher-dashboard::app.my_assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
                             ['route' => 'teacher.questions.index', 'match' => 'teacher.questions.*', 'label' => __('teacher-dashboard::app.my_questions'), 'icon' => 'heroicon-o-circle-stack'],
                             ['route' => 'teacher.live-sessions.index', 'match' => 'teacher.live-sessions.*', 'label' => __('teacher-dashboard::app.live_sessions'), 'icon' => 'heroicon-o-video-camera'],
                         ],
@@ -190,7 +190,7 @@
                         'desc' => __('teacher-dashboard::app.group_tracking_desc'),
                         'icon' => 'heroicon-o-chart-bar',
                         'items' => [
-                            ['route' => 'teacher.results.index', 'match' => 'teacher.results.*', 'label' => __('teacher-dashboard::app.grading'), 'icon' => 'heroicon-o-check-badge'],
+                            ['route' => 'teacher.assignments.grading', 'match' => 'teacher.assignments.grading', 'label' => __('teacher-dashboard::app.grading'), 'icon' => 'heroicon-o-check-badge'],
                             ['route' => 'teacher.reports.index', 'match' => 'teacher.reports.*', 'label' => __('teacher-dashboard::app.reports'), 'icon' => 'heroicon-o-presentation-chart-line'],
                             ['route' => 'teacher.announcements.index', 'match' => 'teacher.announcements.*', 'label' => __('teacher-dashboard::app.announcements'), 'icon' => 'heroicon-o-megaphone'],
                             ['route' => 'teacher.discussions.index', 'fallback_route' => 'teacher.announcements.index', 'match' => 'teacher.discussions.*', 'label' => __('teacher-dashboard::app.discussions'), 'icon' => 'heroicon-o-chat-bubble-left-right'],
