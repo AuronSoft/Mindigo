@@ -12,4 +12,6 @@ Route::prefix('student/exams')
         Route::get('/attempts/{attempt}',         [ExamController::class, 'take'])->name('take');
         Route::post('/attempts/{attempt}/submit', [ExamController::class, 'submit'])->name('submit');
         Route::get('/attempts/{attempt}/result',  [ExamController::class, 'result'])->name('result');
+
+        Route::post('/attempts/{attempt}/autosave', [ExamController::class, 'autosave'])->name('autosave');
     });
