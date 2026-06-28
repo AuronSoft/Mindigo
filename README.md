@@ -317,7 +317,7 @@ This starts the Laravel server, queue listener, log tailing, and Vite together.
 
 ## License
 
-Mindigo LMS is released under the MIT License.
+Mindigo LMS is released under the [MIT License](LICENSE).
 
 ---
 
