@@ -1,0 +1,25 @@
+# Không copy các thứ này vào image (giảm dung lượng + tránh ghi đè)
+.git
+.gitignore
+.github
+node_modules
+vendor
+public/build
+storage/*.key
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+.env
+.env.*
+!.env.example
+tests
+phpunit.xml
+README.md
+docs
+*.md
+.idea
+.vscode
+docker-compose*.yml
+Dockerfile
+.dockerignore

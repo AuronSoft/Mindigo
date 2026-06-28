@@ -1,0 +1,87 @@
+#  Mindigo LMS — docker-compose.yml
+#  Chạy đồng thời 2 container: web (app) + cơ sở dữ liệu (db), nối qua mạng nội bộ.
+#  Lệnh thường dùng:
+#    docker compose up -d --build   # build image và chạy nền
+#    docker compose ps              # xem container đang chạy
+#    docker compose logs -f app     # xem log container app
+#    docker compose down            # dừng & xoá container (giữ volume dữ liệu)
+
+services:
+
+  # Container ứng dụng web (PHP + Apache) 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mindigo-app
+    container_name: mindigo_app
+    restart: unless-stopped
+    ports:
+      - "8080:80"            # Truy cập web tại http://localhost:8080  (host:container)
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost:8080"
+      # Kết nối tới container db qua tên service "db" (DNS nội bộ của Docker)
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: mindigo
+      DB_USERNAME: mindigo
+      DB_PASSWORD: secret
+    depends_on:
+      db:
+        condition: service_healthy   # đợi db sẵn sàng (healthcheck) rồi mới start
+    volumes:
+      # Lưu bền vững file người dùng upload (bài nộp, đính kèm...) trên disk "public"
+      - storage_data:/var/www/html/storage/app/public
+    networks:
+      - mindigo
+
+  # Container cơ sở dữ liệu (MySQL) 
+  db:
+    image: mysql:8.0
+    container_name: mindigo_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: mindigo
+      MYSQL_USER: mindigo
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: rootsecret
+    ports:
+      - "3307:3306"          # Map ra host 3307 để không đụng MySQL/Laragon đang chạy 3306
+    volumes:
+      - db_data:/var/lib/mysql   # Volume giữ dữ liệu DB bền vững kể cả khi xoá container
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootsecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - mindigo
+
+  # ----- phpMyAdmin: xem/quản lý cơ sở dữ liệu qua trình duyệt (tiện demo) -----
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: mindigo_pma
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db            # kết nối tới container db
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 64M
+    ports:
+      - "8081:80"            # Truy cập tại http://localhost:8081
+    depends_on:
+      - db
+    networks:
+      - mindigo
+
+# Volume bền vững (dữ liệu không mất khi container bị xoá)
+volumes:
+  db_data:        # dữ liệu MySQL
+  storage_data:   # file upload của ứng dụng
+
+# Mạng nội bộ để 2 container "thấy" nhau qua tên service 
+networks:
+  mindigo:
+    driver: bridge
