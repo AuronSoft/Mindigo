@@ -3,8 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\StudentExam\Http\Controllers\ExamController;
 
-Route::middleware(['web', 'auth', 'role:student|admin'])->prefix('student')->name('student.')->group(function () {
-    Route::prefix('exams')->name('exams.')->group(function () {
-        Route::get('/', [ExamController::class, 'index'])->name('index');
+Route::prefix('student/exams')
+    ->middleware(['web', 'auth'])
+    ->name('student.exams.')
+    ->group(function () {
+        Route::get('/',                           [ExamController::class, 'index'])->name('index');
+        Route::post('/{exam}/start',              [ExamController::class, 'start'])->name('start');
+        Route::get('/attempts/{attempt}',         [ExamController::class, 'take'])->name('take');
+        Route::post('/attempts/{attempt}/submit', [ExamController::class, 'submit'])->name('submit');
+        Route::get('/attempts/{attempt}/result',  [ExamController::class, 'result'])->name('result');
     });
-});
