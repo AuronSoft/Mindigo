@@ -70,7 +70,10 @@ return [
 
     // Show Detail View
     'assistant' => 'Assistant',
+    'no_assistant' => '-- No assistant --',
     'unassigned' => 'Unassigned',
+    'draft' => 'Draft',
+    'unauthorized' => 'You do not have permission to access this classroom.',
     'students_count' => ':count students',
     'subjects_count' => ':count subjects',
     'students_and_assistants' => 'Students & Assistants',

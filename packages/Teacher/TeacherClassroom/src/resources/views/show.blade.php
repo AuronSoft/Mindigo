@@ -413,7 +413,7 @@
                                             @if($ann->is_pinned)
                                                 <span class="inline-flex items-center text-[10px] text-green-700 font-bold bg-green-50 rounded-full px-2 py-0.5">@lang('teacher-classroom::app.pin')</span>
                                             @endif
-                                            <span class="text-xs text-slate-400">{{ $ann->published_at ? $ann->published_at->format('d/m/Y H:i') : 'Nháp' }}</span>
+                                            <span class="text-xs text-slate-400">{{ $ann->published_at ? $ann->published_at->format('d/m/Y H:i') : __('teacher-classroom::app.draft') }}</span>
                                         </div>
                                         <h4 class="mt-1 text-sm font-black text-slate-900">{{ $ann->title }}</h4>
                                         <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">{{ Str::limit(strip_tags($ann->content), 200) }}</p>

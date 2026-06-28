@@ -62,10 +62,10 @@
 
     {{-- Assistant --}}
     <div>
-        <label class="mb-1.5 block text-xs font-black text-slate-600">Trợ giảng</label>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.assistant')</label>
         <select name="assistant_id"
                 class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-50">
-            <option value="">-- Không có trợ giảng --</option>
+            <option value="">@lang('teacher-classroom::app.no_assistant')</option>
             @foreach($assistants as $assistant)
                 <option value="{{ $assistant->id }}" @selected(old('assistant_id', $sel?->assistant_id) == $assistant->id)>
                     {{ $assistant->name }} ({{ $assistant->email }})
