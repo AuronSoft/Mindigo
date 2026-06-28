@@ -7,6 +7,7 @@
         'packages/Mindigo/Dashboard/src/resources/css/app.css',
         'packages/Mindigo/Dashboard/src/resources/js/app.js',
         'packages/Teacher/TeacherClassroom/src/resources/css/app.css',
+        'packages/Teacher/TeacherClassroom/src/resources/js/app.js',
     ])
 @endsection
 
@@ -61,7 +62,7 @@
                     </a>
                 @endif
             </div>
-            <select name="status" onchange="this.form.submit()"
+            <select name="status" data-mindigo-auto-submit
                     class="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-600 shadow-sm outline-none focus:border-green-300">
                 <option value="">@lang('teacher-classroom::app.all_status')</option>
                 <option value="active"   @selected(($filters['status'] ?? '') === 'active')>@lang('teacher-classroom::app.active')</option>

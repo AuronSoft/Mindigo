@@ -150,19 +150,25 @@
 
                                 <div class="ml-auto flex gap-1.5">
                                     <button type="button"
-                                            onclick="this.closest('.rounded-3xl').querySelector('input').value = 0"
+                                            data-mindigo-set-scope=".rounded-3xl"
+                                            data-mindigo-set-target="input"
+                                            data-mindigo-set-value="0"
                                             class="rounded-xl bg-red-50 px-3 py-1.5 text-xs font-black text-red-600 transition hover:bg-red-100">
                                         {{ __('teacher-result::app.zero_score') }}
                                     </button>
 
                                     <button type="button"
-                                            onclick="this.closest('.rounded-3xl').querySelector('input').value = {{ $maxPts / 2 }}"
+                                            data-mindigo-set-scope=".rounded-3xl"
+                                            data-mindigo-set-target="input"
+                                            data-mindigo-set-value="{{ $maxPts / 2 }}"
                                             class="rounded-xl bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-600 transition hover:bg-amber-100">
                                         {{ __('teacher-result::app.half_score') }}
                                     </button>
 
                                     <button type="button"
-                                            onclick="this.closest('.rounded-3xl').querySelector('input').value = {{ $maxPts }}"
+                                            data-mindigo-set-scope=".rounded-3xl"
+                                            data-mindigo-set-target="input"
+                                            data-mindigo-set-value="{{ $maxPts }}"
                                             class="rounded-xl bg-green-50 px-3 py-1.5 text-xs font-black text-green-700 transition hover:bg-green-100">
                                         {{ __('teacher-result::app.full_score') }}
                                     </button>

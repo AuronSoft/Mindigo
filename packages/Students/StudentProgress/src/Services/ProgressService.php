@@ -43,7 +43,7 @@ class ProgressService
             ? collect([$classroomId])->intersect($classroomIds)->values()
             : $classroomIds;
 
-        // ---- Bài tập ----
+        // Bài tập 
         $assignments = Assignment::query()
             ->whereIn('classroom_id', $scopeIds->isEmpty() ? [0] : $scopeIds)
             ->where('status', 'published')
@@ -61,7 +61,7 @@ class ProgressService
         $gradedSubs     = $submissions->whereIn('status', ['graded', 'returned'])
             ->filter(fn ($s) => ! is_null($s->score));
 
-        // ---- Đề thi (toàn hệ thống, audience = student) ----
+        // Đề thi (toàn hệ thống, audience = student) 
         $examTotal = Exam::query()->where('status', 'published')->count();
 
         $attempts = ExamAttempt::query()
@@ -71,7 +71,7 @@ class ProgressService
 
         $examDone = $attempts->pluck('exam_id')->unique()->count();
 
-        // ---- Điểm trung bình (gộp % đề thi + % bài tập đã chấm) ----
+        // Điểm trung bình (gộp % đề thi + % bài tập đã chấm) 
         $scorePercents = collect()
             ->merge($attempts->pluck('percentage')->filter(fn ($v) => ! is_null($v)))
             ->merge($gradedSubs->map(fn ($s) => $s->scorePercent())->filter(fn ($v) => ! is_null($v)));

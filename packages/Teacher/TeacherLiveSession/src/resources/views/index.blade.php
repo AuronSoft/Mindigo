@@ -27,7 +27,7 @@
                 <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-live-session::app.subtitle')</h1>
             </div>
             <div class="flex items-center gap-2">
-                <button type="button" data-live-filter-open
+                <button type="button" data-mindigo-drawer-open="teacher-live-filter"
                     class="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 shadow-sm transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
                     <x-heroicon-o-adjustments-horizontal class="h-4 w-4" />
                     Bộ lọc
@@ -181,8 +181,8 @@
             @endif
         </div>
 
-        <div data-live-filter-overlay class="fixed inset-0 z-40 hidden bg-slate-950/45 opacity-0 backdrop-blur-sm transition-opacity duration-200"></div>
-        <aside data-live-filter-panel
+        <div data-mindigo-drawer="teacher-live-filter" class="fixed inset-0 z-40 hidden bg-slate-950/45 opacity-0 backdrop-blur-sm transition-opacity duration-200"></div>
+        <aside data-mindigo-drawer-panel="teacher-live-filter"
             class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl shadow-slate-950/20 transition-transform duration-200"
             style="transform: translateX(100%);">
             <div class="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
@@ -191,7 +191,7 @@
                     <h2 class="mt-1 text-lg font-black text-slate-950">Lọc buổi học trực tuyến</h2>
                     <p class="mt-1 text-sm font-semibold text-slate-400">Chọn lớp để thu gọn danh sách buổi học.</p>
                 </div>
-                <button type="button" data-live-filter-close
+                <button type="button" data-mindigo-drawer-close="teacher-live-filter"
                     class="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
                     <x-heroicon-o-x-mark class="h-5 w-5" />
                 </button>
@@ -237,42 +237,4 @@
             </form>
         </aside>
     </div>
-@endsection
-
-@section('scripts')
-    <script>
-        (() => {
-            const openButtons = document.querySelectorAll('[data-live-filter-open]');
-            const closeButtons = document.querySelectorAll('[data-live-filter-close]');
-            const overlay = document.querySelector('[data-live-filter-overlay]');
-            const panel = document.querySelector('[data-live-filter-panel]');
-
-            if (!overlay || !panel) {
-                return;
-            }
-
-            const open = () => {
-                overlay.classList.remove('hidden');
-                requestAnimationFrame(() => {
-                    overlay.classList.remove('opacity-0');
-                    panel.style.transform = 'translateX(0)';
-                });
-            };
-
-            const close = () => {
-                overlay.classList.add('opacity-0');
-                panel.style.transform = 'translateX(100%)';
-                window.setTimeout(() => overlay.classList.add('hidden'), 180);
-            };
-
-            openButtons.forEach((button) => button.addEventListener('click', open));
-            closeButtons.forEach((button) => button.addEventListener('click', close));
-            overlay.addEventListener('click', close);
-            window.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') {
-                    close();
-                }
-            });
-        })();
-    </script>
 @endsection

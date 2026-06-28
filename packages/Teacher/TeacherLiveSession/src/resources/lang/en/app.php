@@ -14,6 +14,12 @@ return [
     'all_classrooms'         => 'All classrooms',
     'filter_submit'          => 'Filter',
     'clear_filter'           => 'Clear filter',
+    'filter_button'          => 'Filters',
+    'filter_active'          => 'Active filter',
+    'filter_title'           => 'Filter live sessions',
+    'filter_desc'            => 'Choose a classroom to narrow the session list.',
+    'filter_hint_title'      => 'Tip',
+    'filter_hint_desc'       => 'Filters live in a drawer so the main data area stays wide and easy to scan.',
 
     // Empty
     'empty_title' => 'No live sessions yet',

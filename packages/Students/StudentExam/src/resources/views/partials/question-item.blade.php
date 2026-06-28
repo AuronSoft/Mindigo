@@ -1,6 +1,6 @@
 @props(['question', 'index', 'saved'])
 
-<div id="question-{{ $index }}" class="question-item {{ $index !== 0 ? 'hidden' : '' }} bg-white rounded-3xl border border-slate-200 p-8 mb-8">
+<div id="question-{{ $index }}" data-question-item="{{ $index }}" class="question-item {{ $index !== 0 ? 'hidden' : '' }} bg-white rounded-3xl border border-slate-200 p-8 mb-8">
 
     <div class="flex items-center justify-between mb-6">
         <span class="px-4 py-1.5 bg-slate-100 text-slate-600 font-bold rounded-2xl text-sm">

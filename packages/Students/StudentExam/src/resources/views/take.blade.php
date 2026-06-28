@@ -5,6 +5,8 @@
     @vite([
         'packages/Mindigo/Dashboard/src/resources/css/app.css',
         'packages/Mindigo/Dashboard/src/resources/js/app.js',
+        'packages/Students/StudentExam/src/resources/css/app.css',
+        'packages/Students/StudentExam/src/resources/js/app.js',
     ])
 @endsection
 
@@ -37,7 +39,7 @@
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">@lang('student-exam::app.questions')</p>
                 <div class="grid grid-cols-5 gap-2" id="question-nav">
                     @foreach($questions as $index => $question)
-                        <button onclick="goToQuestion({{ $index }})"
+                        <button type="button" data-question-nav-button="{{ $index }}"
                                 class="question-btn h-10 w-10 rounded-2xl border border-slate-200 font-bold text-slate-600 hover:border-blue-300 transition {{ $index === 0 ? 'bg-blue-600 text-white border-blue-600' : '' }}">
                             {{ $index + 1 }}
                         </button>
@@ -61,7 +63,11 @@
                 @endforeach
 
                 <div class="mt-10 flex justify-end">
-                    <button type="button" onclick="submitExam()" 
+                    <button type="button"
+                            data-student-exam-submit="exam-form"
+                            data-confirm-title="@lang('student-exam::app.submit_exam')"
+                            data-confirm-message="@lang('student-exam::app.confirm_submit')"
+                            data-confirm-text="@lang('student-exam::app.submit_exam')"
                             class="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-black rounded-3xl transition">
                         @lang('student-exam::app.submit_exam')
                     </button>
@@ -71,36 +77,4 @@
     </div>
 </div>
 
-<script>
-    let currentQuestion = 0;
-    const totalQuestions = {{ $questions->count() }};
-
-    function goToQuestion(index) {
-        document.querySelectorAll('.question-item').forEach(q => q.classList.add('hidden'));
-        document.getElementById(`question-${index}`).classList.remove('hidden');
-        
-        document.querySelectorAll('.question-btn').forEach(btn => btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600'));
-        document.querySelectorAll('.question-btn')[index].classList.add('bg-blue-600', 'text-white', 'border-blue-600');
-    }
-
-    // Tab leave detection
-    let tabLeaveCount = {{ $attempt->tab_leave_count }};
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            tabLeaveCount++;
-            document.getElementById('tab_leave_count').value = tabLeaveCount;
-        }
-    });
-
-    function submitExam() {
-        if (confirm('@lang('student-exam::app.confirm_submit')')) {
-            document.getElementById('exam-form').submit();
-        }
-    }
-
-    // Auto save (có thể mở rộng sau)
-    window.addEventListener('beforeunload', () => {
-        // Có thể gọi API autosave nếu cần
-    });
-</script>
 @endsection

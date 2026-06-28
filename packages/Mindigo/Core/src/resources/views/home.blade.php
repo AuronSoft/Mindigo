@@ -136,6 +136,10 @@
             });
     }
 
+    document.querySelectorAll('[data-news-filter]').forEach(button => {
+        button.addEventListener('click', () => filterNews(button.dataset.newsFilter));
+    });
+
     // Typewriter
     (function() {
         const words = {{ Illuminate\Support\Js::from([

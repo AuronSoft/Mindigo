@@ -48,9 +48,9 @@
                         {{ __('student-assignment::app.filters.apply') }}
                     </button>
                     @if(($filters['status'] ?? '') || ($filters['classroom_id'] ?? ''))
-                        <button type="button" onclick="window.location.href='{{ route('student.assignments.index') }}'" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100" title="{{ __('student-assignment::app.filters.clear') }}">
+                        <a href="{{ route('student.assignments.index') }}" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100" title="{{ __('student-assignment::app.filters.clear') }}">
                             <x-heroicon-o-x-mark class="h-4 w-4" />
-                        </button>
+                        </a>
                     @endif
                 </div>
             </form>

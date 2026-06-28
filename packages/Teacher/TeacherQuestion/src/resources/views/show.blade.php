@@ -79,12 +79,17 @@
         </div>
 
         {{-- THÊM VÀO ĐÂY --}}
+        <div data-mindigo-tabs>
         <div class="flex gap-1 border-b border-slate-200">
-            <button type="button" onclick="switchTab('detail')" id="tab-detail"
+            <button type="button" data-mindigo-tab-target="detail" id="tab-detail"
+                    data-mindigo-tab-active-class="border-green-600 text-green-700"
+                    data-mindigo-tab-inactive-class="border-transparent text-slate-500"
                     class="px-4 py-2 text-sm font-black border-b-2 border-green-600 text-green-700 -mb-px transition">
                 Chi tiết
             </button>
-            <button type="button" onclick="switchTab('history')" id="tab-history"
+            <button type="button" data-mindigo-tab-target="history" id="tab-history"
+                    data-mindigo-tab-active-class="border-green-600 text-green-700"
+                    data-mindigo-tab-inactive-class="border-transparent text-slate-500"
                     class="px-4 py-2 text-sm font-black border-b-2 border-transparent text-slate-500 hover:text-slate-700 -mb-px transition">
                 Lịch sử
                 <span class="ml-1 rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-black text-slate-500">
@@ -93,7 +98,7 @@
             </button>
         </div>
 
-        <div id="panel-detail" class="space-y-4">
+        <div id="panel-detail" data-mindigo-tab-panel="detail" class="space-y-4">
 
         {{-- Content --}}
         <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -139,7 +144,7 @@
         </div>
         
         {{--  BLOCK thêm --}} 
-        <div id="panel-history" class="hidden space-y-3">
+        <div id="panel-history" data-mindigo-tab-panel="history" class="hidden space-y-3">
             @forelse($question->editHistories as $history)
                 <div class="rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm">
                     <div class="flex items-center justify-between">
@@ -187,28 +192,7 @@
                 </div>
             @endforelse
         </div>
+        </div>
     </div>
 </div>
-    @section('scripts')
-    <script>
-    function switchTab(tab) {
-        const isDetail = tab === 'detail';
-        document.getElementById('panel-detail').classList.toggle('hidden', !isDetail);
-        document.getElementById('panel-history').classList.toggle('hidden', isDetail);
-
-        const tabDetail  = document.getElementById('tab-detail');
-        const tabHistory = document.getElementById('tab-history');
-
-        tabDetail.classList.toggle('border-green-600', isDetail);
-        tabDetail.classList.toggle('text-green-700',   isDetail);
-        tabDetail.classList.toggle('border-transparent', !isDetail);
-        tabDetail.classList.toggle('text-slate-500',   !isDetail);
-
-        tabHistory.classList.toggle('border-green-600', !isDetail);
-        tabHistory.classList.toggle('text-green-700',   !isDetail);
-        tabHistory.classList.toggle('border-transparent', isDetail);
-        tabHistory.classList.toggle('text-slate-500',   isDetail);
-    }
-    </script>
-    @endsection
 @endsection

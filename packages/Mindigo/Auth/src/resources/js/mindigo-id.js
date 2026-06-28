@@ -310,6 +310,47 @@ const NID = (() => {
         document.getElementById('MindigoIdOverlay')?.addEventListener('click', e => {
             if (e.target === e.currentTarget) close();
         });
+
+        document.addEventListener('click', e => {
+            const trigger = e.target.closest('[data-nid-action]');
+
+            if (!trigger) {
+                return;
+            }
+
+            e.preventDefault();
+
+            const actions = {
+                open,
+                close,
+                submitEmail,
+                resendMagicLink,
+                switchToOtp,
+                resendOtp,
+                submitOtp,
+                goStep: () => goStep(trigger.dataset.nidStep || 1),
+            };
+
+            actions[trigger.dataset.nidAction]?.();
+        });
+
+        document.addEventListener('input', e => {
+            const input = e.target.closest('[data-nid-email-input]');
+
+            if (input) {
+                onEmailInput(input);
+            }
+        });
+
+        document.addEventListener('keydown', e => {
+            const input = e.target.closest('[data-nid-email-input]');
+
+            if (input && e.key === 'Enter') {
+                e.preventDefault();
+                submitEmail();
+            }
+        });
+
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape' && document.getElementById('MindigoIdOverlay')?.style.display === 'block') close();
         });

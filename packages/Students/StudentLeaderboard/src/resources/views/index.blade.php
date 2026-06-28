@@ -40,7 +40,7 @@
 
         {{-- Filter --}}
         <form action="{{ route('student.leaderboard.index') }}" method="GET" class="flex items-end gap-2">
-            <select name="classroom_id" onchange="this.form.submit()"
+            <select name="classroom_id" data-mindigo-auto-submit
                 class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 outline-none transition focus:border-green-300">
                 <option value="">@lang('student-leaderboard::app.all_classrooms')</option>
                 @foreach($classrooms as $class)

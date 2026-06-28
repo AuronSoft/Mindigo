@@ -25,7 +25,7 @@
             </div>
             <span class="text-sm font-black text-green-600">mindigo<span class="text-gray-900">ID</span></span>
         </div>
-        <button onclick="NID.close()" class="bg-white/70 border border-black/10 rounded-xl w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-white transition">
+        <button type="button" data-nid-action="close" class="bg-white/70 border border-black/10 rounded-xl w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-white transition">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4a6080" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
     </div>
@@ -82,8 +82,7 @@
                             <input id="nid-email-input" type="email"
                                 placeholder="@lang('Mindigo-auth::app.auth.email_placeholder')"
                                 class="w-full border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
-                                oninput="NID.onEmailInput(this)"
-                                onkeydown="if(event.key==='Enter')NID.submitEmail()">
+                                data-nid-email-input>
                             <div id="nid-email-err-icon" class="hidden absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                             </div>
@@ -97,7 +96,7 @@
                         <strong class="text-gray-500 font-bold">@lang('Mindigo-auth::app.auth.incognito_highlight')</strong>
                         @lang('Mindigo-auth::app.auth.incognito_suffix')
                     </p>
-                    <button id="nid-email-btn" onclick="NID.submitEmail()" disabled
+                    <button id="nid-email-btn" type="button" data-nid-action="submitEmail" disabled
                         class="w-full bg-green-500 hover:bg-green-400 disabled:bg-gray-200 disabled:cursor-not-allowed text-white font-black text-sm py-3.5 rounded-xl shadow-[0_4px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 disabled:shadow-none transition-all">
                         @lang('Mindigo-auth::app.auth.continue')
                     </button>
@@ -118,11 +117,11 @@
                         <span class="text-gray-400 text-xs">@lang('Mindigo-auth::app.auth.magic_link_check')</span>
                     </p>
                     <div class="flex gap-2 w-full">
-                        <button onclick="NID.switchToOtp()"
+                        <button type="button" data-nid-action="switchToOtp"
                             class="flex-1 border border-gray-200 rounded-xl py-2.5 text-sm font-bold text-gray-600 hover:border-green-400 hover:text-green-600 transition">
                             @lang('Mindigo-auth::app.auth.try_other_method')
                         </button>
-                        <button id="nid-ml-resend" onclick="NID.resendMagicLink()" disabled
+                        <button id="nid-ml-resend" type="button" data-nid-action="resendMagicLink" disabled
                             class="flex-1 border border-gray-200 rounded-xl py-2.5 text-sm font-bold text-gray-400 hover:border-green-400 hover:text-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition">
                             <span id="nid-ml-resend-text">
                                 @lang('Mindigo-auth::app.auth.resend') (<span id="nid-ml-countdown">60</span>s)
@@ -145,15 +144,15 @@
                     </p>
                     <p class="text-xs text-gray-400 text-center mb-5">
                         @lang('Mindigo-auth::app.auth.otp_not_received')&nbsp;
-                        <span id="nid-otp-resend" class="text-gray-400 cursor-default" onclick="NID.resendOtp()">
+                        <span id="nid-otp-resend" class="text-gray-400 cursor-default" data-nid-action="resendOtp">
                             @lang('Mindigo-auth::app.auth.resend_otp') (<span id="nid-otp-countdown">60</span>s)
                         </span>
                     </p>
-                    <button id="nid-otp-btn" onclick="NID.submitOtp()" disabled
+                    <button id="nid-otp-btn" type="button" data-nid-action="submitOtp" disabled
                         class="w-full bg-green-500 hover:bg-green-400 disabled:bg-gray-200 disabled:cursor-not-allowed text-white font-black text-sm py-3.5 rounded-xl shadow-[0_4px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 disabled:shadow-none transition-all">
                         @lang('Mindigo-auth::app.auth.confirm')
                     </button>
-                    <button onclick="NID.goStep(1)" class="text-gray-400 text-xs font-bold mt-3 hover:text-green-600 transition bg-transparent border-none cursor-pointer w-full text-center">
+                    <button type="button" data-nid-action="goStep" data-nid-step="1" class="text-gray-400 text-xs font-bold mt-3 hover:text-green-600 transition bg-transparent border-none cursor-pointer w-full text-center">
                         ← @lang('Mindigo-auth::app.auth.back')
                     </button>
                 </div>

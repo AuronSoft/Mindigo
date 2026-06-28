@@ -11,7 +11,7 @@
         {{-- Filter tabs --}}
         <div class="flex gap-2 mb-10 flex-wrap" id="news-filters">
             @foreach(['all' => __('blog::app.news.filters.all'), 'VnExpress' => __('blog::app.news.filters.vnexpress'), 'thanhnien' => __('blog::app.news.filters.thanhnien'), 'tuoitre' => __('blog::app.news.filters.tuoitre')] as $val => $label)
-            <button onclick="filterNews('{{ $val }}')"
+            <button data-news-filter="{{ $val }}"
             class="news-filter-btn text-sm font-bold px-4 py-2 rounded-xl transition
             {{ $val === 'all' ? 'bg-green-500 text-white shadow-[0_3px_0_#15803d]' : 'bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-600' }}"
             data-source="{{ $val }}">
