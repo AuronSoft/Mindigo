@@ -9,6 +9,10 @@ return [
     'filter_classroom_label' => 'Lớp học',
     'all_classrooms'         => 'Tất cả lớp',
     'filter_submit'          => 'Lọc',
+    'filter_button'          => 'Bộ lọc',
+    'filter_title'           => 'Lọc buổi học',
+    'filter_desc'            => 'Chọn lớp để xem các buổi học trực tuyến phù hợp.',
+    'filter_active'          => 'Đang lọc',
     'clear_filter'           => 'Xoá lọc',
 
     // Empty

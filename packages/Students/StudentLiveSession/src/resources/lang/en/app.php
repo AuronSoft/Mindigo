@@ -9,6 +9,10 @@ return [
     'filter_classroom_label' => 'Classroom',
     'all_classrooms'         => 'All classrooms',
     'filter_submit'          => 'Filter',
+    'filter_button'          => 'Filters',
+    'filter_title'           => 'Filter sessions',
+    'filter_desc'            => 'Choose a classroom to view matching live sessions.',
+    'filter_active'          => 'Active filter',
     'clear_filter'           => 'Clear filter',
 
     // Empty
