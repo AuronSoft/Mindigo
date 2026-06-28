@@ -1,15 +1,151 @@
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', __('student-dashboard::app.nav_assignments') . ' · Mindigo LMS')
-@section('meta_description', __('student-dashboard::app.nav_assignments'))
+@section('title', __('student-assignment::app.title') . ' - Mindigo LMS')
 
 @section('styles')
-    @vite([
-        'packages/Mindigo/Dashboard/src/resources/css/app.css',
-        'packages/Mindigo/Dashboard/src/resources/js/app.js',
-    ])
+    @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js'])
 @endsection
 
 @section('content')
-    @include('student-dashboard::partials.placeholder', ['title' => __('student-dashboard::app.nav_assignments')])
+<div class="min-h-screen bg-slate-50">
+    <header class="sticky top-0 z-20 border-b border-slate-200/80 bg-white/95 backdrop-blur">
+        <div class="mx-auto flex w-full max-w-7xl flex-col gap-4 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="min-w-0">
+                <p class="text-[11px] font-black uppercase tracking-widest text-green-700">{{ __('student-assignment::app.eyebrow') }}</p>
+                <h1 class="mt-1 text-2xl font-black text-slate-950">{{ __('student-assignment::app.title') }}</h1>
+                <p class="mt-1 text-sm font-semibold text-slate-500">{{ __('student-assignment::app.subtitle') }}</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-7xl space-y-5 px-6 py-5">
+        <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <form action="{{ route('student.assignments.index') }}" method="GET" class="grid grid-cols-1 items-end gap-4 sm:grid-cols-3 md:grid-cols-4">
+                <div class="space-y-1 sm:col-span-1 md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-500">{{ __('student-assignment::app.filters.status_label') }}</label>
+                    <select name="status" class="block h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 outline-none transition focus:border-green-300">
+                        <option value="">{{ __('student-assignment::app.filters.all_statuses') }}</option>
+                        <option value="pending" @selected(($filters['status'] ?? '') === 'pending')>{{ __('student-assignment::app.status.pending') }}</option>
+                        <option value="submitted" @selected(($filters['status'] ?? '') === 'submitted')>{{ __('student-assignment::app.status.submitted') }}</option>
+                        <option value="graded" @selected(($filters['status'] ?? '') === 'graded')>{{ __('student-assignment::app.status.graded') }}</option>
+                    </select>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-slate-500">{{ __('student-assignment::app.filters.classroom_label') }}</label>
+                    <select name="classroom_id" class="block h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 outline-none transition focus:border-green-300">
+                        <option value="">-- {{ __('student-assignment::app.filters.all_classes') }} --</option>
+                        @foreach($classrooms as $classroom)
+                            <option value="{{ $classroom->id }}" @selected((string)($filters['classroom_id'] ?? '') === (string)$classroom->id)>
+                                {{ $classroom->name }} ({{ $classroom->code }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex min-w-[140px] gap-2">
+                    <button type="submit" class="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-600 px-4 text-xs font-black text-white shadow-sm transition hover:bg-green-500">
+                        {{ __('student-assignment::app.filters.apply') }}
+                    </button>
+                    @if(($filters['status'] ?? '') || ($filters['classroom_id'] ?? ''))
+                        <button type="button" onclick="window.location.href='{{ route('student.assignments.index') }}'" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100" title="{{ __('student-assignment::app.filters.clear') }}">
+                            <x-heroicon-o-x-mark class="h-4 w-4" />
+                        </button>
+                    @endif
+                </div>
+            </form>
+        </section>
+
+        @if($assignments->isEmpty())
+            <section class="grid min-h-80 place-items-center rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
+                <div>
+                    <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-slate-100 text-slate-400">
+                        <x-heroicon-o-clipboard-document-list class="h-7 w-7" />
+                    </span>
+                    <h2 class="mt-4 text-lg font-black">{{ __('student-assignment::app.empty.title') }}</h2>
+                    <p class="mt-1 text-sm font-semibold text-slate-500">{{ __('student-assignment::app.empty.description') }}</p>
+                </div>
+            </section>
+        @else
+            <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse text-left">
+                        <thead>
+                            <tr class="border-b border-slate-200 bg-slate-50/70 text-xs font-black uppercase tracking-wider text-slate-400">
+                                <th class="px-6 py-4">{{ __('student-assignment::app.columns.number') }}</th>
+                                <th class="px-6 py-4">{{ __('student-assignment::app.columns.title') }}</th>
+                                <th class="px-6 py-4">{{ __('student-assignment::app.columns.classroom') }}</th>
+                                <th class="px-6 py-4">{{ __('student-assignment::app.columns.due_date') }}</th>
+                                <th class="px-6 py-4">{{ __('student-assignment::app.columns.status') }}</th>
+                                <th class="px-6 py-4">{{ __('student-assignment::app.columns.score') }}</th>
+                                <th class="px-6 py-4 text-center">{{ __('student-assignment::app.columns.actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-sm font-semibold text-slate-600">
+                            @foreach($assignments as $i => $assignment)
+                                @php
+                                    $submission = $assignment->submissions->first();
+                                    $status = $submission?->isGraded() ? 'graded' : ($submission ? 'submitted' : 'pending');
+                                    $statusBadge = match($status) {
+                                        'graded' => 'bg-blue-100 text-blue-700',
+                                        'submitted' => 'bg-green-100 text-green-700',
+                                        default => 'bg-amber-100 text-amber-700',
+                                    };
+                                @endphp
+                                <tr class="hover:bg-slate-50/50">
+                                    <td class="px-6 py-4 text-slate-400">{{ $assignments->firstItem() + $i }}</td>
+                                    <td class="px-6 py-4">
+                                        <a href="{{ route('student.assignments.show', $assignment) }}" class="font-black text-slate-900 no-underline hover:text-green-700">
+                                            {{ $assignment->title }}
+                                        </a>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">
+                                            {{ $assignment->classroom->name ?? '—' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="{{ $assignment->isOverdue() && $status === 'pending' ? 'font-bold text-red-600' : '' }}">
+                                            {{ $assignment->due_date->format('d/m/Y H:i') }}
+                                        </span>
+                                        @if($assignment->isOverdue() && $status === 'pending')
+                                            <span class="ml-1.5 inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-black uppercase text-red-700">{{ __('student-assignment::app.overdue') }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold {{ $statusBadge }}">
+                                            {{ __('student-assignment::app.status.' . $status) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @if($submission?->isGraded())
+                                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+                                                {{ rtrim(rtrim(number_format($submission->score, 2), '0'), '.') }}/{{ $assignment->max_score }}
+                                            </span>
+                                        @else
+                                            <span class="text-slate-300">—</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <a href="{{ route('student.assignments.show', $assignment) }}"
+                                               class="inline-flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                                               title="{{ __('student-assignment::app.view') }}">
+                                                <x-heroicon-o-eye class="h-4 w-4" />
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @if($assignments->hasPages())
+                <div class="mt-4 flex justify-center">{{ $assignments->links() }}</div>
+            @endif
+        @endif
+    </main>
+</div>
 @endsection
