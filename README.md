@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="screenshots/logo.png" width="180" alt="Mindigo LMS">
+  <img src="screenshots/logo.png" style="max-width: 200px; height: auto;" alt="Mindigo LMS">
 </p>
 
 <h1 align="center">Mindigo LMS</h1>
