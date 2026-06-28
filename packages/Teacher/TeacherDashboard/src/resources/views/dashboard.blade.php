@@ -40,8 +40,8 @@
     $safeRoute = fn (string $route, array $params = []) => Route::has($route) ? route($route, $params) : '#';
     $teacherHeroImage = match ($teacher->gender) {
         'female' => asset('image/Teacher1.png'),
-        'male' => asset('image/Teacher2.png'),
-        default => asset('image/Teacher2.png'),
+        'male' => asset('image/Man.png'),
+        default => asset('image/Man.png'),
     };
 
     $quickLinks = [
