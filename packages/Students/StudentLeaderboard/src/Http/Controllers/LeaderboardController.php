@@ -14,6 +14,22 @@ class LeaderboardController extends Controller
 
     public function index(Request $request)
     {
-        return view('student-leaderboard::index');
+        $student = $request->user();
+
+        $classrooms = $this->service->getClassroomsForStudent((int) $student->id);
+
+        // Only honor classroom_id if it is one of the student's classrooms.
+        $classroomId = $request->integer('classroom_id') ?: null;
+        if ($classroomId !== null && ! $classrooms->contains('id', $classroomId)) {
+            $classroomId = null;
+        }
+
+        $ranking = $this->service->ranking($student, $classroomId);
+
+        return view('student-leaderboard::index', [
+            'ranking' => $ranking,
+            'classrooms' => $classrooms,
+            'classroomId' => $classroomId,
+        ]);
     }
 }
