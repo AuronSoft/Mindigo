@@ -1,10 +1,8 @@
-# ============================================================================
 #  Mindigo LMS — Dockerfile (multi-stage)
 #  Stage 1 (assets): dùng Node build CSS/JS bằng Vite -> public/build
 #  Stage 2 (app):    PHP 8.3 + Apache, cài extension, Composer, copy mã nguồn
-# ============================================================================
 
-# ----- Stage 1: build front-end assets bằng Vite -----
+# Stage 1: build front-end assets bằng Vite 
 FROM node:20-alpine AS assets
 WORKDIR /app
 
