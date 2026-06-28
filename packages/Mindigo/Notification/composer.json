@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/notification",
+    "description": "Mindigo Notification Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\Notification\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\Notification\\Providers\\NotificationServiceProvider"
+            ]
+        }
+    }
+}

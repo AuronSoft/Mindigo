@@ -3,8 +3,13 @@
 namespace Mindigo\TeacherAnnouncement\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\Notification\Notifications\AnnouncementPublished;
 use Mindigo\TeacherAnnouncement\Http\Requests\AnnouncementRequest;
 use Mindigo\TeacherAnnouncement\Models\Announcement;
 
@@ -76,7 +81,45 @@ class TeacherAnnouncementService
 
     public function publish(Announcement $ann): void
     {
+        $alreadyPublished = $ann->published_at !== null;
+
         $ann->update(['published_at' => now()]);
+
+        // Chỉ bắn thông báo lần đầu phát hành
+        if ($alreadyPublished) {
+            return;
+        }
+
+        $this->notifyStudents($ann);
+    }
+
+    // Gửi thông báo tới học sinh đang học (active) ở các lớp được nhắm tới
+    protected function notifyStudents(Announcement $ann): void
+    {
+        $ann->loadMissing('teacher:id,name');
+
+        $classroomIds = $ann->classrooms()->pluck('classrooms.id');
+        if ($classroomIds->isEmpty()) {
+            return;
+        }
+
+        $studentIds = DB::table('classroom_students')
+            ->whereIn('classroom_id', $classroomIds)
+            ->where('status', 'active')
+            ->pluck('student_id')
+            ->unique();
+
+        $students = User::whereIn('id', $studentIds)->get();
+        if ($students->isEmpty()) {
+            return;
+        }
+
+        Notification::send($students, new AnnouncementPublished(
+            title: $ann->title,
+            message: Str::limit(strip_tags($ann->content), 140),
+            teacher: $ann->teacher?->name,
+            url: Route::has('student.classrooms.index') ? route('student.classrooms.index') : null,
+        ));
     }
 
     public function delete(Announcement $ann): void

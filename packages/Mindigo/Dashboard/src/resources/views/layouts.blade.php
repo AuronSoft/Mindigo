@@ -125,6 +125,7 @@
                         'desc' => __('student-dashboard::app.group_personal_desc'),
                         'icon' => 'heroicon-o-cog-6-tooth',
                         'items' => [
+                            ['route' => 'notifications.index', 'match' => 'notifications.*', 'label' => __('notification::app.title'), 'icon' => 'heroicon-o-bell', 'badge' => ($globalUnreadNotifications ?? 0)],
                             ['route' => 'student.notebook.index', 'match' => 'student.notebook.*', 'label' => __('student-dashboard::app.nav_notebook'), 'icon' => 'heroicon-o-book-open'],
                             ['route' => 'profile.index', 'match' => 'profile.*', 'label' => __('student-dashboard::app.nav_profile'), 'icon' => 'heroicon-o-user-circle'],
                         ],
@@ -151,6 +152,9 @@
                                     <a href="{{ route($nav['route']) }}" class="{{ $stuBase }} {{ $stuActive ? 'bg-green-50 text-green-700' : $stuInactive }}" data-sidebar-search-item data-search-label="{{ $nav['label'] }}" data-sidebar-tooltip="{{ $nav['label'] }}" title="{{ $nav['label'] }}">
                                         <x-dynamic-component :component="$nav['icon']" class="h-4 w-4 shrink-0" />
                                         <span data-sidebar-text>{{ $nav['label'] }}</span>
+                                        @if(($nav['badge'] ?? 0) > 0)
+                                            <span class="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[10px] font-black text-white" data-sidebar-text>{{ $nav['badge'] > 99 ? '99+' : $nav['badge'] }}</span>
+                                        @endif
                                     </a>
                                 @endif
                             @endforeach

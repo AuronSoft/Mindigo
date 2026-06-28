@@ -3,7 +3,9 @@
 namespace Mindigo\TeacherAssignment\Services;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Mindigo\Notification\Notifications\AssignmentGraded;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 
@@ -89,6 +91,17 @@ class AssignmentService
             'status'    => $data['status'],
             'graded_at' => now(),
         ]);
+
+        // Thông báo cho học sinh: bài tập đã được chấm
+        $submission->loadMissing(['student', 'assignment:id,title,max_score']);
+        if ($submission->student) {
+            $submission->student->notify(new AssignmentGraded(
+                title: $submission->assignment?->title ?? '',
+                score: $submission->score,
+                maxScore: $submission->assignment?->max_score,
+                url: Route::has('student.assignments.index') ? route('student.assignments.index') : null,
+            ));
+        }
 
         return $submission->fresh();
     }

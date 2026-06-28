@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "523f3f00c3ff12ae00431f60d1252d24",
+    "content-hash": "de4ab935a3d9f0f61d27473be4e8ce3a",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -2681,6 +2681,36 @@
                 }
             },
             "description": "Mindingo LMS management and online testing package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "mindigo/notification",
+            "version": "dev-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/Notification",
+                "reference": "2500dba4dbcf07ec5d162c4cd30c4281647872fe"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\Notification\\Providers\\NotificationServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\Notification\\": "src/"
+                }
+            },
+            "description": "Mindigo Notification Package",
             "transport-options": {
                 "relative": true
             }
