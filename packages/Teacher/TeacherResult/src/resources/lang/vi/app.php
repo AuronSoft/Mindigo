@@ -61,4 +61,32 @@ return [
     'view_detail'     => 'Chi tiết',
     'attempts_unit'   => 'lượt',
     'minutes_unit'    => 'phút',
+
+    // Chấm điểm
+    'manual_grading'      => 'Chấm bài thủ công',
+    'pending_questions'   => 'câu chờ chấm',
+
+    'all_graded'          => 'Tất cả câu hỏi đã được chấm.',
+    'back_results'        => 'Quay lại kết quả',
+
+    'current_choice_score'=> 'Điểm TN hiện tại',
+    'status'              => 'Trạng thái',
+    'pending_grade'       => 'Chờ chấm',
+
+    'type_essay'          => 'Tự luận',
+    'type_short_answer'   => 'Trả lời ngắn',
+
+    'max_points'          => 'Tối đa :points điểm',
+
+    'student_answer'      => 'Câu trả lời',
+    'sample_answer'       => 'Đáp án mẫu',
+    'empty_answer'        => '(Bỏ trống)',
+
+    'score'               => 'Điểm:',
+    'zero_score'          => '0 điểm',
+    'half_score'          => '½ điểm',
+    'full_score'          => 'Đủ điểm',
+
+    'cancel'              => 'Hủy',
+    'save_score'          => 'Lưu điểm',
 ];

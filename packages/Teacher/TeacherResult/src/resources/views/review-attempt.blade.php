@@ -1,6 +1,6 @@
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', 'Chấm bài — ' . $attempt->user?->name)
+@section('title', __('teacher-result::app.manual_grading') . ' — ' . $attempt->user?->name)
 
 @section('styles')
     @vite([
@@ -17,13 +17,17 @@
             <x-heroicon-o-arrow-left class="h-4 w-4" />
         </a>
         <div>
-            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Chấm bài thủ công</p>
+            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                {{ __('teacher-result::app.manual_grading') }}
+            </p>
             <h1 class="text-base font-black text-slate-950">{{ $attempt->user?->name }}</h1>
         </div>
         <div class="ml-auto flex items-center gap-3">
             <div class="text-right">
                 <p class="text-xs font-bold text-slate-400">{{ $attempt->exam?->title }}</p>
-                <p class="text-xs font-black text-amber-600">{{ $pendingAnswers->count() }} câu chờ chấm</p>
+                <p class="text-xs font-black text-amber-600">
+                    {{ $pendingAnswers->count() }} {{ __('teacher-result::app.pending_questions') }}
+                </p>
             </div>
         </div>
     </header>
@@ -39,28 +43,38 @@
         @if($pendingAnswers->isEmpty())
             <div class="flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-slate-200 bg-white py-20">
                 <x-heroicon-o-check-circle class="h-12 w-12 text-green-400" />
-                <p class="text-sm font-black text-slate-700">Tất cả câu hỏi đã được chấm.</p>
+                <p class="text-sm font-black text-slate-700">
+                    {{ __('teacher-result::app.all_graded') }}
+                </p>
                 <a href="{{ route('teacher.results.by_exam', $attempt->exam_id) }}"
                    class="inline-flex h-9 items-center gap-2 rounded-full bg-green-600 px-5 text-sm font-black text-white no-underline transition hover:bg-green-500">
-                    Quay lại kết quả
+                    {{ __('teacher-result::app.back_results') }}
                 </a>
             </div>
         @else
             {{-- Thông tin bài làm --}}
             <div class="flex flex-wrap gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3 shadow-sm">
                 <div>
-                    <p class="text-[10px] font-black uppercase text-slate-400">Điểm TN hiện tại</p>
+                    <p class="text-[10px] font-black uppercase text-slate-400">
+                        {{ __('teacher-result::app.current_choice_score') }}
+                    </p>
                     <p class="text-lg font-black text-slate-900">{{ $attempt->score }}/{{ $attempt->max_score }}</p>
                 </div>
                 <div class="h-8 w-px bg-slate-200 self-center"></div>
                 <div>
-                    <p class="text-[10px] font-black uppercase text-slate-400">Nộp lúc</p>
+                    <p class="text-[10px] font-black uppercase text-slate-400">
+                        {{ __('teacher-result::app.col_submitted') }}
+                    </p>
                     <p class="text-sm font-black text-slate-700">{{ $attempt->submitted_at?->format('H:i d/m/Y') }}</p>
                 </div>
                 <div class="h-8 w-px bg-slate-200 self-center"></div>
                 <div>
-                    <p class="text-[10px] font-black uppercase text-slate-400">Trạng thái</p>
-                    <span class="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-black text-amber-700">Chờ chấm</span>
+                    <p class="text-[10px] font-black uppercase text-slate-400">
+                        {{ __('teacher-result::app.status') }}
+                    </p>
+                    <span class="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-black text-amber-700">
+                        {{ __('teacher-result::app.pending_grade') }}
+                    </span>
                 </div>
             </div>
 
@@ -71,7 +85,10 @@
                     @foreach($pendingAnswers as $index => $answer)
                         @php
                             $maxPts = (float) ($answer->question?->points ?? 0);
-                            $typeMap = ['essay' => 'Tự luận', 'short_answer' => 'Trả lời ngắn'];
+                            $typeMap = [
+                                'essay' => __('teacher-result::app.type_essay'),
+                                'short_answer' => __('teacher-result::app.type_short_answer'),
+                            ];
                             $typeLabel = $typeMap[$answer->type] ?? $answer->type;
                         @endphp
                         <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -91,22 +108,26 @@
                                     </div>
                                 </div>
                                 <span class="shrink-0 text-xs font-black text-slate-400">
-                                    Tối đa {{ $maxPts }} điểm
+                                    {{ __('teacher-result::app.max_points', ['points' => $maxPts]) }}
                                 </span>
                             </div>
 
                             {{-- Câu trả lời của học sinh --}}
                             <div class="mb-4 rounded-2xl bg-slate-50 px-4 py-3">
-                                <p class="mb-1 text-[10px] font-black uppercase text-slate-400">Câu trả lời</p>
+                                <p class="mb-1 text-[10px] font-black uppercase text-slate-400">
+                                    {{ __('teacher-result::app.student_answer') }}
+                                </p>
                                 <p class="text-sm font-semibold leading-relaxed text-slate-700">
-                                    {{ implode(', ', (array) ($answer->answer ?? [])) ?: '(Bỏ trống)' }}
+                                    {{ implode(', ', (array) ($answer->answer ?? [])) ?: __('teacher-result::app.empty_answer') }}
                                 </p>
                             </div>
 
                             {{-- Đáp án mẫu nếu có --}}
                             @if($answer->question?->correct_answers && count($answer->question->correct_answers) > 0)
                                 <div class="mb-4 rounded-2xl bg-green-50 px-4 py-3">
-                                    <p class="mb-1 text-[10px] font-black uppercase text-green-600">Đáp án mẫu</p>
+                                    <p class="mb-1 text-[10px] font-black uppercase text-green-600">
+                                        {{ __('teacher-result::app.sample_answer') }}
+                                    </p>
                                     <p class="text-sm font-semibold text-green-800">
                                         {{ implode(', ', $answer->question->correct_answers) }}
                                     </p>
@@ -115,7 +136,9 @@
 
                             {{-- Nhập điểm --}}
                             <div class="flex items-center gap-3">
-                                <label class="text-xs font-black text-slate-600">Điểm:</label>
+                                <label class="text-xs font-black text-slate-600">
+                                    {{ __('teacher-result::app.score') }}
+                                </label>
                                 <input type="number"
                                        name="grades[{{ $answer->id }}]"
                                        min="0"
@@ -125,22 +148,23 @@
                                        class="w-24 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-800 outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100">
                                 <span class="text-xs font-bold text-slate-400">/ {{ $maxPts }}</span>
 
-                                {{-- Quick buttons --}}
                                 <div class="ml-auto flex gap-1.5">
                                     <button type="button"
                                             onclick="this.closest('.rounded-3xl').querySelector('input').value = 0"
                                             class="rounded-xl bg-red-50 px-3 py-1.5 text-xs font-black text-red-600 transition hover:bg-red-100">
-                                        0 điểm
+                                        {{ __('teacher-result::app.zero_score') }}
                                     </button>
+
                                     <button type="button"
                                             onclick="this.closest('.rounded-3xl').querySelector('input').value = {{ $maxPts / 2 }}"
                                             class="rounded-xl bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-600 transition hover:bg-amber-100">
-                                        ½ điểm
+                                        {{ __('teacher-result::app.half_score') }}
                                     </button>
+
                                     <button type="button"
                                             onclick="this.closest('.rounded-3xl').querySelector('input').value = {{ $maxPts }}"
                                             class="rounded-xl bg-green-50 px-3 py-1.5 text-xs font-black text-green-700 transition hover:bg-green-100">
-                                        Đủ điểm
+                                        {{ __('teacher-result::app.full_score') }}
                                     </button>
                                 </div>
                             </div>
@@ -148,16 +172,16 @@
                     @endforeach
                 </div>
 
-                {{-- Submit --}}
                 <div class="mt-4 flex justify-end gap-2">
                     <a href="{{ route('teacher.results.by_exam', $attempt->exam_id) }}"
                        class="inline-flex h-10 items-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">
-                        Hủy
+                        {{ __('teacher-result::app.cancel') }}
                     </a>
+
                     <button type="submit"
                             class="inline-flex h-10 items-center gap-2 rounded-2xl bg-green-600 px-6 text-sm font-black text-white shadow-sm transition hover:bg-green-500">
                         <x-heroicon-o-check class="h-4 w-4" />
-                        Lưu điểm
+                        {{ __('teacher-result::app.save_score') }}
                     </button>
                 </div>
             </form>

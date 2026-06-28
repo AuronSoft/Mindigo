@@ -52,4 +52,32 @@ return [
     'view_detail'     => 'View',
     'attempts_unit'   => 'attempts',
     'minutes_unit'    => 'min',
+
+    // Result
+    'manual_grading'       => 'Manual Grading',
+    'pending_questions'    => 'questions pending',
+
+    'all_graded'           => 'All questions have been graded.',
+    'back_results'         => 'Back to results',
+
+    'current_choice_score' => 'Current MCQ Score',
+    'status'               => 'Status',
+    'pending_grade'        => 'Pending grading',
+
+    'type_essay'           => 'Essay',
+    'type_short_answer'    => 'Short answer',
+
+    'max_points'           => 'Max :points pts',
+
+    'student_answer'       => 'Student Answer',
+    'sample_answer'        => 'Sample Answer',
+    'empty_answer'         => '(No answer)',
+
+    'score'                => 'Score:',
+    'zero_score'           => '0 point',
+    'half_score'           => 'Half',
+    'full_score'           => 'Full score',
+
+    'cancel'               => 'Cancel',
+    'save_score'           => 'Save Score',
 ];
