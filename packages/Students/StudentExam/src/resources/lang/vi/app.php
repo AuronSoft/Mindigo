@@ -1,11 +1,87 @@
 <?php
 
 return [
-    'not_enrolled'        => 'Bạn không thuộc lớp có đề thi này.',
-    'exam_not_available'  => 'Đề thi chưa mở hoặc đã kết thúc.',
-    'max_attempts_reached'=> 'Bạn đã dùng hết số lần làm bài.',
-    'already_submitted'   => 'Bài thi đã được nộp.',
-    'not_submitted_yet'   => 'Bài thi chưa được nộp.',
-    'submitted_success'   => 'Nộp bài thành công!',
-    'time_expired'        => 'Hết thời gian làm bài — bài đã được tự động nộp.',
+    // ── Chung ──────────────────────────────────────────────────────────
+    'area'     => 'Học tập',
+    'title'    => 'Đề thi & Kiểm tra',
+    'subtitle' => 'Xem và làm các đề thi được giao trong lớp của bạn.',
+    'minutes'  => 'phút',
+    'points'   => 'điểm',
+    'cancel'   => 'Huỷ',
+
+    // ── Index page ─────────────────────────────────────────────────────
+    'my_exams'         => 'Đề thi của tôi',
+    'ongoing_exams'    => 'Đang mở',
+    'upcoming_exams'   => 'Sắp diễn ra',
+    'completed_exams'  => 'Đã hoàn thành',
+    'section_ongoing'  => 'Đang mở',
+    'section_upcoming' => 'Sắp diễn ra',
+    'section_completed'=> 'Đã hoàn thành',
+
+    // Status
+    'status_open'           => 'Đang mở',
+    'status_upcoming'       => 'Sắp mở',
+    'status_pending_review' => 'Chờ chấm',
+    'not_yet_open'          => 'Chưa mở',
+    'closed'                => 'Đã đóng',
+    'passed'                => 'Đạt',
+    'failed'                => 'Chưa đạt',
+
+    // Empty states
+    'no_ongoing'   => 'Không có đề thi nào đang mở.',
+    'no_upcoming'  => 'Không có đề thi sắp diễn ra.',
+    'no_completed' => 'Bạn chưa hoàn thành đề thi nào.',
+
+    // Card meta
+    'opens_at'       => 'Mở lúc',
+    'closes_at'      => 'Đóng lúc',
+    'max_attempts'   => 'Tối đa :n lần',
+    'attempts_used'  => 'Đã làm :used/:max lần',
+    'attempts_remaining' => 'Còn :n lượt',
+    'attempt_count'  => ':n/:max lượt',
+    'duration_minutes'   => ':min phút',
+    'start_exam'     => 'Bắt đầu làm bài',
+    'retake'         => 'Làm lại',
+    'view_result'    => 'Xem kết quả',
+    'score'          => 'điểm',
+
+    // ── Take page ──────────────────────────────────────────────────────
+    'question_of'        => 'Câu :current / :total',
+    'time_remaining'     => 'Thời gian còn lại',
+    'navigator_label'    => 'Danh sách câu',
+    'single_choice_hint' => 'Chọn một đáp án.',
+    'multiple_choice_hint'=> 'Chọn tất cả đáp án đúng.',
+    'essay_placeholder'  => 'Nhập câu trả lời của bạn tại đây...',
+    'saving'             => 'Đang lưu...',
+    'submit_exam'        => 'Nộp bài',
+    'confirm_submit'     => 'Bạn có chắc muốn nộp bài không? Hành động này không thể hoàn tác.',
+    'unanswered_warning' => 'Còn :count câu chưa trả lời.',
+    'tab_leave_label'    => 'Rời tab:',
+
+    // ── Errors / guards ────────────────────────────────────────────────
+    'not_enrolled'         => 'Bạn không thuộc lớp có đề thi này.',
+    'exam_not_available'   => 'Đề thi chưa mở hoặc đã kết thúc.',
+    'max_attempts_reached' => 'Bạn đã sử dụng hết số lần làm bài.',
+    'already_submitted'    => 'Bài thi này đã được nộp.',
+    'not_submitted_yet'    => 'Bài thi chưa được nộp.',
+    'submitted_success'    => 'Nộp bài thành công!',
+    'time_expired'         => 'Hết thời gian — bài thi đã được tự động nộp.',
+
+    // ── Result page ────────────────────────────────────────────────────
+    'your_result'       => 'Kết quả bài thi',
+    'result_title'      => 'Kết quả bài thi',
+    'pending_review'    => 'Đang chờ chấm điểm',
+    'essay_pending'     => 'Bài tự luận đang chờ giáo viên chấm.',
+    'score_label'       => 'điểm',
+    'submitted_at'      => 'Nộp lúc',
+    'duration_label'    => 'Thời gian làm',
+    'passing_score'     => 'Điểm đạt',
+    'tab_leave_stat'    => 'Rời tab',
+    'review_answers'    => 'Xem lại bài làm',
+    'correct'           => 'Đúng',
+    'incorrect'         => 'Sai',
+    'your_answer'       => 'Câu trả lời của bạn',
+    'no_answer'         => '(Không có câu trả lời)',
+    'no_review_available'=> 'Giáo viên chưa mở phần xem lại đáp án.',
+    'back_to_exams'     => 'Quay lại danh sách đề thi',
 ];
