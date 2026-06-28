@@ -57,7 +57,7 @@ class ClassroomScheduleController extends Controller
         abort_unless(
             $user->isAdmin() || $classroom->teacher_id === (int) $user->getAuthIdentifier(),
             403,
-            'Bạn không có quyền truy cập lớp học này.'
+            __('teacher-classroom::app.unauthorized')
         );
     }
 }

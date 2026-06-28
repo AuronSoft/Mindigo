@@ -79,7 +79,10 @@ return [
 
     // Show Detail View
     'assistant' => 'Trợ giảng',
+    'no_assistant' => '-- Không có trợ giảng --',
     'unassigned' => 'Chưa phân công',
+    'draft' => 'Nháp',
+    'unauthorized' => 'Bạn không có quyền truy cập lớp học này.',
     'students_count' => ':count học viên',
     'subjects_count' => ':count môn học',
     'students_and_assistants' => 'Học viên & Trợ giảng',
