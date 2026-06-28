@@ -9,6 +9,7 @@ use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
 
 class TeacherResultService
 {
@@ -197,7 +198,7 @@ class TeacherResultService
             $distribution[$label] = (clone $attempts)->where('percentage', '>=', $min)->where('percentage', '<', $max)->count();
         }
 
-        $list = (clone $attempts)->with('user:id,name,email')->orderByDesc('percentage')->limit(50)->get();
+        $list = (clone $attempts)->with('user:id,name,email', 'answers')->orderByDesc('percentage')->limit(50)->get();
 
         return [
             'total' => $total,
@@ -239,4 +240,39 @@ class TeacherResultService
             ->whereIn('user_id', $studentIds)
             ->where('status', 'submitted');
     }
+
+    public function gradeManualAnswers(ExamAttempt $attempt, array $grades): void
+{
+    \Illuminate\Support\Facades\DB::transaction(function () use ($attempt, $grades) {
+        foreach ($grades as $answerId => $points) {
+            $answer = ExamAttemptAnswer::find($answerId);
+            if (!$answer || $answer->exam_attempt_id !== $attempt->id) continue;
+
+            $maxPoints = (float) ($answer->question?->points ?? 0);
+            $awarded   = min((float) $points, $maxPoints); // không vượt điểm tối đa
+
+            $answer->update([
+                'points_awarded' => $awarded,
+                'is_correct'     => $awarded >= $maxPoints,
+                'needs_review'   => false,
+            ]);
+        }
+
+        // Tính lại tổng điểm
+        $attempt->load('answers');
+        $score     = (float) $attempt->answers->sum('points_awarded');
+        $maxScore  = (float) $attempt->max_score;
+        $percentage = $maxScore > 0 ? round($score / $maxScore * 100, 2) : 0;
+
+        $stillPending = $attempt->answers->where('needs_review', true)->count();
+
+        $attempt->forceFill([
+            'score'      => $score,
+            'percentage' => $percentage,
+            'passed'     => $stillPending > 0
+                ? null
+                : ($score >= (float) $attempt->exam->passing_score),
+        ])->save();
+    });
+}
 }
