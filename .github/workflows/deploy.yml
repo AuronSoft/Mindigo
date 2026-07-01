@@ -1,0 +1,114 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to deploy
+        required: true
+        default: main
+
+jobs:
+  deploy:
+    name: Deploy to Ubuntu Server
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Prepare deployment
+        id: image
+        run: |
+          echo "app_image=ghcr.io/${GITHUB_REPOSITORY,,}:${{ github.event.workflow_run.head_sha || github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "branch=${{ github.event.workflow_run.head_branch || github.event.inputs.branch || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          SERVER_PATH: ${{ secrets.SERVER_PATH }}
+          DEPLOY_BRANCH: ${{ steps.image.outputs.branch }}
+          APP_IMAGE: ${{ steps.image.outputs.app_image }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          envs: SERVER_PATH,DEPLOY_BRANCH,APP_IMAGE,GHCR_USERNAME,GHCR_TOKEN
+          script: |
+            set -e
+
+            APP_DIR="${SERVER_PATH:-$HOME/Mindigo}"
+            BRANCH="${DEPLOY_BRANCH:-main}"
+            RELEASE_FILE=".deploy-release"
+            PREVIOUS_IMAGE=""
+
+            echo "Deploying branch: $BRANCH"
+            echo "Application directory: $APP_DIR"
+            echo "Application image: $APP_IMAGE"
+
+            command -v git
+            command -v docker
+            docker compose version
+
+            cd "$APP_DIR"
+
+            if [ -n "$(git status --short)" ]; then
+              echo "Server working tree has uncommitted changes. Commit or stash them before deploy."
+              git status --short
+              exit 1
+            fi
+
+            git fetch origin "$BRANCH"
+            git checkout "$BRANCH"
+            git pull --ff-only origin "$BRANCH"
+
+            if [ -f "$RELEASE_FILE" ]; then
+              PREVIOUS_IMAGE="$(cat "$RELEASE_FILE")"
+            fi
+
+            if [ -n "$GHCR_USERNAME" ] && [ -n "$GHCR_TOKEN" ]; then
+              echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+            fi
+
+            export APP_IMAGE
+            docker compose pull app
+
+            mkdir -p backups
+            BACKUP_FILE="backups/mindigo-$(date +%Y%m%d-%H%M%S).sql"
+            if docker compose exec -T db mysqldump -u root -prootsecret mindigo > "$BACKUP_FILE"; then
+              gzip "$BACKUP_FILE"
+              echo "Database backup created: ${BACKUP_FILE}.gz"
+            else
+              rm -f "$BACKUP_FILE"
+              echo "Database backup skipped. This is expected on the first deploy if db is not running yet."
+            fi
+
+            rollback() {
+              echo "Deploy failed. Starting rollback..."
+              if [ -n "$PREVIOUS_IMAGE" ]; then
+                export APP_IMAGE="$PREVIOUS_IMAGE"
+                docker compose up -d --no-build --remove-orphans
+                docker compose ps
+              else
+                echo "No previous image recorded. Manual rollback may be required."
+              fi
+            }
+
+            trap rollback ERR
+
+            docker compose up -d --no-build --remove-orphans
+            docker compose exec -T app php artisan migrate --force
+            docker compose exec -T app php artisan optimize:clear
+            curl -fsS -I http://localhost:8080
+            docker compose ps
+
+            echo "$APP_IMAGE" > "$RELEASE_FILE"
+            trap - ERR

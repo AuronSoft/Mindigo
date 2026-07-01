@@ -13,7 +13,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: mindigo-app
+    image: ${APP_IMAGE:-mindigo-app}
     container_name: mindigo_app
     restart: unless-stopped
     ports:
@@ -60,7 +60,7 @@ services:
     networks:
       - mindigo
 
-  # ----- phpMyAdmin: xem/quản lý cơ sở dữ liệu qua trình duyệt (tiện demo) -----
+  # phpMyAdmin: xem/quản lý cơ sở dữ liệu qua trình duyệt (tiện demo) 
   phpmyadmin:
     image: phpmyadmin:5
     container_name: mindigo_pma

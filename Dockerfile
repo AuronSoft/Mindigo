@@ -12,7 +12,7 @@ RUN npm install
 
 # Copy phần mã nguồn mà Vite cần (cấu hình + toàn bộ packages chứa css/js)
 COPY vite.config.js ./
-COPY resources ./resources
+#COPY resources ./resources
 COPY packages ./packages
 
 # Xuất ra thư mục public/build (manifest + assets đã nén)
