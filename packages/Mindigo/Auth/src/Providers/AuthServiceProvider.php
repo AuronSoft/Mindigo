@@ -19,7 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     {
 
         // Đăng ký routes
-        Route::middleware(['web'])->group(__DIR__ . '/../routes/web.php');
+        Route::middleware(['web'])->group(__DIR__ . '/../Routes/web.php');
 
         // Đăng ký views
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'Mindigo-auth');
