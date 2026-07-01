@@ -47,3 +47,36 @@ Ubuntu Server pulls the ready image
 
 This is faster than building on the Ubuntu Server because the server only downloads the final image instead of running `composer install` and `npm run build`.
 
+## Git clone fails with RPC failed or early EOF
+
+Symptom:
+
+```text
+error: RPC failed; curl 18 transfer closed with outstanding read data remaining
+fetch-pack: unexpected disconnect while reading sideband packet
+fatal: early EOF
+fatal: fetch-pack: invalid index-pack output
+```
+
+This is usually a slow or unstable network connection to GitHub. Try a blobless shallow clone first:
+
+```bash
+git clone --depth 1 --filter=blob:none https://github.com/scoppy9201/Mindigo.git mindigo
+```
+
+If the folder already exists from a failed clone, remove or rename it before cloning again:
+
+```bash
+mv mindigo mindigo_failed_$(date +%Y%m%d_%H%M%S)
+git clone --depth 1 --filter=blob:none https://github.com/scoppy9201/Mindigo.git mindigo
+```
+
+If it still fails, force Git to use HTTP/1.1 and increase the low-speed timeout:
+
+```bash
+git config --global http.version HTTP/1.1
+git config --global http.lowSpeedLimit 0
+git config --global http.lowSpeedTime 999999
+git clone --depth 1 --filter=blob:none https://github.com/scoppy9201/Mindigo.git mindigo
+```
+
