@@ -24,3 +24,5 @@ Homestead.yaml
 Thumbs.db
 node_modules
 database.sqlite
+__pycache__/
+*.pyc

@@ -1,11 +1,7 @@
 name: Deploy
 
 on:
-  workflow_run:
-    workflows:
-      - CI
-    types:
-      - completed
+  push:
     branches:
       - main
   workflow_dispatch:
@@ -15,101 +11,121 @@ on:
         required: true
         default: main
 
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.event.inputs.branch || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
-  deploy:
-    name: Deploy to Ubuntu Server
+  ci-and-notify:
+    name: CI and notify webhook
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
 
     steps:
-      - name: Prepare deployment
-        id: image
+      - name: Prepare deployment variables
+        id: vars
         run: |
-          BRANCH="${{ github.event.workflow_run.head_branch || github.event.inputs.branch || github.ref_name }}"
+          BRANCH="${{ github.event.inputs.branch || github.ref_name }}"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-          echo "app_image=ghcr.io/${GITHUB_REPOSITORY,,}:$BRANCH" >> "$GITHUB_OUTPUT"
 
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1.2.0
-        env:
-          SERVER_PATH: ${{ secrets.SERVER_PATH }}
-          DEPLOY_BRANCH: ${{ steps.image.outputs.branch }}
-          APP_IMAGE: ${{ steps.image.outputs.app_image }}
-          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+      - name: Checkout source
+        uses: actions/checkout@v4
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT || 22 }}
-          envs: SERVER_PATH,DEPLOY_BRANCH,APP_IMAGE,GHCR_USERNAME,GHCR_TOKEN
-          script: |
-            set -e
+          ref: ${{ steps.vars.outputs.branch }}
 
-            APP_DIR="${SERVER_PATH:-$HOME/mindigo/Mindigo}"
-            BRANCH="${DEPLOY_BRANCH:-main}"
-            RELEASE_FILE=".deploy-release"
-            PREVIOUS_IMAGE=""
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: bcmath, exif, gd, mbstring, pdo_sqlite, sqlite3, zip
+          coverage: none
 
-            echo "Deploying branch: $BRANCH"
-            echo "Application directory: $APP_DIR"
-            echo "Application image: $APP_IMAGE"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
 
-            command -v git
-            command -v docker
-            docker compose version
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
 
-            cd "$APP_DIR"
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
 
-            if [ -n "$(git status --short)" ]; then
-              echo "Server working tree has uncommitted changes. Commit or stash them before deploy."
-              git status --short
-              exit 1
-            fi
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
 
-            git fetch origin "$BRANCH"
-            git checkout "$BRANCH"
-            git pull --ff-only origin "$BRANCH"
+      - name: Install Node dependencies
+        run: npm ci
 
-            if [ -f "$RELEASE_FILE" ]; then
-              PREVIOUS_IMAGE="$(cat "$RELEASE_FILE")"
-            fi
+      - name: Build frontend assets
+        run: npm run build
 
-            if [ -n "$GHCR_USERNAME" ] && [ -n "$GHCR_TOKEN" ]; then
-              echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
-            fi
+      - name: Run Laravel tests
+        continue-on-error: true
+        run: composer test
 
-            export APP_IMAGE
-            docker compose pull app
+      - name: Build Docker app image
+        run: docker compose build app
 
-            mkdir -p backups
-            BACKUP_FILE="backups/mindigo-$(date +%Y%m%d-%H%M%S).sql"
-            if docker compose exec -T db mysqldump -u root -prootsecret mindigo > "$BACKUP_FILE"; then
-              gzip "$BACKUP_FILE"
-              echo "Database backup created: ${BACKUP_FILE}.gz"
-            else
-              rm -f "$BACKUP_FILE"
-              echo "Database backup skipped. This is expected on the first deploy if db is not running yet."
-            fi
+      - name: Notify Ubuntu deploy webhook
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          DEPLOY_BRANCH: ${{ steps.vars.outputs.branch }}
+          COMMIT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import hmac
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.request
 
-            rollback() {
-              echo "Deploy failed. Starting rollback..."
-              if [ -n "$PREVIOUS_IMAGE" ]; then
-                export APP_IMAGE="$PREVIOUS_IMAGE"
-                docker compose up -d --no-build --remove-orphans
-                docker compose ps
-              else
-                echo "No previous image recorded. Manual rollback may be required."
-              fi
-            }
+          url = os.environ.get("WEBHOOK_URL", "").strip()
+          secret = os.environ.get("WEBHOOK_SECRET", "")
 
-            trap rollback ERR
+          if not url:
+              raise SystemExit("WEBHOOK_URL secret is missing")
+          if not secret:
+              raise SystemExit("WEBHOOK_SECRET secret is missing")
 
-            docker compose up -d --no-build --remove-orphans
-            docker compose exec -T app php artisan migrate --force
-            docker compose exec -T app php artisan optimize:clear
-            curl -fsS -I http://localhost:8080
-            docker compose ps
+          payload = {
+              "repository": os.environ["REPOSITORY"],
+              "branch": os.environ["DEPLOY_BRANCH"],
+              "commit": os.environ["COMMIT_SHA"],
+              "workflow_run_id": os.environ["WORKFLOW_RUN_ID"],
+          }
+          body = json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8")
+          signature = hmac.new(secret.encode("utf-8"), body, hashlib.sha256).hexdigest()
 
-            echo "$APP_IMAGE" > "$RELEASE_FILE"
-            trap - ERR
+          request = urllib.request.Request(
+              url,
+              data=body,
+              method="POST",
+              headers={
+                  "Content-Type": "application/json",
+                  "X-Mindigo-Signature": f"sha256={signature}",
+              },
+          )
+
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  print(response.read().decode("utf-8", errors="replace"))
+                  print(f"Webhook status: {response.status}")
+          except urllib.error.HTTPError as exc:
+              print(exc.read().decode("utf-8", errors="replace"), file=sys.stderr)
+              raise
+          PY
