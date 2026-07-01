@@ -1,11 +1,11 @@
 # CI/CD GitHub Actions cho Mindigo
 
-CI/CD trong project này dùng 2 workflow:
+Project dùng 2 workflow:
 
 - `.github/workflows/ci.yml`: chạy khi push/pull request vào `dev` hoặc `main`.
-- `.github/workflows/deploy.yml`: deploy tự động sau khi CI của branch `main` thành công, hoặc bấm chạy thủ công.
+- `.github/workflows/deploy.yml`: deploy sau khi CI của `main` thành công, hoặc chạy thủ công trong tab Actions.
 
-## 1. Luồng CI
+## 1. CI làm gì?
 
 Khi push code:
 
@@ -19,86 +19,59 @@ npm ci
 npm run build
 composer test
 docker compose build app
-push Docker image lên GHCR khi push code
+push Docker image lên GHCR
 ```
 
-Nếu bước nào lỗi, GitHub sẽ báo fail để sửa trước khi deploy.
-
-## 2. Luồng CD
-
-Khi push vào `main` và CI thành công:
+CI push image theo tag branch:
 
 ```text
-GitHub Actions lấy đúng Docker image theo commit SHA
+ghcr.io/<owner>/<repo>:main
+ghcr.io/<owner>/<repo>:dev
+```
+
+## 2. CD làm gì?
+
+Khi CI của `main` xanh:
+
+```text
 GitHub Actions SSH vào Ubuntu
-cd ~/Mindigo
+cd /home/hung/mindigo/Mindigo
 git pull --ff-only origin main
+docker login ghcr.io
 docker compose pull app
-backup database
+backup database nếu db đang chạy
 docker compose up -d --no-build --remove-orphans
-php artisan migrate --force trong container app
-php artisan optimize:clear trong container app
-docker compose ps
+php artisan migrate --force
+php artisan optimize:clear
 curl test http://localhost:8080
 ```
 
-Workflow deploy sẽ dừng nếu thư mục project trên Ubuntu có code đang sửa chưa commit.
-Nếu deploy lỗi sau khi đổi image, workflow sẽ thử rollback container app về image đã deploy trước đó. Database sẽ không tự restore để tránh ghi đè dữ liệu ngoài ý muốn.
+Deploy hiện dùng image tag theo branch để test ổn định:
 
-## 3. Chuẩn bị Ubuntu Server
-
-Trên Ubuntu, project nên nằm ở:
-
-```bash
-~/Mindigo
+```text
+ghcr.io/<owner>/<repo>:main
 ```
 
-Kiểm tra:
+Sau khi chạy ổn, có thể nâng tiếp sang deploy theo commit SHA.
 
-```bash
-cd ~/Mindigo
-git remote -v
-git status
-docker --version
-docker compose version
-docker compose ps
+## 3. docker-compose cần hỗ trợ GHCR image
+
+Service `app` cần có dạng:
+
+```yaml
+app:
+  image: ${APP_IMAGE:-mindigo-app}
+  build:
+    context: .
+    dockerfile: Dockerfile
 ```
 
-User SSH dùng để deploy phải chạy được Docker không cần `sudo`:
+Ý nghĩa:
 
-```bash
-sudo usermod -aG docker $USER
-newgrp docker
-docker info
-```
+- Local không truyền `APP_IMAGE` thì vẫn build image `mindigo-app`.
+- CI/CD truyền `APP_IMAGE=ghcr.io/<owner>/<repo>:main` thì server pull image từ GHCR.
 
-## 4. Tạo SSH key cho deploy
-
-Trên máy cá nhân hoặc Ubuntu, tạo key riêng cho GitHub Actions:
-
-```bash
-ssh-keygen -t ed25519 -C "mindigo-github-actions" -f ~/.ssh/mindigo_github_actions
-```
-
-Copy public key vào Ubuntu server:
-
-```bash
-cat ~/.ssh/mindigo_github_actions.pub
-```
-
-Thêm nội dung public key vào file:
-
-```bash
-~/.ssh/authorized_keys
-```
-
-Private key dùng cho GitHub Secret:
-
-```bash
-cat ~/.ssh/mindigo_github_actions
-```
-
-## 5. Tạo GitHub Secrets
+## 4. GitHub Secrets cần tạo
 
 Vào GitHub repo:
 
@@ -106,86 +79,76 @@ Vào GitHub repo:
 Settings -> Secrets and variables -> Actions -> New repository secret
 ```
 
-Tạo các secret:
+Tạo:
 
-| Secret | Ví dụ | Ghi chú |
-| --- | --- | --- |
-| `SERVER_HOST` | `192.168.1.50` | IP Ubuntu Server |
-| `SERVER_USER` | `hung` | User SSH |
-| `SERVER_PORT` | `22` | Port SSH |
-| `SERVER_SSH_KEY` | private key | Nội dung file `mindigo_github_actions` |
-| `SERVER_PATH` | `/home/hung/Mindigo` | Có thể bỏ trống nếu dùng `~/Mindigo` |
-| `GHCR_USERNAME` | username GitHub | Cần nếu GHCR package để private |
-| `GHCR_TOKEN` | GitHub PAT | Cần quyền `read:packages` nếu GHCR package để private |
+| Secret | Giá trị ví dụ |
+| --- | --- |
+| `SERVER_HOST` | IP Ubuntu Server |
+| `SERVER_USER` | `hung` |
+| `SERVER_PORT` | `22` |
+| `SERVER_PATH` | `/home/hung/mindigo/Mindigo` |
+| `SERVER_SSH_KEY` | private key SSH |
+| `GHCR_USERNAME` | `scoppy9201` |
+| `GHCR_TOKEN` | token có quyền `read:packages` |
 
-Ghi chú:
-
-- CI dùng sẵn `GITHUB_TOKEN` để push image lên GitHub Container Registry.
-- Nếu package GHCR để public thì server có thể pull không cần `GHCR_USERNAME` và `GHCR_TOKEN`.
-- Nếu package GHCR để private, tạo GitHub Personal Access Token có quyền `read:packages`.
-
-## 6. Cách dùng hằng ngày
-
-Làm việc trên branch `dev`:
-
-```bash
-git checkout dev
-git add .
-git commit -m "Update feature"
-git push origin dev
-```
-
-GitHub sẽ chạy CI.
-
-Khi muốn deploy:
-
-```bash
-git checkout main
-git merge dev
-git push origin main
-```
-
-GitHub sẽ chạy CD và deploy lên Ubuntu.
-
-## 7. Chạy deploy thủ công
-
-Vào GitHub repo:
+`SERVER_PATH` phải đúng với server hiện tại:
 
 ```text
-Actions -> Deploy -> Run workflow
+/home/hung/mindigo/Mindigo
 ```
 
-Chọn branch cần deploy, ví dụ `main` hoặc `dev`.
-
-## 8. Test sau deploy
+## 5. Test thủ công trên server trước
 
 Trên Ubuntu:
 
 ```bash
-cd ~/Mindigo
+cd /home/hung/mindigo/Mindigo
+git pull origin main
+DOCKER_BUILDKIT=1 docker compose build app
+docker compose up -d
 docker compose ps
 docker compose logs --tail=100 app
+```
+
+Nếu bước này ổn, CD sẽ dễ xanh hơn.
+
+## 6. Test Deploy workflow
+
+Vào GitHub:
+
+```text
+Actions -> Deploy -> Run workflow -> branch main
+```
+
+Sau khi chạy xong, kiểm tra trên server:
+
+```bash
+cd /home/hung/mindigo/Mindigo
+docker compose ps
+docker inspect mindigo_app --format '{{.Config.Image}}'
+cat .deploy-release
 curl -I http://localhost:8080
 ```
 
-Kiểm tra image đang chạy:
+Kết quả image nên là:
+
+```text
+ghcr.io/scoppy9201/mindigo:main
+```
+
+## 7. Rollback và backup
+
+Workflow lưu image deploy gần nhất trong:
 
 ```bash
-docker inspect mindigo_app --format '{{.Config.Image}}'
-cat ~/Mindigo/.deploy-release
+/home/hung/mindigo/Mindigo/.deploy-release
 ```
 
 Backup database nằm trong:
 
 ```bash
-~/Mindigo/backups
+/home/hung/mindigo/Mindigo/backups
 ```
 
-Lần deploy đầu tiên có thể chưa có container `db` đang chạy, khi đó bước backup sẽ được bỏ qua và deploy vẫn tiếp tục.
+Nếu deploy lỗi sau khi đổi image, workflow sẽ thử rollback app về image trước đó. Database không tự restore để tránh ghi đè dữ liệu ngoài ý muốn.
 
-Từ Windows mở:
-
-```text
-http://<IP_UBUNTU>:8080
-http://<IP_UBUNTU>:8081
-```

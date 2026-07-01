@@ -25,8 +25,9 @@ jobs:
       - name: Prepare deployment
         id: image
         run: |
-          echo "app_image=ghcr.io/${GITHUB_REPOSITORY,,}:${{ github.event.workflow_run.head_sha || github.sha }}" >> "$GITHUB_OUTPUT"
-          echo "branch=${{ github.event.workflow_run.head_branch || github.event.inputs.branch || github.ref_name }}" >> "$GITHUB_OUTPUT"
+          BRANCH="${{ github.event.workflow_run.head_branch || github.event.inputs.branch || github.ref_name }}"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "app_image=ghcr.io/${GITHUB_REPOSITORY,,}:$BRANCH" >> "$GITHUB_OUTPUT"
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
@@ -45,7 +46,7 @@ jobs:
           script: |
             set -e
 
-            APP_DIR="${SERVER_PATH:-$HOME/Mindigo}"
+            APP_DIR="${SERVER_PATH:-$HOME/mindigo/Mindigo}"
             BRANCH="${DEPLOY_BRANCH:-main}"
             RELEASE_FILE=".deploy-release"
             PREVIOUS_IMAGE=""
