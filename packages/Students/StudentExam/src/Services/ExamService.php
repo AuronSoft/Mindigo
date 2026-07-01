@@ -10,9 +10,7 @@ use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
 
 class ExamService
 {
-    // ------------------------------------------------------------------ //
-    //  Helpers lấy lớp của HS
-    // ------------------------------------------------------------------ //
+    
 
     public function classroomIdsForStudent(int|string $studentId): Collection
     {
@@ -24,32 +22,19 @@ class ExamService
             ->pluck('id');
     }
 
-    // ------------------------------------------------------------------ //
-    //  Danh sách đề thi chia 3 nhóm
-    // ------------------------------------------------------------------ //
+  
 
     public function getExamsForStudent(int|string $studentId): array
     {
-        $classroomIds = $this->classroomIdsForStudent($studentId);
-
-        if ($classroomIds->isEmpty()) {
-            return [
-                'upcoming'  => collect(),
-                'ongoing'   => collect(),
-                'completed' => collect(),
-            ];
-        }
-
+        
         $exams = Exam::query()
-            ->where('status', 'published')
-            ->where(function ($query) use ($classroomIds) {
-                // Giả sử Exam có audience là array chứa classroom ids
-                $query->whereJsonContains('audience', $classroomIds->toArray())
-                      ->orWhereHas('classrooms', fn($q) => $q->whereIn('classrooms.id', $classroomIds)); // nếu có pivot
-            })
-            ->with(['attempts' => fn($q) => $q->where('user_id', $studentId)])
-            ->orderBy('starts_at')
-            ->get();
+        ->where('status', 'published')
+        ->where(function ($query) use ($studentId) {
+            $query->whereJsonContains('audience->roles', 'student');
+        })
+        ->with(['attempts' => fn($q) => $q->where('user_id', $studentId)])
+        ->orderBy('starts_at')
+        ->get();
 
         $upcoming  = collect();
         $ongoing   = collect();
@@ -76,32 +61,23 @@ class ExamService
         return compact('upcoming', 'ongoing', 'completed');
     }
 
-    // ------------------------------------------------------------------ //
-    //  Kiểm tra điều kiện
-    // ------------------------------------------------------------------ //
+   
 
-    public function isEnrolledInExamClassroom(Exam $exam, int|string $studentId): bool
-    {
-        $classroomIds = $this->classroomIdsForStudent($studentId);
+        public function isEnrolledInExamClassroom(Exam $exam, int|string $studentId): bool
+{
+        if (!$exam->audience) return false;
 
-        if ($classroomIds->isEmpty()) {
-            return false;
-        }
+        $roles = $exam->audience['roles'] ?? [];
 
-        // Kiểm tra theo audience array (phổ biến trong hệ thống này)
-        if ($exam->audience && is_array($exam->audience)) {
-            foreach ($classroomIds as $cid) {
-                if (in_array($cid, $exam->audience)) {
-                    return true;
-                }
-            }
-        }
+        if (in_array('student', $roles)) return true;
 
-        // Hoặc kiểm tra qua pivot table nếu có
-        return $exam->classrooms()
-                    ->whereIn('classrooms.id', $classroomIds)
-                    ->exists();
-    }
+        $classrooms = $exam->audience['classrooms'] ?? [];
+        if (empty($classrooms)) return false;
+
+        return $this->classroomIdsForStudent($studentId)
+                    ->intersect($classrooms)
+                    ->isNotEmpty();
+}
 
     public function isAvailable(Exam $exam): bool
     {
@@ -134,9 +110,7 @@ class ExamService
         return $done >= $maxAttempts;
     }
 
-    // ------------------------------------------------------------------ //
-    //  Bắt đầu lượt thi
-    // ------------------------------------------------------------------ //
+  
 
     public function startAttempt(Exam $exam, int|string $studentId): ExamAttempt
     {
@@ -165,13 +139,11 @@ class ExamService
         ]);
     }
 
-    // ------------------------------------------------------------------ //
-    //  Lấy câu hỏi theo thứ tự
-    // ------------------------------------------------------------------ //
+    
 
     public function getQuestionsForAttempt(ExamAttempt $attempt): Collection
     {
-        $exam = $attempt->exam()->with('questions.options')->first();
+        $exam = $attempt->exam()->with('questions')->first();
 
         $questions = $exam->questions;
 
@@ -183,14 +155,12 @@ class ExamService
 
     public function getSavedAnswers(ExamAttempt $attempt): Collection
     {
-        return ExamAttemptAnswer::where('attempt_id', $attempt->id)
-            ->get()
-            ->keyBy('question_id');
+        return ExamAttemptAnswer::where('exam_attempt_id', $attempt->id)
+        ->get()
+        ->keyBy('exam_question_id');
     }
 
-    // ------------------------------------------------------------------ //
-    //  Nộp bài
-    // ------------------------------------------------------------------ //
+    
 
     public function submitAttempt(ExamAttempt $attempt, array $validated): ExamAttempt
     {
@@ -200,14 +170,9 @@ class ExamService
         // Lưu từng đáp án (upsert)
         foreach ($answers as $questionId => $value) {
             ExamAttemptAnswer::updateOrCreate(
-                [
-                    'attempt_id'  => $attempt->id,
-                    'question_id' => $questionId,
-                ],
-                [
-                    'answer_value' => is_array($value) ? json_encode($value) : $value,
-                ]
-            );
+            ['exam_attempt_id' => $attempt->id, 'exam_question_id' => $questionId],
+            ['answer' => is_array($value) ? json_encode($value) : $value]
+        );
         }
 
         // Chấm điểm tự động
@@ -226,9 +191,7 @@ class ExamService
         return $attempt->fresh();
     }
 
-    /**
-     * Tự nộp khi hết giờ (server-side timeout).
-     */
+  
     public function autoSubmit(ExamAttempt $attempt): void
     {
         if (in_array($attempt->status, ['submitted', 'graded'])) {
@@ -238,15 +201,15 @@ class ExamService
         $this->submitAttempt($attempt, ['answers' => [], 'tab_leave_count' => $attempt->tab_leave_count]);
     }
 
-    // ------------------------------------------------------------------ //
-    //  Auto-grade (trắc nghiệm)
-    // ------------------------------------------------------------------ //
+   
 
     private function autoGrade(ExamAttempt $attempt): array
     {
-        $exam      = $attempt->exam()->with('questions.options')->first();
+        $exam = $attempt->exam()->with('questions')->first();
         $questions = $exam->questions;
-        $answers   = ExamAttemptAnswer::where('attempt_id', $attempt->id)->get()->keyBy('question_id');
+        $answers = ExamAttemptAnswer::where('exam_attempt_id', $attempt->id)
+        ->get()
+        ->keyBy('exam_question_id');
 
         $score    = 0;
         $maxScore = 0;
@@ -259,19 +222,14 @@ class ExamService
                 continue;
             }
 
-            $given = $answers[$question->id]->answer_value;
+            $given = $answers[$question->id]->answer;
 
             // Lấy các option đúng
-            $correctOptions = $question->options
-                ->where('is_correct', true)
-                ->pluck('id')
-                ->sort()
-                ->values();
+            $correctOptions = collect($question->correct_answers ?? [])->sort()->values();
 
-            if ($correctOptions->isEmpty()) {
-                // Tự luận — bỏ qua auto-grade
-                continue;
-            }
+        if ($correctOptions->isEmpty()) {
+            continue;
+        }
 
             // So sánh đáp án
             $givenIds = is_string($given) && str_starts_with($given, '[')
@@ -286,17 +244,13 @@ class ExamService
         return [$score, $maxScore];
     }
 
-    // ------------------------------------------------------------------ //
-    //  Kết quả
-    // ------------------------------------------------------------------ //
+    
 
     public function getResult(ExamAttempt $attempt): array
     {
         $exam = $attempt->exam()->with('questions.options')->first();
 
-        $answers = ExamAttemptAnswer::where('attempt_id', $attempt->id)
-            ->get()
-            ->keyBy('question_id');
+        $answers = ExamAttemptAnswer::where('exam_attempt_id', $attempt->id)->get()->keyBy('exam_question_id');
 
         // Chỉ show review nếu đề cho phép
         $showReview = (bool) ($exam->show_answers_after_submit ?? false);
