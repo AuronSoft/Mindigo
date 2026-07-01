@@ -95,7 +95,7 @@ jobs:
           import urllib.request
 
           url = os.environ.get("WEBHOOK_URL", "").strip()
-          secret = os.environ.get("WEBHOOK_SECRET", "")
+          secret = os.environ.get("WEBHOOK_SECRET", "").strip()
 
           if not url:
               raise SystemExit("WEBHOOK_URL secret is missing")
@@ -118,6 +118,7 @@ jobs:
               headers={
                   "Content-Type": "application/json",
                   "X-Mindigo-Signature": f"sha256={signature}",
+                  "X-Hub-Signature-256": f"sha256={signature}",
               },
           )
 

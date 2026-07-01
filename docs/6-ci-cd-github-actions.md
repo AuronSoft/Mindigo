@@ -442,12 +442,29 @@ Nguyên nhân:
 
 - `WEBHOOK_SECRET` trên GitHub khác với `WEBHOOK_SECRET` trên Ubuntu.
 - Bạn test bằng `curl` thường, không gửi chữ ký HMAC.
+- Ubuntu đang chạy bản `server.py` cũ.
 
 Kiểm tra:
 
 ```bash
 echo $WEBHOOK_SECRET
 tail -f ~/webhook/webhook.log
+```
+
+Cập nhật lại webhook server trên Ubuntu:
+
+```bash
+cp /home/hung/mindigo/Mindigo/deploy/webhook/server.py ~/webhook/server.py
+chmod +x ~/webhook/server.py
+sudo systemctl restart mindigo-webhook
+sudo systemctl status mindigo-webhook
+```
+
+Nếu bạn đang chạy thủ công bằng `python3 server.py`, hãy dừng process cũ bằng `Ctrl+C` rồi chạy lại:
+
+```bash
+cd ~/webhook
+WEBHOOK_SECRET=mindigo-secret python3 server.py
 ```
 
 ### GitHub Actions không gọi được webhook

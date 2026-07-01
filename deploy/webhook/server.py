@@ -11,7 +11,7 @@ from pathlib import Path
 
 HOST = os.environ.get("WEBHOOK_HOST", "127.0.0.1")
 PORT = int(os.environ.get("WEBHOOK_PORT", "9000"))
-SECRET = os.environ.get("WEBHOOK_SECRET", "")
+SECRET = os.environ.get("WEBHOOK_SECRET", "").strip()
 DEPLOY_SCRIPT = os.environ.get("DEPLOY_SCRIPT", str(Path.home() / "webhook" / "deploy.sh"))
 LOG_FILE = Path(os.environ.get("WEBHOOK_LOG", str(Path.home() / "webhook" / "webhook.log")))
 
@@ -24,12 +24,18 @@ def log(message: str) -> None:
         file.write(line + "\n")
 
 
-def valid_signature(body: bytes, header: str) -> bool:
-    if not SECRET or not header.startswith("sha256="):
+def valid_signature(body: bytes, *headers: str) -> bool:
+    headers = [header for header in headers if header]
+    if not SECRET or not headers:
         return False
     expected = hmac.new(SECRET.encode("utf-8"), body, hashlib.sha256).hexdigest()
-    received = header.split("=", 1)[1]
-    return hmac.compare_digest(expected, received)
+    for header in headers:
+        if not header.startswith("sha256="):
+            continue
+        received = header.split("=", 1)[1]
+        if hmac.compare_digest(expected, received):
+            return True
+    return False
 
 
 class DeployHandler(BaseHTTPRequestHandler):
@@ -42,9 +48,10 @@ class DeployHandler(BaseHTTPRequestHandler):
 
         length = int(self.headers.get("Content-Length", "0"))
         body = self.rfile.read(length)
-        signature = self.headers.get("X-Mindigo-Signature", "")
+        mindigo_signature = self.headers.get("X-Mindigo-Signature", "")
+        github_signature = self.headers.get("X-Hub-Signature-256", "")
 
-        if not valid_signature(body, signature):
+        if not valid_signature(body, mindigo_signature, github_signature):
             log("Invalid signature")
             self.respond(403, "Invalid signature")
             return
