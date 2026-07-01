@@ -55,6 +55,7 @@ return [
         'all_classes' => 'All classes',
         'apply' => 'Apply filters',
         'clear' => 'Clear filters',
+        'title' => 'Filter assignments',
     ],
     'status' => [
         'pending' => 'Not submitted',

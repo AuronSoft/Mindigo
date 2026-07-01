@@ -55,6 +55,7 @@ return [
         'all_classes' => 'Tất cả lớp học',
         'apply' => 'Lọc dữ liệu',
         'clear' => 'Xóa bộ lọc',
+        'title' => 'Lọc bài tập',
     ],
     'status' => [
         'pending' => 'Chưa nộp',
