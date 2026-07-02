@@ -11,7 +11,7 @@ class ExamAttemptFactory extends Factory
 
     public function definition(): array
     {
-        $percentage = $this->faker->randomFloat(2, 0, 100);
+        $percentage = \fake()->randomFloat(2, 0, 100);
 
         return [
             'exam_id'         => null,
