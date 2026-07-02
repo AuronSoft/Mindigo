@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use Faker\Factory as FakerFactory;
+use Faker\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Mindigo\QuestionBank\Models\Question;
 
@@ -9,23 +11,32 @@ class QuestionFactory extends Factory
 {
     protected $model = Question::class;
 
+    protected static ?Generator $fakerGenerator = null;
+
+    private function generator(): Generator
+    {
+        return static::$fakerGenerator ??= FakerFactory::create();
+    }
+
     public function definition(): array
     {
+        $faker = $this->generator();
+
         return [
             'created_by'     => null,
             'reviewed_by'    => null,
             'folder_id'      => null,
-            'subject'        => \fake()->randomElement(['Toán', 'Văn', 'Anh', 'Lý', 'Hóa']),
-            'topic'          => \fake()->words(2, true),
+            'subject'        => $faker->randomElement(['Toán', 'Văn', 'Anh', 'Lý', 'Hóa']),
+            'topic'          => $faker->words(2, true),
             'type'           => 'single_choice',
-            'difficulty'     => \fake()->randomElement(['easy', 'medium', 'hard']),
+            'difficulty'     => $faker->randomElement(['easy', 'medium', 'hard']),
             'status'         => 'approved',
-            'content'        => \fake()->sentence() . '?',
+            'content'        => $faker->sentence() . '?',
             'options'        => [
-                ['key' => 'A', 'text' => \fake()->word()],
-                ['key' => 'B', 'text' => \fake()->word()],
-                ['key' => 'C', 'text' => \fake()->word()],
-                ['key' => 'D', 'text' => \fake()->word()],
+                ['key' => 'A', 'text' => $faker->word()],
+                ['key' => 'B', 'text' => $faker->word()],
+                ['key' => 'C', 'text' => $faker->word()],
+                ['key' => 'D', 'text' => $faker->word()],
             ],
             'correct_answers'=> ['A'],
             'explanation'    => null,

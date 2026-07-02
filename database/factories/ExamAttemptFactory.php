@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use Faker\Factory as FakerFactory;
+use Faker\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 
@@ -9,9 +11,16 @@ class ExamAttemptFactory extends Factory
 {
     protected $model = ExamAttempt::class;
 
+    protected static ?Generator $fakerGenerator = null;
+
+    private function generator(): Generator
+    {
+        return static::$fakerGenerator ??= FakerFactory::create();
+    }
+
     public function definition(): array
     {
-        $percentage = \fake()->randomFloat(2, 0, 100);
+        $percentage = $this->generator()->randomFloat(2, 0, 100);
 
         return [
             'exam_id'         => null,

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use Faker\Factory as FakerFactory;
+use Faker\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Mindigo\ExamManagement\Models\Exam;
 
@@ -9,17 +11,26 @@ class ExamFactory extends Factory
 {
     protected $model = Exam::class;
 
+    protected static ?Generator $fakerGenerator = null;
+
+    private function generator(): Generator
+    {
+        return static::$fakerGenerator ??= FakerFactory::create();
+    }
+
     public function definition(): array
     {
+        $faker = $this->generator();
+
         return [
             'created_by'       => null,
-            'title'            => \fake()->sentence(4),
-            'slug'             => \fake()->unique()->slug(3),
-            'subject'          => \fake()->randomElement(['Toán', 'Văn', 'Anh', 'Lý', 'Hóa', 'Sinh']),
-            'topic'            => \fake()->words(3, true),
+            'title'            => $faker->sentence(4),
+            'slug'             => $faker->unique()->slug(3),
+            'subject'          => $faker->randomElement(['Toán', 'Văn', 'Anh', 'Lý', 'Hóa', 'Sinh']),
+            'topic'            => $faker->words(3, true),
             'status'           => 'published',
-            'description'      => \fake()->sentence(),
-            'duration_minutes' => \fake()->randomElement([30, 45, 60, 90]),
+            'description'      => $faker->sentence(),
+            'duration_minutes' => $faker->randomElement([30, 45, 60, 90]),
             'starts_at'        => null,
             'ends_at'          => null,
             'max_attempts'     => 3,
