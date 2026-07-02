@@ -27,6 +27,7 @@
 - [Module Architecture](#module-architecture)
 - [Tech Stack](#tech-stack)
 - [Local Setup](#local-setup)
+- [Production Deployment](#production-deployment)
 - [Demo Accounts](#demo-accounts)
 - [Development Commands](#development-commands)
 - [Development Guidelines](#development-guidelines)
@@ -256,6 +257,172 @@ Open:
 
 ```text
 http://127.0.0.1:8000
+```
+
+---
+
+## Production Deployment
+
+Mindigo can be deployed on an Ubuntu virtual machine with Docker Compose. This setup is suitable for demo, internal testing, and production-like deployment when the server is behind NAT and does not have a public IP.
+
+For the full CI/CD webhook guide, see:
+
+```text
+docs/6-ci-cd-github-actions.md
+```
+
+### 1. Server Requirements
+
+- Ubuntu Server running in VMware, VirtualBox, VPS, or a physical server.
+- Docker and Docker Compose plugin.
+- Git access to the repository.
+- A configured `.env` file or Docker environment variables.
+- Optional: ngrok static domain when the VM does not have a public IP.
+
+### 2. Clone And Build On The VM
+
+```bash
+cd /home/hung/mindigo
+git clone https://github.com/scoppy9201/Mindigo.git
+cd Mindigo
+docker compose up -d --build
+docker compose ps
+curl -I http://localhost:8080
+```
+
+The default Docker Compose stack exposes:
+
+| Service | URL |
+| --- | --- |
+| Application | `http://<IP_UBUNTU>:8080` |
+| phpMyAdmin | `http://<IP_UBUNTU>:8081` |
+| MySQL from host | `127.0.0.1:3307` |
+
+### 3. Prepare Laravel In The Container
+
+Run migrations, clear caches, and seed demo accounts:
+
+```bash
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan optimize:clear
+docker compose exec app php artisan db:seed
+```
+
+The production Docker image installs Composer dependencies with `--no-dev`. The database factories are therefore written without depending on `fakerphp/faker`, so seeding still works in a production image.
+
+### 4. CI/CD With GitHub Actions And Webhook
+
+The deployment workflow is:
+
+```text
+push main -> GitHub Actions -> build/test -> POST webhook -> ngrok -> Ubuntu VM -> deploy.sh
+```
+
+Create these GitHub repository secrets:
+
+| Secret | Example |
+| --- | --- |
+| `WEBHOOK_URL` | `https://your-ngrok-domain.ngrok-free.dev/deploy` |
+| `WEBHOOK_SECRET` | `mindigo-secret` |
+
+On the Ubuntu VM, copy the webhook files:
+
+```bash
+mkdir -p ~/webhook
+cp /home/hung/mindigo/Mindigo/deploy/webhook/server.py ~/webhook/server.py
+cp /home/hung/mindigo/Mindigo/deploy/webhook/deploy.sh ~/webhook/deploy.sh
+chmod +x ~/webhook/server.py ~/webhook/deploy.sh
+```
+
+Run the webhook manually for a quick test:
+
+```bash
+cd ~/webhook
+WEBHOOK_SECRET=mindigo-secret python3 server.py
+```
+
+Expose it with ngrok:
+
+```bash
+ngrok http 9000
+```
+
+For a static ngrok domain:
+
+```bash
+ngrok http --domain=your-ngrok-domain.ngrok-free.dev 9000
+```
+
+When GitHub calls the webhook successfully, the server runs:
+
+```bash
+git fetch origin main
+git checkout main
+git pull --ff-only origin main
+DOCKER_BUILDKIT=1 docker compose build app
+docker compose up -d --remove-orphans
+docker compose exec -T app php artisan migrate --force
+docker compose exec -T app php artisan optimize:clear
+```
+
+### 5. Keep Webhook And Ngrok Running
+
+For long-running deployment, create systemd services for:
+
+- `mindigo-webhook.service`
+- `mindigo-ngrok.service`
+
+Example webhook service:
+
+```ini
+[Unit]
+Description=Mindigo deploy webhook
+After=network.target
+
+[Service]
+Type=simple
+User=hung
+WorkingDirectory=/home/hung/webhook
+Environment=WEBHOOK_SECRET=mindigo-secret
+Environment=WEBHOOK_PORT=9000
+Environment=APP_DIR=/home/hung/mindigo/Mindigo
+ExecStart=/usr/bin/python3 /home/hung/webhook/server.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable it:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable mindigo-webhook
+sudo systemctl start mindigo-webhook
+sudo systemctl status mindigo-webhook
+```
+
+### 6. Moving From VM To A Real Server
+
+The same Docker deployment can be moved to a real VPS or physical server. Replace the VM/ngrok parts with normal public networking:
+
+- Point the domain DNS record to the server public IP.
+- Put Nginx, Apache reverse proxy, Caddy, Cloudflare Tunnel, or a load balancer in front of `http://127.0.0.1:8080`.
+- Enable HTTPS with Let's Encrypt or the platform certificate manager.
+- Set `APP_ENV=production`, `APP_DEBUG=false`, and `APP_URL=https://your-domain.com`.
+- Use strong database passwords and application secrets.
+- Do not expose phpMyAdmin publicly; remove it or bind it to localhost/VPN only.
+- Keep `storage_data` and `db_data` Docker volumes backed up.
+- Run `php artisan migrate --force` during deploy, but run `db:seed` only when demo data is needed.
+
+Useful production checks:
+
+```bash
+docker compose ps
+docker compose logs --tail=100 app
+docker compose exec app php artisan about
+curl -I http://localhost:8080
 ```
 
 ---
