@@ -2,8 +2,6 @@
 
 namespace Database\Factories;
 
-use Faker\Factory as FakerFactory;
-use Faker\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Mindigo\QuestionBank\Models\Question;
 
@@ -11,32 +9,28 @@ class QuestionFactory extends Factory
 {
     protected $model = Question::class;
 
-    protected static ?Generator $fakerGenerator = null;
-
-    private function generator(): Generator
-    {
-        return static::$fakerGenerator ??= FakerFactory::create();
-    }
+    protected static int $sequence = 0;
 
     public function definition(): array
     {
-        $faker = $this->generator();
+        $sequence = ++static::$sequence;
+        $subject = $this->randomElement(['Toán', 'Văn', 'Anh', 'Lý', 'Hóa']);
 
         return [
             'created_by'     => null,
             'reviewed_by'    => null,
             'folder_id'      => null,
-            'subject'        => $faker->randomElement(['Toán', 'Văn', 'Anh', 'Lý', 'Hóa']),
-            'topic'          => $faker->words(2, true),
+            'subject'        => $subject,
+            'topic'          => 'Chủ đề ' . $sequence,
             'type'           => 'single_choice',
-            'difficulty'     => $faker->randomElement(['easy', 'medium', 'hard']),
+            'difficulty'     => $this->randomElement(['easy', 'medium', 'hard']),
             'status'         => 'approved',
-            'content'        => $faker->sentence() . '?',
+            'content'        => 'Câu hỏi demo ' . $sequence . ' cho môn ' . $subject . '?',
             'options'        => [
-                ['key' => 'A', 'text' => $faker->word()],
-                ['key' => 'B', 'text' => $faker->word()],
-                ['key' => 'C', 'text' => $faker->word()],
-                ['key' => 'D', 'text' => $faker->word()],
+                ['key' => 'A', 'text' => 'Đáp án A'],
+                ['key' => 'B', 'text' => 'Đáp án B'],
+                ['key' => 'C', 'text' => 'Đáp án C'],
+                ['key' => 'D', 'text' => 'Đáp án D'],
             ],
             'correct_answers'=> ['A'],
             'explanation'    => null,
@@ -54,5 +48,10 @@ class QuestionFactory extends Factory
     public function approved(): static
     {
         return $this->state(['status' => 'approved']);
+    }
+
+    private function randomElement(array $items): mixed
+    {
+        return $items[array_rand($items)];
     }
 }

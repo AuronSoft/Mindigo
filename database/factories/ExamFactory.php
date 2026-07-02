@@ -2,35 +2,31 @@
 
 namespace Database\Factories;
 
-use Faker\Factory as FakerFactory;
-use Faker\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use Mindigo\ExamManagement\Models\Exam;
 
 class ExamFactory extends Factory
 {
     protected $model = Exam::class;
 
-    protected static ?Generator $fakerGenerator = null;
-
-    private function generator(): Generator
-    {
-        return static::$fakerGenerator ??= FakerFactory::create();
-    }
+    protected static int $sequence = 0;
 
     public function definition(): array
     {
-        $faker = $this->generator();
+        $sequence = ++static::$sequence;
+        $subject = $this->randomElement(['Toán', 'Văn', 'Anh', 'Lý', 'Hóa', 'Sinh']);
+        $title = 'Đề thi demo ' . $sequence . ' môn ' . $subject;
 
         return [
             'created_by'       => null,
-            'title'            => $faker->sentence(4),
-            'slug'             => $faker->unique()->slug(3),
-            'subject'          => $faker->randomElement(['Toán', 'Văn', 'Anh', 'Lý', 'Hóa', 'Sinh']),
-            'topic'            => $faker->words(3, true),
+            'title'            => $title,
+            'slug'             => Str::slug($title) . '-' . Str::lower(Str::random(6)),
+            'subject'          => $subject,
+            'topic'            => 'Chủ đề ôn tập ' . $sequence,
             'status'           => 'published',
-            'description'      => $faker->sentence(),
-            'duration_minutes' => $faker->randomElement([30, 45, 60, 90]),
+            'description'      => 'Đề thi demo dùng để kiểm tra hệ thống Mindigo.',
+            'duration_minutes' => $this->randomElement([30, 45, 60, 90]),
             'starts_at'        => null,
             'ends_at'          => null,
             'max_attempts'     => 3,
@@ -54,5 +50,10 @@ class ExamFactory extends Factory
     public function reviewing(): static
     {
         return $this->state(['status' => 'reviewing']);
+    }
+
+    private function randomElement(array $items): mixed
+    {
+        return $items[array_rand($items)];
     }
 }

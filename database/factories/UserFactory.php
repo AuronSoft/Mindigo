@@ -2,8 +2,6 @@
 
 namespace Database\Factories;
 
-use Faker\Factory as FakerFactory;
-use Faker\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -24,45 +22,45 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
-    protected static ?Generator $fakerGenerator = null;
-
-    private function generator(): Generator
-    {
-        return static::$fakerGenerator ??= FakerFactory::create();
-    }
+    protected static int $sequence = 0;
 
     /**
      * Define the model's default state.
      */
     public function definition(): array
     {
-        $faker = $this->generator();
+        $sequence = ++static::$sequence;
 
         return [
-            'name' => $faker->name(),
-            'email' => $faker->unique()->safeEmail(),
+            'name' => 'Demo User ' . $sequence,
+            'email' => 'user' . $sequence . '.' . Str::lower(Str::random(8)) . '@example.com',
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('123456'),
-            'role' => $faker->randomElement([
+            'role' => $this->randomElement([
                 'admin',
                 'teacher',
                 'student',
             ]),
 
-            'phone' => $faker->phoneNumber(),
+            'phone' => '09' . random_int(10000000, 99999999),
             'avatar' => null,
-            'gender' => $faker->randomElement([
+            'gender' => $this->randomElement([
                 'male',
                 'female',
                 'other',
             ]),
 
-            'date_of_birth' => $faker->date(),
-            'address' => $faker->address(),
-            'bio' => $faker->sentence(),
+            'date_of_birth' => now()->subYears(random_int(18, 45))->subDays(random_int(0, 365))->toDateString(),
+            'address' => 'Demo address ' . $sequence,
+            'bio' => 'Demo user account for Mindigo testing.',
             'is_active' => true,
             'remember_token' => Str::random(10),
         ];
+    }
+
+    private function randomElement(array $items): mixed
+    {
+        return $items[array_rand($items)];
     }
 
     /**
