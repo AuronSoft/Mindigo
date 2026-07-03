@@ -56,7 +56,7 @@
                     <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.3-4.3m1.8-5.2a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
                     </svg>
-                    <input type="search" data-exam-tip-search placeholder="@lang('core::exam_tips.nav.search_placeholder')" class="w-full rounded-full border border-gray-200 bg-gray-100 py-2 pl-10 pr-4 text-sm font-semibold text-gray-900 outline-none transition focus:border-green-500 focus:ring-4 focus:ring-green-100">
+                    <input type="search" data-exam-tip-search placeholder="@lang('core::exam_tips.nav.search_placeholder')" class="w-full rounded-xl border border-gray-200 bg-gray-100 py-2.5 pl-10 pr-4 text-sm font-semibold text-gray-900 outline-none transition focus:border-green-500 focus:ring-4 focus:ring-green-100">
                 </label>
 
                 <div class="hidden items-center gap-3 md:flex">
@@ -64,7 +64,7 @@
                         <a href="{{ route('lang.switch', ['locale' => 'vi'], false) }}" class="rounded-lg px-3 py-1.5 text-xs font-black transition {{ app()->getLocale() === 'vi' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-700' }}">VI</a>
                         <a href="{{ route('lang.switch', ['locale' => 'en'], false) }}" class="rounded-lg px-3 py-1.5 text-xs font-black transition {{ app()->getLocale() === 'en' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-700' }}">EN</a>
                     </div>
-                    <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_share')" class="inline-flex items-center gap-2 rounded-full bg-green-500 px-4 py-2 text-sm font-black text-white transition hover:bg-green-600">
+                    <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_share')" class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-5 py-2.5 text-sm font-black text-white shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
                         </svg>
@@ -88,18 +88,21 @@
                     <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.3-4.3m1.8-5.2a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
                     </svg>
-                    <input type="search" data-exam-tip-search placeholder="@lang('core::exam_tips.nav.search_placeholder')" class="w-full rounded-full border border-gray-200 bg-gray-100 py-2 pl-10 pr-4 text-sm font-semibold outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100">
+                    <input type="search" data-exam-tip-search placeholder="@lang('core::exam_tips.nav.search_placeholder')" class="w-full rounded-xl border border-gray-200 bg-gray-100 py-2.5 pl-10 pr-4 text-sm font-semibold outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100">
                 </label>
-                <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_share')" class="flex items-center justify-center gap-2 rounded-full bg-green-500 px-4 py-2 text-sm font-black text-white no-underline">
+                <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_share')" class="flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-sm font-black text-white no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
                     @lang('core::exam_tips.nav.share')
                 </a>
             </div>
         </div>
     </header>
 
-    <section class="bg-green-500 text-white">
-        <div class="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between md:py-14">
-            <div class="max-w-2xl">
+    <section class="relative overflow-hidden bg-green-500 text-white">
+        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1800&q=80" alt="" class="absolute inset-0 h-full w-full scale-105 object-cover opacity-25 blur-sm">
+        <div class="absolute inset-0 bg-gradient-to-r from-green-600 via-green-500/95 to-green-500/85"></div>
+        <div class="absolute -bottom-16 right-0 h-48 w-2/3 rounded-tl-[80px] bg-white/10 blur-2xl"></div>
+        <div class="relative mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between md:py-14">
+            <div class="max-w-2xl drop-shadow-sm">
                 <div class="mb-3 flex items-center gap-2">
                     <svg class="h-4 w-4 text-green-100" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M13.5 2.5c.38 2.22-.22 3.98-1.8 5.3-1.25 1.05-1.91 2.12-1.98 3.2-.75-.52-1.13-1.46-1.13-2.8C5.74 10.08 4.5 12.43 4.5 15.25 4.5 19 7.48 22 12 22s7.5-3 7.5-6.75c0-4.36-2.35-7.94-6-12.75Z" />
@@ -133,7 +136,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6">
             <div class="exam-tip-scrollbar flex gap-2 overflow-x-auto py-3">
                 @foreach($categories as $category)
-                    <button type="button" data-exam-tip-category="{{ $category['id'] }}" class="shrink-0 rounded-full border px-4 py-1.5 text-sm font-black transition {{ $loop->first ? 'border-green-500 bg-green-500 text-white shadow-sm' : 'border-gray-200 bg-transparent text-gray-500 hover:border-green-300 hover:text-gray-900' }}">
+                    <button type="button" data-exam-tip-category="{{ $category['id'] }}" class="shrink-0 rounded-xl border px-4 py-2 text-sm font-black transition-all {{ $loop->first ? 'border-green-500 bg-green-500 text-white shadow-[0_3px_0_#15803d]' : 'border-gray-200 bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-600' }}">
                         {{ $category['label'] }}
                     </button>
                 @endforeach
@@ -163,7 +166,7 @@
                                 <p class="exam-tip-clamp-3 mb-4 text-sm font-semibold leading-6 text-gray-500">{{ $post['excerpt'] }}</p>
                                 <div class="mb-4 flex flex-wrap gap-1.5">
                                     @foreach($post['tags'] as $tag)
-                                        <button type="button" data-exam-tip-tag="{{ $tag }}" class="rounded-full bg-green-50 px-2 py-0.5 text-xs font-bold text-green-700">#{{ $tag }}</button>
+                                        <button type="button" data-exam-tip-tag="{{ $tag }}" class="rounded-lg bg-green-50 px-2 py-1 text-xs font-black text-green-700 transition hover:bg-green-100">#{{ $tag }}</button>
                                     @endforeach
                                 </div>
                                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -190,7 +193,7 @@
                                     </div>
                                 </div>
                                 <div class="mt-4 flex flex-wrap items-center gap-2 border-t border-gray-100 pt-4">
-                                    <a href="#exam-tip-post-{{ $post['id'] }}" class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-black text-gray-900 no-underline transition hover:bg-green-500 hover:text-white">
+                                    <a href="#exam-tip-post-{{ $post['id'] }}" class="inline-flex items-center gap-1.5 rounded-xl border-2 border-green-200 bg-white px-4 py-2 text-xs font-black text-green-600 no-underline transition-all hover:border-green-400 hover:bg-green-50">
                                         @lang('core::exam_tips.actions.read')
                                     </a>
                                 </div>
@@ -236,7 +239,7 @@
                                         </a>
                                     </div>
                                     <div class="mt-3 flex flex-wrap items-center gap-2">
-                                        <a href="#exam-tip-post-{{ $post['id'] }}" class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-black text-gray-900 no-underline transition hover:bg-green-500 hover:text-white">
+                                        <a href="#exam-tip-post-{{ $post['id'] }}" class="inline-flex items-center gap-1.5 rounded-xl border-2 border-green-200 bg-white px-4 py-2 text-xs font-black text-green-600 no-underline transition-all hover:border-green-400 hover:bg-green-50">
                                             @lang('core::exam_tips.actions.read')
                                         </a>
                                     </div>
@@ -262,7 +265,7 @@
                 <div class="rounded-2xl bg-gradient-to-br from-green-500 to-green-700 p-5 text-white">
                     <h3 class="mb-1 text-lg font-black">@lang('core::exam_tips.sidebar.cta_title')</h3>
                     <p class="mb-4 text-sm font-semibold leading-6 text-white/75">@lang('core::exam_tips.sidebar.cta_text')</p>
-                    <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_share')" class="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-2.5 text-sm font-black text-green-700 no-underline transition hover:bg-green-50">
+                    <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_share')" class="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-black text-green-700 no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-50 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
                         @lang('core::exam_tips.sidebar.cta_button')
                     </a>
                 </div>
@@ -274,7 +277,7 @@
                     </div>
                     <div class="flex flex-wrap gap-2">
                         @foreach(trans('core::exam_tips.trending_tags') as $tag)
-                            <button type="button" data-exam-tip-tag="{{ $tag }}" class="rounded-full border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-black text-gray-900 transition hover:bg-green-500 hover:text-white">#{{ $tag }}</button>
+                            <button type="button" data-exam-tip-tag="{{ $tag }}" class="rounded-xl bg-gray-100 px-3 py-2 text-xs font-black text-gray-500 transition-all hover:bg-green-50 hover:text-green-600">#{{ $tag }}</button>
                         @endforeach
                     </div>
                 </div>
@@ -346,8 +349,8 @@
             categoryButtons.forEach((button) => {
                 const active = button.dataset.examTipCategory === state.category;
                 button.className = active
-                    ? 'shrink-0 rounded-full border px-4 py-1.5 text-sm font-black transition border-green-500 bg-green-500 text-white shadow-sm'
-                    : 'shrink-0 rounded-full border px-4 py-1.5 text-sm font-black transition border-gray-200 bg-transparent text-gray-500 hover:border-green-300 hover:text-gray-900';
+                    ? 'shrink-0 rounded-xl border px-4 py-2 text-sm font-black transition-all border-green-500 bg-green-500 text-white shadow-[0_3px_0_#15803d]'
+                    : 'shrink-0 rounded-xl border px-4 py-2 text-sm font-black transition-all border-gray-200 bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-600';
             });
         };
 
