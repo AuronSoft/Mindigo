@@ -22,6 +22,7 @@
             <div>
                 <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">{{ $classroom->name }}</p>
                 <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-classroom::app.edit')</h1>
+                <h1>test teacher classroom</h1>
             </div>
         </div>
         {{-- Quick delete from edit page --}}
