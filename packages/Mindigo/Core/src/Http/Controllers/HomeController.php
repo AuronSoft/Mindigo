@@ -17,4 +17,11 @@ class HomeController extends Controller
             'title' => __('core::terms.hero.title') . ' | Mindigo',
         ]);
     }
+
+    public function privacy()
+    {
+        return view('core::legal.privacy', [
+            'title' => __('core::privacy.hero.title') . ' | Mindigo',
+        ]);
+    }
 }

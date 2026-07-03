@@ -144,7 +144,7 @@
                 <p class="text-white font-black text-sm mb-5">@lang('core::app.footer.col_legal')</p>
                 <div class="flex flex-col gap-3">
                     @foreach(['footer.legal_1', 'footer.legal_2', 'footer.legal_3', 'footer.legal_4', 'footer.legal_5'] as $item)
-                    <a href="{{ $item === 'footer.legal_1' ? route('terms', [], false) : '#' }}" class="text-gray-400 text-sm hover:text-green-400 transition">@lang('core::app.' . $item)</a>
+                    <a href="{{ $item === 'footer.legal_1' ? route('terms', [], false) : ($item === 'footer.legal_2' ? route('privacy', [], false) : '#') }}" class="text-gray-400 text-sm hover:text-green-400 transition">@lang('core::app.' . $item)</a>
                     @endforeach
                 </div>
             </div>

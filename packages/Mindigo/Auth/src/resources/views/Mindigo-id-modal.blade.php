@@ -165,7 +165,7 @@
                     <span class="text-gray-300 text-xs">·</span>
                     <a href="{{ route('terms', [], false) }}" class="text-xs text-gray-400 hover:text-green-600 transition">@lang('Mindigo-auth::app.footer.terms')</a>
                     <span class="text-gray-300 text-xs">·</span>
-                    <a href="#" class="text-xs text-gray-400 hover:text-green-600 transition">@lang('Mindigo-auth::app.footer.privacy')</a>
+                    <a href="{{ route('privacy', [], false) }}" class="text-xs text-gray-400 hover:text-green-600 transition">@lang('Mindigo-auth::app.footer.privacy')</a>
                 </div>
             </div>
         </div>
@@ -183,7 +183,7 @@
         </div>
         <div class="flex gap-5">
             <a href="#" class="text-xs text-gray-400 hover:text-green-600 transition">@lang('Mindigo-auth::app.footer.help')</a>
-            <a href="#" class="text-xs text-gray-400 hover:text-green-600 transition">@lang('Mindigo-auth::app.footer.privacy')</a>
+            <a href="{{ route('privacy', [], false) }}" class="text-xs text-gray-400 hover:text-green-600 transition">@lang('Mindigo-auth::app.footer.privacy')</a>
             <a href="{{ route('terms', [], false) }}" class="text-xs text-gray-400 hover:text-green-600 transition">@lang('Mindigo-auth::app.footer.terms')</a>
         </div>
     </div>
