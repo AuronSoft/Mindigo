@@ -149,6 +149,7 @@
                         'footer.legal_2' => route('privacy', [], false),
                         'footer.legal_3' => route('technical-support-policy', [], false),
                         'footer.legal_4' => route('ai-assistant-policy', [], false),
+                        'footer.legal_5' => route('refund-policy', [], false),
                         default => '#',
                     } }}" class="text-gray-400 text-sm hover:text-green-400 transition">@lang('core::app.' . $item)</a>
                     @endforeach

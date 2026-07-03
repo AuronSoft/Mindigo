@@ -38,4 +38,11 @@ class HomeController extends Controller
             'title' => __('core::ai_policy.hero.title') . ' | Mindigo',
         ]);
     }
+
+    public function refundPolicy()
+    {
+        return view('core::legal.refund-policy', [
+            'title' => __('core::refund_policy.hero.title') . ' | Mindigo',
+        ]);
+    }
 }

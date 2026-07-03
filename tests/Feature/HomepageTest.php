@@ -127,6 +127,30 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * Refund policy page accessible
+     */
+    public function test_refund_policy_page_is_accessible(): void
+    {
+        $response = $this->get('/refund-policy');
+
+        $response->assertOk();
+        $response->assertSee('support@mindigo.vn', false);
+        $response->assertSee('Mindigo', false);
+    }
+
+    /**
+     * Refund policy page follows selected locale
+     */
+    public function test_refund_policy_page_follows_selected_locale(): void
+    {
+        $this->withSession(['locale' => 'en'])->get('/refund-policy')
+            ->assertOk()
+            ->assertSee('Refund Policy', false)
+            ->assertSee('Refund-eligible Cases', false)
+            ->assertSee('Table of Contents', false);
+    }
+
+    /**
      * Locale switch updates public pages and login consistently
      */
     public function test_locale_switch_persists_for_homepage_and_login(): void
