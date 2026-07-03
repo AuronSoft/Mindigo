@@ -25,26 +25,36 @@
                     </div>
                 </div>
             </div>
-            {{-- Right: Quiz cards --}}
+            {{-- Right: LMS cards --}}
             <div class="flex gap-4 items-start shrink-0">
                 {{-- Card 1 --}}
                 <div class="bg-white rounded-2xl shadow-xl overflow-hidden w-56">
-                    <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80" class="w-full h-32 object-cover" alt=""/>
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80" class="w-full h-32 object-cover" alt=""/>
                     <div class="p-4">
                         <p class="font-black text-gray-800 text-sm mb-1">@lang('core::app.cta.card_1_question')</p>
                         <p class="text-gray-500 text-xs mb-3 leading-relaxed">@lang('core::app.cta.card_1_text')</p>
-                        <div class="space-y-1.5">
-                            <div class="flex items-center gap-2 text-xs text-green-600 font-bold bg-green-50 rounded-lg px-2 py-1.5">
-                                <div class="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center shrink-0"><svg width="8" height="8" fill="none" viewBox="0 0 8 8"><path d="M1.5 4l1.5 1.5 3.5-3" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-                                @lang('core::app.cta.card_1_a')
+                        <div class="space-y-2">
+                            <div class="rounded-lg bg-green-50 px-2.5 py-2">
+                                <div class="mb-1 flex items-center justify-between gap-2">
+                                    <span class="text-xs font-black text-green-700">@lang('core::app.cta.card_1_a')</span>
+                                    <span class="text-[10px] font-black text-green-500">84%</span>
+                                </div>
+                                <div class="h-1.5 overflow-hidden rounded-full bg-green-100">
+                                    <div class="h-full w-[84%] rounded-full bg-green-500"></div>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2 text-xs text-gray-400 px-2 py-1">
-                                <div class="w-4 h-4 border border-gray-300 rounded-full shrink-0"></div>
-                                @lang('core::app.cta.card_1_b')
+                            <div class="rounded-lg bg-gray-50 px-2.5 py-2">
+                                <div class="mb-1 flex items-center justify-between gap-2">
+                                    <span class="text-xs font-bold text-gray-500">@lang('core::app.cta.card_1_b')</span>
+                                    <span class="text-[10px] font-black text-gray-400">12</span>
+                                </div>
+                                <div class="h-1.5 overflow-hidden rounded-full bg-gray-200">
+                                    <div class="h-full w-[62%] rounded-full bg-gray-400"></div>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2 text-xs text-gray-400 px-2 py-1">
-                                <div class="w-4 h-4 border border-gray-300 rounded-full shrink-0"></div>
-                                @lang('core::app.cta.card_1_c')
+                            <div class="flex items-center justify-between rounded-lg border border-gray-100 px-2.5 py-2">
+                                <span class="text-xs font-bold text-gray-500">@lang('core::app.cta.card_1_c')</span>
+                                <span class="rounded-md bg-green-500 px-2 py-0.5 text-[10px] font-black text-white">LIVE</span>
                             </div>
                         </div>
                     </div>
@@ -52,22 +62,22 @@
 
                 {{-- Card 2 --}}
                 <div class="bg-white rounded-2xl shadow-xl overflow-hidden w-56 mt-10">
-                    <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&q=80" class="w-full h-32 object-cover" alt=""/>
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&q=80" class="w-full h-32 object-cover" alt=""/>
                     <div class="p-4">
                         <p class="font-black text-gray-800 text-sm mb-1">@lang('core::app.cta.card_2_question')</p>
                         <p class="text-gray-500 text-xs mb-3 leading-relaxed">@lang('core::app.cta.card_2_text')</p>
-                        <div class="space-y-1.5">
-                            <div class="flex items-center gap-2 text-xs text-gray-400 px-2 py-1">
-                                <div class="w-4 h-4 border border-gray-300 rounded-full shrink-0"></div>
-                                @lang('core::app.cta.card_2_a')
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between rounded-lg bg-blue-50 px-2.5 py-2">
+                                <span class="text-xs font-black text-blue-700">@lang('core::app.cta.card_2_a')</span>
+                                <span class="text-xs font-black text-blue-600">78%</span>
                             </div>
-                            <div class="flex items-center gap-2 text-xs text-blue-600 font-bold bg-blue-50 rounded-lg px-2 py-1.5">
-                                <div class="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center shrink-0"><svg width="8" height="8" fill="none" viewBox="0 0 8 8"><path d="M1.5 4l1.5 1.5 3.5-3" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-                                @lang('core::app.cta.card_2_b')
+                            <div class="flex items-center justify-between rounded-lg bg-green-50 px-2.5 py-2">
+                                <span class="text-xs font-black text-green-700">@lang('core::app.cta.card_2_b')</span>
+                                <span class="text-xs font-black text-green-600">8.6</span>
                             </div>
-                            <div class="flex items-center gap-2 text-xs text-gray-400 px-2 py-1">
-                                <div class="w-4 h-4 border border-gray-300 rounded-full shrink-0"></div>
-                                @lang('core::app.cta.card_2_c')
+                            <div class="flex items-center justify-between rounded-lg bg-amber-50 px-2.5 py-2">
+                                <span class="text-xs font-black text-amber-700">@lang('core::app.cta.card_2_c')</span>
+                                <span class="text-xs font-black text-amber-600">14</span>
                             </div>
                         </div>
                     </div>

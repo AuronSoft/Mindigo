@@ -31,6 +31,20 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * Homepage CTA and footer use LMS positioning
+     */
+    public function test_homepage_cta_and_footer_use_lms_positioning(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('LMS', false)
+            ->assertSee('Khởi tạo LMS', false)
+            ->assertSee('Quản lý lớp học, khóa học', false)
+            ->assertDontSee('Tạo nhanh đề thi trắc nghiệm', false)
+            ->assertDontSee('Nền tảng thi trắc nghiệm online tốt nhất', false);
+    }
+
+    /**
      * News page accessible
      */
     public function test_news_page_is_accessible(): void
