@@ -1,7 +1,7 @@
 <?php
 
 return [
-    // ── General ────────────────────────────────────────────────────────
+    // ── General 
     'area'     => 'Learning',
     'title'    => 'Exams & Quizzes',
     'subtitle' => 'View and take exams assigned to your classes.',
@@ -9,7 +9,7 @@ return [
     'points'   => 'pts',
     'cancel'   => 'Cancel',
 
-    // ── Index page ─────────────────────────────────────────────────────
+    // ── Index page
     'my_exams'          => 'My Exams',
     'ongoing_exams'     => 'Open Now',
     'upcoming_exams'    => 'Upcoming',
@@ -45,7 +45,7 @@ return [
     'view_result'     => 'View Result',
     'score'           => 'score',
 
-    // ── Take page ──────────────────────────────────────────────────────
+    // ── Take page 
     'question_of'         => 'Q :current / :total',
     'time_remaining'      => 'Time Remaining',
     'navigator_label'     => 'Questions',
@@ -58,7 +58,7 @@ return [
     'unanswered_warning'  => ':count question(s) left unanswered.',
     'tab_leave_label'     => 'Tab switches:',
 
-    // ── Errors / guards ────────────────────────────────────────────────
+    // ── Errors / guards
     'not_enrolled'         => 'You are not enrolled in the classroom for this exam.',
     'exam_not_available'   => 'This exam is not available right now.',
     'max_attempts_reached' => 'You have used all your allowed attempts.',
@@ -67,7 +67,7 @@ return [
     'submitted_success'    => 'Your exam was submitted successfully!',
     'time_expired'         => 'Time is up — your exam was auto-submitted.',
 
-    // ── Result page ────────────────────────────────────────────────────
+    // ── Result page 
     'your_result'        => 'Exam Result',
     'result_title'       => 'Exam Result',
     'pending_review'     => 'Awaiting Grading',

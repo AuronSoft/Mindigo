@@ -1,7 +1,7 @@
 <?php
 
 return [
-    // ── Chung ──────────────────────────────────────────────────────────
+    // ── Chung 
     'area'     => 'Học tập',
     'title'    => 'Đề thi & Kiểm tra',
     'subtitle' => 'Xem và làm các đề thi được giao trong lớp của bạn.',
@@ -9,7 +9,7 @@ return [
     'points'   => 'điểm',
     'cancel'   => 'Huỷ',
 
-    // ── Index page ─────────────────────────────────────────────────────
+    // ── Index page
     'my_exams'         => 'Đề thi của tôi',
     'ongoing_exams'    => 'Đang mở',
     'upcoming_exams'   => 'Sắp diễn ra',
@@ -45,7 +45,7 @@ return [
     'view_result'    => 'Xem kết quả',
     'score'          => 'điểm',
 
-    // ── Take page ──────────────────────────────────────────────────────
+    // ── Take page 
     'question_of'        => 'Câu :current / :total',
     'time_remaining'     => 'Thời gian còn lại',
     'navigator_label'    => 'Danh sách câu',
@@ -58,7 +58,7 @@ return [
     'unanswered_warning' => 'Còn :count câu chưa trả lời.',
     'tab_leave_label'    => 'Rời tab:',
 
-    // ── Errors / guards ────────────────────────────────────────────────
+    // ── Errors / guards
     'not_enrolled'         => 'Bạn không thuộc lớp có đề thi này.',
     'exam_not_available'   => 'Đề thi chưa mở hoặc đã kết thúc.',
     'max_attempts_reached' => 'Bạn đã sử dụng hết số lần làm bài.',
@@ -67,7 +67,7 @@ return [
     'submitted_success'    => 'Nộp bài thành công!',
     'time_expired'         => 'Hết thời gian — bài thi đã được tự động nộp.',
 
-    // ── Result page ────────────────────────────────────────────────────
+    // ── Result page 
     'your_result'       => 'Kết quả bài thi',
     'result_title'      => 'Kết quả bài thi',
     'pending_review'    => 'Đang chờ chấm điểm',

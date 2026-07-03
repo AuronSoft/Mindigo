@@ -18,7 +18,7 @@ class Exam extends Model
     {
         return ExamFactory::new();
     }
-
+// abcd xyz
     public const STATUSES = ['draft', 'reviewing', 'published', 'closed'];
 
     protected $fillable = [
