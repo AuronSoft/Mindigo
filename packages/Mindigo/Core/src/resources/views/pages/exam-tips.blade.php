@@ -2,7 +2,6 @@
 
 @php
     $categories = trans('core::exam_tips.categories');
-    $posts = trans('core::exam_tips.posts');
     $featuredPosts = collect($posts)->where('featured', true);
     $regularPosts = collect($posts)->where('featured', false);
     $categoryClasses = collect($categories)->keyBy('id');
@@ -13,7 +12,7 @@
 @endphp
 
 @section('content')
-<div class="min-h-screen bg-white text-gray-900" x-data="{ open: false, shareOpen: false, shared: false }" @keydown.escape.window="shareOpen = false" style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+<div class="min-h-screen bg-white text-gray-900" x-data="{ open: false, shareOpen: @json($errors->any() || session()->has('exam_tip_shared')), shared: @json(session()->has('exam_tip_shared')) }" @keydown.escape.window="shareOpen = false" style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
     <style>
         .exam-tip-clamp-2 {
             display: -webkit-box;
@@ -159,24 +158,41 @@
                     </button>
                 </div>
 
-                <form class="space-y-4 px-5 py-5" @submit.prevent="shared = true">
+                <form method="POST" action="{{ route('exam-tips.store', [], false) }}" class="space-y-4 px-5 py-5">
+                    @csrf
                     <label class="block">
                         <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">@lang('core::exam_tips.share_modal.post_title')</span>
-                        <input type="text" required maxlength="120" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100" placeholder="@lang('core::exam_tips.share_modal.post_title_placeholder')">
+                        <input type="text" name="title" value="{{ old('title') }}" required maxlength="120" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100" placeholder="@lang('core::exam_tips.share_modal.post_title_placeholder')">
+                        @error('title')
+                            <span class="mt-1.5 block text-xs font-bold text-rose-600">{{ $message }}</span>
+                        @enderror
                     </label>
                     <label class="block">
                         <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">@lang('core::exam_tips.share_modal.category')</span>
-                        <select required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100">
+                        <select name="category" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100">
                             @foreach($categories as $category)
                                 @if($category['id'] !== 'all')
-                                    <option value="{{ $category['id'] }}">{{ $category['label'] }}</option>
+                                    <option value="{{ $category['id'] }}" @selected(old('category') === $category['id'])>{{ $category['label'] }}</option>
                                 @endif
                             @endforeach
                         </select>
+                        @error('category')
+                            <span class="mt-1.5 block text-xs font-bold text-rose-600">{{ $message }}</span>
+                        @enderror
                     </label>
                     <label class="block">
                         <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">@lang('core::exam_tips.share_modal.content')</span>
-                        <textarea required rows="5" maxlength="2000" class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold leading-6 text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100" placeholder="@lang('core::exam_tips.share_modal.content_placeholder')"></textarea>
+                        <textarea name="content" required rows="5" maxlength="5000" class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold leading-6 text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100" placeholder="@lang('core::exam_tips.share_modal.content_placeholder')">{{ old('content') }}</textarea>
+                        @error('content')
+                            <span class="mt-1.5 block text-xs font-bold text-rose-600">{{ $message }}</span>
+                        @enderror
+                    </label>
+                    <label class="block">
+                        <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">@lang('core::exam_tips.share_modal.tags')</span>
+                        <input type="text" name="tags" value="{{ old('tags') }}" maxlength="255" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100" placeholder="@lang('core::exam_tips.share_modal.tags_placeholder')">
+                        @error('tags')
+                            <span class="mt-1.5 block text-xs font-bold text-rose-600">{{ $message }}</span>
+                        @enderror
                     </label>
                     <div x-show="shared" x-cloak class="rounded-xl border border-green-100 bg-green-50 px-4 py-3 text-sm font-bold text-green-700">
                         @lang('core::exam_tips.share_modal.success')
@@ -214,7 +230,7 @@
             </div>
 
             <div class="grid grid-cols-3 gap-4 sm:gap-6">
-                @foreach(trans('core::exam_tips.stats') as $stat)
+                @foreach($stats as $stat)
                     <div class="text-center">
                         <div class="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-white/10">
                             <svg class="h-5 w-5 text-green-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -374,9 +390,11 @@
                         <h3 class="font-black">@lang('core::exam_tips.sidebar.trending_title')</h3>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        @foreach(trans('core::exam_tips.trending_tags') as $tag)
+                        @forelse($trendingTags as $tag)
                             <button type="button" data-exam-tip-tag="{{ $tag }}" class="rounded-xl bg-gray-100 px-3 py-2 text-xs font-black text-gray-500 transition-all hover:bg-green-50 hover:text-green-600">#{{ $tag }}</button>
-                        @endforeach
+                        @empty
+                            <p class="text-sm font-semibold text-gray-400">@lang('core::exam_tips.sidebar.empty_topics')</p>
+                        @endforelse
                     </div>
                 </div>
 
@@ -386,7 +404,7 @@
                         <h3 class="font-black">@lang('core::exam_tips.sidebar.contributors_title')</h3>
                     </div>
                     <div class="space-y-3">
-                        @foreach(trans('core::exam_tips.contributors') as $index => $user)
+                        @forelse($contributors as $index => $user)
                             <div class="flex items-center gap-3 rounded-xl p-2 transition hover:bg-gray-100">
                                 <span class="w-4 text-center text-xs font-black text-gray-500">{{ $index + 1 }}</span>
                                 <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black text-white {{ $user['class'] }}">{{ $user['avatar'] }}</span>
@@ -398,7 +416,9 @@
                                     <svg class="h-4 w-4 shrink-0 text-green-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 2.94 6.03 6.66.95-4.82 4.69 1.14 6.63L12 17.18 6.08 20.3l1.14-6.63L2.4 8.98l6.66-.95L12 2Z" /></svg>
                                 @endif
                             </div>
-                        @endforeach
+                        @empty
+                            <p class="rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-400">@lang('core::exam_tips.sidebar.empty_contributors')</p>
+                        @endforelse
                     </div>
                 </div>
 
@@ -408,7 +428,7 @@
                         <h3 class="font-black">@lang('core::exam_tips.sidebar.exams_title')</h3>
                     </div>
                     <div class="space-y-3">
-                        @foreach(trans('core::exam_tips.exams') as $exam)
+                        @forelse($upcomingExams as $exam)
                             <div class="flex items-center gap-3">
                                 <span class="h-2 w-2 shrink-0 rounded-full {{ $exam['class'] }}"></span>
                                 <span class="min-w-0 flex-1">
@@ -417,7 +437,9 @@
                                 </span>
                                 <span class="text-xs font-black text-green-600">{{ $exam['days'] }} @lang('core::exam_tips.sidebar.days_suffix')</span>
                             </div>
-                        @endforeach
+                        @empty
+                            <p class="rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-400">@lang('core::exam_tips.sidebar.empty_exams')</p>
+                        @endforelse
                     </div>
                 </div>
             </aside>
@@ -529,6 +551,9 @@
                 }
             });
         });
+
+        setButtonState();
+        applyFilter();
     })();
 </script>
 @endsection

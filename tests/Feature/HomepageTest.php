@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\Auth\Models\User;
+use Mindigo\Core\Models\ExamTipPost;
 
 class HomepageTest extends TestCase
 {
@@ -70,15 +71,51 @@ class HomepageTest extends TestCase
      */
     public function test_exam_tips_page_is_accessible(): void
     {
+        $user = User::factory()->create(['name' => 'Nguyen Minh Anh']);
+
+        ExamTipPost::create([
+            'user_id' => $user->id,
+            'title' => 'Lich hoc that tu cong dong',
+            'category' => 'toan',
+            'excerpt' => 'Mot bai chia se that duoc doc tu database.',
+            'content' => 'Mot bai chia se that duoc doc tu database voi noi dung du dai cho trang cong dong.',
+            'tags' => ['luyen de', 'toan'],
+            'status' => 'published',
+            'published_at' => now(),
+        ]);
+
         $response = $this->get('/exam-tips');
 
         $response->assertOk();
         $response->assertSee('Mindigo', false);
         $response->assertDontSee('Mindigo.vn', false);
         $response->assertSee('data-exam-tip-card', false);
+        $response->assertSee('Lich hoc that tu cong dong', false);
         $response->assertSee('data-exam-tip-share-login', false);
         $response->assertSee('data-exam-tip-login-link', false);
         $response->assertSee('href="/login"', false);
+    }
+
+    /**
+     * Authenticated user can create an exam tip post
+     */
+    public function test_authenticated_user_can_create_exam_tip_post(): void
+    {
+        $user = User::factory()->create(['role' => 'student']);
+
+        $this->actingAs($user)->post('/exam-tips', [
+            'title' => 'Cach on thi tu du lieu that',
+            'category' => 'anh',
+            'content' => 'Day la noi dung chia se kinh nghiem on thi du dai de vuot qua validation cua cong dong.',
+            'tags' => 'IELTS, speaking',
+        ])->assertRedirect('/exam-tips');
+
+        $this->assertDatabaseHas('exam_tip_posts', [
+            'user_id' => $user->id,
+            'title' => 'Cach on thi tu du lieu that',
+            'category' => 'anh',
+            'status' => 'published',
+        ]);
     }
 
     /**
@@ -106,6 +143,19 @@ class HomepageTest extends TestCase
      */
     public function test_exam_tips_page_follows_selected_locale(): void
     {
+        $user = User::factory()->create(['name' => 'Tran Bao Chau']);
+
+        ExamTipPost::create([
+            'user_id' => $user->id,
+            'title' => 'Real IELTS journey',
+            'category' => 'anh',
+            'excerpt' => 'A real post from database for locale rendering.',
+            'content' => 'A real post from database for locale rendering with enough words to be displayed correctly.',
+            'tags' => ['IELTS'],
+            'status' => 'published',
+            'published_at' => now(),
+        ]);
+
         $this->withSession(['locale' => 'en'])->get('/exam-tips')
             ->assertOk()
             ->assertSee('Exam tips', false)
