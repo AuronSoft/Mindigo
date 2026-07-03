@@ -43,6 +43,18 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * Terms page follows selected locale
+     */
+    public function test_terms_page_follows_selected_locale(): void
+    {
+        $this->withSession(['locale' => 'en'])->get('/terms')
+            ->assertOk()
+            ->assertSee('Terms of Use', false)
+            ->assertSee('Table of Contents', false)
+            ->assertDontSee('Điều khoản Sử dụng', false);
+    }
+
+    /**
      * Locale switch updates public pages and login consistently
      */
     public function test_locale_switch_persists_for_homepage_and_login(): void

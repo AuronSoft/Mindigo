@@ -14,7 +14,7 @@ class HomeController extends Controller
     public function terms()
     {
         return view('core::legal.terms', [
-            'title' => 'Điều khoản sử dụng | Mindigo',
+            'title' => __('core::terms.hero.title') . ' | Mindigo',
         ]);
     }
 }
