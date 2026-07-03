@@ -103,6 +103,30 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * AI assistant policy page accessible
+     */
+    public function test_ai_assistant_policy_page_is_accessible(): void
+    {
+        $response = $this->get('/ai-assistant-policy');
+
+        $response->assertOk();
+        $response->assertSee('support@mindigo.vn', false);
+        $response->assertSee('AI', false);
+    }
+
+    /**
+     * AI assistant policy page follows selected locale
+     */
+    public function test_ai_assistant_policy_page_follows_selected_locale(): void
+    {
+        $this->withSession(['locale' => 'en'])->get('/ai-assistant-policy')
+            ->assertOk()
+            ->assertSee('AI Assistant Usage Policy', false)
+            ->assertSee('Academic Integrity', false)
+            ->assertSee('Table of Contents', false);
+    }
+
+    /**
      * Locale switch updates public pages and login consistently
      */
     public function test_locale_switch_persists_for_homepage_and_login(): void

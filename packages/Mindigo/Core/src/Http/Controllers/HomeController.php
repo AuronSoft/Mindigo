@@ -31,4 +31,11 @@ class HomeController extends Controller
             'title' => __('core::technical_support.hero.title') . ' | Mindigo',
         ]);
     }
+
+    public function aiAssistantPolicy()
+    {
+        return view('core::legal.ai-assistant-policy', [
+            'title' => __('core::ai_policy.hero.title') . ' | Mindigo',
+        ]);
+    }
 }
