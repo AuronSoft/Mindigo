@@ -134,7 +134,11 @@
                 <p class="text-white font-black text-sm mb-5">@lang('core::app.footer.col_resource')</p>
                 <div class="flex flex-col gap-3">
                     @foreach(['footer.resource_1', 'footer.resource_2', 'footer.resource_3', 'footer.resource_4', 'footer.resource_5', 'footer.resource_6'] as $item)
-                    <a href="{{ $item === 'footer.resource_1' ? route('news.index', [], false) : '#' }}" class="text-gray-400 text-sm hover:text-green-400 transition">@lang('core::app.' . $item)</a>
+                    <a href="{{ match ($item) {
+                        'footer.resource_1' => route('news.index', [], false),
+                        'footer.resource_2' => route('exam-tips', [], false),
+                        default => '#',
+                    } }}" class="text-gray-400 text-sm hover:text-green-400 transition">@lang('core::app.' . $item)</a>
                     @endforeach
                 </div>
             </div>

@@ -45,4 +45,11 @@ class HomeController extends Controller
             'title' => __('core::refund_policy.hero.title') . ' | Mindigo',
         ]);
     }
+
+    public function examTips()
+    {
+        return view('core::pages.exam-tips', [
+            'title' => __('core::exam_tips.meta.title') . ' | Mindigo',
+        ]);
+    }
 }

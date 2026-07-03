@@ -52,6 +52,44 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * Exam tips page accessible
+     */
+    public function test_exam_tips_page_is_accessible(): void
+    {
+        $response = $this->get('/exam-tips');
+
+        $response->assertOk();
+        $response->assertSee('Mindigo', false);
+        $response->assertDontSee('Mindigo.vn', false);
+        $response->assertSee('data-exam-tip-card', false);
+        $response->assertSee('href="/login"', false);
+    }
+
+    /**
+     * Exam tips page follows selected locale
+     */
+    public function test_exam_tips_page_follows_selected_locale(): void
+    {
+        $this->withSession(['locale' => 'en'])->get('/exam-tips')
+            ->assertOk()
+            ->assertSee('Exam tips', false)
+            ->assertSee('Featured today', false)
+            ->assertSee('from people who have been there', false)
+            ->assertSee('Sign in to comment', false)
+            ->assertSee('Sign in to share a post', false);
+    }
+
+    /**
+     * Footer exam tips resource points to exam tips route
+     */
+    public function test_footer_exam_tips_resource_points_to_exam_tips_route(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('href="/exam-tips"', false);
+    }
+
+    /**
      * Terms page accessible
      */
     public function test_terms_page_is_accessible(): void
