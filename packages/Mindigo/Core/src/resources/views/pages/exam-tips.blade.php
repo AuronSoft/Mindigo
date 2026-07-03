@@ -98,8 +98,8 @@
     </header>
 
     <section class="relative overflow-hidden bg-green-500 text-white">
-        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1800&q=80" alt="" class="absolute inset-0 h-full w-full scale-105 object-cover opacity-25 blur-sm">
-        <div class="absolute inset-0 bg-gradient-to-r from-green-600 via-green-500/95 to-green-500/85"></div>
+        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1800&q=80" alt="" class="absolute inset-0 h-full w-full scale-105 object-cover opacity-45">
+        <div class="absolute inset-0 bg-gradient-to-r from-green-700/95 via-green-500/80 to-green-500/55"></div>
         <div class="absolute -bottom-16 right-0 h-48 w-2/3 rounded-tl-[80px] bg-white/10 blur-2xl"></div>
         <div class="relative mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between md:py-14">
             <div class="max-w-2xl drop-shadow-sm">
@@ -157,19 +157,19 @@
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         @foreach($featuredPosts as $post)
                             @php $badgeClass = $categoryClasses[$post['category']]['class'] ?? 'bg-gray-100 text-gray-700'; @endphp
-                            <article id="exam-tip-post-{{ $post['id'] }}" data-exam-tip-card data-featured="1" data-category="{{ $post['category'] }}" data-search="{{ e($post['title'] . ' ' . $post['excerpt'] . ' ' . implode(' ', $post['tags']) . ' ' . $post['category_label']) }}" class="group rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:border-green-200 hover:shadow-md">
+                            <article id="exam-tip-post-{{ $post['id'] }}" data-exam-tip-card data-featured="1" data-category="{{ $post['category'] }}" data-search="{{ e($post['title'] . ' ' . $post['excerpt'] . ' ' . implode(' ', $post['tags']) . ' ' . $post['category_label']) }}" class="group flex h-full min-h-[276px] flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-green-200 hover:shadow-md">
                                 <div class="mb-3 flex items-start justify-between gap-3">
                                     <span class="inline-flex rounded-md px-2 py-0.5 text-xs font-black {{ $badgeClass }}">{{ $post['category_label'] }}</span>
                                     <span class="shrink-0 text-xs font-bold text-gray-500">{{ $post['read_time'] }}</span>
                                 </div>
-                                <h3 class="mb-2 text-base font-black leading-snug text-gray-900 transition group-hover:text-green-600">{{ $post['title'] }}</h3>
-                                <p class="exam-tip-clamp-3 mb-4 text-sm font-semibold leading-6 text-gray-500">{{ $post['excerpt'] }}</p>
-                                <div class="mb-4 flex flex-wrap gap-1.5">
+                                <h3 class="exam-tip-clamp-2 mb-3 min-h-[48px] text-base font-black leading-snug text-gray-900 transition group-hover:text-green-600">{{ $post['title'] }}</h3>
+                                <p class="exam-tip-clamp-3 mb-4 min-h-[72px] text-sm font-semibold leading-6 text-gray-500">{{ $post['excerpt'] }}</p>
+                                <div class="mb-4 flex min-h-[28px] flex-wrap gap-1.5">
                                     @foreach($post['tags'] as $tag)
                                         <button type="button" data-exam-tip-tag="{{ $tag }}" class="rounded-lg bg-green-50 px-2 py-1 text-xs font-black text-green-700 transition hover:bg-green-100">#{{ $tag }}</button>
                                     @endforeach
                                 </div>
-                                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div class="mt-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-black text-white {{ $post['avatar_class'] }}">{{ $post['avatar'] }}</span>
                                         <span>
@@ -191,11 +191,6 @@
                                             {{ $post['comments'] }}
                                         </a>
                                     </div>
-                                </div>
-                                <div class="mt-4 flex flex-wrap items-center gap-2 border-t border-gray-100 pt-4">
-                                    <a href="#exam-tip-post-{{ $post['id'] }}" class="inline-flex items-center gap-1.5 rounded-xl border-2 border-green-200 bg-white px-4 py-2 text-xs font-black text-green-600 no-underline transition-all hover:border-green-400 hover:bg-green-50">
-                                        @lang('core::exam_tips.actions.read')
-                                    </a>
                                 </div>
                             </article>
                         @endforeach
