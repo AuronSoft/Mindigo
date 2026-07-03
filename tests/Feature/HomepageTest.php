@@ -79,6 +79,30 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * Technical support policy page accessible
+     */
+    public function test_technical_support_policy_page_is_accessible(): void
+    {
+        $response = $this->get('/technical-support-policy');
+
+        $response->assertOk();
+        $response->assertSee('support@mindigo.vn', false);
+        $response->assertSee('Mindigo ID', false);
+    }
+
+    /**
+     * Technical support policy page follows selected locale
+     */
+    public function test_technical_support_policy_page_follows_selected_locale(): void
+    {
+        $this->withSession(['locale' => 'en'])->get('/technical-support-policy')
+            ->assertOk()
+            ->assertSee('Technical Support Terms', false)
+            ->assertSee('Priority Levels and Response Times', false)
+            ->assertSee('Table of Contents', false);
+    }
+
+    /**
      * Locale switch updates public pages and login consistently
      */
     public function test_locale_switch_persists_for_homepage_and_login(): void

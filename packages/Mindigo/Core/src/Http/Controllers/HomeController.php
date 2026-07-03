@@ -24,4 +24,11 @@ class HomeController extends Controller
             'title' => __('core::privacy.hero.title') . ' | Mindigo',
         ]);
     }
+
+    public function technicalSupportPolicy()
+    {
+        return view('core::legal.technical-support', [
+            'title' => __('core::technical_support.hero.title') . ' | Mindigo',
+        ]);
+    }
 }
