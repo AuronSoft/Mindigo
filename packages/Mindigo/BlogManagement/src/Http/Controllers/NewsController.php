@@ -18,10 +18,10 @@ class NewsController extends Controller
             $query->where('source', $source);
         }
 
-        $featured = (clone $query)->first();
-        $articles  = (clone $query)->skip(1)->take(11)->get();
+        $newsfeatured = (clone $query)->first();
+        $newsArticles  = (clone $query)->skip(1)->take(11)->get();
 
-        return view('core::pages.news', compact('featured', 'articles', 'source'));
+        return view('blog::news-page', compact('newsfeatured', 'newsArticles', 'source'));
     }
 
     public function partial(Request $request)

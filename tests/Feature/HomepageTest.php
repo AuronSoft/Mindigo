@@ -31,6 +31,27 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * News page accessible
+     */
+    public function test_news_page_is_accessible(): void
+    {
+        $response = $this->get('/news');
+
+        $response->assertOk();
+        $response->assertSee('id="news-articles"', false);
+    }
+
+    /**
+     * Footer news resource points to news route
+     */
+    public function test_footer_news_resource_points_to_news_route(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('href="/news"', false);
+    }
+
+    /**
      * Terms page accessible
      */
     public function test_terms_page_is_accessible(): void
