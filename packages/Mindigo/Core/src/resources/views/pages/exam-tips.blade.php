@@ -6,10 +6,14 @@
     $featuredPosts = collect($posts)->where('featured', true);
     $regularPosts = collect($posts)->where('featured', false);
     $categoryClasses = collect($categories)->keyBy('id');
+    $examTipUser = auth()->user();
+    $examTipUserLabel = $examTipUser ? ($examTipUser->name ?: $examTipUser->email) : null;
+    $examTipUserInitial = $examTipUserLabel ? \Illuminate\Support\Str::of($examTipUserLabel)->trim()->substr(0, 1)->upper() : 'U';
+    $examTipAccountUrl = \Illuminate\Support\Facades\Route::has('dashboard') ? route('dashboard', [], false) : url('/dashboard');
 @endphp
 
 @section('content')
-<div class="min-h-screen bg-white text-gray-900" style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+<div class="min-h-screen bg-white text-gray-900" x-data="{ open: false, shareOpen: false, shared: false }" @keydown.escape.window="shareOpen = false" style="font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
     <style>
         .exam-tip-clamp-2 {
             display: -webkit-box;
@@ -28,7 +32,7 @@
         }
     </style>
 
-    <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur" x-data="{ open: false }">
+    <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur">
         <div class="mx-auto max-w-7xl px-4 sm:px-6">
             <div class="flex h-16 items-center justify-between gap-4">
                 <a href="{{ route('home', [], false) }}" class="flex items-center gap-3 no-underline">
@@ -64,12 +68,35 @@
                         <a href="{{ route('lang.switch', ['locale' => 'vi'], false) }}" class="rounded-lg px-3 py-1.5 text-xs font-black transition {{ app()->getLocale() === 'vi' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-700' }}">VI</a>
                         <a href="{{ route('lang.switch', ['locale' => 'en'], false) }}" class="rounded-lg px-3 py-1.5 text-xs font-black transition {{ app()->getLocale() === 'en' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-700' }}">EN</a>
                     </div>
-                    <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_share')" class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-5 py-2.5 text-sm font-black text-white shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
-                        </svg>
-                        @lang('core::exam_tips.nav.share')
-                    </a>
+                    @auth
+                        <button type="button" data-exam-tip-share-action @click="shareOpen = true; shared = false" class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-5 py-2.5 text-sm font-black text-white shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
+                            </svg>
+                            @lang('core::exam_tips.nav.share')
+                        </button>
+                    @else
+                        <a href="{{ route('login', [], false) }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-5 py-2.5 text-sm font-black text-white shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
+                            </svg>
+                            @lang('core::exam_tips.nav.share')
+                        </a>
+                    @endauth
+                    @auth
+                        <a href="{{ $examTipAccountUrl }}" data-exam-tip-user-menu title="{{ $examTipUserLabel }}" class="inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-green-100 bg-green-50 text-sm font-black text-green-700 no-underline shadow-sm transition hover:border-green-200 hover:bg-green-100">
+                            @if($examTipUser->avatar)
+                                <img src="{{ $examTipUser->avatar_url }}" alt="{{ $examTipUserLabel }}" class="h-full w-full object-cover">
+                            @else
+                                <span aria-hidden="true">{{ $examTipUserInitial }}</span>
+                            @endif
+                            <span class="sr-only">{{ $examTipUserLabel }}</span>
+                        </a>
+                    @else
+                        <a href="{{ route('login', [], false) }}" data-exam-tip-login-link class="inline-flex h-11 items-center justify-center rounded-xl border border-green-200 bg-white px-4 text-sm font-black text-green-700 no-underline shadow-sm transition hover:border-green-300 hover:bg-green-50">
+                            @lang('core::exam_tips.nav.login')
+                        </a>
+                    @endauth
                 </div>
 
                 <button type="button" class="rounded-lg p-2 text-gray-500 md:hidden" @click="open = ! open" aria-label="Menu">
@@ -90,12 +117,82 @@
                     </svg>
                     <input type="search" data-exam-tip-search placeholder="@lang('core::exam_tips.nav.search_placeholder')" class="w-full rounded-xl border border-gray-200 bg-gray-100 py-2.5 pl-10 pr-4 text-sm font-semibold outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100">
                 </label>
-                <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_share')" class="flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-sm font-black text-white no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
-                    @lang('core::exam_tips.nav.share')
-                </a>
+                @auth
+                    <button type="button" data-exam-tip-share-action @click="shareOpen = true; shared = false; open = false" class="flex w-full items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-sm font-black text-white no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                        @lang('core::exam_tips.nav.share')
+                    </button>
+                @else
+                    <a href="{{ route('login', [], false) }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-sm font-black text-white no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                        @lang('core::exam_tips.nav.share')
+                    </a>
+                @endauth
+                @auth
+                    <a href="{{ $examTipAccountUrl }}" data-exam-tip-user-menu class="flex items-center gap-3 rounded-xl border border-green-100 bg-green-50 px-4 py-2.5 text-sm font-black text-green-700 no-underline transition hover:bg-green-100">
+                        <span class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-green-600 text-xs text-white">
+                            @if($examTipUser->avatar)
+                                <img src="{{ $examTipUser->avatar_url }}" alt="{{ $examTipUserLabel }}" class="h-full w-full object-cover">
+                            @else
+                                <span aria-hidden="true">{{ $examTipUserInitial }}</span>
+                            @endif
+                        </span>
+                        <span class="min-w-0 truncate">{{ $examTipUserLabel }}</span>
+                    </a>
+                @else
+                    <a href="{{ route('login', [], false) }}" data-exam-tip-login-link class="flex items-center justify-center rounded-xl border border-green-200 bg-white px-4 py-2.5 text-sm font-black text-green-700 no-underline shadow-sm transition hover:border-green-300 hover:bg-green-50">
+                        @lang('core::exam_tips.nav.login')
+                    </a>
+                @endauth
             </div>
         </div>
     </header>
+
+    @auth
+        <div x-show="shareOpen" x-cloak class="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/55 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="exam-tip-share-title">
+            <div class="w-full max-w-xl overflow-hidden rounded-2xl bg-white shadow-2xl" @click.outside="shareOpen = false">
+                <div class="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-[0.2em] text-green-600">@lang('core::exam_tips.share_modal.eyebrow')</p>
+                        <h2 id="exam-tip-share-title" class="mt-1 text-xl font-black text-slate-950">@lang('core::exam_tips.share_modal.title')</h2>
+                    </div>
+                    <button type="button" @click="shareOpen = false" class="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700" aria-label="@lang('core::exam_tips.share_modal.close')">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6 6 18" /></svg>
+                    </button>
+                </div>
+
+                <form class="space-y-4 px-5 py-5" @submit.prevent="shared = true">
+                    <label class="block">
+                        <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">@lang('core::exam_tips.share_modal.post_title')</span>
+                        <input type="text" required maxlength="120" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100" placeholder="@lang('core::exam_tips.share_modal.post_title_placeholder')">
+                    </label>
+                    <label class="block">
+                        <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">@lang('core::exam_tips.share_modal.category')</span>
+                        <select required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100">
+                            @foreach($categories as $category)
+                                @if($category['id'] !== 'all')
+                                    <option value="{{ $category['id'] }}">{{ $category['label'] }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </label>
+                    <label class="block">
+                        <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">@lang('core::exam_tips.share_modal.content')</span>
+                        <textarea required rows="5" maxlength="2000" class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold leading-6 text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100" placeholder="@lang('core::exam_tips.share_modal.content_placeholder')"></textarea>
+                    </label>
+                    <div x-show="shared" x-cloak class="rounded-xl border border-green-100 bg-green-50 px-4 py-3 text-sm font-bold text-green-700">
+                        @lang('core::exam_tips.share_modal.success')
+                    </div>
+                    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                        <button type="button" @click="shareOpen = false" class="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-600 transition hover:bg-slate-50">
+                            @lang('core::exam_tips.share_modal.cancel')
+                        </button>
+                        <button type="submit" class="rounded-xl bg-green-500 px-5 py-3 text-sm font-black text-white shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                            @lang('core::exam_tips.share_modal.submit')
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endauth
 
     <section class="relative overflow-hidden bg-green-500 text-white">
         <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1800&q=80" alt="" class="absolute inset-0 h-full w-full scale-105 object-cover opacity-45">
@@ -260,9 +357,15 @@
                 <div class="rounded-2xl bg-gradient-to-br from-green-500 to-green-700 p-5 text-white">
                     <h3 class="mb-1 text-lg font-black">@lang('core::exam_tips.sidebar.cta_title')</h3>
                     <p class="mb-4 text-sm font-semibold leading-6 text-white/75">@lang('core::exam_tips.sidebar.cta_text')</p>
-                    <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_share')" class="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-black text-green-700 no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-50 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
-                        @lang('core::exam_tips.sidebar.cta_button')
-                    </a>
+                    @auth
+                        <button type="button" data-exam-tip-share-action @click="shareOpen = true; shared = false" class="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-black text-green-700 no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-50 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                            @lang('core::exam_tips.sidebar.cta_button')
+                        </button>
+                    @else
+                        <a href="{{ route('login', [], false) }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-black text-green-700 no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-50 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                            @lang('core::exam_tips.sidebar.cta_button')
+                        </a>
+                    @endauth
                 </div>
 
                 <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">

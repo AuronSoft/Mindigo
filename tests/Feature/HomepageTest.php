@@ -76,7 +76,29 @@ class HomepageTest extends TestCase
         $response->assertSee('Mindigo', false);
         $response->assertDontSee('Mindigo.vn', false);
         $response->assertSee('data-exam-tip-card', false);
+        $response->assertSee('data-exam-tip-share-login', false);
+        $response->assertSee('data-exam-tip-login-link', false);
         $response->assertSee('href="/login"', false);
+    }
+
+    /**
+     * Exam tips header shows the authenticated user indicator
+     */
+    public function test_exam_tips_header_shows_user_indicator_when_authenticated(): void
+    {
+        $user = User::factory()->create([
+            'name' => 'Nguyen Minh Anh',
+            'role' => 'student',
+        ]);
+
+        $this->actingAs($user)->get('/exam-tips')
+            ->assertOk()
+            ->assertSee('data-exam-tip-share-action', false)
+            ->assertSee('data-exam-tip-user-menu', false)
+            ->assertSee('Nguyen Minh Anh', false)
+            ->assertSee('exam-tip-share-title', false)
+            ->assertDontSee('data-exam-tip-share-login', false)
+            ->assertDontSee('data-exam-tip-login-link', false);
     }
 
     /**
