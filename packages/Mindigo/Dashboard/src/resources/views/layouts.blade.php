@@ -440,7 +440,7 @@
                     @endforelse
                 </div>
 
-                <a href="{{ route('notifications.index') }}" class="flex items-center justify-center gap-1.5 border-t border-slate-100 px-4 py-3 text-xs font-black text-green-700 no-underline transition hover:bg-green-50">
+                <a href="{{ Route::has('notifications.index') ? route('notifications.index') : '#' }}" ...>
                     @lang('notification::app.view_all')
                     <x-heroicon-o-arrow-right class="h-3.5 w-3.5" />
                 </a>
