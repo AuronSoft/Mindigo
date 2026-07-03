@@ -425,6 +425,8 @@ docker compose exec app php artisan about
 curl -I http://localhost:8080
 ```
 
+CI/CD verification: update this section when testing the GitHub Actions deployment workflow.
+
 ---
 
 ## Demo Accounts
