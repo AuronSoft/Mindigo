@@ -31,6 +31,18 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * Terms page accessible
+     */
+    public function test_terms_page_is_accessible(): void
+    {
+        $response = $this->get('/terms');
+
+        $response->assertOk();
+        $response->assertSee('Điều khoản Sử dụng', false);
+        $response->assertSee('Google, Apple, Microsoft', false);
+    }
+
+    /**
      * Locale switch updates public pages and login consistently
      */
     public function test_locale_switch_persists_for_homepage_and_login(): void
