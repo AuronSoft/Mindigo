@@ -75,6 +75,7 @@ return [
     'nav_history'      => 'Lịch sử',
     'nav_leaderboard'  => 'Xếp hạng',
     'nav_discussions'  => 'Thảo luận',
+    'nav_exam_tips'    => 'Kinh nghiệm ôn thi',
     'nav_live'         => 'Học trực tuyến',
     'nav_notebook'     => 'Ghi chú',
     'nav_profile'      => 'Hồ sơ',

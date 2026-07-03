@@ -4,7 +4,9 @@ namespace App\Support;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class RoleRedirector
 {
@@ -29,10 +31,47 @@ class RoleRedirector
         return $response;
     }
 
+    public static function redirectAfterLoginFor(?Authenticatable $user): RedirectResponse
+    {
+        self::clearUnsafeIntendedFor($user);
+
+        return redirect()->intended(self::pathFor($user));
+    }
+
+    public static function rememberSafeIntendedFrom(Request $request): void
+    {
+        $redirect = $request->query('redirect');
+
+        if (! is_string($redirect)) {
+            return;
+        }
+
+        $safe = self::safeIntendedUrl($redirect);
+
+        if ($safe) {
+            session()->put('url.intended', $safe);
+        }
+    }
+
     public static function clearUnsafeIntendedFor(?Authenticatable $user): void
     {
-        if (($user?->role ?? null) !== 'admin') {
+        if (($user?->role ?? null) !== 'admin' && ! self::safeIntendedUrl(session('url.intended'))) {
             session()->forget('url.intended');
         }
+    }
+
+    public static function safeIntendedUrl(mixed $url): ?string
+    {
+        if (! is_string($url) || $url === '' || Str::startsWith($url, ['//', '\\\\'])) {
+            return null;
+        }
+
+        $path = parse_url($url, PHP_URL_PATH) ?: '/';
+
+        if ($path === (Route::has('exam-tips') ? route('exam-tips', [], false) : '/exam-tips')) {
+            return $path;
+        }
+
+        return null;
     }
 }

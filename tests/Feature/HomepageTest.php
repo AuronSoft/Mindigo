@@ -93,6 +93,7 @@ class HomepageTest extends TestCase
         $response->assertSee('Lich hoc that tu cong dong', false);
         $response->assertSee('data-exam-tip-share-login', false);
         $response->assertSee('data-exam-tip-login-link', false);
+        $response->assertSee('redirect=%2Fexam-tips', false);
         $response->assertSee('href="/login"', false);
     }
 
@@ -331,6 +332,57 @@ class HomepageTest extends TestCase
             ->get('/');
 
         $response->assertOk();
+    }
+
+    /**
+     * Student sidebar links to exam tips community
+     */
+    public function test_student_sidebar_links_to_exam_tips(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'student',
+        ]);
+
+        $this->actingAs($user)->get('/student')
+            ->assertOk()
+            ->assertSee('/exam-tips', false)
+            ->assertSee('Kinh nghiệm ôn thi', false);
+    }
+
+    /**
+     * Login from exam tip actions returns to exam tips
+     */
+    public function test_login_from_exam_tip_action_returns_to_exam_tips(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'student',
+            'password' => '123456',
+        ]);
+
+        $this->get('/login?redirect=/exam-tips')
+            ->assertOk()
+            ->assertSessionHas('url.intended', '/exam-tips');
+
+        $this->post('/login', [
+            'email' => $user->email,
+            'password' => '123456',
+        ])->assertRedirect('/exam-tips');
+    }
+
+    /**
+     * Normal student login still uses role dashboard
+     */
+    public function test_normal_student_login_still_uses_role_dashboard(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'student',
+            'password' => '123456',
+        ]);
+
+        $this->post('/login', [
+            'email' => $user->email,
+            'password' => '123456',
+        ])->assertRedirect('/student');
     }
 
     /**

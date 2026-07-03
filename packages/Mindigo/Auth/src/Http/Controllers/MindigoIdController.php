@@ -62,9 +62,7 @@ class MindigoIdController extends Controller
             return redirect()->intended('/dashboard');
         }
 
-        RoleRedirector::clearUnsafeIntendedFor($user);
-
-        return RoleRedirector::redirectFor($user);
+        return RoleRedirector::redirectAfterLoginFor($user);
     }
 
     public function verifyOtp(VerifyOtpRequest $request): JsonResponse
@@ -89,9 +87,7 @@ class MindigoIdController extends Controller
 
         $redirect = $user->role === 'admin'
             ? redirect()->intended('/dashboard')->getTargetUrl()
-            : RoleRedirector::pathFor($user);
-
-        RoleRedirector::clearUnsafeIntendedFor($user);
+            : RoleRedirector::redirectAfterLoginFor($user)->getTargetUrl();
 
         return response()->json([
             'ok' => true,

@@ -9,6 +9,7 @@
     $examTipUserLabel = $examTipUser ? ($examTipUser->name ?: $examTipUser->email) : null;
     $examTipUserInitial = $examTipUserLabel ? \Illuminate\Support\Str::of($examTipUserLabel)->trim()->substr(0, 1)->upper() : 'U';
     $examTipAccountUrl = \Illuminate\Support\Facades\Route::has('dashboard') ? route('dashboard', [], false) : url('/dashboard');
+    $examTipLoginReturnUrl = route('login', ['redirect' => route('exam-tips', [], false)], false);
 @endphp
 
 @section('content')
@@ -75,7 +76,7 @@
                             @lang('core::exam_tips.nav.share')
                         </button>
                     @else
-                        <a href="{{ route('login', [], false) }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-5 py-2.5 text-sm font-black text-white shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                        <a href="{{ $examTipLoginReturnUrl }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-5 py-2.5 text-sm font-black text-white shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
                             </svg>
@@ -121,7 +122,7 @@
                         @lang('core::exam_tips.nav.share')
                     </button>
                 @else
-                    <a href="{{ route('login', [], false) }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-sm font-black text-white no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                    <a href="{{ $examTipLoginReturnUrl }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-2.5 text-sm font-black text-white no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-400 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
                         @lang('core::exam_tips.nav.share')
                     </a>
                 @endauth
@@ -299,7 +300,7 @@
                                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>
                                             <span data-exam-tip-like-count>{{ $post['likes'] }}</span>
                                         </button>
-                                        <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_comment')" class="flex items-center gap-1 text-gray-500 no-underline transition hover:text-green-600">
+                                        <a href="{{ $examTipLoginReturnUrl }}" title="@lang('core::exam_tips.actions.login_to_comment')" class="flex items-center gap-1 text-gray-500 no-underline transition hover:text-green-600">
                                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5A8.48 8.48 0 0 1 21 11v.5Z"/></svg>
                                             {{ $post['comments'] }}
                                         </a>
@@ -341,7 +342,7 @@
                                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>
                                             <span data-exam-tip-like-count>{{ $post['likes'] }}</span>
                                         </button>
-                                        <a href="{{ route('login', [], false) }}" title="@lang('core::exam_tips.actions.login_to_comment')" class="flex items-center gap-1 text-gray-500 no-underline transition hover:text-green-600">
+                                        <a href="{{ $examTipLoginReturnUrl }}" title="@lang('core::exam_tips.actions.login_to_comment')" class="flex items-center gap-1 text-gray-500 no-underline transition hover:text-green-600">
                                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5A8.48 8.48 0 0 1 21 11v.5Z"/></svg>
                                             {{ $post['comments'] }}
                                         </a>
@@ -378,7 +379,7 @@
                             @lang('core::exam_tips.sidebar.cta_button')
                         </button>
                     @else
-                        <a href="{{ route('login', [], false) }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-black text-green-700 no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-50 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                        <a href="{{ $examTipLoginReturnUrl }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-black text-green-700 no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-50 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
                             @lang('core::exam_tips.sidebar.cta_button')
                         </a>
                     @endauth

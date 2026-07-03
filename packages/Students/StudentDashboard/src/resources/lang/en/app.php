@@ -75,6 +75,7 @@ return [
     'nav_history'      => 'History',
     'nav_leaderboard'  => 'Leaderboard',
     'nav_discussions'  => 'Discussions',
+    'nav_exam_tips'    => 'Exam tips',
     'nav_live'         => 'Live sessions',
     'nav_notebook'     => 'Notebook',
     'nav_profile'      => 'Profile',

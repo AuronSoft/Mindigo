@@ -14,8 +14,10 @@ class LoginController extends Controller
         private readonly LoginService $service
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
+        RoleRedirector::rememberSafeIntendedFrom($request);
+
         return view('Mindigo-auth::login');
     }
 
@@ -31,9 +33,7 @@ class LoginController extends Controller
             return redirect()->intended('/dashboard')->with('login_success', true);
         }
 
-        RoleRedirector::clearUnsafeIntendedFor($user);
-
-        return RoleRedirector::redirectFor($user)->with('login_success', true);
+        return RoleRedirector::redirectAfterLoginFor($user)->with('login_success', true);
     }
 
     public function destroy(Request $request)

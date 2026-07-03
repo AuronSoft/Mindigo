@@ -117,6 +117,7 @@
                         'icon' => 'heroicon-o-chat-bubble-left-right',
                         'items' => [
                             ['route' => 'student.discussions.index', 'match' => 'student.discussions.*', 'label' => __('student-dashboard::app.nav_discussions'), 'icon' => 'heroicon-o-chat-bubble-left-right'],
+                            ['route' => 'exam-tips', 'match' => 'exam-tips', 'label' => __('student-dashboard::app.nav_exam_tips'), 'icon' => 'heroicon-o-light-bulb'],
                             ['route' => 'student.live-sessions.index', 'match' => 'student.live-sessions.*', 'label' => __('student-dashboard::app.nav_live'), 'icon' => 'heroicon-o-video-camera'],
                         ],
                     ],
