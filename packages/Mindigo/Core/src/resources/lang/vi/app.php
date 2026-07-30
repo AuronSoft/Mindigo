@@ -74,6 +74,32 @@ return [
         'news'        => 'Tin tức',
         'contact'     => 'Liên hệ',
         'login'       => 'Đăng nhập',
+        'mega' => [
+            'eyebrow' => 'Nền tảng quản lý học tập',
+            'title' => 'Toàn bộ tính năng LMS trong một hệ thống',
+            'subtitle' => 'Tạo nội dung, tổ chức đào tạo và theo dõi hiệu quả học tập từ một nơi.',
+            'overview' => 'Tổng quan tính năng',
+            'items' => [
+                ['title' => 'Khóa học & nội dung', 'desc' => 'Tạo bài học, video và quản lý tài liệu đa phương tiện.'],
+                ['title' => 'Quản lý lớp học', 'desc' => 'Tổ chức lớp, học viên, lịch học và thông báo tập trung.'],
+                ['title' => 'Ngân hàng câu hỏi', 'desc' => 'Xây dựng, phân loại và tái sử dụng kho câu hỏi.'],
+                ['title' => 'Thi & luyện tập', 'desc' => 'Tạo đề, trộn câu hỏi, chấm điểm và chống gian lận.'],
+                ['title' => 'Bài tập & đánh giá', 'desc' => 'Giao bài, thu bài và phản hồi kết quả trực tuyến.'],
+                ['title' => 'Tương tác trực tuyến', 'desc' => 'Thảo luận, lớp học trực tiếp và trao đổi hai chiều.'],
+                ['title' => 'Tiến độ & báo cáo', 'desc' => 'Theo dõi kết quả, thời gian học và hiệu suất đào tạo.'],
+                ['title' => 'Người dùng & phân quyền', 'desc' => 'Quản lý tài khoản, vai trò và quyền truy cập an toàn.'],
+                ['title' => 'Lộ trình học tập', 'desc' => 'Thiết kế chương trình học theo cá nhân, vai trò và mục tiêu.'],
+                ['title' => 'Thư viện nội dung', 'desc' => 'Kho học liệu và chương trình đào tạo dùng chung toàn hệ thống.'],
+                ['title' => 'Khung năng lực', 'desc' => 'Xây dựng năng lực theo vị trí và kế hoạch phát triển cá nhân.'],
+                ['title' => 'Gamification', 'desc' => 'Tăng động lực bằng điểm thưởng, huy hiệu và bảng xếp hạng.'],
+            ],
+            'highlights' => [
+                ['title' => 'Trợ lý Gemini', 'desc' => 'Gợi ý nội dung và hỗ trợ tạo đề nhanh hơn.'],
+                ['title' => 'Học mọi thiết bị', 'desc' => 'Tối ưu cho máy tính, máy tính bảng và điện thoại.'],
+                ['title' => 'Bảo mật dữ liệu', 'desc' => 'Xác thực, phân quyền và bảo vệ dữ liệu học tập.'],
+                ['title' => 'Thương hiệu riêng', 'desc' => 'Tùy chỉnh logo, màu sắc và tên miền tổ chức.'],
+            ],
+        ],
     ],
 
     'hero' => [

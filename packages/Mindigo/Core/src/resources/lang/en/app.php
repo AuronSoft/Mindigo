@@ -74,6 +74,32 @@ return [
         'news'        => 'News',
         'contact'     => 'Contact',
         'login'       => 'Login',
+        'mega' => [
+            'eyebrow' => 'Learning management platform',
+            'title' => 'Every LMS feature in one system',
+            'subtitle' => 'Create content, organize training and measure learning outcomes from one place.',
+            'overview' => 'Feature overview',
+            'items' => [
+                ['title' => 'Courses & content', 'desc' => 'Create lessons, video and manage multimedia resources.'],
+                ['title' => 'Classroom management', 'desc' => 'Organize classes, learners, schedules and announcements.'],
+                ['title' => 'Question bank', 'desc' => 'Build, categorize and reuse your question library.'],
+                ['title' => 'Exams & practice', 'desc' => 'Create tests, shuffle questions, grade and deter cheating.'],
+                ['title' => 'Assignments & assessment', 'desc' => 'Assign work, collect submissions and provide feedback.'],
+                ['title' => 'Live interaction', 'desc' => 'Discussions, live classes and two-way communication.'],
+                ['title' => 'Progress & reports', 'desc' => 'Track results, learning time and training performance.'],
+                ['title' => 'Users & permissions', 'desc' => 'Manage accounts, roles and secure access permissions.'],
+                ['title' => 'Learning paths', 'desc' => 'Design programs by learner, role and learning objective.'],
+                ['title' => 'Content library', 'desc' => 'A shared library of learning resources and training programs.'],
+                ['title' => 'Competency framework', 'desc' => 'Map role competencies and personal development plans.'],
+                ['title' => 'Gamification', 'desc' => 'Motivate learning with points, badges and leaderboards.'],
+            ],
+            'highlights' => [
+                ['title' => 'Gemini assistant', 'desc' => 'Suggest content and help generate exams faster.'],
+                ['title' => 'Learn on any device', 'desc' => 'Optimized for desktop, tablet and mobile.'],
+                ['title' => 'Data security', 'desc' => 'Authentication, permissions and learning data protection.'],
+                ['title' => 'Custom branding', 'desc' => 'Customize organization logo, colors and domain.'],
+            ],
+        ],
     ],
 
     'hero' => [
