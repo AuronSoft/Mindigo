@@ -1,5 +1,5 @@
 {{-- Feature section --}}
-<section class="py-20 px-10 bg-green-50 border-t border-green-100">
+<section id="features" class="py-20 px-10 bg-green-50 border-t border-green-100 scroll-mt-20">
     <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
             <p class="text-green-600 font-black text-3xl">@lang('core::app.feature.section_title')</p>
