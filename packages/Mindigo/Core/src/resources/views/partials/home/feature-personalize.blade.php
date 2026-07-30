@@ -5,28 +5,38 @@
 
             {{-- LEFT: Phone mockups --}}
             <div class="flex-1 relative flex items-center justify-center min-h-130">
+                {{-- Soft color accents behind the mockups --}}
+                <div class="absolute left-16 top-16 w-40 h-40 rounded-full bg-blue-100/60 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-12 bottom-16 w-44 h-44 rounded-full bg-purple-100/60 blur-3xl pointer-events-none"></div>
+                <div class="absolute left-1/2 top-1/2 w-56 h-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-50/80 blur-3xl pointer-events-none"></div>
 
                 {{-- Floating label: Dễ sử dụng --}}
-                <div class="absolute left-0 top-1/2 -translate-y-1/2 z-30 bg-white border border-green-100 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 shadow-lg">
-                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="5" r="3" stroke="#16a34a" stroke-width="1.3"/><path d="M2 14c0-3 2.686-5 6-5s6 2 6 5" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg>
+                <div class="absolute left-0 top-1/2 -translate-y-1/2 z-30 bg-white border border-blue-100 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 shadow-lg">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="5" r="3" stroke="#3b82f6" stroke-width="1.3"/><path d="M2 14c0-3 2.686-5 6-5s6 2 6 5" stroke="#3b82f6" stroke-width="1.3" stroke-linecap="round"/></svg>
                     </div>
-                    <span class="text-green-700 font-black text-xs">@lang('core::app.personalization.label_easy')</span>
+                    <span class="text-blue-700 font-black text-xs">@lang('core::app.personalization.label_easy')</span>
                 </div>
 
                 {{-- Floating label: Thân thiện --}}
-                <div class="absolute right-2 top-1/3 z-30 bg-white border border-green-100 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 shadow-lg">
-                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 2C4.686 2 2 4.686 2 8s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z" stroke="#16a34a" stroke-width="1.3"/><path d="M5 9.5s.8 1.5 3 1.5 3-1.5 3-1.5" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/><circle cx="6" cy="7" r="0.8" fill="#16a34a"/><circle cx="10" cy="7" r="0.8" fill="#16a34a"/></svg>
+                <div class="absolute right-2 top-1/3 z-30 bg-white border border-amber-100 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 shadow-lg">
+                    <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 2C4.686 2 2 4.686 2 8s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z" stroke="#f59e0b" stroke-width="1.3"/><path d="M5 9.5s.8 1.5 3 1.5 3-1.5 3-1.5" stroke="#f59e0b" stroke-width="1.3" stroke-linecap="round"/><circle cx="6" cy="7" r="0.8" fill="#f59e0b"/><circle cx="10" cy="7" r="0.8" fill="#f59e0b"/></svg>
                     </div>
-                    <span class="text-green-700 font-black text-xs">@lang('core::app.personalization.label_friendly')</span>
+                    <span class="text-amber-700 font-black text-xs">@lang('core::app.personalization.label_friendly')</span>
                 </div>
 
                 {{-- Decorative --}}
-                <div class="absolute top-8 left-20 w-4 h-4 bg-green-400 rounded-full opacity-50 pointer-events-none" style="animation:floatStar 3s ease-in-out infinite"></div>
-                <div class="absolute bottom-12 left-10 w-3 h-3 bg-green-300 rotate-45 opacity-60 pointer-events-none" style="animation:floatStar 4s .5s ease-in-out infinite"></div>
-                <div class="absolute bottom-6 right-20 text-green-400 text-3xl pointer-events-none" style="animation:floatStar 4s ease-in-out infinite">✦</div>
-                <div class="absolute top-10 right-10 text-green-300 text-xl pointer-events-none" style="animation:floatStar 3s .8s ease-in-out infinite">✦</div>
+                <div class="absolute top-8 left-20 w-4 h-4 bg-blue-400 rounded-full opacity-60 pointer-events-none" style="animation:floatStar 3s ease-in-out infinite"></div>
+                <div class="absolute bottom-12 left-10 w-3 h-3 bg-amber-300 rotate-45 opacity-70 pointer-events-none" style="animation:floatStar 4s .5s ease-in-out infinite"></div>
+                <div class="absolute bottom-6 right-20 text-purple-400 text-3xl pointer-events-none" style="animation:floatStar 4s ease-in-out infinite">✦</div>
+                <div class="absolute top-10 right-10 text-rose-300 text-xl pointer-events-none" style="animation:floatStar 3s .8s ease-in-out infinite">✦</div>
+                <div class="absolute top-28 left-10 z-20 w-9 h-9 bg-purple-100 border border-purple-200 rounded-xl flex items-center justify-center shadow-md -rotate-12 pointer-events-none" style="animation:floatStar 4s .2s ease-in-out infinite">
+                    <svg width="17" height="17" fill="none" viewBox="0 0 17 17"><path d="M3 13V9M8.5 13V4M14 13V7" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="absolute bottom-24 right-6 z-20 w-9 h-9 bg-rose-100 border border-rose-200 rounded-full flex items-center justify-center shadow-md rotate-12 pointer-events-none" style="animation:floatStar 3.5s .6s ease-in-out infinite">
+                    <svg width="17" height="17" fill="none" viewBox="0 0 17 17"><path d="M9.5 2.5L4.5 9h3l-1 5.5 6-7h-3v-5z" fill="#f43f5e"/></svg>
+                </div>
 
                 {{-- Phone 1 (Khám phá) --}}
                 <div class="relative z-10 -mr-7 mt-8" style="transform: rotate(-5deg); width: 195px;">
@@ -63,7 +73,7 @@
                                 </div>
                                 <div class="flex gap-1 mb-2">
                                     <span class="text-white text-[7px] font-black px-2 py-0.5 rounded-full shadow-sm" style="background:#16a34a;">@lang('core::app.personalization.phone1.filter_new')</span>
-                                    <span class="bg-white text-gray-500 text-[7px] px-2 py-0.5 rounded-full border border-gray-200">@lang('core::app.personalization.phone1.filter_hot')</span>
+                                    <span class="bg-amber-50 text-amber-600 text-[7px] px-2 py-0.5 rounded-full border border-amber-200">@lang('core::app.personalization.phone1.filter_hot')</span>
                                 </div>
                                 <div class="bg-white rounded-xl overflow-hidden shadow-md mb-2 border border-green-50">
                                     <div class="h-16 flex items-center justify-center relative overflow-hidden" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);">
@@ -163,11 +173,11 @@
                             <div class="px-2.5 py-2">
                                 <div class="flex gap-1.5 mb-2">
                                     <button class="flex-1 text-white text-[8px] font-black py-1.5 rounded-lg shadow-[0_2px_0_#15803d]" style="background:#16a34a;">@lang('core::app.personalization.phone2.btn_start')</button>
-                                    <button class="w-8 h-7 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                                        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M6 2v8M2 6h8" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg>
+                                    <button class="w-8 h-7 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                                        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M6 2v8M2 6h8" stroke="#3b82f6" stroke-width="1.3" stroke-linecap="round"/></svg>
                                     </button>
-                                    <button class="w-8 h-7 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                                        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0z" stroke="#16a34a" stroke-width="1.2"/></svg>
+                                    <button class="w-8 h-7 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+                                        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0z" stroke="#8b5cf6" stroke-width="1.2"/></svg>
                                     </button>
                                 </div>
                                 <p class="text-[8px] text-gray-500 leading-relaxed mb-2">@lang('core::app.personalization.phone2.desc')</p>

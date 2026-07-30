@@ -53,7 +53,19 @@
             {{-- Floating AI badge --}}
             <div class="absolute -top-4 left-6 bg-white border-2 border-green-200 rounded-2xl px-4 py-2.5 flex items-center gap-3 z-20"
                 style="box-shadow: 0 8px 32px rgba(22,163,74,0.18), 0 2px 8px rgba(0,0,0,0.08); animation: floatBadge 3s ease-in-out infinite;">
-                <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white font-black text-base shadow-inner">AI</div>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border border-purple-100 shadow-inner" aria-label="Gemini">
+                    <svg class="w-7 h-7" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="gemini-logo-gradient" x1="5" y1="27" x2="27" y2="5" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#1A73E8"/>
+                                <stop offset="0.38" stop-color="#7B61FF"/>
+                                <stop offset="0.68" stop-color="#D965C5"/>
+                                <stop offset="1" stop-color="#F7A43A"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M16 3.5C17.25 10.63 21.37 14.75 28.5 16C21.37 17.25 17.25 21.37 16 28.5C14.75 21.37 10.63 17.25 3.5 16C10.63 14.75 14.75 10.63 16 3.5Z" fill="url(#gemini-logo-gradient)"/>
+                    </svg>
+                </div>
                 <div>
                     <p class="text-green-700 font-black text-xs leading-none">@lang('core::app.hero.ai_powered')</p>
                     <p class="text-green-400 text-[10px] font-semibold mt-0.5">@lang('core::app.hero.ai_subtitle')</p>
