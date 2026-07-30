@@ -335,7 +335,7 @@ return [
         'legal_3'     => 'Technical support terms',
         'legal_4'     => 'AI Assistant usage policy',
         'legal_5'     => 'Refund policy',
-        'copyright'   => '© 2026 Auralis. All rights reserved.',
+        'copyright'   => 'Powered by Auralis Education Auralis',
         'built_with'  => 'Built with ❤️ in Vietnam',
     ],
 

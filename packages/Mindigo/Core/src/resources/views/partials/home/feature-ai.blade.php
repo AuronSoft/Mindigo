@@ -59,8 +59,18 @@
                 </div>
 
                 {{-- AI chip --}}
-                <div class="absolute left-0 top-1/3 z-30 w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center shadow-xl" style="animation:floatStar 3s ease-in-out infinite">
-                    <span class="text-white font-black text-lg">AI</span>
+                <div class="absolute left-0 top-1/3 z-30 w-16 h-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border border-purple-100 rounded-2xl flex items-center justify-center shadow-xl" style="animation:floatStar 3s ease-in-out infinite" aria-label="Gemini">
+                    <svg class="w-11 h-11" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="gemini-feature-gradient" x1="5" y1="27" x2="27" y2="5" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#1A73E8"/>
+                                <stop offset="0.38" stop-color="#7B61FF"/>
+                                <stop offset="0.68" stop-color="#D965C5"/>
+                                <stop offset="1" stop-color="#F7A43A"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M16 3.5C17.25 10.63 21.37 14.75 28.5 16C21.37 17.25 17.25 21.37 16 28.5C14.75 21.37 10.63 17.25 3.5 16C10.63 14.75 14.75 10.63 16 3.5Z" fill="url(#gemini-feature-gradient)"/>
+                    </svg>
                 </div>
 
                 {{-- Card trước --}}

@@ -88,7 +88,7 @@
 </div>
 
 {{-- Footer --}}
-<footer class="bg-gray-900 pt-32 pb-16 px-10">
+<footer class="bg-gray-900 pt-32 pb-6 px-10">
     <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             {{-- Brand --}}
@@ -171,9 +171,10 @@
             </div>
         </div>
 
-        <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
-            <p class="text-gray-500 text-xs">@lang('core::app.footer.copyright')</p>
-            <p class="text-gray-600 text-xs">@lang('core::app.footer.built_with')</p>
+        <div class="border-t border-gray-800 pt-6 flex items-center justify-center">
+            <p class="text-gray-500 text-xs text-center">
+                Powered by Auralis Education <span class="text-green-500 font-black">Auralis</span>
+            </p>
         </div>
     </div>
 </footer>
