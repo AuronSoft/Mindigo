@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\LearningTools\Http\Controllers\AcademicScoreController;
 use Mindigo\LearningTools\Http\Controllers\AdmissionLookupController;
+use Mindigo\LearningTools\Http\Controllers\AiTutorController;
 use Mindigo\LearningTools\Http\Controllers\FlashcardController;
 use Mindigo\LearningTools\Http\Controllers\GpaCalculatorController;
 use Mindigo\LearningTools\Http\Controllers\KnowledgeGapController;
@@ -82,6 +83,12 @@ Route::middleware(['web', 'auth', 'role:student|teacher|admin', 'permission:lear
             Route::delete('/gpa-calculator/{scenario}', [GpaCalculatorController::class, 'destroy'])->name('gpa.destroy');
             Route::get('/admissions', [AdmissionLookupController::class, 'index'])->name('admissions.index');
             Route::post('/admissions/{program}/favorite', [AdmissionLookupController::class, 'favorite'])->name('admissions.favorite');
+
+            Route::get('/ai-tutor', [AiTutorController::class, 'index'])->name('ai.index');
+            Route::post('/ai-tutor', [AiTutorController::class, 'store'])->name('ai.store');
+            Route::get('/ai-tutor/{conversation}', [AiTutorController::class, 'show'])->name('ai.show');
+            Route::post('/ai-tutor/{conversation}/messages', [AiTutorController::class, 'send'])->middleware('throttle:20,1')->name('ai.send');
+            Route::delete('/ai-tutor/{conversation}', [AiTutorController::class, 'destroy'])->name('ai.destroy');
         });
 
         Route::middleware('permission:learning-resources.manage')->group(function (): void {

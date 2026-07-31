@@ -211,6 +211,17 @@ return [
         'disclaimer' => 'Mỗi trường hoặc địa phương có thể công bố công thức khác nhau. Hãy đối chiếu với quy định chính thức của trường hoặc đơn vị tuyển sinh.',
         'created' => 'Đã lưu kết quả tính điểm.', 'deleted' => 'Đã xóa kết quả tính điểm.',
     ],
+    'ai' => [
+        'title' => 'MindigoBot', 'subtitle' => 'Học với giải thích định hướng, gợi ý, câu hỏi ôn tập và kế hoạch học tập cùng MindigoBot.',
+        'new' => 'Cuộc trò chuyện học tập mới', 'conversation_title' => 'Tên cuộc trò chuyện', 'start' => 'Bắt đầu trò chuyện',
+        'general' => 'Học tập chung', 'all_conversations' => 'Tất cả cuộc trò chuyện', 'message_count' => ':count tin nhắn',
+        'empty' => 'Chưa có cuộc trò chuyện học tập AI nào.', 'ask_first' => 'Hãy đặt câu hỏi học tập đầu tiên.', 'placeholder' => 'Yêu cầu giải thích, gợi ý, câu hỏi luyện tập hoặc kế hoạch học...',
+        'send' => 'Gửi', 'failed' => 'Không thể tạo câu trả lời này.', 'created' => 'Đã tạo cuộc trò chuyện AI.', 'deleted' => 'Đã xóa cuộc trò chuyện AI.',
+        'privacy_notice' => 'Không nhập mật khẩu, giấy tờ cá nhân, đề thi mật hoặc thông tin nhạy cảm.',
+        'disclaimer' => 'Câu trả lời của MindigoBot có thể chưa chính xác. Hãy kiểm tra nội dung quan trọng với giáo viên và tài liệu chính thức.',
+        'modes' => ['explain' => 'Giải thích', 'hint' => 'Gợi ý từng bước', 'quiz' => 'Câu hỏi luyện tập', 'review' => 'Ôn tập', 'plan' => 'Kế hoạch học'],
+        'errors' => ['not_configured' => 'Quản trị viên chưa cấu hình MindigoBot.', 'unsafe' => 'Yêu cầu đã bị chặn bởi cơ chế an toàn AI.', 'unavailable' => 'MindigoBot đang tạm thời gián đoạn. Vui lòng thử lại.', 'empty' => 'MindigoBot không trả về nội dung có thể sử dụng.'],
+    ],
     'role_access' => [
         'student' => 'Không gian học sinh',
         'teacher' => 'Không gian giáo viên',
@@ -234,6 +245,6 @@ return [
         'knowledge_gaps' => ['name' => 'Phân tích lỗ hổng kiến thức', 'description' => 'Nhận diện chuyên đề còn yếu và theo dõi sự tiến bộ theo thời gian.'],
         'score_calculator' => ['name' => 'Máy tính điểm thi', 'description' => 'Tính điểm theo tổ hợp, ưu tiên và lưu các kịch bản mục tiêu.'],
         'admission_lookup' => ['name' => 'Tra cứu trường và ngành', 'description' => 'Tìm hiểu ngành học, tổ hợp xét tuyển và dữ liệu tuyển sinh.'],
-        'ai_tutor' => ['name' => 'Trợ lý học tập AI', 'description' => 'Giải thích, gợi ý và tạo nội dung hỗ trợ học tập có kiểm soát.'],
+        'ai_tutor' => ['name' => 'MindigoBot', 'description' => 'Giải thích, gợi ý và tạo nội dung hỗ trợ học tập có kiểm soát.'],
     ],
 ];

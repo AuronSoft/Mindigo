@@ -211,6 +211,17 @@ return [
         'disclaimer' => 'Schools and provinces may publish different formulas. Verify the result against the official rules of your school or admission authority.',
         'created' => 'Score calculation saved.', 'deleted' => 'Score calculation deleted.',
     ],
+    'ai' => [
+        'title' => 'MindigoBot', 'subtitle' => 'Learn with guided explanations, hints, review questions, and study planning with MindigoBot.',
+        'new' => 'New learning conversation', 'conversation_title' => 'Conversation title', 'start' => 'Start conversation',
+        'general' => 'General learning', 'all_conversations' => 'All conversations', 'message_count' => '{0} No messages|{1} :count message|[2,*] :count messages',
+        'empty' => 'No AI learning conversations yet.', 'ask_first' => 'Ask your first learning question.', 'placeholder' => 'Ask for an explanation, hint, quiz, or study plan...',
+        'send' => 'Send', 'failed' => 'This response could not be generated.', 'created' => 'AI conversation created.', 'deleted' => 'AI conversation deleted.',
+        'privacy_notice' => 'Do not enter passwords, personal documents, confidential exams, or sensitive information.',
+        'disclaimer' => 'MindigoBot responses may be inaccurate. Verify important content with teachers and official materials.',
+        'modes' => ['explain' => 'Explain', 'hint' => 'Give hints', 'quiz' => 'Practice quiz', 'review' => 'Review', 'plan' => 'Study plan'],
+        'errors' => ['not_configured' => 'MindigoBot has not been configured by the system administrator.', 'unsafe' => 'This request was blocked by the AI safety controls.', 'unavailable' => 'MindigoBot is temporarily unavailable. Please try again.', 'empty' => 'MindigoBot did not return a usable response.'],
+    ],
     'role_access' => ['student' => 'Student workspace', 'teacher' => 'Teacher workspace', 'admin' => 'Admin workspace'],
     'categories' => [
         'all' => 'All',
@@ -230,6 +241,6 @@ return [
         'knowledge_gaps' => ['name' => 'Knowledge gap analysis', 'description' => 'Identify weak topics and track improvement over time.'],
         'score_calculator' => ['name' => 'Exam score calculator', 'description' => 'Calculate admission combinations, priorities, and target scenarios.'],
         'admission_lookup' => ['name' => 'School and major lookup', 'description' => 'Explore majors, subject combinations, and admission data.'],
-        'ai_tutor' => ['name' => 'AI learning assistant', 'description' => 'Get controlled explanations, hints, and learning content.'],
+        'ai_tutor' => ['name' => 'MindigoBot', 'description' => 'Get controlled explanations, hints, and learning content.'],
     ],
 ];

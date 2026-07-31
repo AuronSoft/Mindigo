@@ -136,6 +136,6 @@ return [
         'knowledge_gaps' => ['category' => 'practice', 'icon' => 'heroicon-o-chart-bar', 'roles' => ['student', 'teacher'], 'status' => 'active', 'route' => 'learning-tools.gaps.index'],
         'score_calculator' => ['category' => 'orientation', 'icon' => 'heroicon-o-calculator', 'roles' => ['student', 'teacher'], 'status' => 'active', 'route' => 'learning-tools.scores.index'],
         'admission_lookup' => ['category' => 'orientation', 'icon' => 'heroicon-o-magnifying-glass', 'roles' => ['student', 'teacher'], 'status' => 'active', 'route' => 'learning-tools.admissions.index'],
-        'ai_tutor' => ['category' => 'practice', 'icon' => 'heroicon-o-sparkles', 'roles' => ['student', 'teacher'], 'status' => 'planned'],
+        'ai_tutor' => ['category' => 'practice', 'icon' => 'heroicon-o-sparkles', 'roles' => ['student', 'teacher'], 'status' => 'active', 'route' => 'learning-tools.ai.index'],
     ],
 ];

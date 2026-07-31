@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'mindigobot' => [
+        'key' => env('GEMINI_API_KEY'),
+        'keys' => array_values(array_filter([
+            env('GEMINI_API_KEY'),
+            env('GEMINI_API_KEY_1'),
+            env('GEMINI_API_KEY_2'),
+            env('GEMINI_API_KEY_3'),
+        ])),
+        'model' => env('GEMINI_TUTOR_MODEL', 'gemini-2.5-flash'),
+        'url' => env('GEMINI_API_URL', 'https://generativelanguage.googleapis.com/v1beta'),
+    ],
+
 ];
