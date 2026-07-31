@@ -44,6 +44,7 @@ return [
         'content' => 'Content',
         'status' => 'Status',
         'visibility' => 'Visibility',
+        'difficulty' => 'Difficulty',
     ],
     'pomodoro' => [
         'title' => 'Pomodoro',
@@ -150,6 +151,29 @@ return [
         'deleted' => 'Study plan deleted.',
         'task_created' => 'Task added.',
         'task_deleted' => 'Task deleted.',
+    ],
+    'difficulties' => ['easy' => 'Easy', 'medium' => 'Medium', 'hard' => 'Hard'],
+    'mistakes' => [
+        'title' => 'Mistake notebook', 'subtitle' => 'Review incorrect answers from completed exams and practice sessions.',
+        'unresolved_only' => 'Unresolved only', 'your_answer' => 'Your answer', 'correct_answer' => 'Correct answer',
+        'note_placeholder' => 'Add a note about the mistake and how to avoid it...', 'resolved' => 'Mark as resolved',
+        'empty' => 'No matching incorrect answers.', 'updated' => 'Mistake review updated.',
+        'sources' => ['practice' => 'Practice', 'exam' => 'Exam'],
+    ],
+    'personalized' => [
+        'title' => 'Personalized practice', 'subtitle' => 'Build focused question sets from topics, difficulty, or learning history.',
+        'new' => 'Create practice set', 'form_subtitle' => 'Choose the focus and Mindigo will select approved questions.',
+        'source' => 'Question source', 'sources' => ['manual' => 'Selected filters', 'weak_topics' => 'Weak topics', 'mistakes' => 'Past mistakes'],
+        'number_of_questions' => 'Number of questions', 'question_count' => '{1} :count question|[2,*] :count questions',
+        'classroom' => 'Assign to classroom', 'personal' => 'Personal practice', 'all_difficulties' => 'All difficulties',
+        'create' => 'Create set', 'start' => 'Start practice', 'empty' => 'No practice sets yet.',
+        'no_questions' => 'No approved questions match these settings.', 'created' => 'Practice set created.', 'deleted' => 'Practice set deleted.',
+    ],
+    'gaps' => [
+        'title' => 'Knowledge gap analysis', 'subtitle' => 'Identify weak topics from completed exams and practice sessions.',
+        'choose_classroom' => 'Choose a classroom', 'correct' => 'correct', 'practice' => 'Create focused practice',
+        'empty' => 'There is not enough completed learning data yet.',
+        'levels' => ['weak' => 'Needs attention', 'average' => 'Developing', 'strong' => 'Strong'],
     ],
     'role_access' => ['student' => 'Student workspace', 'teacher' => 'Teacher workspace', 'admin' => 'Admin workspace'],
     'categories' => [

@@ -44,6 +44,7 @@ return [
         'content' => 'Nội dung',
         'status' => 'Trạng thái',
         'visibility' => 'Phạm vi hiển thị',
+        'difficulty' => 'Độ khó',
     ],
     'pomodoro' => [
         'title' => 'Pomodoro',
@@ -150,6 +151,29 @@ return [
         'deleted' => 'Đã xóa kế hoạch học tập.',
         'task_created' => 'Đã thêm nhiệm vụ.',
         'task_deleted' => 'Đã xóa nhiệm vụ.',
+    ],
+    'difficulties' => ['easy' => 'Dễ', 'medium' => 'Trung bình', 'hard' => 'Khó'],
+    'mistakes' => [
+        'title' => 'Sổ tay câu sai', 'subtitle' => 'Ôn lại câu trả lời sai từ các bài thi và bài luyện tập đã hoàn thành.',
+        'unresolved_only' => 'Chỉ câu chưa khắc phục', 'your_answer' => 'Câu trả lời của bạn', 'correct_answer' => 'Đáp án đúng',
+        'note_placeholder' => 'Ghi lại nguyên nhân sai và cách tránh lặp lại...', 'resolved' => 'Đã khắc phục',
+        'empty' => 'Không có câu sai phù hợp.', 'updated' => 'Đã cập nhật nội dung ôn lại.',
+        'sources' => ['practice' => 'Luyện tập', 'exam' => 'Bài thi'],
+    ],
+    'personalized' => [
+        'title' => 'Luyện tập cá nhân hóa', 'subtitle' => 'Tạo bộ câu hỏi tập trung theo chuyên đề, độ khó hoặc lịch sử học tập.',
+        'new' => 'Tạo bộ luyện tập', 'form_subtitle' => 'Chọn trọng tâm, Mindigo sẽ lấy các câu hỏi đã được duyệt.',
+        'source' => 'Nguồn câu hỏi', 'sources' => ['manual' => 'Theo bộ lọc', 'weak_topics' => 'Chuyên đề còn yếu', 'mistakes' => 'Câu từng làm sai'],
+        'number_of_questions' => 'Số lượng câu hỏi', 'question_count' => '{1} :count câu hỏi|[2,*] :count câu hỏi',
+        'classroom' => 'Giao cho lớp học', 'personal' => 'Luyện tập cá nhân', 'all_difficulties' => 'Tất cả độ khó',
+        'create' => 'Tạo bộ câu hỏi', 'start' => 'Bắt đầu luyện tập', 'empty' => 'Chưa có bộ luyện tập nào.',
+        'no_questions' => 'Không có câu hỏi đã duyệt phù hợp với lựa chọn này.', 'created' => 'Đã tạo bộ luyện tập.', 'deleted' => 'Đã xóa bộ luyện tập.',
+    ],
+    'gaps' => [
+        'title' => 'Phân tích lỗ hổng kiến thức', 'subtitle' => 'Nhận diện chuyên đề còn yếu từ bài thi và bài luyện tập đã hoàn thành.',
+        'choose_classroom' => 'Chọn lớp học', 'correct' => 'câu đúng', 'practice' => 'Tạo bài luyện trọng tâm',
+        'empty' => 'Chưa có đủ dữ liệu học tập đã hoàn thành để phân tích.',
+        'levels' => ['weak' => 'Cần củng cố', 'average' => 'Đang phát triển', 'strong' => 'Vững kiến thức'],
     ],
     'role_access' => [
         'student' => 'Không gian học sinh',

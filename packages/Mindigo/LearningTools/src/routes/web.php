@@ -2,9 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use Mindigo\LearningTools\Http\Controllers\FlashcardController;
+use Mindigo\LearningTools\Http\Controllers\KnowledgeGapController;
 use Mindigo\LearningTools\Http\Controllers\LearningNoteController;
 use Mindigo\LearningTools\Http\Controllers\LearningResourceController;
 use Mindigo\LearningTools\Http\Controllers\LearningToolsController;
+use Mindigo\LearningTools\Http\Controllers\MistakeNotebookController;
+use Mindigo\LearningTools\Http\Controllers\PersonalizedPracticeController;
 use Mindigo\LearningTools\Http\Controllers\PomodoroController;
 use Mindigo\LearningTools\Http\Controllers\StudyPlanController;
 
@@ -53,6 +56,16 @@ Route::middleware(['web', 'auth', 'role:student|teacher|admin', 'permission:lear
             Route::get('/resources', [LearningResourceController::class, 'index'])->name('resources.index');
             Route::get('/resources/{resource}', [LearningResourceController::class, 'show'])->name('resources.show');
             Route::post('/resources/{resource}/favorite', [LearningResourceController::class, 'favorite'])->name('resources.favorite');
+
+            Route::get('/mistakes', [MistakeNotebookController::class, 'index'])->name('mistakes.index');
+            Route::patch('/mistakes', [MistakeNotebookController::class, 'update'])->name('mistakes.update');
+            Route::get('/knowledge-gaps', [KnowledgeGapController::class, 'index'])->name('gaps.index');
+            Route::get('/personalized-practice', [PersonalizedPracticeController::class, 'index'])->name('personalized.index');
+            Route::get('/personalized-practice/create', [PersonalizedPracticeController::class, 'create'])->name('personalized.create');
+            Route::post('/personalized-practice', [PersonalizedPracticeController::class, 'store'])->name('personalized.store');
+            Route::get('/personalized-practice/{set}', [PersonalizedPracticeController::class, 'show'])->name('personalized.show');
+            Route::post('/personalized-practice/{set}/start', [PersonalizedPracticeController::class, 'start'])->name('personalized.start');
+            Route::delete('/personalized-practice/{set}', [PersonalizedPracticeController::class, 'destroy'])->name('personalized.destroy');
         });
 
         Route::middleware('permission:learning-resources.manage')->group(function (): void {
