@@ -48,12 +48,24 @@ class LearningToolsPhaseFourTest extends TestCase
         $program = AdmissionProgram::create([
             'university_id' => $university->id, 'major_code' => '7480201', 'major_name' => 'Information Technology',
             'year' => 2026, 'method' => 'Exam score', 'combinations' => ['A00', 'A01'], 'benchmark_score' => 26.5,
+            'source_url' => 'https://example.edu.vn/admissions/2026', 'source_name' => 'Official admission announcement',
+            'published_at' => now()->subDay(), 'verified_at' => now(), 'source_hash' => hash('sha256', 'official-record'),
         ]);
 
         $this->actingAs($student)->get(route('learning-tools.admissions.index', ['keyword' => 'Information']))
             ->assertOk()->assertSee('Mindigo University')->assertSee('26.50');
         $this->actingAs($student)->post(route('learning-tools.admissions.favorite', $program))->assertRedirect();
         $this->assertDatabaseHas('learning_admission_favorites', ['user_id' => $student->id, 'admission_program_id' => $program->id]);
+    }
+
+    public function test_unverified_admission_data_is_never_shown_or_favorited(): void
+    {
+        $student = User::factory()->create(['role' => 'student']);
+        $university = University::create(['code' => 'UNVERIFIED', 'name' => 'Unverified University']);
+        $program = AdmissionProgram::create(['university_id' => $university->id, 'major_name' => 'Unverified Major', 'year' => 2026, 'method' => 'Unknown']);
+
+        $this->actingAs($student)->get(route('learning-tools.admissions.index'))->assertOk()->assertDontSee('Unverified Major');
+        $this->actingAs($student)->post(route('learning-tools.admissions.favorite', $program))->assertNotFound();
     }
 
     public function test_phase_four_pages_require_authentication(): void
