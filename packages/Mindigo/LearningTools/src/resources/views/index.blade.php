@@ -10,18 +10,16 @@
 @endsection
 
 @section('content')
-<main class="min-h-screen bg-slate-50">
-    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/90 px-6 py-4 backdrop-blur">
-        <div class="flex items-center justify-between gap-4">
-            <div>
-                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">@lang('learning-tools::app.eyebrow')</p>
-                <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('learning-tools::app.title')</h1>
-                <p class="text-xs font-semibold text-slate-400">@lang('learning-tools::app.subtitle')</p>
-            </div>
-            <div class="inline-flex w-fit items-center gap-2 rounded-full border border-green-100 bg-green-50 px-4 py-2 text-xs font-black text-green-700">
-                <x-heroicon-o-shield-check class="h-4 w-4" />
-                @lang('learning-tools::app.role_access.' . auth()->user()->role)
-            </div>
+<div class="flex min-h-screen flex-col bg-slate-50">
+    <header class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-slate-200 bg-white/90 px-6 py-4 backdrop-blur">
+        <div>
+            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">@lang('learning-tools::app.eyebrow')</p>
+            <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('learning-tools::app.title')</h1>
+            <p class="text-xs font-semibold text-slate-400">@lang('learning-tools::app.subtitle')</p>
+        </div>
+        <div class="inline-flex w-fit items-center gap-2 rounded-full border border-green-100 bg-green-50 px-4 py-2 text-xs font-black text-green-700">
+            <x-heroicon-o-shield-check class="h-4 w-4" />
+            @lang('learning-tools::app.role_access.' . auth()->user()->role)
         </div>
     </header>
 
@@ -90,5 +88,5 @@
             </section>
         @endif
     </div>
-</main>
+</div>
 @endsection
