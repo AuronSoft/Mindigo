@@ -70,7 +70,7 @@
                             <span class="grid h-12 w-12 place-items-center rounded-2xl bg-green-50 text-green-700 transition group-hover:bg-green-600 group-hover:text-white">
                                 <x-dynamic-component :component="$tool['icon']" class="h-6 w-6" />
                             </span>
-                            <span class="rounded-full bg-amber-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-700">
+                            <span class="rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider {{ $tool['status'] === 'active' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700' }}">
                                 @lang('learning-tools::app.statuses.' . $tool['status'])
                             </span>
                         </div>
@@ -78,10 +78,17 @@
                         <p class="mt-2 flex-1 text-sm font-semibold leading-6 text-slate-500">{{ $tool['description'] }}</p>
                         <div class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
                             <span class="text-xs font-black text-slate-400">{{ __('learning-tools::app.categories.' . $tool['category']) }}</span>
-                            <span class="inline-flex items-center gap-1.5 text-xs font-black text-slate-400">
-                                <x-heroicon-o-lock-closed class="h-4 w-4" />
-                                @lang('learning-tools::app.coming_soon')
-                            </span>
+                            @if($tool['status'] === 'active' && Route::has($tool['route'] ?? ''))
+                                <a href="{{ route($tool['route']) }}" class="inline-flex items-center gap-1.5 text-xs font-black text-green-700 no-underline hover:text-green-600">
+                                    @lang('learning-tools::app.open_tool')
+                                    <x-heroicon-o-arrow-right class="h-4 w-4" />
+                                </a>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 text-xs font-black text-slate-400">
+                                    <x-heroicon-o-lock-closed class="h-4 w-4" />
+                                    @lang('learning-tools::app.coming_soon')
+                                </span>
+                            @endif
                         </div>
                     </article>
                 @endforeach

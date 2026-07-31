@@ -43,6 +43,8 @@ return [
     'permissions' => [
         'learning_tools' => [
             'view' => 'Truy cập công cụ học tập',
+            'use' => 'Sử dụng công cụ học tập',
+            'manage_resources' => 'Quản lý kho kiến thức',
         ],
         'dashboard' => [
             'view' => 'Xem dashboard',

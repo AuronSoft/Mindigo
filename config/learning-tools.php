@@ -9,9 +9,9 @@ return [
         'orientation' => 'orientation',
     ],
     'tools' => [
-        'pomodoro' => ['category' => 'planning', 'icon' => 'heroicon-o-clock', 'roles' => ['student', 'teacher'], 'status' => 'planned'],
-        'notes' => ['category' => 'memory', 'icon' => 'heroicon-o-book-open', 'roles' => ['student', 'teacher'], 'status' => 'planned'],
-        'knowledge_base' => ['category' => 'memory', 'icon' => 'heroicon-o-light-bulb', 'roles' => ['student', 'teacher'], 'status' => 'planned'],
+        'pomodoro' => ['category' => 'planning', 'icon' => 'heroicon-o-clock', 'roles' => ['student', 'teacher'], 'status' => 'active', 'route' => 'learning-tools.pomodoro.index'],
+        'notes' => ['category' => 'memory', 'icon' => 'heroicon-o-book-open', 'roles' => ['student', 'teacher'], 'status' => 'active', 'route' => 'learning-tools.notes.index'],
+        'knowledge_base' => ['category' => 'memory', 'icon' => 'heroicon-o-light-bulb', 'roles' => ['student', 'teacher'], 'status' => 'active', 'route' => 'learning-tools.resources.index'],
         'flashcards' => ['category' => 'memory', 'icon' => 'heroicon-o-rectangle-stack', 'roles' => ['student', 'teacher'], 'status' => 'planned'],
         'study_plan' => ['category' => 'planning', 'icon' => 'heroicon-o-calendar-days', 'roles' => ['student', 'teacher'], 'status' => 'planned'],
         'mistake_notebook' => ['category' => 'practice', 'icon' => 'heroicon-o-exclamation-triangle', 'roles' => ['student', 'teacher'], 'status' => 'planned'],
