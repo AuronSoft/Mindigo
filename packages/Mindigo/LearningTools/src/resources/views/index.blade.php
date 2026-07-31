@@ -11,12 +11,12 @@
 
 @section('content')
 <main class="min-h-screen bg-slate-50">
-    <header class="border-b border-slate-200 bg-white px-4 py-6 sm:px-6 lg:px-8">
-        <div class="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/90 px-6 py-4 backdrop-blur">
+        <div class="flex items-center justify-between gap-4">
             <div>
-                <p class="text-xs font-black uppercase tracking-widest text-green-600">@lang('learning-tools::app.eyebrow')</p>
-                <h1 class="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">@lang('learning-tools::app.title')</h1>
-                <p class="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-500">@lang('learning-tools::app.subtitle')</p>
+                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">@lang('learning-tools::app.eyebrow')</p>
+                <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('learning-tools::app.title')</h1>
+                <p class="text-xs font-semibold text-slate-400">@lang('learning-tools::app.subtitle')</p>
             </div>
             <div class="inline-flex w-fit items-center gap-2 rounded-full border border-green-100 bg-green-50 px-4 py-2 text-xs font-black text-green-700">
                 <x-heroicon-o-shield-check class="h-4 w-4" />
@@ -25,7 +25,7 @@
         </div>
     </header>
 
-    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <div class="p-6">
         <form method="GET" action="{{ route('learning-tools.index') }}" class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
             <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
                 <label class="relative min-w-0 flex-1">
