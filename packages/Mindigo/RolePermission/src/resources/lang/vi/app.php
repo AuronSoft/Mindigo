@@ -41,6 +41,9 @@ return [
     ],
 
     'permissions' => [
+        'learning_tools' => [
+            'view' => 'Truy cập công cụ học tập',
+        ],
         'dashboard' => [
             'view' => 'Xem dashboard',
         ],

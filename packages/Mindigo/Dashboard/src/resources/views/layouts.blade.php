@@ -127,6 +127,7 @@
                         'icon' => 'heroicon-o-cog-6-tooth',
                         'items' => [
                             ['route' => 'student.notebook.index', 'match' => 'student.notebook.*', 'label' => __('student-dashboard::app.nav_notebook'), 'icon' => 'heroicon-o-book-open'],
+                            ['route' => 'learning-tools.index', 'match' => 'learning-tools.*', 'label' => __('learning-tools::app.title'), 'icon' => 'heroicon-o-wrench-screwdriver'],
                             ['route' => 'profile.index', 'match' => 'profile.*', 'label' => __('student-dashboard::app.nav_profile'), 'icon' => 'heroicon-o-user-circle'],
                         ],
                     ],
@@ -205,6 +206,7 @@
                         'desc' => __('teacher-dashboard::app.group_account_desc'),
                         'icon' => 'heroicon-o-cog-6-tooth',
                         'items' => [
+                            ['route' => 'learning-tools.index', 'match' => 'learning-tools.*', 'label' => __('learning-tools::app.title'), 'icon' => 'heroicon-o-wrench-screwdriver'],
                             ['route' => 'profile.index', 'match' => 'profile.*', 'label' => __('teacher-dashboard::app.profile'), 'icon' => 'heroicon-o-user-circle'],
                         ],
                     ],

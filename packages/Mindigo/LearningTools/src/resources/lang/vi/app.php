@@ -1,0 +1,43 @@
+<?php
+
+return [
+    'meta_title' => 'Công cụ học tập · Mindigo LMS',
+    'eyebrow' => 'Không gian học tập',
+    'title' => 'Công cụ học tập',
+    'subtitle' => 'Tập trung các tiện ích hỗ trợ ghi nhớ, luyện tập, quản lý thời gian và định hướng thi cử.',
+    'search_label' => 'Tìm kiếm công cụ',
+    'search_placeholder' => 'Tìm theo tên hoặc nội dung công cụ...',
+    'category_label' => 'Lọc theo nhóm công cụ',
+    'available_title' => 'Công cụ dành cho bạn',
+    'result_count' => '{0} Chưa có công cụ|[1,*] :count công cụ',
+    'empty_title' => 'Không tìm thấy công cụ',
+    'empty_description' => 'Hãy thử từ khóa hoặc nhóm công cụ khác.',
+    'clear_filters' => 'Xóa bộ lọc',
+    'coming_soon' => 'Sắp triển khai',
+    'statuses' => ['planned' => 'Trong kế hoạch'],
+    'role_access' => [
+        'student' => 'Không gian học sinh',
+        'teacher' => 'Không gian giáo viên',
+        'admin' => 'Không gian quản trị',
+    ],
+    'categories' => [
+        'all' => 'Tất cả',
+        'memory' => 'Học và ghi nhớ',
+        'practice' => 'Luyện tập',
+        'planning' => 'Quản lý thời gian',
+        'orientation' => 'Định hướng thi cử',
+    ],
+    'tools' => [
+        'pomodoro' => ['name' => 'Pomodoro', 'description' => 'Tổ chức các phiên tập trung và theo dõi thời gian học theo môn.'],
+        'notes' => ['name' => 'Ghi chú học tập', 'description' => 'Lưu và sắp xếp ghi chú theo môn, bài học hoặc câu hỏi.'],
+        'knowledge_base' => ['name' => 'Kho kiến thức nhanh', 'description' => 'Tra cứu công thức, mốc kiến thức và nội dung ôn tập quan trọng.'],
+        'flashcards' => ['name' => 'Flashcard', 'description' => 'Tạo bộ thẻ ghi nhớ và ôn lại kiến thức theo tiến độ.'],
+        'study_plan' => ['name' => 'Kế hoạch học tập', 'description' => 'Thiết lập mục tiêu, nhiệm vụ và lịch ôn tập cá nhân hoặc theo lớp.'],
+        'mistake_notebook' => ['name' => 'Sổ tay câu sai', 'description' => 'Tổng hợp câu trả lời sai và hỗ trợ luyện lại có hệ thống.'],
+        'personalized_practice' => ['name' => 'Luyện tập cá nhân hóa', 'description' => 'Tạo bài luyện phù hợp với chuyên đề, mức độ và lịch sử học tập.'],
+        'knowledge_gaps' => ['name' => 'Phân tích lỗ hổng kiến thức', 'description' => 'Nhận diện chuyên đề còn yếu và theo dõi sự tiến bộ theo thời gian.'],
+        'score_calculator' => ['name' => 'Máy tính điểm thi', 'description' => 'Tính điểm theo tổ hợp, ưu tiên và lưu các kịch bản mục tiêu.'],
+        'admission_lookup' => ['name' => 'Tra cứu trường và ngành', 'description' => 'Tìm hiểu ngành học, tổ hợp xét tuyển và dữ liệu tuyển sinh.'],
+        'ai_tutor' => ['name' => 'Trợ lý học tập AI', 'description' => 'Giải thích, gợi ý và tạo nội dung hỗ trợ học tập có kiểm soát.'],
+    ],
+];
