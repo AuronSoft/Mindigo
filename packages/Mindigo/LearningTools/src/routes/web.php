@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\LearningTools\Http\Controllers\AcademicScoreController;
+use Mindigo\LearningTools\Http\Controllers\AdmissionLookupController;
 use Mindigo\LearningTools\Http\Controllers\FlashcardController;
+use Mindigo\LearningTools\Http\Controllers\GpaCalculatorController;
 use Mindigo\LearningTools\Http\Controllers\KnowledgeGapController;
 use Mindigo\LearningTools\Http\Controllers\LearningNoteController;
 use Mindigo\LearningTools\Http\Controllers\LearningResourceController;
@@ -9,6 +12,7 @@ use Mindigo\LearningTools\Http\Controllers\LearningToolsController;
 use Mindigo\LearningTools\Http\Controllers\MistakeNotebookController;
 use Mindigo\LearningTools\Http\Controllers\PersonalizedPracticeController;
 use Mindigo\LearningTools\Http\Controllers\PomodoroController;
+use Mindigo\LearningTools\Http\Controllers\ScoreCalculatorController;
 use Mindigo\LearningTools\Http\Controllers\StudyPlanController;
 
 Route::middleware(['web', 'auth', 'role:student|teacher|admin', 'permission:learning-tools.view'])
@@ -66,6 +70,18 @@ Route::middleware(['web', 'auth', 'role:student|teacher|admin', 'permission:lear
             Route::get('/personalized-practice/{set}', [PersonalizedPracticeController::class, 'show'])->name('personalized.show');
             Route::post('/personalized-practice/{set}/start', [PersonalizedPracticeController::class, 'start'])->name('personalized.start');
             Route::delete('/personalized-practice/{set}', [PersonalizedPracticeController::class, 'destroy'])->name('personalized.destroy');
+
+            Route::get('/score-calculator', [ScoreCalculatorController::class, 'index'])->name('scores.index');
+            Route::post('/score-calculator', [ScoreCalculatorController::class, 'store'])->name('scores.store');
+            Route::delete('/score-calculator/{scenario}', [ScoreCalculatorController::class, 'destroy'])->name('scores.destroy');
+            Route::get('/academic-score-calculator', [AcademicScoreController::class, 'index'])->name('academic.index');
+            Route::post('/academic-score-calculator', [AcademicScoreController::class, 'store'])->name('academic.store');
+            Route::delete('/academic-score-calculator/{scenario}', [AcademicScoreController::class, 'destroy'])->name('academic.destroy');
+            Route::get('/gpa-calculator', [GpaCalculatorController::class, 'index'])->name('gpa.index');
+            Route::post('/gpa-calculator', [GpaCalculatorController::class, 'store'])->name('gpa.store');
+            Route::delete('/gpa-calculator/{scenario}', [GpaCalculatorController::class, 'destroy'])->name('gpa.destroy');
+            Route::get('/admissions', [AdmissionLookupController::class, 'index'])->name('admissions.index');
+            Route::post('/admissions/{program}/favorite', [AdmissionLookupController::class, 'favorite'])->name('admissions.favorite');
         });
 
         Route::middleware('permission:learning-resources.manage')->group(function (): void {
