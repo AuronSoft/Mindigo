@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
 
-Route::middleware('web')->get('/lang/{locale}', function ($locale, \Illuminate\Http\Request $request) {
+Route::middleware('web')->get('/lang/{locale}', function ($locale, Request $request) {
     $supportedLocales = ['vi', 'en'];
 
     if (! in_array($locale, $supportedLocales, true)) {

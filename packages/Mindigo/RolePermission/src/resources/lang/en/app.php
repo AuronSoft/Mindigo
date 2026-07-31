@@ -41,6 +41,9 @@ return [
     ],
 
     'permissions' => [
+        'learning_tools' => [
+            'view' => 'Access learning tools',
+        ],
         'dashboard' => [
             'view' => 'View dashboard',
         ],

@@ -22,6 +22,7 @@
         "mindigo/core": "*",
         "mindigo/dashboard": "*",
         "mindigo/exam-management": "*",
+        "mindigo/learning-tools": "*",
         "mindigo/profile": "*",
         "mindigo/question-bank": "*",
         "mindigo/report": "*",
@@ -55,6 +56,7 @@
         "tijsverkoyen/css-to-inline-styles": "^2.4"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.7",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
@@ -73,6 +75,7 @@
             "Mindigo\\Core\\": "packages/Mindigo/Core/src/",
             "Mindigo\\Dashboard\\": "packages/Mindigo/Dashboard/src/",
             "Mindigo\\ExamManagement\\": "packages/Mindigo/ExamManagement/src/",
+            "Mindigo\\LearningTools\\": "packages/Mindigo/LearningTools/src/",
             "Mindigo\\Profile\\": "packages/Mindigo/Profile/src/", 
             "Mindigo\\QuestionBank\\": "packages/Mindigo/QuestionBank/src/",
             "Mindigo\\RolePermission\\": "packages/Mindigo/RolePermission/src/",
@@ -133,6 +136,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/ExamManagement"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/LearningTools"
         },
         {
             "type": "path",

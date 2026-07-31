@@ -10,7 +10,9 @@ use Throwable;
 class RolePermissionService
 {
     public const ADMIN = 'admin';
+
     public const TEACHER = 'teacher';
+
     public const STUDENT = 'student';
 
     public static function roleLabels(): array
@@ -70,6 +72,7 @@ class RolePermissionService
                 'permissions' => [
                     'exams.attempt' => __('Mindigo-role-permission::app.permissions.exams.attempt'),
                     'results.view' => __('Mindigo-role-permission::app.permissions.results.view'),
+                    'learning-tools.view' => __('Mindigo-role-permission::app.permissions.learning_tools.view'),
                 ],
             ],
             'support' => [
@@ -101,7 +104,7 @@ class RolePermissionService
 
     public static function permissionMap(): array
     {
-        if (!self::tableIsReady()) {
+        if (! self::tableIsReady()) {
             return self::defaultPermissionMap();
         }
 
@@ -146,6 +149,7 @@ class RolePermissionService
             self::TEACHER => [
                 'dashboard.view',
                 'reports.view',
+                'learning-tools.view',
                 'exams.view',
                 'exams.create',
                 'exams.update',
@@ -167,6 +171,7 @@ class RolePermissionService
             self::STUDENT => [
                 'exams.view',
                 'exams.attempt',
+                'learning-tools.view',
                 'classrooms.view',
                 'results.view',
                 'support-tickets.view',
@@ -214,7 +219,7 @@ class RolePermissionService
 
     public static function syncDefaults(): void
     {
-        if (!self::tableIsReady()) {
+        if (! self::tableIsReady()) {
             return;
         }
 
@@ -241,7 +246,7 @@ class RolePermissionService
 
     public static function updatePermissionMap(array $submittedPermissions): array
     {
-        if (!self::tableIsReady()) {
+        if (! self::tableIsReady()) {
             return self::defaultPermissionMap();
         }
 

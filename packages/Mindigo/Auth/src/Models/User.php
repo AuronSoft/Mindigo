@@ -2,12 +2,13 @@
 
 namespace Mindigo\Auth\Models;
 
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Builder;
-use Database\Factories\UserFactory;
 use Mindigo\Profile\Models\NotificationPreference;
 use Mindigo\RolePermission\Services\RolePermissionService;
 
@@ -17,7 +18,7 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
-    protected static function newFactory()
+    protected static function newFactory(): UserFactory
     {
         return UserFactory::new();
     }
@@ -26,7 +27,7 @@ class User extends Authenticatable
      * Roles
      */
     const ROLES = [
-        'admin'   => 'Administrator',
+        'admin' => 'Administrator',
         'teacher' => 'Teacher',
         'student' => 'Student',
     ];
@@ -35,9 +36,9 @@ class User extends Authenticatable
      * Genders
      */
     const GENDERS = [
-        'male'   => 'Male',
+        'male' => 'Male',
         'female' => 'Female',
-        'other'  => 'Other',
+        'other' => 'Other',
     ];
 
     /**
@@ -86,9 +87,9 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'date_of_birth'     => 'date',
-            'is_active'         => 'boolean',
-            'password'          => 'hashed',
+            'date_of_birth' => 'date',
+            'is_active' => 'boolean',
+            'password' => 'hashed',
         ];
     }
 
@@ -102,7 +103,7 @@ class User extends Authenticatable
         }
 
         return $this->avatar
-            ? asset('storage/' . $this->avatar)
+            ? asset('storage/'.$this->avatar)
             : $this->defaultAvatar();
     }
 
@@ -121,8 +122,8 @@ class User extends Authenticatable
      */
     private function defaultAvatar(): string
     {
-        return 'https://ui-avatars.com/api/?name=' .
-            urlencode($this->name) .
+        return 'https://ui-avatars.com/api/?name='.
+            urlencode($this->name).
             '&background=2563eb&color=fff';
     }
 
@@ -193,7 +194,7 @@ class User extends Authenticatable
         return false;
     }
 
-    public function notificationPreference(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function notificationPreference(): HasOne
     {
         return $this->hasOne(NotificationPreference::class);
     }

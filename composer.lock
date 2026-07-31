@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "de4ab935a3d9f0f61d27473be4e8ce3a",
+    "content-hash": "6f4a5fe5678101bd54db9fb9c22942c3",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -2471,7 +2471,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2501,7 +2501,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2567,7 +2567,7 @@
         },
         {
             "name": "mindigo/classroom-management",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ClassroomManagement",
@@ -2597,7 +2597,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2627,7 +2627,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2657,7 +2657,7 @@
         },
         {
             "name": "mindigo/exam-management",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ExamManagement",
@@ -2686,8 +2686,38 @@
             }
         },
         {
+            "name": "mindigo/learning-tools",
+            "version": "dev-feature/learning-tools-phase-0",
+            "dist": {
+                "type": "path",
+                "url": "packages/Mindigo/LearningTools",
+                "reference": "9912ff89ee99e269f003ee3fb14e673ec6107fe2"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\LearningTools\\Providers\\LearningToolsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\LearningTools\\": "src/"
+                }
+            },
+            "description": "Mindigo Learning Tools Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mindigo/notification",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Notification",
@@ -2717,7 +2747,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -2747,7 +2777,7 @@
         },
         {
             "name": "mindigo/question-bank",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/QuestionBank",
@@ -2777,7 +2807,7 @@
         },
         {
             "name": "mindigo/report",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Report",
@@ -2807,7 +2837,7 @@
         },
         {
             "name": "mindigo/role-permission",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -2837,7 +2867,7 @@
         },
         {
             "name": "mindigo/student-assignment",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentAssignment",
@@ -2867,7 +2897,7 @@
         },
         {
             "name": "mindigo/student-classroom",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentClassroom",
@@ -2897,7 +2927,7 @@
         },
         {
             "name": "mindigo/student-dashboard",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentDashboard",
@@ -2927,7 +2957,7 @@
         },
         {
             "name": "mindigo/student-discussion",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentDiscussion",
@@ -2957,7 +2987,7 @@
         },
         {
             "name": "mindigo/student-exam",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentExam",
@@ -2987,7 +3017,7 @@
         },
         {
             "name": "mindigo/student-history",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentHistory",
@@ -3017,7 +3047,7 @@
         },
         {
             "name": "mindigo/student-leaderboard",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentLeaderboard",
@@ -3047,7 +3077,7 @@
         },
         {
             "name": "mindigo/student-live-session",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentLiveSession",
@@ -3077,7 +3107,7 @@
         },
         {
             "name": "mindigo/student-notebook",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentNotebook",
@@ -3107,14 +3137,15 @@
         },
         {
             "name": "mindigo/student-practice",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentPractice",
-                "reference": "e340b8bafec79f7b69c4194606fc25fc5ea93c23"
+                "reference": "bf58680af21f09ea2f3e0c0240f9a8475115ec50"
             },
             "require": {
                 "illuminate/support": "^12.0",
+                "mindigo/question-bank": "*",
                 "php": "^8.2"
             },
             "type": "library",
@@ -3137,7 +3168,7 @@
         },
         {
             "name": "mindigo/student-progress",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentProgress",
@@ -3167,7 +3198,7 @@
         },
         {
             "name": "mindigo/student-schedule",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentSchedule",
@@ -3197,7 +3228,7 @@
         },
         {
             "name": "mindigo/subject-management",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SubjectManagement",
@@ -3227,7 +3258,7 @@
         },
         {
             "name": "mindigo/support-management",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SupportManagement",
@@ -3257,7 +3288,7 @@
         },
         {
             "name": "mindigo/system-setting",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",
@@ -3287,7 +3318,7 @@
         },
         {
             "name": "mindigo/teacher-announcement",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAnnouncement",
@@ -3317,7 +3348,7 @@
         },
         {
             "name": "mindigo/teacher-assignment",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAssignment",
@@ -3347,7 +3378,7 @@
         },
         {
             "name": "mindigo/teacher-classroom",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherClassroom",
@@ -3377,7 +3408,7 @@
         },
         {
             "name": "mindigo/teacher-course",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherCourse",
@@ -3407,7 +3438,7 @@
         },
         {
             "name": "mindigo/teacher-dashboard",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDashboard",
@@ -3437,7 +3468,7 @@
         },
         {
             "name": "mindigo/teacher-discussion",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDiscussion",
@@ -3467,7 +3498,7 @@
         },
         {
             "name": "mindigo/teacher-exam",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherExam",
@@ -3497,7 +3528,7 @@
         },
         {
             "name": "mindigo/teacher-live-session",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherLiveSession",
@@ -3527,7 +3558,7 @@
         },
         {
             "name": "mindigo/teacher-question",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherQuestion",
@@ -3557,7 +3588,7 @@
         },
         {
             "name": "mindigo/teacher-result",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherResult",
@@ -3587,7 +3618,7 @@
         },
         {
             "name": "mindigo/user-management",
-            "version": "dev-dev",
+            "version": "dev-feature/learning-tools-phase-0",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/UserManagement",
@@ -7837,6 +7868,298 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "barryvdh/laravel-ide-helper",
+            "version": "v3.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barryvdh/laravel-ide-helper.git",
+                "reference": "ad7e37676f1ff985d55ef1b6b96a0c0a40f2609a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barryvdh/laravel-ide-helper/zipball/ad7e37676f1ff985d55ef1b6b96a0c0a40f2609a",
+                "reference": "ad7e37676f1ff985d55ef1b6b96a0c0a40f2609a",
+                "shasum": ""
+            },
+            "require": {
+                "barryvdh/reflection-docblock": "^2.4",
+                "composer/class-map-generator": "^1.0",
+                "ext-json": "*",
+                "illuminate/console": "^11.15 || ^12 || ^13.0",
+                "illuminate/database": "^11.15 || ^12 || ^13.0",
+                "illuminate/filesystem": "^11.15 || ^12 || ^13.0",
+                "illuminate/support": "^11.15 || ^12 || ^13.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "ext-pdo_sqlite": "*",
+                "friendsofphp/php-cs-fixer": "^3",
+                "illuminate/config": "^11.15 || ^12 || ^13.0",
+                "illuminate/view": "^11.15 || ^12 || ^13.0",
+                "larastan/larastan": "^3.1",
+                "mockery/mockery": "^1.4",
+                "orchestra/testbench": "^9.2 || ^10 || ^11.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^10.5 || ^11.5.3 || ^12.5.12",
+                "spatie/phpunit-snapshot-assertions": "^4 || ^5",
+                "vlucas/phpdotenv": "^5"
+            },
+            "suggest": {
+                "illuminate/events": "Required for automatic helper generation (^6|^7|^8|^9|^10|^11)."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-master": "3.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Barryvdh\\LaravelIdeHelper\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "Laravel IDE Helper, generates correct PHPDocs for all Facade classes, to improve auto-completion.",
+            "keywords": [
+                "autocomplete",
+                "codeintel",
+                "dev",
+                "helper",
+                "ide",
+                "laravel",
+                "netbeans",
+                "phpdoc",
+                "phpstorm",
+                "sublime"
+            ],
+            "support": {
+                "issues": "https://github.com/barryvdh/laravel-ide-helper/issues",
+                "source": "https://github.com/barryvdh/laravel-ide-helper/tree/v3.7.0"
+            },
+            "funding": [
+                {
+                    "url": "https://fruitcake.nl",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/barryvdh",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-17T14:12:51+00:00"
+        },
+        {
+            "name": "barryvdh/reflection-docblock",
+            "version": "v2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barryvdh/ReflectionDocBlock.git",
+                "reference": "4f5ba70c30c81f2ce03a16a9965832cfcc31ed3b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barryvdh/ReflectionDocBlock/zipball/4f5ba70c30c81f2ce03a16a9965832cfcc31ed3b",
+                "reference": "4f5ba70c30c81f2ce03a16a9965832cfcc31ed3b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.5.14|^9"
+            },
+            "suggest": {
+                "dflydev/markdown": "~1.0",
+                "erusev/parsedown": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Barryvdh": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mike van Riel",
+                    "email": "mike.vanriel@naenius.com"
+                }
+            ],
+            "support": {
+                "source": "https://github.com/barryvdh/ReflectionDocBlock/tree/v2.4.1"
+            },
+            "time": "2026-03-05T20:09:01+00:00"
+        },
+        {
+            "name": "composer/class-map-generator",
+            "version": "1.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/class-map-generator.git",
+                "reference": "86d8208fc3c649a3a999daf1a63c25201be2990f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/class-map-generator/zipball/86d8208fc3c649a3a999daf1a63c25201be2990f",
+                "reference": "86d8208fc3c649a3a999daf1a63c25201be2990f",
+                "shasum": ""
+            },
+            "require": {
+                "composer/pcre": "^2.1 || ^3.1",
+                "php": "^7.2 || ^8.0",
+                "symfony/finder": "^4.4 || ^5.3 || ^6 || ^7 || ^8"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.12 || ^2",
+                "phpstan/phpstan-deprecation-rules": "^1 || ^2",
+                "phpstan/phpstan-phpunit": "^1 || ^2",
+                "phpstan/phpstan-strict-rules": "^1.1 || ^2",
+                "phpunit/phpunit": "^8",
+                "symfony/filesystem": "^5.4 || ^6 || ^7 || ^8"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\ClassMapGenerator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "https://seld.be"
+                }
+            ],
+            "description": "Utilities to scan PHP code and generate class maps.",
+            "keywords": [
+                "classmap"
+            ],
+            "support": {
+                "issues": "https://github.com/composer/class-map-generator/issues",
+                "source": "https://github.com/composer/class-map-generator/tree/1.7.3"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-05-05T09:17:07+00:00"
+        },
+        {
+            "name": "composer/pcre",
+            "version": "3.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/pcre.git",
+                "reference": "d5a341b3fb61f3001970940afb1d332968a183ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/d5a341b3fb61f3001970940afb1d332968a183ed",
+                "reference": "d5a341b3fb61f3001970940afb1d332968a183ed",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "conflict": {
+                "phpstan/phpstan": "<2.2.2"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2",
+                "phpstan/phpstan-deprecation-rules": "^2",
+                "phpstan/phpstan-strict-rules": "^2",
+                "phpunit/phpunit": "^9"
+            },
+            "type": "library",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Pcre\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                }
+            ],
+            "description": "PCRE wrapping library that offers type-safe preg_* replacements.",
+            "keywords": [
+                "PCRE",
+                "preg",
+                "regex",
+                "regular expression"
+            ],
+            "support": {
+                "issues": "https://github.com/composer/pcre/issues",
+                "source": "https://github.com/composer/pcre/tree/3.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-06-07T11:47:49+00:00"
+        },
         {
             "name": "fakerphp/faker",
             "version": "v1.24.1",
