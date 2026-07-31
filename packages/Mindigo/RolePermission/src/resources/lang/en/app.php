@@ -43,6 +43,8 @@ return [
     'permissions' => [
         'learning_tools' => [
             'view' => 'Access learning tools',
+            'use' => 'Use learning tools',
+            'manage_resources' => 'Manage learning resources',
         ],
         'dashboard' => [
             'view' => 'View dashboard',
