@@ -186,7 +186,7 @@ return [
     'admissions' => [
         'title' => 'Tra cứu trường và ngành', 'subtitle' => 'Tra cứu chương trình tuyển sinh, tổ hợp môn và điểm chuẩn đã công bố.',
         'search' => 'Tìm trường, ngành hoặc mã...', 'all_years' => 'Tất cả năm', 'all_combinations' => 'Tất cả tổ hợp',
-        'benchmark' => 'Điểm chuẩn', 'official_source' => 'Xem nguồn chính thức', 'empty' => 'Không có dữ liệu tuyển sinh phù hợp.',
+        'benchmark' => 'Điểm chuẩn', 'official_source' => 'Xem nguồn chính thức', 'empty' => 'Chưa nạp dữ liệu tuyển sinh chính thức đã xác minh hoặc không có kết quả phù hợp.',
         'favorite_updated' => 'Đã cập nhật danh sách quan tâm.',
     ],
     'gpa' => [

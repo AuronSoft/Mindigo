@@ -13,7 +13,8 @@ class AdmissionLookupController extends Controller
 {
     public function index(Request $request): View
     {
-        $programs = AdmissionProgram::with('university')->whereHas('university', fn (Builder $query) => $query->where('is_active', true))
+        $programs = AdmissionProgram::with('university')->whereNotNull('verified_at')->whereNotNull('source_url')
+            ->whereHas('university', fn (Builder $query) => $query->where('is_active', true))
             ->when($request->filled('keyword'), function (Builder $query) use ($request): void {
                 $keyword = '%'.$request->string('keyword')->trim().'%';
                 $query->where(fn (Builder $search) => $search->where('major_name', 'like', $keyword)->orWhere('major_code', 'like', $keyword)->orWhereHas('university', fn (Builder $university) => $university->where('name', 'like', $keyword)->orWhere('code', 'like', $keyword)));
@@ -25,8 +26,8 @@ class AdmissionLookupController extends Controller
 
         return view('learning-tools::admissions.index', [
             'programs' => $programs,
-            'years' => AdmissionProgram::distinct()->orderByDesc('year')->pluck('year'),
-            'provinces' => AdmissionProgram::join('learning_universities', 'learning_universities.id', '=', 'learning_admission_programs.university_id')->whereNotNull('province')->distinct()->orderBy('province')->pluck('province'),
+            'years' => AdmissionProgram::whereNotNull('verified_at')->distinct()->orderByDesc('year')->pluck('year'),
+            'provinces' => AdmissionProgram::whereNotNull('verified_at')->join('learning_universities', 'learning_universities.id', '=', 'learning_admission_programs.university_id')->whereNotNull('province')->distinct()->orderBy('province')->pluck('province'),
             'combinations' => config('learning-tools.score_combinations', []),
             'favoriteIds' => $request->user()->belongsToMany(AdmissionProgram::class, 'learning_admission_favorites', 'user_id', 'admission_program_id')->pluck('learning_admission_programs.id'),
         ]);
@@ -34,6 +35,7 @@ class AdmissionLookupController extends Controller
 
     public function favorite(Request $request, AdmissionProgram $program): RedirectResponse
     {
+        abort_unless($program->verified_at && $program->source_url, 404);
         $request->user()->belongsToMany(AdmissionProgram::class, 'learning_admission_favorites', 'user_id', 'admission_program_id')->toggle($program->id);
 
         return back()->with('success', __('learning-tools::app.admissions.favorite_updated'));

@@ -186,7 +186,7 @@ return [
     'admissions' => [
         'title' => 'School and major lookup', 'subtitle' => 'Explore admission programs, subject combinations, and published benchmark scores.',
         'search' => 'Search school, major, or code...', 'all_years' => 'All years', 'all_combinations' => 'All combinations',
-        'benchmark' => 'Benchmark', 'official_source' => 'View official source', 'empty' => 'No matching admission data.',
+        'benchmark' => 'Benchmark', 'official_source' => 'View official source', 'empty' => 'No verified official admission data has been loaded or matched these filters.',
         'favorite_updated' => 'Favorite list updated.',
     ],
     'gpa' => [
