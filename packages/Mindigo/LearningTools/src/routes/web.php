@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\LearningTools\Http\Controllers\FlashcardController;
 use Mindigo\LearningTools\Http\Controllers\LearningNoteController;
 use Mindigo\LearningTools\Http\Controllers\LearningResourceController;
 use Mindigo\LearningTools\Http\Controllers\LearningToolsController;
 use Mindigo\LearningTools\Http\Controllers\PomodoroController;
+use Mindigo\LearningTools\Http\Controllers\StudyPlanController;
 
 Route::middleware(['web', 'auth', 'role:student|teacher|admin', 'permission:learning-tools.view'])
     ->prefix('learning-tools')
@@ -24,6 +26,29 @@ Route::middleware(['web', 'auth', 'role:student|teacher|admin', 'permission:lear
             Route::patch('/pomodoro/{session}/cancel', [PomodoroController::class, 'cancel'])->name('pomodoro.cancel');
 
             Route::resource('notes', LearningNoteController::class)->except('show');
+
+            Route::get('/flashcards', [FlashcardController::class, 'index'])->name('flashcards.index');
+            Route::get('/flashcards/create', [FlashcardController::class, 'create'])->name('flashcards.create');
+            Route::post('/flashcards', [FlashcardController::class, 'store'])->name('flashcards.store');
+            Route::get('/flashcards/{deck}', [FlashcardController::class, 'show'])->name('flashcards.show');
+            Route::get('/flashcards/{deck}/edit', [FlashcardController::class, 'edit'])->name('flashcards.edit');
+            Route::put('/flashcards/{deck}', [FlashcardController::class, 'update'])->name('flashcards.update');
+            Route::delete('/flashcards/{deck}', [FlashcardController::class, 'destroy'])->name('flashcards.destroy');
+            Route::post('/flashcards/{deck}/cards', [FlashcardController::class, 'storeCard'])->name('flashcards.cards.store');
+            Route::delete('/flashcards/{deck}/cards/{card}', [FlashcardController::class, 'destroyCard'])->name('flashcards.cards.destroy');
+            Route::get('/flashcards/{deck}/study', [FlashcardController::class, 'study'])->name('flashcards.study');
+            Route::post('/flashcards/{deck}/study/{card}', [FlashcardController::class, 'review'])->name('flashcards.review');
+
+            Route::get('/plans', [StudyPlanController::class, 'index'])->name('plans.index');
+            Route::get('/plans/create', [StudyPlanController::class, 'create'])->name('plans.create');
+            Route::post('/plans', [StudyPlanController::class, 'store'])->name('plans.store');
+            Route::get('/plans/{plan}', [StudyPlanController::class, 'show'])->name('plans.show');
+            Route::get('/plans/{plan}/edit', [StudyPlanController::class, 'edit'])->name('plans.edit');
+            Route::put('/plans/{plan}', [StudyPlanController::class, 'update'])->name('plans.update');
+            Route::delete('/plans/{plan}', [StudyPlanController::class, 'destroy'])->name('plans.destroy');
+            Route::post('/plans/{plan}/tasks', [StudyPlanController::class, 'storeTask'])->name('plans.tasks.store');
+            Route::delete('/plans/{plan}/tasks/{task}', [StudyPlanController::class, 'destroyTask'])->name('plans.tasks.destroy');
+            Route::post('/plans/{plan}/tasks/{task}/toggle', [StudyPlanController::class, 'toggleTask'])->name('plans.tasks.toggle');
 
             Route::get('/resources', [LearningResourceController::class, 'index'])->name('resources.index');
             Route::get('/resources/{resource}', [LearningResourceController::class, 'show'])->name('resources.show');
