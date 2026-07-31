@@ -95,6 +95,9 @@ class LearningToolsPhaseFourTest extends TestCase
         $this->assertSame(8.8, $scenario->average_ten);
         $this->assertSame(4.0, $scenario->gpa_four);
         $this->assertSame('excellent', $scenario->classification);
-        $this->actingAs($student)->get(route('learning-tools.gpa.index'))->assertOk()->assertSee(route('learning-tools.academic.index'));
+        $this->actingAs($student)->get(route('learning-tools.gpa.index'))->assertOk()->assertSee(route('learning-tools.scores.index'));
+        $this->actingAs($student)->get(route('learning-tools.academic.index'))->assertOk()->assertSee(route('learning-tools.scores.index'));
+        $this->actingAs($student)->get(route('learning-tools.scores.index'))->assertOk()
+            ->assertSee(route('learning-tools.academic.index'))->assertSee(route('learning-tools.gpa.index'));
     }
 }
