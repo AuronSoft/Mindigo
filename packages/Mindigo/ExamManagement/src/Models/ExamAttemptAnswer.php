@@ -4,6 +4,7 @@ namespace Mindigo\ExamManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Mindigo\Auth\Models\User;
 
 class ExamAttemptAnswer extends Model
 {
@@ -15,6 +16,9 @@ class ExamAttemptAnswer extends Model
         'is_correct',
         'points_awarded',
         'needs_review',
+        'feedback',
+        'graded_by',
+        'graded_at',
     ];
 
     protected function casts(): array
@@ -24,6 +28,7 @@ class ExamAttemptAnswer extends Model
             'is_correct' => 'boolean',
             'points_awarded' => 'decimal:2',
             'needs_review' => 'boolean',
+            'graded_at' => 'datetime',
         ];
     }
 
@@ -35,5 +40,10 @@ class ExamAttemptAnswer extends Model
     public function question(): BelongsTo
     {
         return $this->belongsTo(ExamQuestion::class, 'exam_question_id');
+    }
+
+    public function grader(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'graded_by');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'teacher_feedback' => 'Nhận xét của giáo viên',
     // ── Chung ──────────────────────────────────────────────────────────
     'area' => 'Học tập',
     'title' => 'Đề thi & Kiểm tra',
