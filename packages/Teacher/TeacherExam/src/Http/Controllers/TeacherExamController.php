@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
+use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\TeacherExam\Http\Requests\GradeExamAttemptRequest;
 use Mindigo\TeacherExam\Http\Requests\TeacherExamRequest;
 use Mindigo\TeacherExam\Services\TeacherExamService;
 
@@ -108,6 +110,27 @@ class TeacherExamController extends Controller
         return redirect()
             ->route('teacher.exams.index')
             ->with('success', __('teacher-exam::app.deleted'));
+    }
+
+    public function grade(Exam $exam, ExamAttempt $attempt)
+    {
+        $this->authorizeOwnership($exam);
+        abort_unless((int) $attempt->exam_id === (int) $exam->id, 404);
+        abort_unless(in_array($attempt->status, ['submitted', 'expired'], true), 422);
+
+        return view('teacher-exam::grade', $this->service->gradingData($attempt));
+    }
+
+    public function updateGrade(GradeExamAttemptRequest $request, Exam $exam, ExamAttempt $attempt): RedirectResponse
+    {
+        $this->authorizeOwnership($exam);
+        abort_unless((int) $attempt->exam_id === (int) $exam->id, 404);
+        abort_unless(in_array($attempt->status, ['submitted', 'expired'], true), 422);
+
+        $this->service->gradeAttempt($attempt, $request->validated('grades'), Auth::user());
+
+        return redirect()->route('teacher.exams.show', $exam)
+            ->with('success', __('teacher-exam::app.graded_successfully'));
     }
 
     private function authorizeOwnership(Exam $exam): void

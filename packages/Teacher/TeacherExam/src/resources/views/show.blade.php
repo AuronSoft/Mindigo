@@ -183,6 +183,7 @@
                                     <th class="px-5 py-3">@lang('teacher-exam::app.col_score')</th>
                                     <th class="px-5 py-3">@lang('teacher-exam::app.col_result')</th>
                                     <th class="px-5 py-3">@lang('teacher-exam::app.col_submitted')</th>
+                                    <th class="px-5 py-3 text-right">@lang('teacher-exam::app.col_action')</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
@@ -206,7 +207,9 @@
                                             </div>
                                         </td>
                                         <td class="px-5 py-3">
-                                            @if($attempt->passed)
+                                            @if($attempt->answers->contains(fn ($answer) => $answer->needs_review))
+                                                <span class="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-black text-amber-700">@lang('teacher-exam::app.pending_grading')</span>
+                                            @elseif($attempt->passed)
                                                 <span class="rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-black text-green-800">@lang('teacher-exam::app.status_passed')</span>
                                             @else
                                                 <span class="rounded-full bg-red-100 px-2.5 py-1 text-[11px] font-black text-red-700">@lang('teacher-exam::app.status_failed')</span>
@@ -214,6 +217,15 @@
                                         </td>
                                         <td class="px-5 py-3 text-xs font-bold text-slate-400">
                                             {{ $attempt->submitted_at?->diffForHumans() }}
+                                        </td>
+                                        <td class="px-5 py-3 text-right">
+                                            @if($attempt->answers->contains(fn ($answer) => $answer->needs_review))
+                                                <a href="{{ route('teacher.exams.attempts.grade', [$exam, $attempt]) }}" class="inline-flex rounded-lg bg-green-600 px-3 py-2 text-xs font-black text-white no-underline hover:bg-green-700">@lang('teacher-exam::app.grade_now')</a>
+                                            @elseif($attempt->graded_at)
+                                                <a href="{{ route('teacher.exams.attempts.grade', [$exam, $attempt]) }}" class="text-xs font-black text-green-700 no-underline">@lang('teacher-exam::app.review_grade')</a>
+                                            @else
+                                                <span class="text-xs font-bold text-slate-400">@lang('teacher-exam::app.auto_graded')</span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

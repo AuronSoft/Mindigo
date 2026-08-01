@@ -17,6 +17,7 @@ class ExamAttempt extends Model
     {
         return ExamAttemptFactory::new();
     }
+
     public const STATUSES = ['in_progress', 'submitted', 'expired'];
 
     protected $fillable = [
@@ -26,6 +27,8 @@ class ExamAttempt extends Model
         'started_at',
         'expires_at',
         'submitted_at',
+        'graded_by',
+        'graded_at',
         'score',
         'max_score',
         'percentage',
@@ -41,6 +44,7 @@ class ExamAttempt extends Model
             'started_at' => 'datetime',
             'expires_at' => 'datetime',
             'submitted_at' => 'datetime',
+            'graded_at' => 'datetime',
             'score' => 'decimal:2',
             'max_score' => 'decimal:2',
             'percentage' => 'decimal:2',
@@ -63,5 +67,15 @@ class ExamAttempt extends Model
     public function answers(): HasMany
     {
         return $this->hasMany(ExamAttemptAnswer::class);
+    }
+
+    public function grader(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'graded_by');
+    }
+
+    public function hasPendingReview(): bool
+    {
+        return $this->answers()->where('needs_review', true)->exists();
     }
 }

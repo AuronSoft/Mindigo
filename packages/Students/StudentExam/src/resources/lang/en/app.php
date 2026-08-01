@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'teacher_feedback' => 'Teacher feedback',
     // ── General ────────────────────────────────────────────────────────
     'area' => 'Learning',
     'title' => 'Exams & Quizzes',

@@ -201,7 +201,7 @@ class ExamService
         }
 
         // Chấm điểm tự động
-        [$score, $maxScore] = $this->autoGrade($attempt);
+        [$score, $maxScore, $pendingReview] = $this->autoGrade($attempt);
 
         $attempt->update([
             'submitted_at' => now(),
@@ -210,7 +210,7 @@ class ExamService
             'score' => $score,
             'max_score' => $maxScore,
             'percentage' => $maxScore > 0 ? round($score / $maxScore * 100, 2) : 0,
-            'passed' => $score >= (float) $attempt->exam->passing_score,
+            'passed' => $pendingReview ? null : $score >= (float) $attempt->exam->passing_score,
         ]);
 
         return $attempt->fresh();
@@ -229,27 +229,33 @@ class ExamService
     {
         $exam = $attempt->exam()->with('questions')->first();
         $questions = $exam->questions;
-        $answers = ExamAttemptAnswer::where('exam_attempt_id', $attempt->id)
-            ->get()
-            ->keyBy('exam_question_id');
-
         $score = 0;
         $maxScore = 0;
+        $pendingReview = false;
 
         foreach ($questions as $question) {
             $point = $question->points ?? 1;
             $maxScore += $point;
 
-            if (! isset($answers[$question->id])) {
+            $answer = ExamAttemptAnswer::query()->firstOrCreate(
+                ['exam_attempt_id' => $attempt->id, 'exam_question_id' => $question->id],
+                ['type' => $question->type, 'answer' => []]
+            );
+            $given = $answer->answer ?? [];
+
+            if ($question->type === 'essay') {
+                $answer->forceFill(['is_correct' => null, 'points_awarded' => 0, 'needs_review' => true])->save();
+                $pendingReview = true;
+
                 continue;
             }
-
-            $given = $answers[$question->id]->answer ?? [];
 
             // Lấy các option đúng
             $correctOptions = collect($question->correct_answers ?? [])->sort()->values();
 
             if ($correctOptions->isEmpty()) {
+                $answer->forceFill(['is_correct' => false, 'points_awarded' => 0, 'needs_review' => false])->save();
+
                 continue;
             }
 
@@ -257,12 +263,20 @@ class ExamService
             $givenIds = collect($given)->map(fn ($value) => (string) $value)->sort()->values();
             $correctOptions = $correctOptions->map(fn ($value) => (string) $value)->sort()->values();
 
-            if ($givenIds->toArray() === $correctOptions->toArray()) {
+            $isCorrect = $givenIds->toArray() === $correctOptions->toArray();
+
+            if ($isCorrect) {
                 $score += $point;
             }
+
+            $answer->forceFill([
+                'is_correct' => $isCorrect,
+                'points_awarded' => $isCorrect ? $point : 0,
+                'needs_review' => false,
+            ])->save();
         }
 
-        return [$score, $maxScore];
+        return [$score, $maxScore, $pendingReview];
     }
 
     private function normalizeAnswer(mixed $answer): array
@@ -281,19 +295,21 @@ class ExamService
 
     public function getResult(ExamAttempt $attempt): array
     {
-        $exam = $attempt->exam()->with('questions.options')->first();
+        $exam = $attempt->exam()->with('questions')->first();
 
         $answers = ExamAttemptAnswer::where('exam_attempt_id', $attempt->id)->get()->keyBy('exam_question_id');
 
         // Chỉ show review nếu đề cho phép
-        $showReview = (bool) ($exam->show_answers_after_submit ?? false);
+        $pendingReview = $answers->contains(fn (ExamAttemptAnswer $answer) => $answer->needs_review);
+        $showReview = (bool) $exam->show_results && ! $pendingReview;
 
         return [
             'exam' => $exam,
-            'score' => $attempt->score,
+            'score' => $pendingReview ? null : $attempt->score,
             'max_score' => $attempt->max_score,
-            'percentage' => $attempt->percentage,
-            'passed' => $attempt->passed,
+            'percentage' => $pendingReview ? null : $attempt->percentage,
+            'passed' => $pendingReview ? null : $attempt->passed,
+            'pending_review' => $pendingReview,
             'show_review' => $showReview,
             'questions' => $showReview ? $exam->questions : collect(),
             'answers' => $showReview ? $answers : collect(),
