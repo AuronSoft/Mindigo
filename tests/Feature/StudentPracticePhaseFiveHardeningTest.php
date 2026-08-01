@@ -72,6 +72,10 @@ class StudentPracticePhaseFiveHardeningTest extends TestCase
     {
         [$student, $question, $attempt] = $this->startedAttempt('Original immutable question');
         $question->update(['content' => 'Changed question', 'correct_answers' => ['B'], 'status' => 'rejected']);
+
+        $this->actingAs($student)->get(route('student.practice.attempt', $attempt))
+            ->assertOk()->assertSee('Original immutable question')->assertDontSee('Changed question');
+
         $question->delete();
 
         $this->actingAs($student)->get(route('student.practice.attempt', $attempt))
@@ -125,6 +129,42 @@ class StudentPracticePhaseFiveHardeningTest extends TestCase
 
         $this->actingAs($student)->get(route('student.practice.history'))
             ->assertOk()->assertViewHas('history', fn ($history): bool => $history->perPage() === 15 && $history->total() === 17);
+    }
+
+    public function test_student_workspace_endpoints_reject_guests_and_teachers(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        $routes = [
+            route('student.practice.index'),
+            route('student.practice.history'),
+            route('student.practice.analytics.index'),
+            route('student.practice.adaptive.index'),
+            route('student.practice.skills.index'),
+        ];
+
+        foreach ($routes as $url) {
+            $this->get($url)->assertRedirect(route('login'));
+        }
+
+        foreach ($routes as $url) {
+            $this->actingAs($teacher)->get($url)->assertRedirect(route('teacher.dashboard'));
+        }
+    }
+
+    public function test_practice_workspace_exposes_accessible_feedback_and_controls(): void
+    {
+        [$student, $question, $attempt] = $this->startedAttempt();
+
+        $this->actingAs($student)->get(route('student.practice.index'))
+            ->assertOk()
+            ->assertSee('role="search"', false)
+            ->assertSee('aria-label="'.__('student-practice::app.filter_title').'"', false);
+        $this->actingAs($student)->get(route('student.practice.attempt', $attempt))
+            ->assertOk()
+            ->assertSee('role="status"', false)
+            ->assertSee('aria-live="polite"', false)
+            ->assertSee((string) $question->content);
     }
 
     private function startedAttempt(string $content = 'Stable question'): array

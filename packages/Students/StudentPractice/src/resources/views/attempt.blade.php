@@ -9,7 +9,7 @@
 <div class="min-h-screen bg-slate-50">
     <header class="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-6 py-4">
         <div><p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('student-practice::app.area')</p><h1 class="text-lg font-black text-slate-950">{{ $attempt->practiceSet?->title ?? __('student-practice::app.title') }}</h1></div>
-        <form action="{{ route('student.practice.complete', $attempt) }}" method="POST">@csrf<button class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-black text-white hover:bg-green-700">@lang('student-practice::app.finish')</button></form>
+        <form action="{{ route('student.practice.complete', $attempt) }}" method="POST">@csrf<button type="submit" class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-black text-white hover:bg-green-700">@lang('student-practice::app.finish')</button></form>
     </header>
     <main class="mx-auto max-w-5xl space-y-5 p-6">
         @foreach($attempt->answers as $index => $practiceAnswer)
@@ -33,9 +33,9 @@
                     @elseif($practiceAnswer->display_type === 'true_false')
                         @foreach([1 => __('student-practice::app.correct'), 0 => __('student-practice::app.incorrect')] as $value => $label)<label class="mr-4 inline-flex items-center gap-2 text-sm font-semibold"><input type="radio" name="answer[answer]" value="{{ $value }}" @checked((string) data_get($practiceAnswer->student_answer, 'answer') === (string) $value)>{{ $label }}</label>@endforeach
                     @else
-                        <textarea name="answer[text]" rows="4" class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm font-semibold" placeholder="@lang('student-practice::app.answer_placeholder')">{{ data_get($practiceAnswer->student_answer, 'text') }}</textarea>
+                        <textarea name="answer[text]" rows="4" aria-label="@lang('student-practice::app.your_answer')" class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm font-semibold" placeholder="@lang('student-practice::app.answer_placeholder')">{{ data_get($practiceAnswer->student_answer, 'text') }}</textarea>
                     @endif
-                    <div class="flex items-center gap-3"><button class="rounded-lg border border-green-600 px-4 py-2 text-xs font-black text-green-700 hover:bg-green-50">@lang('student-practice::app.save_answer')</button><span class="text-xs font-bold text-green-700" data-practice-status></span></div>
+                    <div class="flex items-center gap-3"><button type="submit" class="rounded-lg border border-green-600 px-4 py-2 text-xs font-black text-green-700 hover:bg-green-50">@lang('student-practice::app.save_answer')</button><span class="text-xs font-bold text-green-700" role="status" aria-live="polite" data-practice-status></span></div>
                 </form>
             </article>
         @endforeach

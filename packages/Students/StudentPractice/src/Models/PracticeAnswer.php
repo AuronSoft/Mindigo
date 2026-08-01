@@ -60,21 +60,21 @@ class PracticeAnswer extends Model
 
     public function getDisplayContentAttribute(): string
     {
-        return (string) ($this->question?->content ?? data_get($this->question_snapshot, 'content', ''));
+        return (string) (data_get($this->question_snapshot, 'content') ?? $this->question?->content ?? '');
     }
 
     public function getDisplayTypeAttribute(): string
     {
-        return (string) ($this->question?->type ?? data_get($this->question_snapshot, 'type', 'short_answer'));
+        return (string) (data_get($this->question_snapshot, 'type') ?? $this->question?->type ?? 'short_answer');
     }
 
     public function getDisplayOptionsAttribute(): array
     {
-        return $this->question?->options ?? data_get($this->question_snapshot, 'options', []);
+        return data_get($this->question_snapshot, 'options') ?? $this->question?->options ?? [];
     }
 
     public function getDisplayExplanationAttribute(): ?string
     {
-        return $this->question?->explanation ?? data_get($this->question_snapshot, 'explanation');
+        return data_get($this->question_snapshot, 'explanation') ?? $this->question?->explanation;
     }
 }

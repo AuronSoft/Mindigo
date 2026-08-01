@@ -32,6 +32,7 @@ class StudentPracticePhaseTwoTest extends TestCase
 
         $attempt = PracticeAttempt::query()->where('student_id', $student->id)->sole();
         $this->assertSame($skill->id, $attempt->practice_skill_id);
+        $this->assertSame('skill', $attempt->mode);
         $this->assertSame('balanced', $attempt->selection_strategy);
         $this->assertSame(3, $attempt->question_pool_size);
         $this->assertEqualsCanonicalizing(Question::DIFFICULTIES, $attempt->answers()->pluck('difficulty_snapshot')->all());

@@ -43,6 +43,7 @@ return [
     'save_answer' => 'Lưu câu trả lời',
     'finish' => 'Hoàn thành lượt luyện',
     'back' => 'Quay lại',
+    'close' => 'Đóng',
     'result' => 'Kết quả luyện tập',
     'score' => 'Điểm',
     'correct' => 'Đúng',

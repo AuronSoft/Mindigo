@@ -16,6 +16,8 @@ class PracticeLearningInsightService
         $definitions = $this->definitions($analytics);
 
         DB::transaction(function () use ($student, $analytics, $definitions): void {
+            User::query()->whereKey($student->getAuthIdentifier())->lockForUpdate()->firstOrFail();
+
             foreach (['strength', 'weakness', 'trend'] as $type) {
                 PracticeLearningInsight::query()->where('student_id', $student->getAuthIdentifier())
                     ->where('status', PracticeLearningInsight::STATUS_ACTIVE)
