@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'invalid_classrooms' => 'Bạn chỉ có thể giao đề cho lớp học do mình phụ trách.',
     'title'       => 'Quản lý đề thi',
     'subtitle'    => 'Tạo, quản lý đề thi và theo dõi kết quả học sinh.',
     'create'      => 'Tạo đề thi',

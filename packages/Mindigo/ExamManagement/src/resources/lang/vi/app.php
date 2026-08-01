@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'assigned_classrooms' => 'Giao đề cho lớp học',
+    'assigned_classrooms_help' => 'Chỉ học sinh đang hoạt động trong các lớp được chọn mới nhìn thấy và làm đề này.',
+    'students_unit' => 'học sinh',
     'title' => 'Quản lý đề thi',
     'breadcrumb' => 'Đề thi',
     'heading' => 'Quản lý đề thi',

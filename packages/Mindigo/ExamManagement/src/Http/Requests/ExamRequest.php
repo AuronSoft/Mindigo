@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 class ExamRequest extends FormRequest
 {
     public const TYPES = ['single_choice', 'multiple_choice', 'true_false', 'short_answer', 'essay'];
+
     public const DIFFICULTIES = ['easy', 'medium', 'hard'];
 
     public function authorize(): bool
@@ -33,6 +34,8 @@ class ExamRequest extends FormRequest
             'shuffle_questions' => ['nullable', 'boolean'],
             'shuffle_answers' => ['nullable', 'boolean'],
             'show_results' => ['nullable', 'boolean'],
+            'classroom_ids' => ['required', 'array', 'min:1'],
+            'classroom_ids.*' => ['integer', 'distinct', 'exists:classrooms,id'],
             'folder_id' => ['nullable', 'exists:question_bank_folders,id'],
             'generation_subject' => ['nullable', 'string', 'max:150'],
             'generation_topic' => ['nullable', 'string', 'max:150'],
@@ -76,7 +79,10 @@ class ExamRequest extends FormRequest
             'shuffle_questions' => $this->boolean('shuffle_questions'),
             'shuffle_answers' => $this->boolean('shuffle_answers'),
             'show_results' => $this->boolean('show_results'),
-            'audience' => ['roles' => ['student']],
+            'audience' => [
+                'roles' => ['student'],
+                'classrooms' => collect($validated['classroom_ids'])->map(fn ($id) => (int) $id)->values()->all(),
+            ],
         ];
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'invalid_classrooms' => 'You can only assign exams to classrooms you teach.',
     'title'       => 'My Exams',
     'subtitle'    => 'Create and manage your exams, track student results.',
     'create'      => 'Create exam',

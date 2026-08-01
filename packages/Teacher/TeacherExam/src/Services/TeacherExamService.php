@@ -3,8 +3,8 @@
 namespace Mindigo\TeacherExam\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Mindigo\Auth\Models\User;
+use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\ExamManagement\Services\ExamService;
@@ -29,7 +29,7 @@ class TeacherExamService
             $keyword = trim((string) $filters['keyword']);
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', "%{$keyword}%")
-                  ->orWhere('subject', 'like', "%{$keyword}%");
+                    ->orWhere('subject', 'like', "%{$keyword}%");
             });
         }
 
@@ -45,10 +45,10 @@ class TeacherExamService
         $base = Exam::query()->where('created_by', $teacher->getAuthIdentifier());
 
         return [
-            'total'     => (clone $base)->count(),
+            'total' => (clone $base)->count(),
             'published' => (clone $base)->where('status', 'published')->count(),
-            'draft'     => (clone $base)->where('status', 'draft')->count(),
-            'closed'    => (clone $base)->where('status', 'closed')->count(),
+            'draft' => (clone $base)->where('status', 'draft')->count(),
+            'closed' => (clone $base)->where('status', 'closed')->count(),
         ];
     }
 
@@ -77,9 +77,16 @@ class TeacherExamService
         $this->exams->delete($exam);
     }
 
-    public function formData(): array
+    public function formData(User $teacher): array
     {
-        return $this->exams->formData();
+        $classrooms = Classroom::query()
+            ->when(! $teacher->isAdmin(), fn ($query) => $query->where('teacher_id', $teacher->getAuthIdentifier()))
+            ->where('status', 'active')
+            ->withCount(['students' => fn ($query) => $query->where('classroom_students.status', 'active')])
+            ->orderBy('name')
+            ->get();
+
+        return [...$this->exams->formData(), 'classrooms' => $classrooms];
     }
 
     /**
@@ -91,12 +98,12 @@ class TeacherExamService
             ->where('status', 'submitted')
             ->with('user:id,name,email');
 
-        $total      = (clone $attempts)->count();
-        $passed     = (clone $attempts)->where('passed', true)->count();
-        $avgScore   = (clone $attempts)->avg('percentage') ?? 0;
+        $total = (clone $attempts)->count();
+        $passed = (clone $attempts)->where('passed', true)->count();
+        $avgScore = (clone $attempts)->avg('percentage') ?? 0;
 
         $distribution = [];
-        foreach (['0–20' => [0,20], '20–40' => [20,40], '40–60' => [40,60], '60–80' => [60,80], '80–100' => [80,101]] as $label => [$min, $max]) {
+        foreach (['0–20' => [0, 20], '20–40' => [20, 40], '40–60' => [40, 60], '60–80' => [60, 80], '80–100' => [80, 101]] as $label => [$min, $max]) {
             $distribution[$label] = (clone $attempts)
                 ->where('percentage', '>=', $min)
                 ->where('percentage', '<', $max)
@@ -109,13 +116,13 @@ class TeacherExamService
             ->get();
 
         return [
-            'total'        => $total,
-            'passed'       => $passed,
-            'failed'       => $total - $passed,
-            'pass_rate'    => $total > 0 ? round($passed / $total * 100, 1) : 0,
-            'avg_score'    => round($avgScore, 1),
+            'total' => $total,
+            'passed' => $passed,
+            'failed' => $total - $passed,
+            'pass_rate' => $total > 0 ? round($passed / $total * 100, 1) : 0,
+            'avg_score' => round($avgScore, 1),
             'distribution' => $distribution,
-            'list'         => $list,
+            'list' => $list,
         ];
     }
 }

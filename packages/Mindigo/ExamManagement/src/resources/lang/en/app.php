@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'assigned_classrooms' => 'Assign to classrooms',
+    'assigned_classrooms_help' => 'Only active students in selected classrooms can see and take this exam.',
+    'students_unit' => 'students',
     'title' => 'Exam management',
     'breadcrumb' => 'Exams',
     'heading' => 'Exam management',
