@@ -42,6 +42,7 @@ class Exam extends Model
         'total_questions',
         'total_points',
         'published_at',
+        'assignment_notified_at',
     ];
 
     protected function casts(): array
@@ -50,6 +51,7 @@ class Exam extends Model
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
             'published_at' => 'datetime',
+            'assignment_notified_at' => 'datetime',
             'shuffle_questions' => 'boolean',
             'shuffle_answers' => 'boolean',
             'show_results' => 'boolean',
@@ -83,7 +85,7 @@ class Exam extends Model
 
         $now = now();
 
-        return (!$this->starts_at || $this->starts_at->lte($now))
-            && (!$this->ends_at || $this->ends_at->gte($now));
+        return (! $this->starts_at || $this->starts_at->lte($now))
+            && (! $this->ends_at || $this->ends_at->gte($now));
     }
 }

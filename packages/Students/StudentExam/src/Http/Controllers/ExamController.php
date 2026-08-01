@@ -149,4 +149,14 @@ class ExamController extends Controller
 
         return response()->json(['ok' => true]);
     }
+
+    public function heartbeat(ExamAttempt $attempt): JsonResponse
+    {
+        abort_unless($attempt->user_id === auth()->id(), 403);
+        abort_unless($attempt->status === 'in_progress', 422);
+
+        $this->service->recordActivity($attempt);
+
+        return response()->json(['ok' => true]);
+    }
 }

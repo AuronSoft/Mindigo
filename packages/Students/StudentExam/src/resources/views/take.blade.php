@@ -229,6 +229,8 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
                 const val = this.answers[qId];
                 if (Array.isArray(val)) this.multiAnswers[qId] = new Set(val.map(String));
             });
+            this.heartbeat();
+            window.setInterval(() => this.heartbeat(), 20000);
         },
 
         startCountdown() {
@@ -289,6 +291,16 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
                     method:    'POST',
                     headers:   { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
                     body:      JSON.stringify({ question_id: qId, answer: value }),
+                    keepalive: true,
+                });
+            } catch (_) {}
+        },
+
+        async heartbeat() {
+            try {
+                await fetch(`/student/exams/attempts/${attemptId}/heartbeat`, {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
                     keepalive: true,
                 });
             } catch (_) {}
