@@ -17,6 +17,8 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::post('/{exam}/close', [TeacherExamController::class, 'close'])->name('close');
         Route::delete('/{exam}', [TeacherExamController::class, 'destroy'])->name('destroy');
         Route::get('/{exam}/print', [TeacherExamController::class, 'print'])->name('print');
+        Route::get('/{exam}/monitor', [TeacherExamController::class, 'monitor'])->name('monitor');
+        Route::get('/{exam}/monitor/data', [TeacherExamController::class, 'monitorData'])->name('monitor.data');
         Route::get('/{exam}/attempts/{attempt}/grade', [TeacherExamController::class, 'grade'])->name('attempts.grade');
         Route::put('/{exam}/attempts/{attempt}/grade', [TeacherExamController::class, 'updateGrade'])->name('attempts.grade.update');
     });

@@ -3,6 +3,7 @@
 namespace Mindigo\TeacherExam\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -12,6 +13,7 @@ use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherExam\Http\Requests\GradeExamAttemptRequest;
+use Mindigo\TeacherExam\Http\Requests\MonitorExamRequest;
 use Mindigo\TeacherExam\Http\Requests\TeacherExamRequest;
 use Mindigo\TeacherExam\Services\TeacherExamService;
 
@@ -131,6 +133,28 @@ class TeacherExamController extends Controller
 
         return redirect()->route('teacher.exams.show', $exam)
             ->with('success', __('teacher-exam::app.graded_successfully'));
+    }
+
+    public function monitor(MonitorExamRequest $request, Exam $exam)
+    {
+        $this->authorizeOwnership($exam);
+
+        return view('teacher-exam::monitor', [
+            'exam' => $exam,
+            ...$this->service->monitoringData($exam, Auth::user(), $request->validated()),
+        ]);
+    }
+
+    public function monitorData(MonitorExamRequest $request, Exam $exam): JsonResponse
+    {
+        $this->authorizeOwnership($exam);
+        $data = $this->service->monitoringData($exam, Auth::user(), $request->validated());
+
+        return response()->json([
+            'summary' => $data['summary'],
+            'students' => $data['students']->items(),
+            'refreshed_at' => now()->toIso8601String(),
+        ]);
     }
 
     private function authorizeOwnership(Exam $exam): void

@@ -58,6 +58,12 @@
             </div>
         </div>
         <div class="flex items-center gap-2">
+            @if(in_array($exam->status, ['published', 'closed'], true))
+                <a href="{{ route('teacher.exams.monitor', $exam) }}"
+                   class="inline-flex h-9 items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 text-xs font-black text-green-700 no-underline transition hover:bg-green-100">
+                    <x-heroicon-o-signal class="h-4 w-4" />@lang('teacher-exam::app.monitor_exam')
+                </a>
+            @endif
             @if($exam->status === 'draft')
                 <a href="{{ route('teacher.exams.edit', $exam) }}"
                    class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline transition hover:bg-slate-50">

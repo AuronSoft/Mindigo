@@ -147,6 +147,7 @@ class ExamService
                 'user_id' => $studentId,
                 'started_at' => now(),
                 'expires_at' => $expiresAt,
+                'last_activity_at' => now(),
                 'status' => 'in_progress',
                 'max_score' => $exam->total_points,
                 'question_order' => $questionIds,
@@ -185,6 +186,17 @@ class ExamService
             ['exam_attempt_id' => $attempt->id, 'exam_question_id' => $question->id],
             ['type' => $question->type, 'answer' => $this->normalizeAnswer($answer)]
         );
+
+        $this->recordActivity($attempt);
+    }
+
+    public function recordActivity(ExamAttempt $attempt): void
+    {
+        if ($attempt->status !== 'in_progress') {
+            return;
+        }
+
+        $attempt->forceFill(['last_activity_at' => now()])->saveQuietly();
     }
 
     public function submitAttempt(ExamAttempt $attempt, array $validated, string $status = 'submitted'): ExamAttempt

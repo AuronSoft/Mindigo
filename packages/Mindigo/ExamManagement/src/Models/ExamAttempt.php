@@ -26,6 +26,7 @@ class ExamAttempt extends Model
         'status',
         'started_at',
         'expires_at',
+        'last_activity_at',
         'submitted_at',
         'graded_by',
         'graded_at',
@@ -43,6 +44,7 @@ class ExamAttempt extends Model
         return [
             'started_at' => 'datetime',
             'expires_at' => 'datetime',
+            'last_activity_at' => 'datetime',
             'submitted_at' => 'datetime',
             'graded_at' => 'datetime',
             'score' => 'decimal:2',
