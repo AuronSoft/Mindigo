@@ -13,17 +13,24 @@ class PracticeAnswer extends Model
     protected $fillable = [
         'attempt_id',
         'question_id',
+        'question_snapshot',
+        'difficulty_snapshot',
         'student_answer',
         'is_correct',
         'points',
+        'response_seconds',
+        'answer_revision',
+        'answered_at',
     ];
 
     protected function casts(): array
     {
         return [
             'student_answer' => 'array',
+            'question_snapshot' => 'array',
             'is_correct' => 'boolean',
             'points' => 'float',
+            'answered_at' => 'datetime',
         ];
     }
 

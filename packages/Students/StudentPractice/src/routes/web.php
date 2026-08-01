@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\StudentPractice\Http\Controllers\PracticeController;
 use Mindigo\StudentPractice\Http\Controllers\PracticeSkillController;
+use Mindigo\StudentPractice\Http\Controllers\SkillPracticeController;
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])
     ->prefix('practice/skills')
@@ -20,6 +21,9 @@ Route::middleware(['web', 'auth', 'role:student|admin'])->prefix('student')->nam
     Route::prefix('practice')->name('practice.')->group(function () {
         Route::get('/', [PracticeController::class, 'index'])->name('index');
         Route::get('/history', [PracticeController::class, 'history'])->name('history');
+        Route::get('/skills', [SkillPracticeController::class, 'index'])->name('skills.index');
+        Route::get('/skills/{skill}', [SkillPracticeController::class, 'show'])->name('skills.show')->whereNumber('skill');
+        Route::post('/skills/{skill}/start', [SkillPracticeController::class, 'start'])->name('skills.start')->whereNumber('skill');
         Route::post('/start', [PracticeController::class, 'start'])->name('start');
         Route::get('/questions/{question}', [PracticeController::class, 'show'])->name('show')->whereNumber('question');
         Route::get('/{attempt}/attempt', [PracticeController::class, 'attempt'])->name('attempt')->whereNumber('attempt');

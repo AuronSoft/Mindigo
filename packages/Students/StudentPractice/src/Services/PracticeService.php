@@ -12,12 +12,15 @@ use Mindigo\QuestionBank\Services\QuestionBankService;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
 use Mindigo\StudentPractice\Models\PracticeSet;
+use Mindigo\StudentPractice\Models\PracticeSkill;
 
 class PracticeService
 {
     public function __construct(
         protected QuestionBankService $questionBank,
         private readonly PracticeSkillService $skills,
+        private readonly SkillQuestionSelector $skillSelector,
+        private readonly SkillProgressService $skillProgress,
     ) {}
 
     public function getQuestions(array $filters): LengthAwarePaginator
@@ -53,6 +56,26 @@ class PracticeService
             ->get();
 
         return $this->createAttempt($student, $questions, $data);
+    }
+
+    public function startSkillPractice(User $student, PracticeSkill $skill, array $data): PracticeAttempt
+    {
+        [$questions, $poolSize] = $this->skillSelector->select(
+            $student,
+            $skill,
+            (int) $data['question_count'],
+            $data['difficulty'] ?? null,
+        );
+
+        return $this->createAttempt($student, $questions, [
+            'skill_id' => $skill->getKey(),
+            'mode' => 'skill',
+            'subject' => $skill->subject?->name,
+            'topic' => $skill->topic?->name,
+            'difficulty' => $data['difficulty'] ?? null,
+            'question_pool_size' => $poolSize,
+            'selection_strategy' => 'balanced',
+        ]);
     }
 
     public function startPracticeSet(User $student, PracticeSet $set): PracticeAttempt
@@ -102,6 +125,9 @@ class PracticeService
                 'student_answer' => $answer,
                 'is_correct' => $isCorrect,
                 'points' => $isCorrect ? 1 : 0,
+                'response_seconds' => min(65535, max(0, now()->diffInSeconds($lockedAttempt->last_activity_at))),
+                'answer_revision' => $practiceAnswer->answer_revision + 1,
+                'answered_at' => now(),
             ]);
             $lockedAttempt->update(['last_activity_at' => now()]);
 
@@ -130,6 +156,11 @@ class PracticeService
                 'completed_at' => now(),
             ]);
 
+            if ($lockedAttempt->practice_skill_id !== null) {
+                $lockedAttempt->loadMissing(['student', 'practiceSkill']);
+                $this->skillProgress->rebuild($lockedAttempt->student, $lockedAttempt->practiceSkill);
+            }
+
             return $lockedAttempt->fresh();
         });
     }
@@ -137,7 +168,7 @@ class PracticeService
     public function getStudentHistory(User $student, int $limit = 10): Collection
     {
         return PracticeAttempt::query()
-            ->with('practiceSet:id,title')
+            ->with(['practiceSet:id,title', 'practiceSkill:id,name'])
             ->where('student_id', $student->getAuthIdentifier())
             ->where('status', PracticeAttempt::STATUS_COMPLETED)
             ->latest('completed_at')
@@ -230,6 +261,8 @@ class PracticeService
                 'subject' => $data['subject'] ?? null,
                 'topic' => $data['topic'] ?? null,
                 'difficulty' => $data['difficulty'] ?? null,
+                'question_pool_size' => $data['question_pool_size'] ?? $questions->count(),
+                'selection_strategy' => $data['selection_strategy'] ?? 'random',
                 'total_questions' => $questions->count(),
                 'correct_answers' => 0,
                 'status' => PracticeAttempt::STATUS_IN_PROGRESS,
@@ -239,6 +272,14 @@ class PracticeService
 
             $attempt->answers()->createMany($questions->values()->map(fn (Question $question): array => [
                 'question_id' => $question->getKey(),
+                'question_snapshot' => [
+                    'content' => $question->content,
+                    'type' => $question->type,
+                    'options' => $question->options,
+                    'explanation' => $question->explanation,
+                    'hint' => $question->hint,
+                ],
+                'difficulty_snapshot' => $question->difficulty,
                 'student_answer' => null,
                 'is_correct' => false,
                 'points' => 0,

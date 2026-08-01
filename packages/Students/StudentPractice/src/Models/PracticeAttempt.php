@@ -34,6 +34,8 @@ class PracticeAttempt extends Model
         'subject',
         'topic',
         'difficulty', // null = all, or specific level
+        'question_pool_size',
+        'selection_strategy',
         'total_questions',
         'correct_answers',
         'score', // percentage
