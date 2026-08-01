@@ -2,7 +2,7 @@
 
 namespace Mindigo\TeacherQuestion\Services;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionFolder;
@@ -21,7 +21,7 @@ class TeacherQuestionService
 
     public function importFromRows(array $rows, User $teacher, string $status, ?int $folderId): int
     {
-    return $this->bank->importFromRows($rows, $teacher, $status, $folderId);
+        return $this->bank->importFromRows($rows, $teacher, $status, $folderId);
     }
 
     public function stats(User $teacher): array
@@ -30,21 +30,21 @@ class TeacherQuestionService
         $base = Question::where('created_by', $tid);
 
         return [
-            'total'     => (clone $base)->count(),
-            'approved'  => (clone $base)->where('status', 'approved')->count(),
+            'total' => (clone $base)->count(),
+            'approved' => (clone $base)->where('status', 'approved')->count(),
             'reviewing' => (clone $base)->where('status', 'reviewing')->count(),
-            'draft'     => (clone $base)->where('status', 'draft')->count(),
+            'draft' => (clone $base)->where('status', 'draft')->count(),
         ];
     }
 
     public function create(TeacherQuestionRequest $request): Question
     {
-        return $this->bank->createQuestion($request->user(), $request->validated());
+        return $this->bank->createQuestion($request->user(), $request->questionData());
     }
 
     public function update(Question $question, TeacherQuestionRequest $request): Question
     {
-        return $this->bank->updateQuestion($question, $request->validated());
+        return $this->bank->updateQuestion($question, $request->questionData($question));
     }
 
     public function submitForReview(Question $question): void
@@ -61,7 +61,7 @@ class TeacherQuestionService
         $this->bank->delete($question);
     }
 
-    public function myFolders(User $teacher): \Illuminate\Support\Collection
+    public function myFolders(User $teacher): Collection
     {
         return QuestionFolder::where('created_by', $teacher->getAuthIdentifier())
             ->withCount('questions')
@@ -83,9 +83,10 @@ class TeacherQuestionService
 
         return $data;
     }
-        public function bulkUpdateDifficulty(User $teacher, array $ids, string $difficulty): void
+
+    public function bulkUpdateDifficulty(User $teacher, array $ids, string $difficulty): void
     {
-        \Mindigo\QuestionBank\Models\Question::query()
+        Question::query()
             ->whereIn('id', $ids)
             ->where('created_by', $teacher->getAuthIdentifier())
             ->update(['difficulty' => $difficulty]);
@@ -93,7 +94,7 @@ class TeacherQuestionService
 
     public function bulkDelete(User $teacher, array $ids): void
     {
-        $questions = \Mindigo\QuestionBank\Models\Question::query()
+        $questions = Question::query()
             ->whereIn('id', $ids)
             ->where('created_by', $teacher->getAuthIdentifier())
             ->get();
@@ -102,15 +103,16 @@ class TeacherQuestionService
             $this->bank->delete($question);
         }
     }
+
     public function bulkUpdateStatus(User $teacher, array $ids, string $status): void
     {
-        \Mindigo\QuestionBank\Models\Question::query()
-        ->whereIn('id', $ids)
-        ->where('created_by', $teacher->getAuthIdentifier())
-        ->update([
-            'status'      => $status,
-            'reviewed_by' => $status === 'approved' ? $teacher->getAuthIdentifier() : null,
-            'reviewed_at' => $status === 'approved' ? now() : null,
-        ]);
+        Question::query()
+            ->whereIn('id', $ids)
+            ->where('created_by', $teacher->getAuthIdentifier())
+            ->update([
+                'status' => $status,
+                'reviewed_by' => $status === 'approved' ? $teacher->getAuthIdentifier() : null,
+                'reviewed_at' => $status === 'approved' ? now() : null,
+            ]);
     }
 }

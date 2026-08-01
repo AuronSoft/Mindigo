@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'grade_level' => 'Grade level',
+    'grade_level_hint' => 'For example: Grade 8, University year 1',
+    'estimated_seconds' => 'Estimated time (seconds)',
+    'estimated_seconds_hint' => 'For example: 90',
+    'practice_hint' => 'Practice hint',
+    'practice_hint_placeholder' => 'Give a useful step without revealing the answer',
     'title' => 'Question bank',
     'breadcrumb' => 'Question bank',
     'heading' => 'Question bank',

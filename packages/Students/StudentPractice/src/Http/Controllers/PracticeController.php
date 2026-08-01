@@ -22,7 +22,7 @@ class PracticeController extends Controller
         return view('student-practice::index', [
             'formData' => $this->service->formData($request->user()),
             'questions' => $this->service->getQuestions(
-                $request->only(['subject', 'topic', 'type', 'difficulty', 'keyword'])
+                $request->only(['subject', 'topic', 'type', 'difficulty', 'skill_id', 'keyword'])
             ),
         ]);
     }

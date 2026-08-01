@@ -7,8 +7,10 @@ use Illuminate\Support\ServiceProvider;
 use Mindigo\StudentPractice\Contracts\PracticeServiceInterface;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
 use Mindigo\StudentPractice\Models\PracticeSet;
+use Mindigo\StudentPractice\Models\PracticeSkill;
 use Mindigo\StudentPractice\Policies\PracticeAttemptPolicy;
 use Mindigo\StudentPractice\Policies\PracticeSetPolicy;
+use Mindigo\StudentPractice\Policies\PracticeSkillPolicy;
 use Mindigo\StudentPractice\Services\PracticeService;
 
 class StudentPracticeServiceProvider extends ServiceProvider
@@ -22,6 +24,7 @@ class StudentPracticeServiceProvider extends ServiceProvider
     {
         Gate::policy(PracticeAttempt::class, PracticeAttemptPolicy::class);
         Gate::policy(PracticeSet::class, PracticeSetPolicy::class);
+        Gate::policy(PracticeSkill::class, PracticeSkillPolicy::class);
 
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'student-practice');

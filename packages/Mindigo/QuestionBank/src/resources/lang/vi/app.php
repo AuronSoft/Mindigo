@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'grade_level' => 'Khối/lớp áp dụng',
+    'grade_level_hint' => 'Ví dụ: Lớp 8, Đại học năm 1',
+    'estimated_seconds' => 'Thời gian dự kiến (giây)',
+    'estimated_seconds_hint' => 'Ví dụ: 90',
+    'practice_hint' => 'Gợi ý luyện tập',
+    'practice_hint_placeholder' => 'Gợi ý từng bước nhưng không làm lộ đáp án',
     'title' => 'Ngân hàng câu hỏi',
     'breadcrumb' => 'Ngân hàng câu hỏi',
     'heading' => 'Ngân hàng câu hỏi',

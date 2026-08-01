@@ -15,7 +15,10 @@ use Mindigo\StudentPractice\Models\PracticeSet;
 
 class PracticeService
 {
-    public function __construct(protected QuestionBankService $questionBank) {}
+    public function __construct(
+        protected QuestionBankService $questionBank,
+        private readonly PracticeSkillService $skills,
+    ) {}
 
     public function getQuestions(array $filters): LengthAwarePaginator
     {
@@ -27,7 +30,7 @@ class PracticeService
 
     public function getQuestion(int $id): ?Question
     {
-        return Question::query()->where('status', 'approved')->find($id);
+        return Question::query()->practiceReady()->find($id);
     }
 
     public function formData(User $user): array
@@ -37,6 +40,7 @@ class PracticeService
             'difficulties' => Question::DIFFICULTIES,
             'subjects' => $this->questionBank->subjects(),
             'subjectTopics' => $this->questionBank->topicsBySubject(),
+            'skills' => $this->skills->activeCatalog(),
         ];
     }
 
@@ -182,12 +186,18 @@ class PracticeService
 
     private function approvedQuestions(array $filters)
     {
-        $query = Question::query()->where('status', 'approved');
+        $query = Question::query()->practiceReady();
 
         foreach (['subject', 'topic', 'type', 'difficulty'] as $filter) {
             if (filled($filters[$filter] ?? null)) {
                 $query->where($filter, $filters[$filter]);
             }
+        }
+
+        if (filled($filters['skill_id'] ?? null)) {
+            $query->whereIn('id', DB::table('question_practice_skill')
+                ->select('question_id')
+                ->where('practice_skill_id', (int) $filters['skill_id']));
         }
 
         if (filled($filters['keyword'] ?? null)) {
@@ -215,6 +225,7 @@ class PracticeService
             $attempt = PracticeAttempt::query()->create([
                 'student_id' => $student->getAuthIdentifier(),
                 'practice_set_id' => $data['practice_set_id'] ?? null,
+                'practice_skill_id' => $data['skill_id'] ?? null,
                 'mode' => $data['mode'] ?? 'mixed',
                 'subject' => $data['subject'] ?? null,
                 'topic' => $data['topic'] ?? null,
