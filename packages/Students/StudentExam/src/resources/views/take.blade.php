@@ -10,9 +10,6 @@
         'packages/Students/StudentExam/src/resources/css/app.css',
         'packages/Students/StudentExam/src/resources/js/app.js',
     ])
-    <style>
-        [x-cloak] { display: none !important; }
-    </style>
 @endsection
 
 @section('content')
@@ -21,7 +18,7 @@
         attemptId:      {{ $attempt->id }},
         expiresAt:      '{{ $attempt->expires_at?->toIso8601String() ?? '' }}',
         totalQuestions: {{ $questions->count() }},
-        savedAnswers:   @json($savedAnswers->map(fn($a) => $a->answer_value)->toArray()),
+        savedAnswers:   @json($savedAnswers->map(fn($a) => count($a->answer ?? []) === 1 ? $a->answer[0] : ($a->answer ?? []))->toArray()),
         submitUrl:      '{{ route('student.exams.submit', $attempt) }}',
         csrfToken:      '{{ csrf_token() }}'
      })"
@@ -78,10 +75,9 @@
                 $qType    = $question->type ?? 'single';
                 $options  = $question->options ?? collect();
                 $saved    = $savedAnswers[$qId] ?? null;
-                $savedVal = $saved?->answer;
-                $savedArr = ($qType === 'multiple_choice' && $savedVal && str_starts_with($savedVal, '['))
-                    ? array_map('strval', json_decode($savedVal, true))
-                    : [];
+                $savedRaw = $saved?->answer ?? [];
+                $savedArr = array_map('strval', $savedRaw);
+                $savedVal = $savedArr[0] ?? null;
             @endphp
 
             <div id="q-{{ $qId }}"
@@ -239,9 +235,7 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
             }
             Object.keys(this.answers).forEach(qId => {
                 const val = this.answers[qId];
-                if (typeof val === 'string' && val.startsWith('[')) {
-                    try { this.multiAnswers[qId] = new Set(JSON.parse(val)); } catch {}
-                }
+                if (Array.isArray(val)) this.multiAnswers[qId] = new Set(val.map(String));
             });
         },
 
@@ -290,7 +284,7 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
             checked
                 ? this.multiAnswers[key].add(String(optionId))
                 : this.multiAnswers[key].delete(String(optionId));
-            const val = JSON.stringify([...this.multiAnswers[key]]);
+            const val = [...this.multiAnswers[key]];
             this.answers[key] = val;
             this.savingId = qId;
             await this.persistAnswer(qId, val);
@@ -302,7 +296,7 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
                 await fetch(`/student/exams/attempts/${attemptId}/autosave`, {
                     method:    'POST',
                     headers:   { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-                    body:      JSON.stringify({ question_id: qId, answer_value: value }),
+                    body:      JSON.stringify({ question_id: qId, answer: value }),
                     keepalive: true,
                 });
             } catch (_) {}
@@ -335,6 +329,10 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
             addHidden('_token', csrfToken);
             addHidden('tab_leave_count', this.tabLeaveCount);
             Object.entries(this.answers).forEach(([qId, val]) => {
+                if (Array.isArray(val)) {
+                    val.forEach(answer => addHidden(`answers[${qId}][]`, answer));
+                    return;
+                }
                 addHidden(`answers[${qId}]`, val);
             });
 
@@ -345,4 +343,3 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
 }
 </script>
 @endpush
-
