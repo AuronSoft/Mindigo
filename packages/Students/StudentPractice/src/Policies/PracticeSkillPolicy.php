@@ -9,12 +9,18 @@ class PracticeSkillPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['teacher', 'admin']);
+        return $user->hasAnyRole(['student', 'teacher', 'admin']);
+    }
+
+    public function view(User $user, PracticeSkill $skill): bool
+    {
+        return $user->hasAnyRole(['teacher', 'admin'])
+            || ($user->hasRole('student') && $skill->status === PracticeSkill::STATUS_ACTIVE);
     }
 
     public function create(User $user): bool
     {
-        return $this->viewAny($user);
+        return $user->hasAnyRole(['teacher', 'admin']);
     }
 
     public function update(User $user, PracticeSkill $skill): bool

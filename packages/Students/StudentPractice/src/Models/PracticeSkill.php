@@ -66,4 +66,9 @@ class PracticeSkill extends Model
         return $this->belongsToMany(Question::class, 'question_practice_skill')
             ->withPivot(['is_primary', 'weight']);
     }
+
+    public function progress(): HasMany
+    {
+        return $this->hasMany(StudentSkillProgress::class, 'practice_skill_id');
+    }
 }
