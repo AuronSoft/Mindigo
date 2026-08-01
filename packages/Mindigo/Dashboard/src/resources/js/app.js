@@ -424,12 +424,18 @@ const syncSidebar = () => {
     const expanded = isSidebarExpanded();
     const compactWidthClass = sidebar?.dataset.compactWidth || 'w-20';
     const compactGridClass = adminShell?.dataset.compactGrid || 'grid-cols-[5rem_minmax(0,1fr)]';
+    const compactCenteredItems = sidebar?.querySelectorAll('[data-sidebar-compact-center]') || [];
 
     sidebar?.classList.toggle(compactWidthClass, !expanded);
     sidebar?.classList.toggle('w-72', expanded);
     adminShell?.classList.toggle(compactGridClass, !expanded);
     adminShell?.classList.toggle('grid-cols-[18rem_minmax(0,1fr)]', expanded);
     sidebarTextItems.forEach((item) => item.classList.toggle('hidden', !expanded));
+    compactCenteredItems.forEach((item) => {
+        item.classList.toggle('justify-center', !expanded);
+        item.classList.toggle('px-0', !expanded);
+        item.classList.toggle('px-3', expanded && item.id === 'sidebar-search-input');
+    });
     sidebarToggleIcon?.classList.toggle('rotate-180', expanded);
 
     sidebarGroups.forEach((group) => {

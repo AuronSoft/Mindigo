@@ -30,7 +30,7 @@
                 default => route('dashboard'),
             };
         @endphp
-        <a href="{{ $homeRoute }}" class="flex min-h-12 items-center gap-3 overflow-hidden text-slate-900 no-underline">
+        <a href="{{ $homeRoute }}" class="flex min-h-12 items-center gap-3 overflow-hidden text-slate-900 no-underline" data-sidebar-compact-center>
             <span class="grid h-11 w-11 shrink-0 place-items-center">
                 <svg width="40" height="44" viewBox="0 0 200 220" fill="none" aria-hidden="true">
                     <path d="M48 160 L22 148 L38 158 L16 152 L35 164" fill="#15803d" stroke="#14532d" stroke-width="1"/>
@@ -58,7 +58,7 @@
             </span>
         </a>
 
-        <div class="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3">
+        <div class="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3" data-sidebar-compact-center>
             <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 fill-none stroke-current stroke-2 text-slate-500" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
@@ -72,7 +72,7 @@
             >
         </div>
 
-        <div class="min-h-0 overflow-y-auto overflow-x-hidden pr-1">
+        <div class="min-h-0 overflow-y-auto overflow-x-hidden">
             <nav class="flex flex-col gap-2">
 
             @if($currentUser?->role === 'student')
@@ -133,7 +133,7 @@
                     ],
                 ];
             @endphp
-            <div class="flex flex-col gap-2 px-1 pt-2">
+            <div class="flex flex-col gap-2 pt-2">
                 <p class="mb-1 px-2 text-[10px] font-black uppercase tracking-wider text-slate-400" data-sidebar-text>@lang('student-dashboard::app.nav_section')</p>
                 @foreach($studentNavGroups as $group)
                     <div class="sidebar-group" data-sidebar-group data-group-name="{{ $group['name'] }}">
@@ -212,7 +212,7 @@
                     ],
                 ];
             @endphp
-            <div class="flex flex-col gap-2 px-1 pt-2">
+            <div class="flex flex-col gap-2 pt-2">
                 <p class="mb-1 px-2 text-[10px] font-black uppercase tracking-wider text-slate-400" data-sidebar-text>@lang('teacher-dashboard::app.title')</p>
                 @foreach($teacherNavGroups as $group)
                     <div class="sidebar-group" data-sidebar-group data-group-name="{{ $group['name'] }}">
@@ -382,7 +382,7 @@
         @php $unreadCount = $globalUnreadNotifications ?? 0; @endphp
         <div class="relative mt-auto">
             <button id="dashboard-notification-btn" type="button" aria-expanded="false" aria-haspopup="true"
-                class="flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left text-slate-700 transition hover:text-green-700">
+                class="flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left text-slate-700 transition hover:text-green-700" data-sidebar-compact-center>
                 <span class="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600">
                     <x-heroicon-o-bell class="h-5 w-5" />
                     <span class="absolute -right-1 -top-1 grid h-4.5 min-w-4.5 place-items-center rounded-full px-1 text-[10px] font-black text-white {{ $unreadCount > 0 ? 'bg-green-600' : 'bg-slate-300' }}">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
@@ -450,7 +450,7 @@
             </div>
         </div>
 
-        <button class="flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left" id="sidebar-avatar-btn" type="button">
+        <button class="flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left" id="sidebar-avatar-btn" type="button" data-sidebar-compact-center>
             <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-green-100 text-sm font-black text-green-700">{{ mb_substr($currentUser?->name ?? 'A', 0, 1) }}</span>
             <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
                 <span class="block max-w-44 truncate text-sm font-black text-slate-900">{{ $currentUser?->name ?? 'Guest' }}</span>
@@ -479,7 +479,7 @@
         </div>
 
         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
-        <button class="grid h-9 w-9 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:text-green-700" id="sidebar-toggle" type="button" aria-label="@lang('Mindigo-dashboard::app.expand_sidebar')">
+        <button class="ml-1 grid h-9 w-9 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:text-green-700" id="sidebar-toggle" type="button" aria-label="@lang('Mindigo-dashboard::app.expand_sidebar')">
             <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2 transition" id="sidebar-toggle-icon" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
     </aside>
