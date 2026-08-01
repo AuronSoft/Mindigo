@@ -12,7 +12,7 @@ class CheckRole
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login');
         }
 
@@ -24,8 +24,8 @@ class CheckRole
             }
         }
 
-        if (!in_array($user->role, $allowed, true)) {
-            if ($request->expectsJson()) {
+        if (! in_array($user->role, $allowed, true)) {
+            if ($request->expectsJson() || $allowed === ['admin']) {
                 abort(403);
             }
 

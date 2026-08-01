@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\Auth\Models\User;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 /**
@@ -15,13 +16,14 @@ class AdminAuthorizationTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private User $student;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->admin   = User::factory()->create(['role' => 'admin',   'is_active' => true]);
+        $this->admin = User::factory()->create(['role' => 'admin',   'is_active' => true]);
         $this->student = User::factory()->create(['role' => 'student', 'is_active' => true]);
     }
 
@@ -43,19 +45,19 @@ class AdminAuthorizationTest extends TestCase
         ];
     }
 
-    /** @dataProvider adminOnlyRoutesProvider */
+    #[DataProvider('adminOnlyRoutesProvider')]
     public function test_guest_redirected_to_login(string $path): void
     {
         $this->get($path)->assertRedirect('/login');
     }
 
-    /** @dataProvider adminOnlyRoutesProvider */
+    #[DataProvider('adminOnlyRoutesProvider')]
     public function test_student_gets_403(string $path): void
     {
         $this->actingAs($this->student)->get($path)->assertForbidden();
     }
 
-    /** @dataProvider adminOnlyRoutesProvider */
+    #[DataProvider('adminOnlyRoutesProvider')]
     public function test_admin_gets_200(string $path): void
     {
         $this->actingAs($this->admin)->get($path)->assertOk();
@@ -64,14 +66,14 @@ class AdminAuthorizationTest extends TestCase
     public static function adminOnlyRoutesProvider(): array
     {
         return [
-            'dashboard'         => ['/dashboard'],
-            'users'             => ['/dashboard/users'],
-            'audit-logs'        => ['/dashboard/audit-logs'],
-            'role-permissions'  => ['/dashboard/role-permissions'],
-            'system-settings'   => ['/dashboard/system-settings'],
-            'reports'           => ['/reports'],
-            'reports/exams'     => ['/reports/exams'],
-            'reports/students'  => ['/reports/students'],
+            'dashboard' => ['/dashboard'],
+            'users' => ['/dashboard/users'],
+            'audit-logs' => ['/dashboard/audit-logs'],
+            'role-permissions' => ['/dashboard/role-permissions'],
+            'system-settings' => ['/dashboard/system-settings'],
+            'reports' => ['/reports'],
+            'reports/exams' => ['/reports/exams'],
+            'reports/students' => ['/reports/students'],
         ];
     }
 
@@ -87,7 +89,7 @@ class AdminAuthorizationTest extends TestCase
             ->assertOk();
     }
 
-    // Question-bank permission 
+    // Question-bank permission
     public function test_admin_can_access_question_bank(): void
     {
         $this->actingAs($this->admin)
