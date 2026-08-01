@@ -14,14 +14,13 @@
 <body class="bg-slate-50 font-['Be_Vietnam_Pro',ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased">
 @php
     $currentUser = Auth::user();
-    $isTeacherShell = $currentUser?->role === 'teacher';
 @endphp
-<div id="admin-shell" class="grid min-h-screen {{ $isTeacherShell ? 'grid-cols-[6rem_minmax(0,1fr)]' : 'grid-cols-[5rem_minmax(0,1fr)]' }} transition-[grid-template-columns] duration-200" data-compact-grid="{{ $isTeacherShell ? 'grid-cols-[6rem_minmax(0,1fr)]' : 'grid-cols-[5rem_minmax(0,1fr)]' }}">
+<div id="admin-shell" class="grid min-h-screen grid-cols-[5rem_minmax(0,1fr)] transition-[grid-template-columns] duration-200" data-compact-grid="grid-cols-[5rem_minmax(0,1fr)]">
     <aside
         id="sidebar"
-        class="sidebar sticky top-0 z-30 flex h-screen {{ $isTeacherShell ? 'w-24' : 'w-20' }} flex-col gap-3 bg-[#f7faf7] p-3 transition-all duration-200"
+        class="sidebar sticky top-0 z-30 flex h-screen w-20 flex-col gap-3 bg-[#f7faf7] p-3 transition-all duration-200"
         data-expanded="false"
-        data-compact-width="{{ $isTeacherShell ? 'w-24' : 'w-20' }}"
+        data-compact-width="w-20"
     >
         @php
             $homeRoute = match (true) {
