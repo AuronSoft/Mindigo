@@ -9,7 +9,7 @@
 
 @section('content')
 <main class="min-h-screen bg-stone-50 p-4 lg:h-screen lg:overflow-hidden lg:p-5">
-    <div class="mx-auto grid h-full max-w-screen-2xl gap-4 lg:grid-cols-12">
+    <div class="grid h-full w-full gap-4 lg:grid-cols-12">
         <aside class="flex min-h-0 flex-col gap-4 lg:col-span-3">
             <section class="rounded-2xl border border-slate-200 bg-white p-4">
                 <div class="flex items-center justify-between">
