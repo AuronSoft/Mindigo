@@ -238,6 +238,9 @@
                             </tbody>
                         </table>
                     </div>
+                    @if($results['list']->hasPages())
+                        <div class="border-t border-slate-100 px-5 py-4">{{ $results['list']->links() }}</div>
+                    @endif
                 @endif
             </div>
         </div>

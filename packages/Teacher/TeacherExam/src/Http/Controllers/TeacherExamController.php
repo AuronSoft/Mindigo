@@ -129,7 +129,12 @@ class TeacherExamController extends Controller
         abort_unless((int) $attempt->exam_id === (int) $exam->id, 404);
         abort_unless(in_array($attempt->status, ['submitted', 'expired'], true), 422);
 
-        $this->service->gradeAttempt($attempt, $request->validated('grades'), Auth::user());
+        $this->service->gradeAttempt(
+            $attempt,
+            $request->validated('grades'),
+            Auth::user(),
+            $request->integer('grading_version')
+        );
 
         return redirect()->route('teacher.exams.show', $exam)
             ->with('success', __('teacher-exam::app.graded_successfully'));
@@ -165,7 +170,7 @@ class TeacherExamController extends Controller
         abort_unless(
             $user->isAdmin() || $exam->created_by === (int) $user->getAuthIdentifier(),
             403,
-            'Bạn không có quyền truy cập đề thi này.'
+            __('teacher-exam::app.unauthorized_exam')
         );
     }
 

@@ -15,21 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ExamAttemptController extends Controller
 {
-    public function __construct(private ExamAttemptService $attempts)
-    {
-    }
+    public function __construct(private ExamAttemptService $attempts) {}
 
     public function start(Request $request, Exam $exam): RedirectResponse
     {
         $this->authorizePermission($request->user(), 'exams.attempt');
-
-        if (!$exam->isOpen()) {
-            return back()->with('error', __('Mindigo-exam-management::app.messages.exam_not_open'));
-        }
-
-        if ($this->attempts->submittedAttemptCount($exam, $request->user()) >= $exam->max_attempts) {
-            return back()->with('error', __('Mindigo-exam-management::app.messages.max_attempts_reached'));
-        }
 
         return redirect()->route('exams.attempts.take', $this->attempts->start($exam, $request->user()));
     }
@@ -64,7 +54,9 @@ class ExamAttemptController extends Controller
             return response()->json(['ok' => false], Response::HTTP_CONFLICT);
         }
 
-        $this->attempts->autosave($attempt, $request->answers());
+        if (! $this->attempts->autosave($attempt, $request->answers())) {
+            return response()->json(['ok' => false], Response::HTTP_CONFLICT);
+        }
 
         return response()->json(['ok' => true, 'saved_at' => now()->toIso8601String()]);
     }

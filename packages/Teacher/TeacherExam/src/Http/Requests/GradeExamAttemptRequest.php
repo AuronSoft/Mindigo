@@ -3,19 +3,33 @@
 namespace Mindigo\TeacherExam\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Mindigo\ExamManagement\Models\Exam;
+use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
 
 class GradeExamAttemptRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        /** @var Exam|null $exam */
+        $exam = $this->route('exam');
+        /** @var ExamAttempt|null $attempt */
+        $attempt = $this->route('attempt');
+        $user = $this->user();
+
+        return $user !== null
+            && $exam !== null
+            && $attempt !== null
+            && (int) $attempt->exam_id === (int) $exam->id
+            && in_array($attempt->status, ['submitted', 'expired'], true)
+            && ($user->isAdmin() || (int) $exam->created_by === (int) $user->getAuthIdentifier());
     }
 
     public function rules(): array
     {
         return [
             'grades' => ['required', 'array', 'min:1'],
+            'grading_version' => ['required', 'integer', 'min:0'],
             'grades.*.points' => ['required', 'numeric', 'min:0'],
             'grades.*.feedback' => ['nullable', 'string', 'max:2000'],
         ];

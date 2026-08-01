@@ -15,9 +15,7 @@ use Mindigo\SubjectManagement\Models\Subject;
 
 class ExamService
 {
-    public function __construct(private ExamAuditService $audit)
-    {
-    }
+    public function __construct(private ExamAuditService $audit) {}
 
     public function create(ExamRequest $request): Exam
     {
@@ -45,6 +43,13 @@ class ExamService
         $oldValues = $exam->only($this->auditFields());
 
         DB::transaction(function () use ($request, $exam): void {
+            $exam = Exam::query()->lockForUpdate()->findOrFail($exam->id);
+            if (! in_array($exam->status, ['draft', 'reviewing'], true) || $exam->attempts()->exists()) {
+                throw ValidationException::withMessages([
+                    'exam' => __('Mindigo-exam-management::app.messages.exam_not_editable'),
+                ]);
+            }
+
             $data = [
                 ...$request->examData(),
                 'generation_config' => $request->generationConfig(),
@@ -69,17 +74,20 @@ class ExamService
 
     public function publish(Exam $exam): void
     {
-        if ($exam->questions()->count() === 0) {
-            throw ValidationException::withMessages([
-                'exam' => __('Mindigo-exam-management::app.messages.publish_without_questions'),
-            ]);
-        }
-
         $oldValues = $exam->only($this->auditFields());
-        $exam->forceFill([
-            'status' => 'published',
-            'published_at' => now(),
-        ])->save();
+        DB::transaction(function () use ($exam): void {
+            $exam = Exam::query()->lockForUpdate()->findOrFail($exam->id);
+            if ($exam->questions()->count() === 0) {
+                throw ValidationException::withMessages([
+                    'exam' => __('Mindigo-exam-management::app.messages.publish_without_questions'),
+                ]);
+            }
+
+            $exam->forceFill([
+                'status' => 'published',
+                'published_at' => now(),
+            ])->save();
+        });
 
         $this->auditExam('publish', $oldValues, $exam->only($this->auditFields()), $exam);
     }
@@ -87,7 +95,10 @@ class ExamService
     public function close(Exam $exam): void
     {
         $oldValues = $exam->only($this->auditFields());
-        $exam->forceFill(['status' => 'closed'])->save();
+        DB::transaction(function () use ($exam): void {
+            Exam::query()->lockForUpdate()->findOrFail($exam->id)
+                ->forceFill(['status' => 'closed'])->save();
+        });
 
         $this->auditExam('close', $oldValues, $exam->only($this->auditFields()), $exam);
     }
@@ -95,14 +106,24 @@ class ExamService
     public function delete(Exam $exam): void
     {
         $oldValues = $exam->only($this->auditFields());
-        $exam->delete();
+        DB::transaction(function () use ($exam): void {
+            $exam = Exam::query()->lockForUpdate()->findOrFail($exam->id);
+            if ($exam->attempts()->exists()) {
+                throw ValidationException::withMessages([
+                    'exam' => __('Mindigo-exam-management::app.messages.exam_has_attempts'),
+                ]);
+            }
+
+            $exam->delete();
+        });
 
         $this->auditExam('delete', $oldValues, [], $exam);
     }
 
-    public function filteredList(array $filters)
+    public function filteredList(array $filters, ?User $user = null)
     {
         $query = Exam::query()
+            ->when($user && ! $user->isAdmin(), fn ($builder) => $builder->where('created_by', $user->getAuthIdentifier()))
             ->with('creator:id,name,email,role')
             ->withCount('attempts')
             ->latest('updated_at');
@@ -136,13 +157,16 @@ class ExamService
         ];
     }
 
-    public function stats(): array
+    public function stats(?User $user = null): array
     {
+        $base = Exam::query()
+            ->when($user && ! $user->isAdmin(), fn ($builder) => $builder->where('created_by', $user->getAuthIdentifier()));
+
         return [
-            'total' => Exam::query()->count(),
-            'published' => Exam::query()->where('status', 'published')->count(),
-            'draft' => Exam::query()->where('status', 'draft')->count(),
-            'closed' => Exam::query()->where('status', 'closed')->count(),
+            'total' => (clone $base)->count(),
+            'published' => (clone $base)->where('status', 'published')->count(),
+            'draft' => (clone $base)->where('status', 'draft')->count(),
+            'closed' => (clone $base)->where('status', 'closed')->count(),
         ];
     }
 
@@ -160,7 +184,7 @@ class ExamService
                 ->values()
                 ->all();
 
-            if (!empty($subjects)) {
+            if (! empty($subjects)) {
                 return $subjects;
             }
         }
@@ -245,8 +269,8 @@ class ExamService
 
             if ($questions->count() < $count) {
                 throw ValidationException::withMessages([
-                    'counts.' . $type => __('Mindigo-exam-management::app.messages.not_enough_questions', [
-                        'type' => __('Mindigo-exam-management::app.question_types.' . $type),
+                    'counts.'.$type => __('Mindigo-exam-management::app.messages.not_enough_questions', [
+                        'type' => __('Mindigo-exam-management::app.question_types.'.$type),
                     ]),
                 ]);
             }
@@ -288,12 +312,12 @@ class ExamService
             ->where('status', 'approved')
             ->where('type', $type);
 
-        if (!empty($config['folder_id'])) {
+        if (! empty($config['folder_id'])) {
             $query->where('folder_id', $config['folder_id']);
         }
 
         foreach (['subject', 'topic', 'difficulty'] as $field) {
-            if (!empty($config[$field])) {
+            if (! empty($config[$field])) {
                 $query->where($field, $config[$field]);
             }
         }
@@ -308,7 +332,7 @@ class ExamService
         $counter = 2;
 
         while (Exam::query()->where('slug', $slug)->exists()) {
-            $slug = $base . '-' . $counter++;
+            $slug = $base.'-'.$counter++;
         }
 
         return $slug;

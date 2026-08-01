@@ -142,5 +142,8 @@ return [
         'not_enough_questions' => 'Not enough approved :type questions match the selected source.',
         'exam_not_open' => 'This exam is not open right now.',
         'max_attempts_reached' => 'The maximum number of attempts has been reached.',
+        'exam_not_editable' => 'A published exam or an exam with attempts cannot be edited.',
+        'exam_has_attempts' => 'This exam cannot be deleted because student attempts already exist.',
+        'not_assigned' => 'This exam is not assigned to one of your active classrooms.',
     ],
 ];

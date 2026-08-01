@@ -8,18 +8,23 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
+use Mindigo\ExamManagement\Services\ExamAuditService;
 use Mindigo\ExamManagement\Services\ExamService;
 use Mindigo\Notification\Notifications\ExamAssigned;
 use Mindigo\TeacherExam\Http\Requests\TeacherExamRequest;
 
 class TeacherExamService
 {
-    public function __construct(private readonly ExamService $exams) {}
+    public function __construct(
+        private readonly ExamService $exams,
+        private readonly ExamAuditService $audit,
+    ) {}
 
     /**
      * Danh sách đề thi CHỈ của giáo viên đang đăng nhập.
@@ -291,8 +296,8 @@ class TeacherExamService
 
         $list = (clone $attempts)
             ->orderByDesc('percentage')
-            ->limit(50)
-            ->get();
+            ->paginate(25)
+            ->withQueryString();
 
         return [
             'total' => $total,
@@ -316,10 +321,27 @@ class TeacherExamService
         ];
     }
 
-    public function gradeAttempt(ExamAttempt $attempt, array $grades, User $teacher): ExamAttempt
+    public function gradeAttempt(ExamAttempt $attempt, array $grades, User $teacher, ?int $expectedVersion = null): ExamAttempt
     {
-        return DB::transaction(function () use ($attempt, $grades, $teacher): ExamAttempt {
+        $gradedAttempt = DB::transaction(function () use ($attempt, $grades, $teacher, $expectedVersion): ExamAttempt {
             $attempt = ExamAttempt::query()->lockForUpdate()->with(['exam', 'answers.question'])->findOrFail($attempt->id);
+
+            if ($expectedVersion !== null && $attempt->grading_version !== $expectedVersion) {
+                throw ValidationException::withMessages([
+                    'grading_version' => __('teacher-exam::app.stale_grading'),
+                ]);
+            }
+
+            if (! in_array($attempt->status, ['submitted', 'expired'], true)) {
+                throw ValidationException::withMessages([
+                    'grades' => __('teacher-exam::app.attempt_not_gradable'),
+                ]);
+            }
+            if (! $teacher->isAdmin() && (int) $attempt->exam->created_by !== (int) $teacher->getAuthIdentifier()) {
+                throw ValidationException::withMessages([
+                    'grades' => __('teacher-exam::app.unauthorized_exam'),
+                ]);
+            }
 
             foreach ($grades as $answerId => $grade) {
                 $answer = $attempt->answers->firstWhere('id', (int) $answerId);
@@ -351,9 +373,21 @@ class TeacherExamService
                 'passed' => $pendingReview ? null : $score >= (float) $attempt->exam->passing_score,
                 'graded_by' => $pendingReview ? null : $teacher->getAuthIdentifier(),
                 'graded_at' => $pendingReview ? null : now(),
+                'grading_version' => $attempt->grading_version + 1,
             ])->save();
 
             return $attempt->fresh(['answers.question', 'user']);
         });
+
+        $this->audit->record(
+            'grade',
+            'exam_attempts',
+            [],
+            ['score' => $gradedAttempt->score, 'grading_version' => $gradedAttempt->grading_version],
+            ['attempt_id' => $gradedAttempt->id, 'exam_id' => $gradedAttempt->exam_id],
+            $gradedAttempt
+        );
+
+        return $gradedAttempt;
     }
 }

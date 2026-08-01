@@ -104,4 +104,9 @@ return [
     'no_answer' => '(No answer provided)',
     'no_review_available' => 'The teacher has not enabled answer review for this exam.',
     'back_to_exams' => 'Back to Exams',
+    'invalid_question' => 'One or more answers do not belong to this exam.',
+    'invalid_answer' => 'The answer format is invalid.',
+    'too_many_answers' => 'The answer contains too many values.',
+    'attempt_locked' => 'This attempt is no longer editable. Your latest saved work is preserved.',
+    'autosave_failed_retry' => 'Connection lost. Your pending answer will be saved automatically when the connection returns.',
 ];

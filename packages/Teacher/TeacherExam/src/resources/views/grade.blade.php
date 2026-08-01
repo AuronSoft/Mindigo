@@ -18,6 +18,7 @@
             <div class="border border-slate-200 bg-white px-6 py-12 text-center text-sm font-semibold text-slate-500">@lang('teacher-exam::app.no_manual_answers')</div>
         @else
             <form method="POST" action="{{ route('teacher.exams.attempts.grade.update', [$attempt->exam, $attempt]) }}" class="space-y-4">@csrf @method('PUT')
+                <input type="hidden" name="grading_version" value="{{ $attempt->grading_version }}">
                 @foreach($manualAnswers as $index => $answer)
                     <article class="border border-slate-200 bg-white p-5">
                         <div class="flex items-start justify-between gap-4"><div><p class="text-xs font-black text-green-700">{{ __('teacher-exam::app.question_number', ['number' => $index + 1]) }}</p><div class="mt-2 text-sm font-bold leading-6 text-slate-900">{!! $answer->question->content !!}</div></div><span class="shrink-0 text-xs font-black text-slate-500">{{ $answer->question->points }} @lang('teacher-exam::app.points')</span></div>

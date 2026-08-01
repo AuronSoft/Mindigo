@@ -20,6 +20,8 @@
         totalQuestions: {{ $questions->count() }},
         savedAnswers:   @json($savedAnswers->map(fn($a) => count($a->answer ?? []) === 1 ? $a->answer[0] : ($a->answer ?? []))->toArray()),
         submitUrl:      '{{ route('student.exams.submit', $attempt) }}',
+        resultUrl:      '{{ route('student.exams.result', $attempt) }}',
+        saveFailedLabel:'{{ __('student-exam::app.autosave_failed_retry') }}',
         csrfToken:      '{{ csrf_token() }}'
      })"
      @visibilitychange.window="handleVisibilityChange()">
@@ -53,7 +55,7 @@
 
         <button @click="confirmSubmit()"
                 :disabled="submitting"
-                class="shrink-0 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60 active:scale-95">
+                class="shrink-0 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:opacity-60 active:scale-95">
             <span x-show="!submitting">@lang('student-exam::app.submit_exam')</span>
             <span x-show="submitting" x-cloak class="flex items-center gap-1.5">
                 <svg class="h-4 w-4 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
@@ -64,6 +66,8 @@
             </span>
         </button>
     </header>
+
+    <div x-show="syncState === 'offline'" x-cloak class="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-xs font-bold text-amber-800" x-text="saveFailedLabel"></div>
 
     <div class="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-12">
 
@@ -84,7 +88,7 @@
                  class="scroll-mt-24 rounded-2xl border bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
 
                 <div class="mb-4 flex items-start justify-between gap-3">
-                    <span class="mt-0.5 shrink-0 rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-bold text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300">
+                    <span class="mt-0.5 shrink-0 rounded-lg bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600 dark:bg-green-900/40 dark:text-green-300">
                         @lang('student-exam::app.question_of', ['current' => $qIndex, 'total' => $questions->count()])
                     </span>
                     <div class="flex items-center gap-2">
@@ -134,11 +138,11 @@
                     name="q_{{ $qId }}"
                     rows="6"
                     placeholder="@lang('student-exam::app.essay_placeholder')"
-                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-800/50"
+                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-green-500 dark:focus:ring-green-800/50"
                     @input.debounce.600ms="saveAnswer({{ $qId }}, $event.target.value)">{{ $savedVal ?? '' }}</textarea>
                 @endif
 
-                <p class="mt-2 text-right text-xs text-indigo-400 dark:text-indigo-400"
+                <p class="mt-2 text-right text-xs text-green-600 dark:text-green-400"
                    x-show="savingId === {{ $qId }}"
                    x-transition x-cloak>
                     @lang('student-exam::app.saving')
@@ -159,8 +163,8 @@
                        :class="answers['{{ $question->id }}'] !== undefined
                                 && answers['{{ $question->id }}'] !== ''
                                 && answers['{{ $question->id }}'] !== null
-                              ? 'bg-indigo-500 text-white shadow-sm'
-                              : 'bg-gray-100 text-gray-500 hover:bg-indigo-100 hover:text-indigo-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-indigo-900/40 dark:hover:text-indigo-300'">
+                              ? 'bg-green-500 text-white shadow-sm'
+                              : 'bg-gray-100 text-gray-500 hover:bg-green-100 hover:text-green-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-green-900/40 dark:hover:text-green-300'">
                         {{ $index + 1 }}
                     </a>
                     @endforeach
@@ -198,7 +202,7 @@
                 </button>
                 <button @click="doSubmit()"
                         :disabled="submitting"
-                        class="flex-1 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60">
+                        class="flex-1 rounded-xl bg-green-600 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700 disabled:opacity-60">
                     @lang('student-exam::app.submit_exam')
                 </button>
             </div>
@@ -209,7 +213,7 @@
 @endsection
 @push('scripts')
 <script>
-function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUrl, csrfToken }) {
+function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUrl, resultUrl, csrfToken, saveFailedLabel }) {
     return {
         answers:       savedAnswers || {},
         multiAnswers:  {},
@@ -220,6 +224,9 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
         urgency:       'normal',
         timer:         null,
         timeDisplay:   '--:--',
+        syncState:     'online',
+        pendingAnswers:{},
+        saveFailedLabel,
 
         init() {
             if (expiresAt && expiresAt !== '' && !isNaN(new Date(expiresAt).getTime())) {
@@ -231,6 +238,7 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
             });
             this.heartbeat();
             window.setInterval(() => this.heartbeat(), 20000);
+            window.addEventListener('online', () => this.retryPendingAnswers());
         },
 
         startCountdown() {
@@ -287,13 +295,28 @@ function examTake({ attemptId, expiresAt, totalQuestions, savedAnswers, submitUr
 
         async persistAnswer(qId, value) {
             try {
-                await fetch(`/student/exams/attempts/${attemptId}/autosave`, {
+                const response = await fetch(`/student/exams/attempts/${attemptId}/autosave`, {
                     method:    'POST',
                     headers:   { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
                     body:      JSON.stringify({ question_id: qId, answer: value }),
                     keepalive: true,
                 });
-            } catch (_) {}
+                if (response.status === 409) {
+                    window.location.assign(resultUrl);
+                    return;
+                }
+                if (!response.ok) throw new Error('autosave');
+                delete this.pendingAnswers[String(qId)];
+                this.syncState = 'online';
+            } catch (_) {
+                this.pendingAnswers[String(qId)] = value;
+                this.syncState = 'offline';
+            }
+        },
+
+        async retryPendingAnswers() {
+            const pending = Object.entries(this.pendingAnswers);
+            for (const [qId, value] of pending) await this.persistAnswer(qId, value);
         },
 
         async heartbeat() {
