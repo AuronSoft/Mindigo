@@ -3,10 +3,12 @@
 namespace Mindigo\TeacherExam\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
-use Illuminate\Support\Str;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\TeacherExam\Http\Requests\TeacherExamRequest;
 use Mindigo\TeacherExam\Services\TeacherExamService;
@@ -19,20 +21,20 @@ class TeacherExamController extends Controller
     {
         session()->forget('url.intended');
 
-        /** @var \Mindigo\Auth\Models\User $teacher */
+        /** @var User $teacher */
         $teacher = Auth::user();
         $filters = request()->only(['keyword', 'status']);
 
         return view('teacher-exam::index', [
-            'exams'   => $this->service->ownedList($teacher, $filters),
-            'stats'   => $this->service->stats($teacher),
+            'exams' => $this->service->ownedList($teacher, $filters),
+            'stats' => $this->service->stats($teacher),
             'filters' => $filters,
         ]);
     }
 
     public function create()
     {
-        return view('teacher-exam::create', $this->service->formData());
+        return view('teacher-exam::create', $this->service->formData(Auth::user()));
     }
 
     public function store(TeacherExamRequest $request): RedirectResponse
@@ -60,7 +62,7 @@ class TeacherExamController extends Controller
 
         return view('teacher-exam::edit', [
             'exam' => $exam,
-            ...$this->service->formData(),
+            ...$this->service->formData(Auth::user()),
         ]);
     }
 
@@ -110,7 +112,7 @@ class TeacherExamController extends Controller
 
     private function authorizeOwnership(Exam $exam): void
     {
-        /** @var \Mindigo\Auth\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         abort_unless(
@@ -119,17 +121,18 @@ class TeacherExamController extends Controller
             'Bạn không có quyền truy cập đề thi này.'
         );
     }
+
     // in pdf
-   public function print(Exam $exam): \Illuminate\Http\Response
-{
-    $this->authorizeOwnership($exam);
+    public function print(Exam $exam): Response
+    {
+        $this->authorizeOwnership($exam);
 
-    $exam->load('questions');
+        $exam->load('questions');
 
-    $pdf = app('dompdf.wrapper')
-        ->loadView('teacher-exam::print', compact('exam'))
-        ->setPaper('a4', 'portrait');
+        $pdf = app('dompdf.wrapper')
+            ->loadView('teacher-exam::print', compact('exam'))
+            ->setPaper('a4', 'portrait');
 
-    return $pdf->download(\Illuminate\Support\Str::slug($exam->title) . '.pdf');
-}
+        return $pdf->download(Str::slug($exam->title).'.pdf');
+    }
 }

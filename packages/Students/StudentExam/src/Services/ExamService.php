@@ -10,42 +10,46 @@ use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
 
 class ExamService
 {
-    
-
     public function classroomIdsForStudent(int|string $studentId): Collection
     {
         return Classroom::query()
             ->whereHas('students', function ($q) use ($studentId) {
                 $q->where('student_id', $studentId)
-                  ->where('classroom_students.status', 'active');
+                    ->where('classroom_students.status', 'active');
             })
             ->pluck('id');
     }
 
-  
-
     public function getExamsForStudent(int|string $studentId): array
     {
-        
-        $exams = Exam::query()
-        ->where('status', 'published')
-        ->where(function ($query) use ($studentId) {
-            $query->whereJsonContains('audience->roles', 'student');
-        })
-        ->with(['attempts' => fn($q) => $q->where('user_id', $studentId)])
-        ->orderBy('starts_at')
-        ->get();
+        $classroomIds = $this->classroomIdsForStudent($studentId);
 
-        $upcoming  = collect();
-        $ongoing   = collect();
+        if ($classroomIds->isEmpty()) {
+            return ['upcoming' => collect(), 'ongoing' => collect(), 'completed' => collect()];
+        }
+
+        $exams = Exam::query()
+            ->where('status', 'published')
+            ->whereJsonContains('audience->roles', 'student')
+            ->where(function ($query) use ($classroomIds) {
+                foreach ($classroomIds as $classroomId) {
+                    $query->orWhereJsonContains('audience->classrooms', (int) $classroomId);
+                }
+            })
+            ->with(['attempts' => fn ($q) => $q->where('user_id', $studentId)])
+            ->orderBy('starts_at')
+            ->get();
+
+        $upcoming = collect();
+        $ongoing = collect();
         $completed = collect();
 
         $now = now();
 
         foreach ($exams as $exam) {
-            $myAttempts    = $exam->attempts;
-            $attemptCount  = $myAttempts->count();
-            $maxAttempts   = $exam->max_attempts ?? 1;
+            $myAttempts = $exam->attempts;
+            $attemptCount = $myAttempts->count();
+            $maxAttempts = $exam->max_attempts ?? 1;
 
             if ($exam->starts_at && $now->lt($exam->starts_at)) {
                 $upcoming->push($exam);
@@ -61,23 +65,21 @@ class ExamService
         return compact('upcoming', 'ongoing', 'completed');
     }
 
-   
-
-        public function isEnrolledInExamClassroom(Exam $exam, int|string $studentId): bool
-{
-        if (!$exam->audience) return false;
-
-        $roles = $exam->audience['roles'] ?? [];
-
-        if (in_array('student', $roles)) return true;
+    public function isEnrolledInExamClassroom(Exam $exam, int|string $studentId): bool
+    {
+        if (! $exam->audience) {
+            return false;
+        }
 
         $classrooms = $exam->audience['classrooms'] ?? [];
-        if (empty($classrooms)) return false;
+        if (empty($classrooms)) {
+            return false;
+        }
 
         return $this->classroomIdsForStudent($studentId)
-                    ->intersect($classrooms)
-                    ->isNotEmpty();
-}
+            ->intersect($classrooms)
+            ->isNotEmpty();
+    }
 
     public function isAvailable(Exam $exam): bool
     {
@@ -110,8 +112,6 @@ class ExamService
         return $done >= $maxAttempts;
     }
 
-  
-
     public function startAttempt(Exam $exam, int|string $studentId): ExamAttempt
     {
         // Huỷ attempt in_progress cũ nếu có (hết giờ bỏ ngang)
@@ -130,16 +130,14 @@ class ExamService
         }
 
         return ExamAttempt::create([
-            'exam_id'        => $exam->id,
-            'user_id'        => $studentId,
-            'started_at'     => now(),
-            'expires_at'     => $expiresAt,
-            'status'         => 'in_progress',
-            'tab_leave_count'=> 0,
+            'exam_id' => $exam->id,
+            'user_id' => $studentId,
+            'started_at' => now(),
+            'expires_at' => $expiresAt,
+            'status' => 'in_progress',
+            'tab_leave_count' => 0,
         ]);
     }
-
-    
 
     public function getQuestionsForAttempt(ExamAttempt $attempt): Collection
     {
@@ -149,49 +147,46 @@ class ExamService
 
         return match ($exam->question_order ?? 'fixed') {
             'random' => $questions->shuffle(),
-            default  => $questions->sortBy('order_index')->values(),
+            default => $questions->sortBy('order_index')->values(),
         };
     }
 
     public function getSavedAnswers(ExamAttempt $attempt): Collection
     {
         return ExamAttemptAnswer::where('exam_attempt_id', $attempt->id)
-        ->get()
-        ->keyBy('exam_question_id');
+            ->get()
+            ->keyBy('exam_question_id');
     }
-
-    
 
     public function submitAttempt(ExamAttempt $attempt, array $validated): ExamAttempt
     {
-        $answers        = $validated['answers'] ?? [];
-        $tabLeaveCount  = $validated['tab_leave_count'] ?? $attempt->tab_leave_count;
+        $answers = $validated['answers'] ?? [];
+        $tabLeaveCount = $validated['tab_leave_count'] ?? $attempt->tab_leave_count;
 
         // Lưu từng đáp án (upsert)
         foreach ($answers as $questionId => $value) {
             ExamAttemptAnswer::updateOrCreate(
-            ['exam_attempt_id' => $attempt->id, 'exam_question_id' => $questionId],
-            ['answer' => is_array($value) ? json_encode($value) : $value]
-        );
+                ['exam_attempt_id' => $attempt->id, 'exam_question_id' => $questionId],
+                ['answer' => is_array($value) ? json_encode($value) : $value]
+            );
         }
 
         // Chấm điểm tự động
         [$score, $maxScore] = $this->autoGrade($attempt);
 
         $attempt->update([
-            'submitted_at'    => now(),
-            'status'          => 'submitted',
+            'submitted_at' => now(),
+            'status' => 'submitted',
             'tab_leave_count' => $tabLeaveCount,
-            'score'           => $score,
-            'max_score'       => $maxScore,
-            'percentage'      => $maxScore > 0 ? round($score / $maxScore * 100, 2) : 0,
-            'passed'          => $maxScore > 0 && ($score / $maxScore * 100) >= ($attempt->exam->passing_percentage ?? 50),
+            'score' => $score,
+            'max_score' => $maxScore,
+            'percentage' => $maxScore > 0 ? round($score / $maxScore * 100, 2) : 0,
+            'passed' => $maxScore > 0 && ($score / $maxScore * 100) >= ($attempt->exam->passing_percentage ?? 50),
         ]);
 
         return $attempt->fresh();
     }
 
-  
     public function autoSubmit(ExamAttempt $attempt): void
     {
         if (in_array($attempt->status, ['submitted', 'graded'])) {
@@ -201,24 +196,22 @@ class ExamService
         $this->submitAttempt($attempt, ['answers' => [], 'tab_leave_count' => $attempt->tab_leave_count]);
     }
 
-   
-
     private function autoGrade(ExamAttempt $attempt): array
     {
         $exam = $attempt->exam()->with('questions')->first();
         $questions = $exam->questions;
         $answers = ExamAttemptAnswer::where('exam_attempt_id', $attempt->id)
-        ->get()
-        ->keyBy('exam_question_id');
+            ->get()
+            ->keyBy('exam_question_id');
 
-        $score    = 0;
+        $score = 0;
         $maxScore = 0;
 
         foreach ($questions as $question) {
             $point = $question->points ?? 1;
             $maxScore += $point;
 
-            if (!isset($answers[$question->id])) {
+            if (! isset($answers[$question->id])) {
                 continue;
             }
 
@@ -227,9 +220,9 @@ class ExamService
             // Lấy các option đúng
             $correctOptions = collect($question->correct_answers ?? [])->sort()->values();
 
-        if ($correctOptions->isEmpty()) {
-            continue;
-        }
+            if ($correctOptions->isEmpty()) {
+                continue;
+            }
 
             // So sánh đáp án
             $givenIds = is_string($given) && str_starts_with($given, '[')
@@ -244,8 +237,6 @@ class ExamService
         return [$score, $maxScore];
     }
 
-    
-
     public function getResult(ExamAttempt $attempt): array
     {
         $exam = $attempt->exam()->with('questions.options')->first();
@@ -256,14 +247,14 @@ class ExamService
         $showReview = (bool) ($exam->show_answers_after_submit ?? false);
 
         return [
-            'exam'       => $exam,
-            'score'      => $attempt->score,
-            'max_score'  => $attempt->max_score,
+            'exam' => $exam,
+            'score' => $attempt->score,
+            'max_score' => $attempt->max_score,
             'percentage' => $attempt->percentage,
-            'passed'     => $attempt->passed,
-            'show_review'=> $showReview,
-            'questions'  => $showReview ? $exam->questions : collect(),
-            'answers'    => $showReview ? $answers : collect(),
+            'passed' => $attempt->passed,
+            'show_review' => $showReview,
+            'questions' => $showReview ? $exam->questions : collect(),
+            'answers' => $showReview ? $answers : collect(),
         ];
     }
 }

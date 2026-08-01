@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherExam\Http\Requests;
 
+use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Http\Requests\ExamRequest;
 
 class TeacherExamRequest extends ExamRequest
@@ -12,5 +13,26 @@ class TeacherExamRequest extends ExamRequest
     public function authorize(): bool
     {
         return $this->user() !== null;
+    }
+
+    public function withValidator($validator): void
+    {
+        parent::withValidator($validator);
+
+        $validator->after(function ($validator): void {
+            if ($validator->errors()->has('classroom_ids') || $this->user()?->isAdmin()) {
+                return;
+            }
+
+            $selectedIds = collect($this->input('classroom_ids', []))->map(fn ($id) => (int) $id)->unique();
+            $ownedCount = Classroom::query()
+                ->whereIn('id', $selectedIds)
+                ->where('teacher_id', $this->user()->getAuthIdentifier())
+                ->count();
+
+            if ($ownedCount !== $selectedIds->count()) {
+                $validator->errors()->add('classroom_ids', __('teacher-exam::app.invalid_classrooms'));
+            }
+        });
     }
 }

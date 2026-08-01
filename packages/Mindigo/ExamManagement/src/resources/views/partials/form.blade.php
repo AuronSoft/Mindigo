@@ -6,6 +6,7 @@
     $totalRequested = collect($types)->sum(fn ($type) => (int) ($counts[$type] ?? 0));
     $selectedSubject = old('subject', $exam->subject ?? '');
     $selectedGenerationSubject = old('generation_subject', $config['subject'] ?? '');
+    $selectedClassroomIds = collect(old('classroom_ids', $exam->audience['classrooms'] ?? []))->map(fn ($id) => (int) $id);
 @endphp
 
 <script type="application/json" data-exam-subject-topics>@json($subjectTopics ?? [])</script>
@@ -109,6 +110,19 @@
             <article class="exam-builder-card exam-panel-card" id="exam-part-info" data-exam-part="info">
                 <div class="exam-section-head"><span>03</span><div><h2>@lang('Mindigo-exam-management::app.basic_info')</h2><p>@lang('Mindigo-exam-management::app.basic_info_desc')</p></div></div>
                 <div class="exam-form-grid mt-5">
+                    <fieldset class="exam-field md:col-span-2">
+                        <legend>@lang('Mindigo-exam-management::app.assigned_classrooms')</legend>
+                        <p class="mt-1 text-xs font-semibold text-slate-400">@lang('Mindigo-exam-management::app.assigned_classrooms_help')</p>
+                        <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                            @foreach($classrooms ?? [] as $classroom)
+                                <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 hover:border-green-300">
+                                    <input type="checkbox" name="classroom_ids[]" value="{{ $classroom->id }}" class="h-4 w-4 accent-green-600" @checked($selectedClassroomIds->contains($classroom->id))>
+                                    <span class="min-w-0"><strong class="block truncate text-sm text-slate-800">{{ $classroom->name }}</strong><small class="text-xs font-semibold text-slate-400">{{ $classroom->students_count }} @lang('Mindigo-exam-management::app.students_unit')</small></span>
+                                </label>
+                            @endforeach
+                        </div>
+                        @error('classroom_ids')<span class="mt-2 block text-xs font-bold text-red-600">{{ $message }}</span>@enderror
+                    </fieldset>
                     <label class="exam-field md:col-span-2"><span>@lang('Mindigo-exam-management::app.title_field')</span><input name="title" value="{{ old('title', $exam->title ?? '') }}" class="exam-input" required></label>
 
                     <label class="exam-field">
