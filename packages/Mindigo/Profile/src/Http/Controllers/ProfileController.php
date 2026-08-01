@@ -2,12 +2,13 @@
 
 namespace Mindigo\Profile\Http\Controllers;
 
+use App\Support\RoleRedirector;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
+use Mindigo\Auth\Models\User;
 use Mindigo\Profile\Http\Requests\UpdateNotificationsRequest;
 use Mindigo\Profile\Http\Requests\UpdatePasswordRequest;
 use Mindigo\Profile\Http\Requests\UpdateProfileRequest;
@@ -21,18 +22,13 @@ class ProfileController extends Controller
 
     public function index(): View
     {
-        /** @var \Mindigo\Auth\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $user->load('notificationPreference');
 
         $roleProfile = $this->service->roleProfile($user->role);
 
-        // Send users back to the dashboard that matches their current role.
-        $dashboardUrl = match (true) {
-            $user->role === 'teacher' && Route::has('teacher.dashboard') => route('teacher.dashboard'),
-            $user->isAdmin() && Route::has('dashboard')                  => route('dashboard'),
-            default                                                      => url('/'),
-        };
+        $dashboardUrl = RoleRedirector::pathFor($user);
 
         return view('profile::profile', compact('user', 'roleProfile', 'dashboardUrl'));
     }
@@ -51,7 +47,7 @@ class ProfileController extends Controller
         $this->service->updateNotifications($request, Auth::user());
 
         return redirect()
-            ->to(route('profile.index') . '#email')
+            ->to(route('profile.index').'#email')
             ->with('success', __('Mindigo-profile::app.messages.notifications_updated'));
     }
 
@@ -60,7 +56,7 @@ class ProfileController extends Controller
         $this->service->updatePassword($request, Auth::user());
 
         return redirect()
-            ->to(route('profile.index') . '#bao-mat')
+            ->to(route('profile.index').'#bao-mat')
             ->with('success', __('Mindigo-profile::app.messages.password_updated'));
     }
 

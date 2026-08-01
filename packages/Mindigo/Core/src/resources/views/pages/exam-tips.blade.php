@@ -8,7 +8,6 @@
     $examTipUser = auth()->user();
     $examTipUserLabel = $examTipUser ? ($examTipUser->name ?: $examTipUser->email) : null;
     $examTipUserInitial = $examTipUserLabel ? \Illuminate\Support\Str::of($examTipUserLabel)->trim()->substr(0, 1)->upper() : 'U';
-    $examTipAccountUrl = \Illuminate\Support\Facades\Route::has('dashboard') ? route('dashboard', [], false) : url('/dashboard');
     $examTipLoginReturnUrl = route('login', ['redirect' => route('exam-tips', [], false)], false);
 @endphp
 
@@ -84,7 +83,7 @@
                         </a>
                     @endauth
                     @auth
-                        <a href="{{ $examTipAccountUrl }}" data-exam-tip-user-menu title="{{ $examTipUserLabel }}" class="inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-green-100 bg-green-50 text-sm font-black text-green-700 no-underline shadow-sm transition hover:border-green-200 hover:bg-green-100">
+                        <a href="{{ $accountUrl }}" data-exam-tip-user-menu title="{{ $examTipUserLabel }}" class="inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-2 border-green-100 bg-green-50 text-sm font-black text-green-700 no-underline shadow-sm transition hover:border-green-200 hover:bg-green-100">
                             @if($examTipUser->avatar)
                                 <img src="{{ $examTipUser->avatar_url }}" alt="{{ $examTipUserLabel }}" class="h-full w-full object-cover">
                             @else
@@ -127,7 +126,7 @@
                     </a>
                 @endauth
                 @auth
-                    <a href="{{ $examTipAccountUrl }}" data-exam-tip-user-menu class="flex items-center gap-3 rounded-xl border border-green-100 bg-green-50 px-4 py-2.5 text-sm font-black text-green-700 no-underline transition hover:bg-green-100">
+                    <a href="{{ $accountUrl }}" data-exam-tip-user-menu class="flex items-center gap-3 rounded-xl border border-green-100 bg-green-50 px-4 py-2.5 text-sm font-black text-green-700 no-underline transition hover:bg-green-100">
                         <span class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-green-600 text-xs text-white">
                             @if($examTipUser->avatar)
                                 <img src="{{ $examTipUser->avatar_url }}" alt="{{ $examTipUserLabel }}" class="h-full w-full object-cover">
