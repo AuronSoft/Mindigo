@@ -36,6 +36,10 @@ class PracticeAttempt extends Model
         'difficulty', // null = all, or specific level
         'question_pool_size',
         'selection_strategy',
+        'is_adaptive',
+        'mastery_before',
+        'mastery_after',
+        'adaptive_context',
         'total_questions',
         'correct_answers',
         'score', // percentage
@@ -52,6 +56,10 @@ class PracticeAttempt extends Model
             'last_activity_at' => 'datetime',
             'completed_at' => 'datetime',
             'score' => 'float',
+            'is_adaptive' => 'boolean',
+            'mastery_before' => 'float',
+            'mastery_after' => 'float',
+            'adaptive_context' => 'array',
         ];
     }
 

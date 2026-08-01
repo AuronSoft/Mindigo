@@ -10,6 +10,8 @@ use Mindigo\StudentPractice\Models\StudentSkillProgress;
 
 class SkillProgressService
 {
+    public function __construct(private readonly MasteryCalculator $mastery) {}
+
     public function catalog(User $student, array $filters): array
     {
         $query = PracticeSkill::query()->with(['subject:id,name', 'topic:id,name'])
@@ -69,6 +71,7 @@ class SkillProgressService
                 'best_score' => round((float) $summary->best_score, 2),
                 'practice_seconds' => $seconds,
                 'last_practiced_at' => (clone $attempts)->max('completed_at'),
+                ...$this->mastery->calculate($student, $skill),
             ]
         );
     }

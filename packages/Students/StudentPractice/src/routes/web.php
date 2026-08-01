@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\StudentPractice\Http\Controllers\AdaptivePracticeController;
 use Mindigo\StudentPractice\Http\Controllers\PracticeController;
 use Mindigo\StudentPractice\Http\Controllers\PracticeSkillController;
 use Mindigo\StudentPractice\Http\Controllers\SkillPracticeController;
@@ -21,6 +22,8 @@ Route::middleware(['web', 'auth', 'role:student|admin'])->prefix('student')->nam
     Route::prefix('practice')->name('practice.')->group(function () {
         Route::get('/', [PracticeController::class, 'index'])->name('index');
         Route::get('/history', [PracticeController::class, 'history'])->name('history');
+        Route::get('/adaptive', [AdaptivePracticeController::class, 'index'])->name('adaptive.index');
+        Route::post('/adaptive/{skill}/start', [AdaptivePracticeController::class, 'start'])->name('adaptive.start')->whereNumber('skill');
         Route::get('/skills', [SkillPracticeController::class, 'index'])->name('skills.index');
         Route::get('/skills/{skill}', [SkillPracticeController::class, 'show'])->name('skills.show')->whereNumber('skill');
         Route::post('/skills/{skill}/start', [SkillPracticeController::class, 'start'])->name('skills.start')->whereNumber('skill');
