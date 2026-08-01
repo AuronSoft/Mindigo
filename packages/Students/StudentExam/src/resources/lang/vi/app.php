@@ -104,4 +104,9 @@ return [
     'no_answer' => '(Không có câu trả lời)',
     'no_review_available' => 'Giáo viên chưa mở phần xem lại đáp án.',
     'back_to_exams' => 'Quay lại danh sách đề thi',
+    'invalid_question' => 'Một hoặc nhiều câu trả lời không thuộc đề thi này.',
+    'invalid_answer' => 'Định dạng câu trả lời không hợp lệ.',
+    'too_many_answers' => 'Câu trả lời chứa quá nhiều giá trị.',
+    'attempt_locked' => 'Lượt thi không còn cho phép chỉnh sửa. Bài đã lưu gần nhất vẫn được giữ lại.',
+    'autosave_failed_retry' => 'Mất kết nối. Câu trả lời đang chờ sẽ tự lưu khi kết nối trở lại.',
 ];

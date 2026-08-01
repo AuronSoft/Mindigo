@@ -142,5 +142,8 @@ return [
         'not_enough_questions' => 'Không đủ câu hỏi :type đã duyệt theo nguồn đã chọn.',
         'exam_not_open' => 'Đề thi này hiện chưa mở.',
         'max_attempts_reached' => 'Bạn đã dùng hết số lượt làm bài.',
+        'exam_not_editable' => 'Không thể chỉnh sửa đề đã xuất bản hoặc đã có lượt làm bài.',
+        'exam_has_attempts' => 'Không thể xóa đề thi vì đã có học sinh làm bài.',
+        'not_assigned' => 'Đề thi không được giao cho lớp học đang hoạt động của bạn.',
     ],
 ];

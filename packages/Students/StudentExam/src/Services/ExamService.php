@@ -2,16 +2,21 @@
 
 namespace Mindigo\StudentExam\Services;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
 use Mindigo\ExamManagement\Models\ExamQuestion;
+use Mindigo\ExamManagement\Services\ExamAuditService;
 
 class ExamService
 {
+    public function __construct(private readonly ExamAuditService $audit) {}
+
     public function classroomIdsForStudent(int|string $studentId): Collection
     {
         return Classroom::query()
@@ -50,13 +55,16 @@ class ExamService
 
         foreach ($exams as $exam) {
             $myAttempts = $exam->attempts;
-            $attemptCount = $myAttempts->count();
+            $attemptCount = $myAttempts->whereIn('status', ['submitted', 'expired'])->count();
+            $hasActiveAttempt = $myAttempts->contains('status', 'in_progress');
             $maxAttempts = $exam->max_attempts ?? 1;
 
             if ($exam->starts_at && $now->lt($exam->starts_at)) {
                 $upcoming->push($exam);
             } elseif ($exam->ends_at && $now->gt($exam->ends_at)) {
                 $completed->push($exam);
+            } elseif ($hasActiveAttempt) {
+                $ongoing->push($exam);
             } elseif ($attemptCount >= $maxAttempts) {
                 $completed->push($exam);
             } else {
@@ -116,7 +124,16 @@ class ExamService
 
     public function startAttempt(Exam $exam, int|string $studentId): ExamAttempt
     {
-        return DB::transaction(function () use ($exam, $studentId): ExamAttempt {
+        $attempt = DB::transaction(function () use ($exam, $studentId): ExamAttempt {
+            $exam = Exam::query()->lockForUpdate()->findOrFail($exam->id);
+
+            if (! $this->isEnrolledInExamClassroom($exam, $studentId)) {
+                throw new AuthorizationException(__('student-exam::app.not_enrolled'));
+            }
+            if (! $this->isAvailable($exam)) {
+                throw ValidationException::withMessages(['exam' => __('student-exam::app.exam_not_available')]);
+            }
+
             $activeAttempt = ExamAttempt::query()
                 ->where('exam_id', $exam->id)
                 ->where('user_id', $studentId)
@@ -129,7 +146,11 @@ class ExamService
             }
 
             if ($activeAttempt) {
-                $this->submitAttempt($activeAttempt, [], 'expired');
+                $this->finalizeLockedAttempt($activeAttempt, [], 'expired');
+            }
+
+            if ($this->hasExceededAttempts($exam, $studentId)) {
+                throw ValidationException::withMessages(['exam' => __('student-exam::app.max_attempts_reached')]);
             }
 
             $questionIds = $exam->questions()->orderBy('sort_order')->pluck('id')->all();
@@ -154,6 +175,10 @@ class ExamService
                 'tab_leave_count' => 0,
             ]);
         });
+
+        $this->auditAttempt('start', $attempt);
+
+        return $attempt;
     }
 
     public function getQuestionsForAttempt(ExamAttempt $attempt): Collection
@@ -176,39 +201,87 @@ class ExamService
             ->keyBy('exam_question_id');
     }
 
-    public function saveAnswer(ExamAttempt $attempt, int $questionId, mixed $answer): void
+    public function saveAnswer(ExamAttempt $attempt, int $questionId, mixed $answer): bool
     {
-        $question = ExamQuestion::query()
-            ->where('exam_id', $attempt->exam_id)
-            ->findOrFail($questionId);
+        return DB::transaction(function () use ($attempt, $questionId, $answer): bool {
+            $attempt = ExamAttempt::query()->lockForUpdate()->with('exam')->findOrFail($attempt->id);
+            if (! $attempt->exam || $attempt->status !== 'in_progress') {
+                return false;
+            }
+            if ($attempt->expires_at && now()->gte($attempt->expires_at)) {
+                $this->finalizeLockedAttempt($attempt, [], 'expired');
 
-        ExamAttemptAnswer::query()->updateOrCreate(
-            ['exam_attempt_id' => $attempt->id, 'exam_question_id' => $question->id],
-            ['type' => $question->type, 'answer' => $this->normalizeAnswer($answer)]
-        );
+                return false;
+            }
 
-        $this->recordActivity($attempt);
+            $question = ExamQuestion::query()
+                ->where('exam_id', $attempt->exam_id)
+                ->findOrFail($questionId);
+
+            ExamAttemptAnswer::query()->updateOrCreate(
+                ['exam_attempt_id' => $attempt->id, 'exam_question_id' => $question->id],
+                ['type' => $question->type, 'answer' => $this->normalizeAnswer($answer)]
+            );
+
+            $attempt->forceFill(['last_activity_at' => now()])->saveQuietly();
+
+            return true;
+        });
     }
 
-    public function recordActivity(ExamAttempt $attempt): void
+    public function recordActivity(ExamAttempt $attempt): bool
     {
-        if ($attempt->status !== 'in_progress') {
-            return;
-        }
-
-        $attempt->forceFill(['last_activity_at' => now()])->saveQuietly();
+        return ExamAttempt::query()
+            ->whereKey($attempt->id)
+            ->where('status', 'in_progress')
+            ->where(fn ($query) => $query->whereNull('expires_at')->orWhere('expires_at', '>', now()))
+            ->update(['last_activity_at' => now(), 'updated_at' => now()]) === 1;
     }
 
     public function submitAttempt(ExamAttempt $attempt, array $validated, string $status = 'submitted'): ExamAttempt
     {
-        $answers = $validated['answers'] ?? [];
+        $attempt = DB::transaction(function () use ($attempt, $validated, $status): ExamAttempt {
+            $attempt = ExamAttempt::query()
+                ->lockForUpdate()
+                ->with('exam.questions')
+                ->findOrFail($attempt->id);
+
+            if (! $attempt->exam) {
+                throw ValidationException::withMessages(['exam' => __('student-exam::app.exam_not_available')]);
+            }
+
+            if ($attempt->status !== 'in_progress') {
+                throw ValidationException::withMessages(['attempt' => __('student-exam::app.already_submitted')]);
+            }
+
+            $expired = $attempt->expires_at && now()->gte($attempt->expires_at);
+            $finalStatus = $expired ? 'expired' : $status;
+            $answers = $expired || $status === 'expired' ? [] : ($validated['answers'] ?? []);
+            $finalPayload = $validated;
+            if ($expired || $status === 'expired') {
+                unset($finalPayload['answers']);
+            }
+
+            return $this->finalizeLockedAttempt($attempt, $answers, $finalStatus, $finalPayload);
+        });
+
+        $this->auditAttempt($attempt->status, $attempt);
+
+        return $attempt;
+    }
+
+    private function finalizeLockedAttempt(ExamAttempt $attempt, array $answers, string $status, array $validated = []): ExamAttempt
+    {
+        $answers = $validated['answers'] ?? $answers;
         $tabLeaveCount = $validated['tab_leave_count'] ?? $attempt->tab_leave_count;
 
         // Lưu từng đáp án (upsert)
         foreach ($answers as $questionId => $value) {
             ExamAttemptAnswer::updateOrCreate(
                 ['exam_attempt_id' => $attempt->id, 'exam_question_id' => $questionId],
-                ['type' => $attempt->exam->questions()->findOrFail($questionId)->type, 'answer' => $this->normalizeAnswer($value)]
+                ['type' => $attempt->exam->questions->firstWhere('id', (int) $questionId)?->type
+                    ?? throw ValidationException::withMessages(["answers.{$questionId}" => __('student-exam::app.invalid_question')]),
+                    'answer' => $this->normalizeAnswer($value)]
             );
         }
 
@@ -234,12 +307,16 @@ class ExamService
             return;
         }
 
-        $this->submitAttempt($attempt, ['answers' => [], 'tab_leave_count' => $attempt->tab_leave_count], 'expired');
+        try {
+            $this->submitAttempt($attempt, ['tab_leave_count' => $attempt->tab_leave_count], 'expired');
+        } catch (ValidationException) {
+            // Another request finalized the attempt while this request was waiting for the row lock.
+        }
     }
 
     private function autoGrade(ExamAttempt $attempt): array
     {
-        $exam = $attempt->exam()->with('questions')->first();
+        $exam = $attempt->exam()->with('questions')->firstOrFail();
         $questions = $exam->questions;
         $score = 0;
         $maxScore = 0;
@@ -307,7 +384,7 @@ class ExamService
 
     public function getResult(ExamAttempt $attempt): array
     {
-        $exam = $attempt->exam()->with('questions')->first();
+        $exam = $attempt->exam()->with('questions')->firstOrFail();
 
         $answers = ExamAttemptAnswer::where('exam_attempt_id', $attempt->id)->get()->keyBy('exam_question_id');
 
@@ -326,5 +403,17 @@ class ExamService
             'questions' => $showReview ? $exam->questions : collect(),
             'answers' => $showReview ? $answers : collect(),
         ];
+    }
+
+    private function auditAttempt(string $action, ExamAttempt $attempt): void
+    {
+        $this->audit->record(
+            $action,
+            'exam_attempts',
+            [],
+            ['status' => $attempt->status, 'score' => $attempt->score],
+            ['attempt_id' => $attempt->id, 'exam_id' => $attempt->exam_id],
+            $attempt
+        );
     }
 }

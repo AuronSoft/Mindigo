@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\Auth\Models\User;
+use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamQuestion;
 use Mindigo\StudentExam\Services\ExamService as StudentExamService;
@@ -50,8 +51,18 @@ class ExamManualGradingTest extends TestCase
     {
         $teacher = User::factory()->create(['role' => 'teacher']);
         $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::query()->create([
+            'created_by' => $teacher->id,
+            'teacher_id' => $teacher->id,
+            'name' => 'Grading class',
+            'code' => 'GRADE',
+            'slug' => 'grading-class',
+            'status' => 'active',
+        ]);
+        $classroom->students()->attach($student->id, ['status' => 'active', 'joined_at' => now()]);
         $exam = Exam::factory()->create([
             'created_by' => $teacher->id,
+            'audience' => ['roles' => ['student'], 'classrooms' => [$classroom->id]],
             'total_questions' => 2,
             'total_points' => 3,
             'passing_score' => 2,

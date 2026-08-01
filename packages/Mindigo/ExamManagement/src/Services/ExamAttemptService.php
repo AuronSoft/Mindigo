@@ -2,8 +2,10 @@
 
 namespace Mindigo\ExamManagement\Services;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
@@ -12,36 +14,49 @@ use Mindigo\ExamManagement\Models\ExamQuestion;
 
 class ExamAttemptService
 {
-    public function __construct(private ExamAuditService $audit)
-    {
-    }
+    public function __construct(private ExamAuditService $audit) {}
 
     public function start(Exam $exam, User $user): ExamAttempt
     {
-        $attempt = ExamAttempt::query()
-            ->where('exam_id', $exam->id)
-            ->where('user_id', $user->getAuthIdentifier())
-            ->where('status', 'in_progress')
-            ->first();
+        $attempt = DB::transaction(function () use ($exam, $user): ExamAttempt {
+            $exam = Exam::query()->lockForUpdate()->findOrFail($exam->id);
+            if (! $exam->isOpen()) {
+                throw ValidationException::withMessages(['exam' => __('Mindigo-exam-management::app.messages.exam_not_open')]);
+            }
+            if ($user->isStudent() && ! $this->isAssignedToStudent($exam, $user)) {
+                throw new AuthorizationException(__('Mindigo-exam-management::app.messages.not_assigned'));
+            }
 
-        if ($attempt) {
-            return $attempt;
-        }
+            $attempt = ExamAttempt::query()
+                ->where('exam_id', $exam->id)
+                ->where('user_id', $user->getAuthIdentifier())
+                ->where('status', 'in_progress')
+                ->lockForUpdate()
+                ->first();
 
-        $questionIds = $exam->questions()->pluck('id')->all();
-        if ($exam->shuffle_questions) {
-            shuffle($questionIds);
-        }
+            if ($attempt) {
+                return $attempt;
+            }
 
-        $attempt = ExamAttempt::query()->create([
-            'exam_id' => $exam->id,
-            'user_id' => $user->getAuthIdentifier(),
-            'status' => 'in_progress',
-            'started_at' => now(),
-            'expires_at' => now()->addMinutes($exam->duration_minutes),
-            'max_score' => $exam->total_points,
-            'question_order' => $questionIds,
-        ]);
+            if ($this->submittedAttemptCount($exam, $user) >= $exam->max_attempts) {
+                throw ValidationException::withMessages(['exam' => __('Mindigo-exam-management::app.messages.max_attempts_reached')]);
+            }
+
+            $questionIds = $exam->questions()->pluck('id')->all();
+            if ($exam->shuffle_questions) {
+                shuffle($questionIds);
+            }
+
+            return ExamAttempt::query()->create([
+                'exam_id' => $exam->id,
+                'user_id' => $user->getAuthIdentifier(),
+                'status' => 'in_progress',
+                'started_at' => now(),
+                'expires_at' => now()->addMinutes($exam->duration_minutes),
+                'max_score' => $exam->total_points,
+                'question_order' => $questionIds,
+            ]);
+        });
 
         $this->auditAttempt('start', [], ['attempt_id' => $attempt->id], $attempt);
 
@@ -70,11 +85,18 @@ class ExamAttemptService
             ->values();
     }
 
-    public function autosave(ExamAttempt $attempt, array $answers): void
+    public function autosave(ExamAttempt $attempt, array $answers): bool
     {
-        $attempt->forceFill([
-            'autosave_payload' => ['answers' => $answers],
-        ])->save();
+        return DB::transaction(function () use ($attempt, $answers): bool {
+            $attempt = ExamAttempt::query()->lockForUpdate()->findOrFail($attempt->id);
+            if ($attempt->status !== 'in_progress' || ($attempt->expires_at && now()->gte($attempt->expires_at))) {
+                return false;
+            }
+
+            $attempt->forceFill(['autosave_payload' => ['answers' => $answers]])->save();
+
+            return true;
+        });
     }
 
     public function logViolation(ExamAttempt $attempt): int
@@ -89,13 +111,23 @@ class ExamAttemptService
     public function finalize(ExamAttempt $attempt, array $answers, string $status): void
     {
         DB::transaction(function () use ($attempt, $answers, $status): void {
-            $attempt->load('exam.questions');
+            $attempt = ExamAttempt::query()->lockForUpdate()->with('exam.questions')->findOrFail($attempt->id);
+            if ($attempt->status !== 'in_progress') {
+                return;
+            }
+
+            if ($attempt->expires_at && now()->gte($attempt->expires_at)) {
+                $status = 'expired';
+                $answers = $attempt->autosave_payload['answers'] ?? [];
+            }
             $score = 0.0;
+            $pendingReview = false;
 
             foreach ($attempt->exam->questions as $question) {
                 $answer = $this->normalizeAnswer($answers[$question->id] ?? $answers[(string) $question->id] ?? null);
                 [$isCorrect, $points, $needsReview] = $this->scoreAnswer($question, $answer);
                 $score += $points;
+                $pendingReview = $pendingReview || $needsReview;
 
                 ExamAttemptAnswer::query()->updateOrCreate(
                     [
@@ -121,7 +153,7 @@ class ExamAttemptService
                 'score' => $score,
                 'max_score' => $maxScore,
                 'percentage' => $percentage,
-                'passed' => $score >= (float) $attempt->exam->passing_score,
+                'passed' => $pendingReview ? null : $score >= (float) $attempt->exam->passing_score,
                 'autosave_payload' => ['answers' => $answers],
             ])->save();
         });
@@ -131,8 +163,9 @@ class ExamAttemptService
 
     public function canViewAttempt(User $user, ExamAttempt $attempt, bool $allowStaff = false): bool
     {
-        if ($allowStaff && (int) $attempt->user_id !== (int) $user->getAuthIdentifier() && $user->hasPermissionTo('exams.view') && !$user->isStudent()) {
-            return true;
+        if ($allowStaff && ! $user->isStudent() && $user->hasPermissionTo('exams.view')) {
+            return $user->isAdmin()
+                || (int) $attempt->exam()->withTrashed()->value('created_by') === (int) $user->getAuthIdentifier();
         }
 
         return (int) $attempt->user_id === (int) $user->getAuthIdentifier();
@@ -146,7 +179,7 @@ class ExamAttemptService
 
         $expected = $this->normalizeComparable($question->correct_answers ?? []);
         $actual = $this->normalizeComparable($answer);
-        $isCorrect = $expected === $actual && !empty($expected);
+        $isCorrect = $expected === $actual && ! empty($expected);
 
         return [$isCorrect, $isCorrect ? (float) $question->points : 0.0, false];
     }
@@ -168,6 +201,20 @@ class ExamAttemptService
             ->sort()
             ->values()
             ->all();
+    }
+
+    private function isAssignedToStudent(Exam $exam, User $student): bool
+    {
+        $classroomIds = array_map('intval', $exam->audience['classrooms'] ?? []);
+        if ($classroomIds === []) {
+            return false;
+        }
+
+        return DB::table('classroom_students')
+            ->whereIn('classroom_id', $classroomIds)
+            ->where('student_id', $student->getAuthIdentifier())
+            ->where('status', 'active')
+            ->exists();
     }
 
     private function auditAttempt(string $action, array $oldValues, array $newValues, ExamAttempt $attempt): void

@@ -14,17 +14,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ExamController extends Controller
 {
-    public function __construct(private ExamService $exams)
-    {
-    }
+    public function __construct(private ExamService $exams) {}
 
     public function index(Request $request)
     {
         $this->authorizePermission($request->user(), 'exams.view');
 
         return view('Mindigo-exam-management::index', [
-            'exams' => $this->exams->filteredList($request->only(['keyword', 'status', 'subject'])),
-            'stats' => $this->exams->stats(),
+            'exams' => $this->exams->filteredList($request->only(['keyword', 'status', 'subject']), $request->user()),
+            'stats' => $this->exams->stats($request->user()),
             'statuses' => Exam::STATUSES,
             'subjects' => $this->exams->subjects(),
             'filters' => $request->only(['keyword', 'status', 'subject']),
@@ -49,7 +47,7 @@ class ExamController extends Controller
 
     public function show(Request $request, Exam $exam)
     {
-        $this->authorizePermission($request->user(), 'exams.view');
+        $this->authorizeExam($request->user(), $exam, 'exams.view');
         $exam->load(['creator:id,name,email,role', 'questions', 'attempts.user:id,name,email,role']);
 
         return view('Mindigo-exam-management::show', [
@@ -59,7 +57,7 @@ class ExamController extends Controller
 
     public function edit(Request $request, Exam $exam)
     {
-        $this->authorizePermission($request->user(), 'exams.update');
+        $this->authorizeExam($request->user(), $exam, 'exams.update');
         $exam->load('questions');
 
         return view('Mindigo-exam-management::edit', array_merge($this->exams->formData(), [
@@ -69,6 +67,7 @@ class ExamController extends Controller
 
     public function update(ExamRequest $request, Exam $exam): RedirectResponse
     {
+        $this->authorizeExam($request->user(), $exam, 'exams.update');
         $this->exams->update($exam, $request);
 
         return redirect()
@@ -78,7 +77,7 @@ class ExamController extends Controller
 
     public function publish(Request $request, Exam $exam): RedirectResponse
     {
-        $this->authorizePermission($request->user(), 'exams.publish');
+        $this->authorizeExam($request->user(), $exam, 'exams.publish');
 
         try {
             $this->exams->publish($exam);
@@ -91,7 +90,7 @@ class ExamController extends Controller
 
     public function close(Request $request, Exam $exam): RedirectResponse
     {
-        $this->authorizePermission($request->user(), 'exams.publish');
+        $this->authorizeExam($request->user(), $exam, 'exams.publish');
         $this->exams->close($exam);
 
         return back()->with('success', __('Mindigo-exam-management::app.messages.closed'));
@@ -99,7 +98,7 @@ class ExamController extends Controller
 
     public function destroy(Request $request, Exam $exam): RedirectResponse
     {
-        $this->authorizePermission($request->user(), 'exams.delete');
+        $this->authorizeExam($request->user(), $exam, 'exams.delete');
         $this->exams->delete($exam);
 
         return redirect()
@@ -114,5 +113,15 @@ class ExamController extends Controller
         }
 
         abort(Response::HTTP_FORBIDDEN);
+    }
+
+    private function authorizeExam(User $user, Exam $exam, string $permission): void
+    {
+        $this->authorizePermission($user, $permission);
+
+        abort_unless(
+            $user->isAdmin() || (int) $exam->created_by === (int) $user->getAuthIdentifier(),
+            Response::HTTP_FORBIDDEN
+        );
     }
 }
