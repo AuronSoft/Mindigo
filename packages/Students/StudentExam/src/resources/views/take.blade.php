@@ -65,9 +65,9 @@
         </button>
     </header>
 
-    <div class="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-[1fr_260px]">
+    <div class="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-12">
 
-        <div class="space-y-6">
+        <div class="space-y-6 lg:col-span-9">
             @foreach($questions as $index => $question)
             @php
                 $qIndex   = $index + 1;
@@ -101,18 +101,14 @@
                 @if(in_array($qType, ['single', 'single_choice', 'multiple_choice_single']))
                 <div class="space-y-2.5">
                     @foreach($options as $option)
-                    <label class="flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition
-                                  hover:border-indigo-300 hover:bg-indigo-50/40
-                                  has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50
-                                  dark:border-gray-600 dark:hover:border-indigo-500
-                                  dark:has-[:checked]:border-indigo-500 dark:has-[:checked]:bg-indigo-900/20">
+                    <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-200 px-4 py-3 transition hover:border-green-300 hover:bg-green-50/40 dark:border-gray-600 dark:hover:border-green-500">
                         <input type="radio"
-                        name="q_{{ $qId }}"
-                        value="{{ data_get($option, 'id') }}"
-                        class="h-4 w-4 shrink-0 accent-indigo-600"
-                        {{ (string)$savedVal === (string)data_get($option, 'id') ? 'checked' : '' }}
-                        @change="saveAnswer({{ $qId }}, $event.target.value)">
-                    <span class="text-sm text-gray-800 dark:text-gray-200">{{ data_get($option, 'content') }}</span>
+                            name="q_{{ $qId }}"
+                            value="{{ data_get($option, 'id') }}"
+                            class="h-4 w-4 shrink-0 accent-green-600"
+                            {{ (string)$savedVal === (string)data_get($option, 'id') ? 'checked' : '' }}
+                            @change="saveAnswer({{ $qId }}, $event.target.value)">
+                        <span class="text-sm text-gray-800 dark:text-gray-200">{{ data_get($option, 'content') }}</span>
                     </label>
                     @endforeach
                     <p class="text-xs text-gray-400">@lang('student-exam::app.single_choice_hint')</p>
@@ -121,18 +117,14 @@
                 @elseif(in_array($qType, ['multiple_choice', 'multiple', 'checkbox']))
                 <div class="space-y-2.5">
                     @foreach($options as $option)
-                    <label class="flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition
-                                  hover:border-indigo-300 hover:bg-indigo-50/40
-                                  has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50
-                                  dark:border-gray-600 dark:hover:border-indigo-500
-                                  dark:has-[:checked]:border-indigo-500 dark:has-[:checked]:bg-indigo-900/20">
+                    <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-200 px-4 py-3 transition hover:border-green-300 hover:bg-green-50/40 dark:border-gray-600 dark:hover:border-green-500">
                         <input type="checkbox"
-                        name="q_{{ $qId }}[]"
-                        value="{{ data_get($option, 'id') }}"
-                        class="h-4 w-4 shrink-0 rounded accent-indigo-600"
-                        {{ in_array((string)data_get($option, 'id'), $savedArr) ? 'checked' : '' }}
-                        @change="saveMultiAnswer({{ $qId }}, '{{ data_get($option, 'id') }}', $event.target.checked)">
-                    <span class="text-sm text-gray-800 dark:text-gray-200">{{ data_get($option, 'content') }}</span>
+                            name="q_{{ $qId }}[]"
+                            value="{{ data_get($option, 'id') }}"
+                            class="h-4 w-4 shrink-0 rounded accent-green-600"
+                            {{ in_array((string)data_get($option, 'id'), $savedArr) ? 'checked' : '' }}
+                            @change="saveMultiAnswer({{ $qId }}, '{{ data_get($option, 'id') }}', $event.target.checked)">
+                        <span class="text-sm text-gray-800 dark:text-gray-200">{{ data_get($option, 'content') }}</span>
                     </label>
                     @endforeach
                     <p class="text-xs text-gray-400">@lang('student-exam::app.multiple_choice_hint')</p>
@@ -155,7 +147,7 @@
             @endforeach
         </div>
 
-        <aside class="hidden lg:block">
+        <aside class="hidden lg:col-span-3 lg:block">
             <div class="sticky top-24 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-600 dark:bg-gray-800">
                 <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                     @lang('student-exam::app.navigator_label')
