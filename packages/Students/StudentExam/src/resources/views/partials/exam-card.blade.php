@@ -1,91 +1,46 @@
-{{-- student-exam::partials.exam-card --}}
 @php
-    $lastAttempt  = $exam->attempts->last();
+    $lastAttempt = $exam->attempts->last();
     $attemptCount = $exam->attempts->count();
-    $maxAttempts  = $exam->max_attempts ?? 1;
+    $maxAttempts = $exam->max_attempts ?? 1;
+    $remainingAttempts = max(0, $maxAttempts - $attemptCount);
 @endphp
 
-<div class="group relative flex flex-col rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800
-    {{ $group === 'ongoing'   ? 'border-emerald-100 dark:border-emerald-800/40' : '' }}
-    {{ $group === 'upcoming'  ? 'border-blue-100 dark:border-blue-800/40' : '' }}
-    {{ $group === 'completed' ? 'border-gray-200' : '' }}">
-
-    {{-- Title + subject --}}
-    <div class="mb-3">
-        <p class="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
-            {{ $exam->subject->name ?? '' }}
-        </p>
-        <h3 class="mt-0.5 text-base font-semibold text-gray-900 dark:text-white leading-snug">
-            {{ $exam->title }}
-        </h3>
-    </div>
-
-    {{-- Meta row --}}
-    <div class="mb-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
-        @if($exam->duration_minutes)
-            <span class="flex items-center gap-1">
-                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/></svg>
-                {{ __('student-exam::app.duration_minutes', ['min' => $exam->duration_minutes]) }}
-            </span>
-        @endif
-
-        @if($exam->starts_at)
-            <span>
-                {{ __('student-exam::app.opens_at') }}
-                {{ $exam->starts_at->format('d/m H:i') }}
-            </span>
-        @endif
-
-        @if($exam->ends_at)
-            <span>
-                {{ __('student-exam::app.closes_at') }}
-                {{ $exam->ends_at->format('d/m H:i') }}
-            </span>
-        @endif
-
-        <span>
-            {{ __('student-exam::app.attempts_used', ['used' => $attemptCount, 'max' => $maxAttempts]) }}
-        </span>
-    </div>
-
-    {{-- Score badge (completed) --}}
-    @if($group === 'completed' && $lastAttempt)
-        <div class="mb-4">
-            @if($lastAttempt->status === 'graded')
-                <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold
-                    {{ $lastAttempt->passed ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-300' }}">
-                    {{ $lastAttempt->passed ? __('student-exam::app.passed') : __('student-exam::app.failed') }}
-                    · {{ $lastAttempt->score }}/{{ $lastAttempt->max_score }}
-                    ({{ $lastAttempt->percentage }}%)
-                </span>
-            @elseif($lastAttempt->status === 'submitted')
-                <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
-                    {{ __('student-exam::app.status_pending_review') }}
-                </span>
-            @endif
-        </div>
-    @endif
-
-    {{-- CTA --}}
-    <div class="mt-auto">
-        @if($group === 'ongoing')
-            <form action="{{ route('student.exams.start', $exam) }}" method="POST">
-                @csrf
-                <button type="submit"
-                    class="w-full rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95">
-                    {{ __('student-exam::app.start_exam') }}
-                </button>
-            </form>
-        @elseif($group === 'upcoming')
-            <div class="rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-center text-sm text-blue-600 dark:border-blue-800/40 dark:bg-blue-900/20 dark:text-blue-400">
-                {{ __('student-exam::app.opens_at') }}
-                {{ $exam->starts_at?->format('d/m/Y H:i') ?? '—' }}
+<article class="grid gap-4 px-5 py-4 transition hover:bg-slate-50/70 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-center">
+    <div class="flex min-w-0 items-start gap-3">
+        <x-heroicon-o-document-text class="mt-1 h-5 w-5 shrink-0 {{ $group === 'ongoing' ? 'text-green-600' : ($group === 'upcoming' ? 'text-blue-500' : 'text-slate-400') }}" />
+        <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+                <h3 class="truncate text-sm font-black text-slate-900">{{ $exam->title }}</h3>
+                @if($exam->subject?->name)<span class="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">{{ $exam->subject->name }}</span>@endif
             </div>
-        @elseif($group === 'completed' && $lastAttempt)
-            <a href="{{ route('student.exams.result', $lastAttempt) }}"
-               class="block w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
-                {{ __('student-exam::app.view_result') }}
-            </a>
+            <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-semibold text-slate-400">
+                @if($exam->duration_minutes)<span class="inline-flex items-center gap-1"><x-heroicon-o-clock class="h-3.5 w-3.5" />{{ __('student-exam::app.duration_minutes', ['min' => $exam->duration_minutes]) }}</span>@endif
+                @if($exam->starts_at)<span class="inline-flex items-center gap-1"><x-heroicon-o-calendar-days class="h-3.5 w-3.5" />{{ __('student-exam::app.opens_at') }} {{ $exam->starts_at->format('d/m/Y H:i') }}</span>@endif
+                @if($exam->ends_at)<span class="inline-flex items-center gap-1"><x-heroicon-o-lock-closed class="h-3.5 w-3.5" />{{ __('student-exam::app.closes_at') }} {{ $exam->ends_at->format('d/m/Y H:i') }}</span>@endif
+            </div>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-4 lg:min-w-48 lg:justify-end">
+        @if($group === 'completed' && $lastAttempt)
+            @if($lastAttempt->status === 'graded')
+                <div class="text-left lg:text-right"><strong class="block text-base font-black {{ $lastAttempt->passed ? 'text-green-700' : 'text-red-600' }}">{{ $lastAttempt->percentage }}%</strong><span class="text-[10px] font-bold text-slate-400">{{ $lastAttempt->score }}/{{ $lastAttempt->max_score }} @lang('student-exam::app.points')</span></div>
+                <span class="rounded-full px-2.5 py-1 text-[10px] font-black {{ $lastAttempt->passed ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">{{ $lastAttempt->passed ? __('student-exam::app.passed') : __('student-exam::app.failed') }}</span>
+            @else
+                <span class="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-black text-amber-700">@lang('student-exam::app.status_pending_review')</span>
+            @endif
+        @else
+            <div class="text-left lg:text-right"><strong class="block text-xs font-black text-slate-700">{{ __('student-exam::app.attempts_remaining', ['n' => $remainingAttempts]) }}</strong><span class="mt-1 block text-[10px] font-semibold text-slate-400">{{ __('student-exam::app.attempts_used', ['used' => $attemptCount, 'max' => $maxAttempts]) }}</span></div>
         @endif
     </div>
-</div>
+
+    <div class="lg:w-40">
+        @if($group === 'ongoing')
+            <form action="{{ route('student.exams.start', $exam) }}" method="POST">@csrf<button type="submit" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 text-xs font-black text-white transition hover:bg-green-700"><x-heroicon-o-play class="h-4 w-4" />@lang('student-exam::app.start_exam')</button></form>
+        @elseif($group === 'upcoming')
+            <span class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 text-xs font-bold text-slate-500"><x-heroicon-o-lock-closed class="h-4 w-4" />@lang('student-exam::app.not_yet_open')</span>
+        @elseif($lastAttempt)
+            <a href="{{ route('student.exams.result', $lastAttempt) }}" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 text-xs font-black text-slate-700 no-underline transition hover:border-green-300 hover:text-green-700"><x-heroicon-o-chart-bar class="h-4 w-4" />@lang('student-exam::app.view_result')</a>
+        @endif
+    </div>
+</article>

@@ -24,4 +24,14 @@ class StudentExamLayoutTest extends TestCase
 
         $this->assertStringContainsString("make('Mindigo-dashboard::layouts'", $compiled);
     }
+
+    public function test_student_exam_index_contains_recommended_and_table_sections(): void
+    {
+        $view = file_get_contents(base_path('packages/Students/StudentExam/src/resources/views/index.blade.php'));
+
+        $this->assertStringContainsString('recommended-exams-heading', $view);
+        $this->assertStringContainsString('all-exams-heading', $view);
+        $this->assertStringContainsString('data-exam-search', $view);
+        $this->assertStringContainsString('<table', $view);
+    }
 }

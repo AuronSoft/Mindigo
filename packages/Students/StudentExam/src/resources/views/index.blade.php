@@ -1,7 +1,7 @@
-{{-- student-exam::index --}}
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', __('student-exam::app.my_exams'))
+@section('title', __('student-exam::app.my_exams') . ' - Mindigo LMS')
+@section('meta_description', __('student-exam::app.subtitle'))
 
 @section('styles')
     @vite([
@@ -13,82 +13,91 @@
 @endsection
 
 @section('content')
-<div class="max-w-5xl mx-auto px-4 py-8 space-y-10">
+@php
+    $recommendedExams = $ongoing->concat($upcoming)->take(4);
+    $examGroups = [
+        ['status' => 'ongoing', 'label' => __('student-exam::app.status_open'), 'items' => $ongoing],
+        ['status' => 'upcoming', 'label' => __('student-exam::app.status_upcoming'), 'items' => $upcoming],
+        ['status' => 'completed', 'label' => __('student-exam::app.completed_exams'), 'items' => $completed],
+    ];
+@endphp
 
-    {{-- Header --}}
-    <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            {{ __('student-exam::app.my_exams') }}
-        </h1>
-    </div>
+<div class="min-h-screen bg-slate-50">
+    <header class="border-b border-slate-200 bg-white px-6 py-4">
+        <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('student-exam::app.area')</p>
+        <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('student-exam::app.my_exams')</h1>
+        <p class="text-xs font-semibold text-slate-400">@lang('student-exam::app.subtitle')</p>
+    </header>
 
-    {{-- Flash messages --}}
-    @if(session('warning'))
-        <div class="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
-            <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
-            {{ session('warning') }}
+    <main class="p-6">
+        @if(session('warning'))
+            <div class="mb-5 flex items-center gap-3 border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+                <x-heroicon-o-exclamation-triangle class="h-5 w-5 shrink-0" />{{ session('warning') }}
+            </div>
+        @endif
+
+        <div class="relative w-full max-w-sm">
+            <x-heroicon-o-magnifying-glass class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <input type="search" data-exam-search placeholder="@lang('student-exam::app.search_placeholder')" class="h-11 w-full rounded-lg border border-slate-300 bg-white pl-11 pr-4 text-sm font-semibold text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-green-500 focus:ring-2 focus:ring-green-100">
         </div>
-    @endif
 
-    {{-- ① Đang mở --}}
-    <section>
-        <h2 class="mb-4 flex items-center gap-2 text-base font-semibold text-emerald-700 dark:text-emerald-400">
-            <span class="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            {{ __('student-exam::app.ongoing_exams') }}
-        </h2>
-
-        @if($ongoing->isEmpty())
-            <p class="rounded-xl border border-dashed border-gray-200 py-10 text-center text-sm text-gray-400 dark:border-gray-700 dark:text-gray-500">
-                {{ __('student-exam::app.no_ongoing') }}
-            </p>
-        @else
-            <div class="grid gap-4 sm:grid-cols-2">
-                @foreach($ongoing as $exam)
-                    @include('student-exam::partials.exam-card', ['exam' => $exam, 'group' => 'ongoing'])
-                @endforeach
+        <section class="mt-6" aria-labelledby="recommended-exams-heading">
+            <div class="mb-4 flex items-center justify-between">
+                <h2 id="recommended-exams-heading" class="text-lg font-black text-slate-950">@lang('student-exam::app.recommended')</h2>
+                <span class="text-xs font-bold text-slate-400">{{ $recommendedExams->count() }} @lang('student-exam::app.exams_unit')</span>
             </div>
-        @endif
-    </section>
-
-    {{-- ② Sắp mở --}}
-    <section>
-        <h2 class="mb-4 flex items-center gap-2 text-base font-semibold text-blue-700 dark:text-blue-400">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/></svg>
-            {{ __('student-exam::app.upcoming_exams') }}
-        </h2>
-
-        @if($upcoming->isEmpty())
-            <p class="rounded-xl border border-dashed border-gray-200 py-10 text-center text-sm text-gray-400 dark:border-gray-700 dark:text-gray-500">
-                {{ __('student-exam::app.no_upcoming') }}
-            </p>
-        @else
-            <div class="grid gap-4 sm:grid-cols-2">
-                @foreach($upcoming as $exam)
-                    @include('student-exam::partials.exam-card', ['exam' => $exam, 'group' => 'upcoming'])
-                @endforeach
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                @forelse($recommendedExams as $exam)
+                    @php
+                        $isOpen = $ongoing->contains('id', $exam->id);
+                        $attemptCount = $exam->attempts->count();
+                    @endphp
+                    <article class="flex min-h-28 items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-green-300" data-exam-search-item data-exam-name="{{ str($exam->title)->lower() }}">
+                        <x-heroicon-o-document-check class="h-9 w-9 shrink-0 {{ $isOpen ? 'text-green-600' : 'text-amber-500' }}" />
+                        <div class="min-w-0 flex-1">
+                            <h3 class="truncate text-sm font-black text-slate-900">{{ $exam->title }}</h3>
+                            <p class="mt-1 text-[11px] font-semibold text-slate-500">{{ $isOpen ? __('student-exam::app.status_open') : __('student-exam::app.opens_at').' '.$exam->starts_at?->format('d/m/Y H:i') }}</p>
+                            <p class="mt-1 text-[11px] font-semibold text-slate-500">{{ __('student-exam::app.duration_minutes', ['min' => $exam->duration_minutes ?? 0]) }}</p>
+                            <p class="mt-1 text-[11px] font-semibold text-slate-500">@lang('student-exam::app.attempt_label') <span class="inline-grid h-5 min-w-5 place-items-center rounded-full bg-green-500 px-1.5 font-black text-white">{{ $attemptCount }}</span></p>
+                        </div>
+                    </article>
+                @empty
+                    <div class="col-span-full border border-dashed border-slate-300 bg-white px-6 py-8 text-center text-sm font-semibold text-slate-400">@lang('student-exam::app.no_recommended')</div>
+                @endforelse
             </div>
-        @endif
-    </section>
+        </section>
 
-    {{-- ③ Đã làm --}}
-    <section>
-        <h2 class="mb-4 flex items-center gap-2 text-base font-semibold text-gray-500 dark:text-gray-400">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            {{ __('student-exam::app.completed_exams') }}
-        </h2>
-
-        @if($completed->isEmpty())
-            <p class="rounded-xl border border-dashed border-gray-200 py-10 text-center text-sm text-gray-400 dark:border-gray-700 dark:text-gray-500">
-                {{ __('student-exam::app.no_completed') }}
-            </p>
-        @else
-            <div class="grid gap-4 sm:grid-cols-2">
-                @foreach($completed as $exam)
-                    @include('student-exam::partials.exam-card', ['exam' => $exam, 'group' => 'completed'])
-                @endforeach
+        <section class="mt-7" aria-labelledby="all-exams-heading">
+            <h2 id="all-exams-heading" class="mb-4 text-lg font-black text-slate-950">@lang('student-exam::app.all_exams')</h2>
+            <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[920px] border-collapse text-left">
+                        <thead><tr class="border-b border-slate-200 text-xs font-bold text-slate-500"><th class="px-5 py-4">@lang('student-exam::app.column_name')</th><th class="px-5 py-4">@lang('student-exam::app.column_status')</th><th class="px-5 py-4">@lang('student-exam::app.column_duration')</th><th class="px-5 py-4">@lang('student-exam::app.column_schedule')</th><th class="px-5 py-4">@lang('student-exam::app.column_attempts')</th><th class="px-5 py-4 text-right">@lang('student-exam::app.column_action')</th></tr></thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($examGroups as $examGroup)
+                                @foreach($examGroup['items'] as $exam)
+                                    @php $lastAttempt = $exam->attempts->last(); @endphp
+                                    <tr class="text-sm text-slate-600 transition hover:bg-slate-50" data-exam-search-item data-exam-name="{{ str($exam->title)->lower() }}">
+                                        <td class="px-5 py-4"><div class="flex items-center gap-3"><x-heroicon-o-document-check class="h-6 w-6 shrink-0 {{ $examGroup['status'] === 'ongoing' ? 'text-green-600' : ($examGroup['status'] === 'upcoming' ? 'text-amber-500' : 'text-slate-400') }}" /><div><strong class="block font-bold text-slate-900">{{ $exam->title }}</strong>@if($exam->subject?->name)<span class="text-[11px] font-semibold text-slate-400">{{ $exam->subject->name }}</span>@endif</div></div></td>
+                                        <td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 text-xs font-bold"><span class="h-2 w-2 rounded-full {{ $examGroup['status'] === 'ongoing' ? 'bg-green-500' : ($examGroup['status'] === 'upcoming' ? 'bg-amber-400' : 'bg-slate-400') }}"></span>{{ $examGroup['label'] }}</span></td>
+                                        <td class="px-5 py-4 text-xs font-semibold">{{ __('student-exam::app.duration_minutes', ['min' => $exam->duration_minutes ?? 0]) }}</td>
+                                        <td class="px-5 py-4 text-xs font-semibold"><span class="block">{{ $exam->starts_at?->format('d/m/Y H:i') ?? '—' }}</span><span class="mt-0.5 block text-slate-400">{{ $exam->ends_at?->format('d/m/Y H:i') ?? '—' }}</span></td>
+                                        <td class="px-5 py-4 text-xs font-semibold">{{ __('student-exam::app.attempts_used', ['used' => $exam->attempts->count(), 'max' => $exam->max_attempts ?? 1]) }}</td>
+                                        <td class="px-5 py-4 text-right">
+                                            @if($examGroup['status'] === 'ongoing')<form class="inline" action="{{ route('student.exams.start', $exam) }}" method="POST">@csrf<button class="rounded-lg bg-green-600 px-4 py-2 text-xs font-black text-white hover:bg-green-700">@lang('student-exam::app.start_exam')</button></form>
+                                            @elseif($examGroup['status'] === 'completed' && $lastAttempt)<a href="{{ route('student.exams.result', $lastAttempt) }}" class="inline-flex rounded-lg border border-slate-300 px-4 py-2 text-xs font-black text-slate-700 no-underline hover:border-green-300 hover:text-green-700">@lang('student-exam::app.view_result')</a>
+                                            @else<span class="text-xs font-semibold text-slate-400">@lang('student-exam::app.not_yet_open')</span>@endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @if($ongoing->isEmpty() && $upcoming->isEmpty() && $completed->isEmpty())<p class="border-t border-slate-100 px-6 py-10 text-center text-sm font-semibold text-slate-400">@lang('student-exam::app.no_exams')</p>@endif
+                <p class="hidden px-6 py-10 text-center text-sm font-semibold text-slate-400" data-exam-search-empty>@lang('student-exam::app.no_search_results')</p>
             </div>
-        @endif
-    </section>
-
+        </section>
+    </main>
 </div>
 @endsection

@@ -11,6 +11,25 @@ const setActiveQuestion = (index) => {
     });
 };
 
+const examSearchInput = document.querySelector('[data-exam-search]');
+if (examSearchInput) {
+    const examSearchItems = Array.from(document.querySelectorAll('[data-exam-search-item]'));
+    const examSearchEmpty = document.querySelector('[data-exam-search-empty]');
+
+    examSearchInput.addEventListener('input', () => {
+        const keyword = examSearchInput.value.trim().toLocaleLowerCase();
+        let visibleRows = 0;
+
+        examSearchItems.forEach((item) => {
+            const matches = !keyword || (item.dataset.examName || '').includes(keyword);
+            item.classList.toggle('hidden', !matches);
+            if (matches && item.tagName === 'TR') visibleRows += 1;
+        });
+
+        examSearchEmpty?.classList.toggle('hidden', visibleRows > 0 || !keyword);
+    });
+}
+
 document.addEventListener('click', async (event) => {
     const navButton = event.target.closest('[data-question-nav-button]');
     if (navButton) {
