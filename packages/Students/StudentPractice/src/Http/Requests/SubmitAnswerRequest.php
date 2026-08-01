@@ -8,14 +8,14 @@ class SubmitAnswerRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->hasAnyRole(['student', 'admin']) ?? false;
+        return $this->user()?->can('view', $this->route('attempt')) ?? false;
     }
 
     public function rules(): array
     {
         return [
             'question_id' => ['required', 'integer', 'exists:question_bank_questions,id'],
-            'answer' => ['required', 'array'],
+            'answer' => ['required', 'array', 'min:1'],
             'answer.choice' => ['nullable', 'string', 'max:255'],
             'answer.choices' => ['nullable', 'array', 'max:20'],
             'answer.choices.*' => ['string', 'max:255', 'distinct'],

@@ -13,25 +13,24 @@
     </header>
     <main class="mx-auto max-w-5xl space-y-5 p-6">
         @foreach($attempt->answers as $index => $practiceAnswer)
-            @php($question = $practiceAnswer->question)
             <article class="rounded-xl border border-slate-200 bg-white p-6">
                 <p class="text-xs font-black uppercase tracking-wide text-green-700">{{ __('student-practice::app.question', ['current' => $index + 1, 'total' => $attempt->answers->count()]) }}</p>
-                <div class="mt-3 text-sm font-semibold leading-7 text-slate-900">{!! $question->content !!}</div>
+                <div class="mt-3 text-sm font-semibold leading-7 text-slate-900">{!! $practiceAnswer->display_content !!}</div>
                 <form class="mt-5 space-y-3" data-practice-answer action="{{ route('student.practice.submit-answer', $attempt) }}" method="POST">
-                    @csrf<input type="hidden" name="question_id" value="{{ $question->id }}">
-                    @if($question->type === 'single_choice')
-                        @foreach($question->options ?? [] as $option)
+                    @csrf<input type="hidden" name="question_id" value="{{ $practiceAnswer->question_id }}">
+                    @if($practiceAnswer->display_type === 'single_choice')
+                        @foreach($practiceAnswer->display_options as $option)
                             @php($value = data_get($option, 'id', data_get($option, 'key')))
                             <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 hover:border-green-300"><input type="radio" name="answer[choice]" value="{{ $value }}" @checked((string) data_get($practiceAnswer->student_answer, 'choice') === (string) $value)><span class="text-sm font-semibold text-slate-700">{{ data_get($option, 'content', data_get($option, 'text')) }}</span></label>
                         @endforeach
                         <p class="text-xs font-semibold text-slate-400">@lang('student-practice::app.single_choice_hint')</p>
-                    @elseif($question->type === 'multiple_choice')
-                        @foreach($question->options ?? [] as $option)
+                    @elseif($practiceAnswer->display_type === 'multiple_choice')
+                        @foreach($practiceAnswer->display_options as $option)
                             @php($value = data_get($option, 'id', data_get($option, 'key')))
                             <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 hover:border-green-300"><input type="checkbox" name="answer[choices][]" value="{{ $value }}" @checked(in_array((string) $value, array_map('strval', data_get($practiceAnswer->student_answer, 'choices', [])), true))><span class="text-sm font-semibold text-slate-700">{{ data_get($option, 'content', data_get($option, 'text')) }}</span></label>
                         @endforeach
                         <p class="text-xs font-semibold text-slate-400">@lang('student-practice::app.multiple_choice_hint')</p>
-                    @elseif($question->type === 'true_false')
+                    @elseif($practiceAnswer->display_type === 'true_false')
                         @foreach([1 => __('student-practice::app.correct'), 0 => __('student-practice::app.incorrect')] as $value => $label)<label class="mr-4 inline-flex items-center gap-2 text-sm font-semibold"><input type="radio" name="answer[answer]" value="{{ $value }}" @checked((string) data_get($practiceAnswer->student_answer, 'answer') === (string) $value)>{{ $label }}</label>@endforeach
                     @else
                         <textarea name="answer[text]" rows="4" class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm font-semibold" placeholder="@lang('student-practice::app.answer_placeholder')">{{ data_get($practiceAnswer->student_answer, 'text') }}</textarea>
@@ -50,6 +49,10 @@ document.querySelectorAll('[data-practice-answer]').forEach((form) => {
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const status = form.querySelector('[data-practice-status]');
+        const button = form.querySelector('button[type="submit"], button:not([type])');
+        if (button?.disabled) return;
+        if (button) button.disabled = true;
+        status.textContent = @json(__('student-practice::app.messages.answer_saving'));
         try {
             const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
             const payload = await response.json();
@@ -57,6 +60,8 @@ document.querySelectorAll('[data-practice-answer]').forEach((form) => {
             status.textContent = payload.message;
         } catch (error) {
             status.textContent = @json(__('student-practice::app.messages.answer_save_failed'));
+        } finally {
+            if (button) button.disabled = false;
         }
     });
 });

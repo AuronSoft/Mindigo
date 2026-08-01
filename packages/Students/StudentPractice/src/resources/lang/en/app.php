@@ -62,11 +62,13 @@ return [
     'no_history' => 'You have not completed any practice yet.',
     'not_available' => 'Not available',
     'messages' => [
+        'answer_saving' => 'Saving...',
         'answer_saved' => 'Answer saved.',
         'answer_save_failed' => 'Could not save the answer. Please try again.',
         'completed' => 'Practice completed.',
     ],
     'errors' => [
+        'session_expired' => 'This practice session has expired. Please start a new session.',
         'already_completed' => 'This practice is already completed.',
         'question_not_in_attempt' => 'The question is not part of this practice.',
         'question_unavailable' => 'The question is no longer available.',

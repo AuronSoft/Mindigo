@@ -57,4 +57,24 @@ class PracticeAnswer extends Model
     {
         return $this->question()->firstOrFail();
     }
+
+    public function getDisplayContentAttribute(): string
+    {
+        return (string) ($this->question?->content ?? data_get($this->question_snapshot, 'content', ''));
+    }
+
+    public function getDisplayTypeAttribute(): string
+    {
+        return (string) ($this->question?->type ?? data_get($this->question_snapshot, 'type', 'short_answer'));
+    }
+
+    public function getDisplayOptionsAttribute(): array
+    {
+        return $this->question?->options ?? data_get($this->question_snapshot, 'options', []);
+    }
+
+    public function getDisplayExplanationAttribute(): ?string
+    {
+        return $this->question?->explanation ?? data_get($this->question_snapshot, 'explanation');
+    }
 }

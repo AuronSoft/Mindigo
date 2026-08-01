@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Mindigo\StudentPractice\Http\Requests\PracticeSkillFilterRequest;
 use Mindigo\StudentPractice\Http\Requests\PracticeSkillRequest;
 use Mindigo\StudentPractice\Models\PracticeSkill;
 use Mindigo\StudentPractice\Services\PracticeSkillService;
@@ -15,12 +16,12 @@ class PracticeSkillController extends Controller
 {
     public function __construct(private readonly PracticeSkillService $skills) {}
 
-    public function index(Request $request): View
+    public function index(PracticeSkillFilterRequest $request): View
     {
         Gate::forUser($request->user())->authorize('viewAny', PracticeSkill::class);
 
         return view('student-practice::skills.index', [
-            'skills' => $this->skills->filteredList($request->only(['keyword', 'subject_id', 'status'])),
+            'skills' => $this->skills->filteredList($request->validated()),
             ...$this->skills->formData(),
         ]);
     }

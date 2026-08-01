@@ -20,8 +20,8 @@
         <div class="mt-6 space-y-4">
             @foreach($details['answers'] as $index => $answer)
                 <article class="border-l-4 {{ $answer->is_correct ? 'border-green-500' : 'border-red-400' }} bg-white px-5 py-4 shadow-sm">
-                    <div class="flex items-start justify-between gap-3"><p class="text-sm font-bold text-slate-900">{{ $index + 1 }}. {{ strip_tags($answer->question->content) }}</p><span class="shrink-0 text-xs font-black {{ $answer->is_correct ? 'text-green-700' : 'text-red-600' }}">{{ $answer->is_correct ? __('student-practice::app.correct') : __('student-practice::app.incorrect') }}</span></div>
-                    @if($answer->question->explanation)<div class="mt-3 border-t border-slate-100 pt-3 text-sm leading-6 text-slate-600"><strong>@lang('student-practice::app.explanation'):</strong> {!! $answer->question->explanation !!}</div>@endif
+                    <div class="flex items-start justify-between gap-3"><p class="text-sm font-bold text-slate-900">{{ $index + 1 }}. {{ strip_tags($answer->display_content) }}</p><span class="shrink-0 text-xs font-black {{ $answer->is_correct ? 'text-green-700' : 'text-red-600' }}">{{ $answer->is_correct ? __('student-practice::app.correct') : __('student-practice::app.incorrect') }}</span></div>
+                    @if($answer->display_explanation)<div class="mt-3 border-t border-slate-100 pt-3 text-sm leading-6 text-slate-600"><strong>@lang('student-practice::app.explanation'):</strong> {!! $answer->display_explanation !!}</div>@endif
                 </article>
             @endforeach
         </div>

@@ -51,7 +51,7 @@ class LearningToolsPhaseThreeTest extends TestCase
         $question = Question::factory()->create(['subject' => 'Physics', 'topic' => 'Motion', 'status' => 'approved']);
         $attempt = PracticeAttempt::create([
             'student_id' => $student->id, 'mode' => 'topic', 'subject' => 'Physics', 'topic' => 'Motion',
-            'total_questions' => 1, 'correct_answers' => 0, 'score' => 0, 'started_at' => now()->subMinute(), 'completed_at' => now(),
+            'total_questions' => 1, 'correct_answers' => 0, 'score' => 0, 'status' => PracticeAttempt::STATUS_COMPLETED, 'started_at' => now()->subMinute(), 'completed_at' => now(),
         ]);
         $answer = PracticeAnswer::create(['attempt_id' => $attempt->id, 'question_id' => $question->id, 'student_answer' => ['choice' => 'B'], 'is_correct' => false, 'points' => 0]);
 

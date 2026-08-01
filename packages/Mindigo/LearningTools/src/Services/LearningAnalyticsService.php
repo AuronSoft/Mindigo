@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
 use Mindigo\LearningTools\Models\MistakeReview;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
+use Mindigo\StudentPractice\Models\PracticeAttempt;
 
 class LearningAnalyticsService
 {
@@ -15,7 +16,7 @@ class LearningAnalyticsService
 
         $practice = PracticeAnswer::with(['question', 'attempt'])
             ->where('is_correct', false)
-            ->whereHas('attempt', fn ($query) => $query->where('student_id', $userId)->whereNotNull('completed_at'))
+            ->whereHas('attempt', fn ($query) => $query->where('student_id', $userId)->where('status', PracticeAttempt::STATUS_COMPLETED))
             ->latest()->get()->map(fn ($answer) => $this->mistakeRow('practice', $answer->id, $answer->question, $answer->student_answer, $answer->created_at, $reviews));
 
         $exam = ExamAttemptAnswer::with(['question', 'attempt'])
@@ -30,7 +31,7 @@ class LearningAnalyticsService
     {
         $rows = collect();
         PracticeAnswer::with(['question:id,subject,topic', 'attempt:id,student_id'])
-            ->whereHas('attempt', fn ($query) => $query->where('student_id', $userId)->whereNotNull('completed_at'))
+            ->whereHas('attempt', fn ($query) => $query->where('student_id', $userId)->where('status', PracticeAttempt::STATUS_COMPLETED))
             ->get()->each(function ($answer) use ($rows): void {
                 $rows->push(['subject' => $answer->question?->subject, 'topic' => $answer->question?->topic, 'correct' => (bool) $answer->is_correct]);
             });

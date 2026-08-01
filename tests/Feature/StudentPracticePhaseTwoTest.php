@@ -93,6 +93,7 @@ class StudentPracticePhaseTwoTest extends TestCase
         $this->actingAs($student)->post(route('student.practice.skills.start', $skill), ['question_count' => 1]);
         $first = PracticeAttempt::query()->oldest('id')->firstOrFail();
         $firstQuestion = $first->answers()->sole()->question_id;
+        $this->actingAs($student)->post(route('student.practice.complete', $first))->assertRedirect();
 
         $this->actingAs($student)->post(route('student.practice.skills.start', $skill), ['question_count' => 1]);
         $second = PracticeAttempt::query()->latest('id')->firstOrFail();
