@@ -13,14 +13,17 @@ class StudentSkillProgress extends Model
     protected $fillable = [
         'student_id', 'practice_skill_id', 'completed_attempts', 'total_questions',
         'correct_answers', 'accuracy', 'average_score', 'best_score',
-        'practice_seconds', 'last_practiced_at',
+        'mastery_score', 'mastery_level', 'confidence_score', 'recommended_difficulty',
+        'consecutive_correct', 'consecutive_incorrect', 'engine_version',
+        'practice_seconds', 'last_practiced_at', 'last_evaluated_at',
     ];
 
     protected function casts(): array
     {
         return [
             'accuracy' => 'float', 'average_score' => 'float', 'best_score' => 'float',
-            'last_practiced_at' => 'datetime',
+            'mastery_score' => 'float', 'confidence_score' => 'float',
+            'last_practiced_at' => 'datetime', 'last_evaluated_at' => 'datetime',
         ];
     }
 

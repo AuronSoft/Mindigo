@@ -22,7 +22,7 @@ class SkillQuestionSelector
         $recentIds = PracticeAttempt::query()
             ->where('student_id', $student->getAuthIdentifier())
             ->where('practice_skill_id', $skill->getKey())
-            ->latest('id')->limit(3)->pluck('id')
+            ->latest('id')->limit((int) config('practice.adaptive.recent_attempts'))->pluck('id')
             ->pipe(fn ($ids) => $ids->isEmpty() ? collect() : PracticeAnswer::query()
                 ->whereIn('attempt_id', $ids)->pluck('question_id'));
 
@@ -32,6 +32,42 @@ class SkillQuestionSelector
         );
 
         return [$this->balanced($all, $count), $poolSize];
+    }
+
+    public function selectAdaptive(User $student, PracticeSkill $skill, int $count, string $targetDifficulty): array
+    {
+        $questions = $skill->questions()->practiceReady()->get();
+        $recentIds = $this->recentQuestionIds($student, $skill);
+        $order = match ($targetDifficulty) {
+            MasteryCalculator::DIFFICULTY_HARD => ['hard', 'medium', 'easy'],
+            MasteryCalculator::DIFFICULTY_MEDIUM => ['medium', 'easy', 'hard'],
+            default => ['easy', 'medium', 'hard'],
+        };
+        $selected = new Collection;
+        foreach ([false, true] as $includeRecent) {
+            foreach ($order as $difficulty) {
+                $candidates = $questions->where('difficulty', $difficulty)
+                    ->filter(fn (Question $question): bool => ! $selected->contains('id', $question->id))
+                    ->filter(fn (Question $question): bool => $includeRecent || ! $recentIds->contains($question->id))
+                    ->shuffle();
+                $selected = $selected->concat($candidates->take($count - $selected->count()));
+                if ($selected->count() >= $count) {
+                    break 2;
+                }
+            }
+        }
+
+        return [$selected, $questions->count()];
+    }
+
+    private function recentQuestionIds(User $student, PracticeSkill $skill)
+    {
+        $attemptIds = PracticeAttempt::query()->where('student_id', $student->getAuthIdentifier())
+            ->where('practice_skill_id', $skill->getKey())->latest('id')
+            ->limit((int) config('practice.adaptive.recent_attempts'))->pluck('id');
+
+        return $attemptIds->isEmpty() ? collect() : PracticeAnswer::query()
+            ->whereIn('attempt_id', $attemptIds)->pluck('question_id');
     }
 
     private function balanced(Collection $questions, int $count): Collection

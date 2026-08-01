@@ -13,6 +13,7 @@ use Mindigo\StudentPractice\Models\PracticeAnswer;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
 use Mindigo\StudentPractice\Models\PracticeSet;
 use Mindigo\StudentPractice\Models\PracticeSkill;
+use Mindigo\StudentPractice\Models\StudentSkillProgress;
 
 class PracticeService
 {
@@ -21,6 +22,7 @@ class PracticeService
         private readonly PracticeSkillService $skills,
         private readonly SkillQuestionSelector $skillSelector,
         private readonly SkillProgressService $skillProgress,
+        private readonly PracticeRecommendationService $recommendations,
     ) {}
 
     public function getQuestions(array $filters): LengthAwarePaginator
@@ -75,6 +77,31 @@ class PracticeService
             'difficulty' => $data['difficulty'] ?? null,
             'question_pool_size' => $poolSize,
             'selection_strategy' => 'balanced',
+        ]);
+    }
+
+    public function startAdaptivePractice(User $student, PracticeSkill $skill, int $questionCount): PracticeAttempt
+    {
+        $progress = StudentSkillProgress::query()->where('student_id', $student->getAuthIdentifier())
+            ->where('practice_skill_id', $skill->getKey())->first();
+        $difficulty = $progress?->recommended_difficulty ?? MasteryCalculator::DIFFICULTY_EASY;
+        [$questions, $poolSize] = $this->skillSelector->selectAdaptive($student, $skill, $questionCount, $difficulty);
+
+        return $this->createAttempt($student, $questions, [
+            'skill_id' => $skill->getKey(),
+            'mode' => 'skill',
+            'subject' => $skill->subject?->name,
+            'topic' => $skill->topic?->name,
+            'difficulty' => $difficulty,
+            'question_pool_size' => $poolSize,
+            'selection_strategy' => 'adaptive_v1',
+            'is_adaptive' => true,
+            'mastery_before' => $progress?->mastery_score ?? 0,
+            'adaptive_context' => [
+                'target_difficulty' => $difficulty,
+                'confidence_score' => $progress?->confidence_score ?? 0,
+                'engine_version' => MasteryCalculator::VERSION,
+            ],
         ]);
     }
 
@@ -158,7 +185,11 @@ class PracticeService
 
             if ($lockedAttempt->practice_skill_id !== null) {
                 $lockedAttempt->loadMissing(['student', 'practiceSkill']);
-                $this->skillProgress->rebuild($lockedAttempt->student, $lockedAttempt->practiceSkill);
+                $progress = $this->skillProgress->rebuild($lockedAttempt->student, $lockedAttempt->practiceSkill);
+                $this->recommendations->refresh($progress);
+                if ($lockedAttempt->is_adaptive) {
+                    $lockedAttempt->update(['mastery_after' => $progress->mastery_score]);
+                }
             }
 
             return $lockedAttempt->fresh();
@@ -263,6 +294,9 @@ class PracticeService
                 'difficulty' => $data['difficulty'] ?? null,
                 'question_pool_size' => $data['question_pool_size'] ?? $questions->count(),
                 'selection_strategy' => $data['selection_strategy'] ?? 'random',
+                'is_adaptive' => $data['is_adaptive'] ?? false,
+                'mastery_before' => $data['mastery_before'] ?? null,
+                'adaptive_context' => $data['adaptive_context'] ?? null,
                 'total_questions' => $questions->count(),
                 'correct_answers' => 0,
                 'status' => PracticeAttempt::STATUS_IN_PROGRESS,
