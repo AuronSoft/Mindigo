@@ -1,7 +1,16 @@
 {{-- student-exam::index --}}
-@extends('layouts.app')
+@extends('Mindigo-dashboard::layouts')
 
 @section('title', __('student-exam::app.my_exams'))
+
+@section('styles')
+    @vite([
+        'packages/Mindigo/Dashboard/src/resources/css/app.css',
+        'packages/Mindigo/Dashboard/src/resources/js/app.js',
+        'packages/Students/StudentExam/src/resources/css/app.css',
+        'packages/Students/StudentExam/src/resources/js/app.js',
+    ])
+@endsection
 
 @section('content')
 <div class="max-w-5xl mx-auto px-4 py-8 space-y-10">
