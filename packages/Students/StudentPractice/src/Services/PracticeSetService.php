@@ -12,6 +12,7 @@ use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
+use Mindigo\StudentPractice\Models\PracticeAttempt;
 use Mindigo\StudentPractice\Models\PracticeSet;
 
 class PracticeSetService
@@ -109,7 +110,7 @@ class PracticeSetService
                     'attempt',
                     fn (Builder $attempts) => $attempts
                         ->where('student_id', $user->getAuthIdentifier())
-                        ->whereNotNull('completed_at')
+                        ->where('status', PracticeAttempt::STATUS_COMPLETED)
                 )
                 ->pluck('question_id');
             $examIds = ExamAttemptAnswer::query()

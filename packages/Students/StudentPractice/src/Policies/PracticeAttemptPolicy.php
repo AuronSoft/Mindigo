@@ -14,11 +14,11 @@ class PracticeAttemptPolicy
 
     public function update(User $user, PracticeAttempt $attempt): bool
     {
-        return $this->view($user, $attempt) && ! $attempt->isCompleted();
+        return $this->view($user, $attempt) && $attempt->isActive();
     }
 
     public function complete(User $user, PracticeAttempt $attempt): bool
     {
-        return $this->update($user, $attempt);
+        return $this->view($user, $attempt) && ! $attempt->isExpired();
     }
 }

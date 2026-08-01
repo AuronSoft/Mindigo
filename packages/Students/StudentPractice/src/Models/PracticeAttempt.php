@@ -40,12 +40,14 @@ class PracticeAttempt extends Model
         'mastery_before',
         'mastery_after',
         'adaptive_context',
+        'request_fingerprint',
         'total_questions',
         'correct_answers',
         'score', // percentage
         'status',
         'started_at',
         'last_activity_at',
+        'expires_at',
         'completed_at',
     ];
 
@@ -55,6 +57,7 @@ class PracticeAttempt extends Model
             'started_at' => 'datetime',
             'last_activity_at' => 'datetime',
             'completed_at' => 'datetime',
+            'expires_at' => 'datetime',
             'score' => 'float',
             'is_adaptive' => 'boolean',
             'mastery_before' => 'float',
@@ -107,7 +110,9 @@ class PracticeAttempt extends Model
     public function markAsCompleted(): void
     {
         $this->update([
+            'status' => self::STATUS_COMPLETED,
             'completed_at' => now(),
+            'last_activity_at' => now(),
             'score' => $this->calculateScore(),
         ]);
     }
@@ -117,7 +122,18 @@ class PracticeAttempt extends Model
      */
     public function isCompleted(): bool
     {
-        return $this->status === self::STATUS_COMPLETED || $this->completed_at !== null;
+        return $this->status === self::STATUS_COMPLETED;
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->status === self::STATUS_EXPIRED
+            || ($this->status === self::STATUS_IN_PROGRESS && $this->expires_at?->isPast());
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_IN_PROGRESS && ! $this->isExpired();
     }
 
     /**

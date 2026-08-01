@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Mindigo\StudentPractice\Http\Requests\CompletePracticeRequest;
+use Mindigo\StudentPractice\Http\Requests\PracticeIndexRequest;
 use Mindigo\StudentPractice\Http\Requests\StartPracticeRequest;
 use Mindigo\StudentPractice\Http\Requests\SubmitAnswerRequest;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
@@ -17,12 +19,12 @@ class PracticeController extends Controller
 {
     public function __construct(private readonly PracticeService $service) {}
 
-    public function index(Request $request): View
+    public function index(PracticeIndexRequest $request): View
     {
         return view('student-practice::index', [
             'formData' => $this->service->formData($request->user()),
             'questions' => $this->service->getQuestions(
-                $request->only(['subject', 'topic', 'type', 'difficulty', 'skill_id', 'keyword'])
+                $request->validated()
             ),
         ]);
     }
@@ -45,6 +47,11 @@ class PracticeController extends Controller
     public function attempt(Request $request, PracticeAttempt $attempt): View|RedirectResponse
     {
         Gate::forUser($request->user())->authorize('view', $attempt);
+        $attempt = $this->service->reconcileAttempt($attempt);
+        if ($attempt->isExpired()) {
+            return to_route('student.practice.index')
+                ->withErrors(['attempt' => __('student-practice::app.errors.session_expired')]);
+        }
         if ($attempt->isCompleted()) {
             return to_route('student.practice.result', $attempt);
         }
@@ -58,7 +65,6 @@ class PracticeController extends Controller
         SubmitAnswerRequest $request,
         PracticeAttempt $attempt,
     ): JsonResponse {
-        Gate::forUser($request->user())->authorize('update', $attempt);
         $answer = $this->service->submitAnswer(
             $attempt,
             $request->integer('question_id'),
@@ -71,9 +77,8 @@ class PracticeController extends Controller
         ]);
     }
 
-    public function complete(Request $request, PracticeAttempt $attempt): RedirectResponse
+    public function complete(CompletePracticeRequest $request, PracticeAttempt $attempt): RedirectResponse
     {
-        Gate::forUser($request->user())->authorize('complete', $attempt);
         $completed = $this->service->completePractice($attempt);
 
         return to_route('student.practice.result', $completed)

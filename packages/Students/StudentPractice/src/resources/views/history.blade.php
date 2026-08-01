@@ -31,6 +31,7 @@
                 @forelse($history as $attempt)<tr class="text-sm font-semibold text-slate-600"><td class="px-5 py-4 font-bold text-slate-900">{{ $attempt->practiceSet?->title ?? ($attempt->topic ?: ($attempt->subject ?: __('student-practice::app.modes.mixed'))) }}</td><td class="px-5 py-4">{{ $attempt->correct_answers }}/{{ $attempt->total_questions }}</td><td class="px-5 py-4">{{ number_format($attempt->score, 1) }}%</td><td class="px-5 py-4">{{ $attempt->completed_at?->format('d/m/Y H:i') }}</td><td class="px-5 py-4 text-right"><a href="{{ route('student.practice.result', $attempt) }}" class="text-xs font-black text-green-700 no-underline">@lang('student-practice::app.view_result')</a></td></tr>@empty<tr><td colspan="5" class="px-6 py-12 text-center text-sm font-semibold text-slate-400">@lang('student-practice::app.no_history')</td></tr>@endforelse
             </tbody></table></div>
         </section>
+        <div class="mt-4">{{ $history->links() }}</div>
     </main>
 </div>
 @endsection

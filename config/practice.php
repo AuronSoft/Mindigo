@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'session' => [
+        'ttl_minutes' => 120,
+        'history_per_page' => 15,
+    ],
     'adaptive' => [
         'engine_version' => 'v1',
         'answer_window' => 50,

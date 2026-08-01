@@ -3,7 +3,6 @@
 namespace Mindigo\StudentPractice\Contracts;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
 use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
@@ -44,7 +43,7 @@ interface PracticeServiceInterface
     /**
      * Lấy lịch sử luyện tập của học sinh.
      */
-    public function getStudentHistory(User $student, int $limit = 10): Collection;
+    public function getStudentHistory(User $student): LengthAwarePaginator;
 
     /**
      * Lấy thống kê luyện tập của học sinh.

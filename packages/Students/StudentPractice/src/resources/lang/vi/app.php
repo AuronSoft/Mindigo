@@ -62,11 +62,13 @@ return [
     'no_history' => 'Bạn chưa hoàn thành lượt luyện nào.',
     'not_available' => 'Chưa có thông tin',
     'messages' => [
+        'answer_saving' => 'Đang lưu...',
         'answer_saved' => 'Đã lưu câu trả lời.',
         'answer_save_failed' => 'Không thể lưu câu trả lời. Vui lòng thử lại.',
         'completed' => 'Đã hoàn thành lượt luyện.',
     ],
     'errors' => [
+        'session_expired' => 'Phiên luyện tập đã hết hạn. Vui lòng bắt đầu một phiên mới.',
         'already_completed' => 'Lượt luyện này đã hoàn thành.',
         'question_not_in_attempt' => 'Câu hỏi không thuộc lượt luyện này.',
         'question_unavailable' => 'Câu hỏi không còn khả dụng.',

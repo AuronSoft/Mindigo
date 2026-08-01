@@ -9,13 +9,14 @@ use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Services\QuestionBankService;
+use Mindigo\StudentPractice\Contracts\PracticeServiceInterface;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
 use Mindigo\StudentPractice\Models\PracticeSet;
 use Mindigo\StudentPractice\Models\PracticeSkill;
 use Mindigo\StudentPractice\Models\StudentSkillProgress;
 
-class PracticeService
+class PracticeService implements PracticeServiceInterface
 {
     public function __construct(
         protected QuestionBankService $questionBank,
@@ -75,6 +76,7 @@ class PracticeService
             'subject' => $skill->subject?->name,
             'topic' => $skill->topic?->name,
             'difficulty' => $data['difficulty'] ?? null,
+            'question_count' => (int) $data['question_count'],
             'question_pool_size' => $poolSize,
             'selection_strategy' => 'balanced',
         ]);
@@ -93,6 +95,7 @@ class PracticeService
             'subject' => $skill->subject?->name,
             'topic' => $skill->topic?->name,
             'difficulty' => $difficulty,
+            'question_count' => $questionCount,
             'question_pool_size' => $poolSize,
             'selection_strategy' => 'adaptive_v1',
             'is_adaptive' => true,
@@ -115,13 +118,19 @@ class PracticeService
             'subject' => $set->subject,
             'topic' => $set->topic,
             'difficulty' => $set->difficulty,
+            'question_count' => $set->questions->count(),
         ]);
     }
 
     public function submitAnswer(PracticeAttempt $attempt, int $questionId, array $answer): PracticeAnswer
     {
-        return DB::transaction(function () use ($attempt, $questionId, $answer): PracticeAnswer {
+        $saved = DB::transaction(function () use ($attempt, $questionId, $answer): ?PracticeAnswer {
             $lockedAttempt = PracticeAttempt::query()->lockForUpdate()->findOrFail($attempt->getKey());
+            if ($lockedAttempt->isExpired()) {
+                $this->markExpired($lockedAttempt);
+
+                return null;
+            }
             if ($lockedAttempt->isCompleted()) {
                 throw ValidationException::withMessages([
                     'attempt' => __('student-practice::app.errors.already_completed'),
@@ -140,14 +149,25 @@ class PracticeService
                 ]);
             }
 
-            $question = Question::query()->where('status', 'approved')->find($questionId);
-            if (! $question) {
+            $snapshot = $practiceAnswer->question_snapshot ?? [];
+            if (! array_key_exists('correct_answers', $snapshot)) {
+                $question = Question::query()->find($questionId);
+                $snapshot = $question ? $this->questionSnapshot($question) : [];
+            }
+            if ($snapshot === []) {
                 throw ValidationException::withMessages([
                     'question_id' => __('student-practice::app.errors.question_unavailable'),
                 ]);
             }
 
-            $isCorrect = $this->gradeAnswer($question, $answer);
+            $this->validateAnswerShape((string) data_get($snapshot, 'type'), $answer);
+            if ($practiceAnswer->student_answer === $answer) {
+                $lockedAttempt->update(['last_activity_at' => now()]);
+
+                return $practiceAnswer->fresh('question');
+            }
+
+            $isCorrect = $this->gradeAnswer($snapshot, $answer);
             $practiceAnswer->update([
                 'student_answer' => $answer,
                 'is_correct' => $isCorrect,
@@ -160,14 +180,27 @@ class PracticeService
 
             return $practiceAnswer->fresh('question');
         });
+
+        if ($saved === null) {
+            throw ValidationException::withMessages([
+                'attempt' => __('student-practice::app.errors.session_expired'),
+            ]);
+        }
+
+        return $saved;
     }
 
     public function completePractice(PracticeAttempt $attempt): PracticeAttempt
     {
-        return DB::transaction(function () use ($attempt): PracticeAttempt {
+        $completed = DB::transaction(function () use ($attempt): PracticeAttempt {
             $lockedAttempt = PracticeAttempt::query()->lockForUpdate()->findOrFail($attempt->getKey());
             if ($lockedAttempt->isCompleted()) {
                 return $lockedAttempt;
+            }
+            if ($lockedAttempt->isExpired()) {
+                $this->markExpired($lockedAttempt);
+
+                return $lockedAttempt->fresh();
             }
 
             $correctAnswers = $lockedAttempt->answers()->where('is_correct', true)->count();
@@ -184,6 +217,7 @@ class PracticeService
             ]);
 
             if ($lockedAttempt->practice_skill_id !== null) {
+                User::query()->whereKey($lockedAttempt->student_id)->lockForUpdate()->firstOrFail();
                 $lockedAttempt->loadMissing(['student', 'practiceSkill']);
                 $progress = $this->skillProgress->rebuild($lockedAttempt->student, $lockedAttempt->practiceSkill);
                 $this->recommendations->refresh($progress);
@@ -194,17 +228,25 @@ class PracticeService
 
             return $lockedAttempt->fresh();
         });
+
+        if ($completed->status === PracticeAttempt::STATUS_EXPIRED) {
+            throw ValidationException::withMessages([
+                'attempt' => __('student-practice::app.errors.session_expired'),
+            ]);
+        }
+
+        return $completed;
     }
 
-    public function getStudentHistory(User $student, int $limit = 10): Collection
+    public function getStudentHistory(User $student): LengthAwarePaginator
     {
         return PracticeAttempt::query()
             ->with(['practiceSet:id,title', 'practiceSkill:id,name'])
             ->where('student_id', $student->getAuthIdentifier())
             ->where('status', PracticeAttempt::STATUS_COMPLETED)
             ->latest('completed_at')
-            ->limit($limit)
-            ->get();
+            ->paginate((int) config('practice.session.history_per_page'))
+            ->withQueryString();
     }
 
     public function getStudentStats(User $student): array
@@ -246,6 +288,18 @@ class PracticeService
         ];
     }
 
+    public function reconcileAttempt(PracticeAttempt $attempt): PracticeAttempt
+    {
+        return DB::transaction(function () use ($attempt): PracticeAttempt {
+            $lockedAttempt = PracticeAttempt::query()->lockForUpdate()->findOrFail($attempt->getKey());
+            if ($lockedAttempt->isExpired()) {
+                $this->markExpired($lockedAttempt);
+            }
+
+            return $lockedAttempt->fresh();
+        });
+    }
+
     private function approvedQuestions(array $filters)
     {
         $query = Question::query()->practiceReady();
@@ -283,6 +337,18 @@ class PracticeService
         }
 
         return DB::transaction(function () use ($student, $questions, $data): PracticeAttempt {
+            User::query()->whereKey($student->getAuthIdentifier())->lockForUpdate()->firstOrFail();
+            $fingerprint = $this->requestFingerprint($data);
+            $activeAttempt = PracticeAttempt::query()
+                ->where('student_id', $student->getAuthIdentifier())
+                ->where('status', PracticeAttempt::STATUS_IN_PROGRESS)
+                ->where('request_fingerprint', $fingerprint)
+                ->where(fn ($query) => $query->whereNull('expires_at')->orWhere('expires_at', '>', now()))
+                ->latest('id')->first();
+            if ($activeAttempt) {
+                return $activeAttempt->load('answers.question');
+            }
+
             $now = now();
             $attempt = PracticeAttempt::query()->create([
                 'student_id' => $student->getAuthIdentifier(),
@@ -297,22 +363,18 @@ class PracticeService
                 'is_adaptive' => $data['is_adaptive'] ?? false,
                 'mastery_before' => $data['mastery_before'] ?? null,
                 'adaptive_context' => $data['adaptive_context'] ?? null,
+                'request_fingerprint' => $fingerprint,
                 'total_questions' => $questions->count(),
                 'correct_answers' => 0,
                 'status' => PracticeAttempt::STATUS_IN_PROGRESS,
                 'started_at' => $now,
                 'last_activity_at' => $now,
+                'expires_at' => $now->copy()->addMinutes((int) config('practice.session.ttl_minutes')),
             ]);
 
             $attempt->answers()->createMany($questions->values()->map(fn (Question $question): array => [
                 'question_id' => $question->getKey(),
-                'question_snapshot' => [
-                    'content' => $question->content,
-                    'type' => $question->type,
-                    'options' => $question->options,
-                    'explanation' => $question->explanation,
-                    'hint' => $question->hint,
-                ],
+                'question_snapshot' => $this->questionSnapshot($question),
                 'difficulty_snapshot' => $question->difficulty,
                 'student_answer' => null,
                 'is_correct' => false,
@@ -323,11 +385,11 @@ class PracticeService
         });
     }
 
-    private function gradeAnswer(Question $question, array $answer): bool
+    private function gradeAnswer(array $snapshot, array $answer): bool
     {
-        $correctAnswers = $question->correct_answers ?? [];
+        $correctAnswers = data_get($snapshot, 'correct_answers', []);
 
-        return match ($question->type) {
+        return match (data_get($snapshot, 'type')) {
             'single_choice' => isset($answer['choice'], $correctAnswers[0])
                 && (string) $answer['choice'] === (string) $correctAnswers[0],
             'multiple_choice' => $this->matchesMultipleChoice($answer['choices'] ?? null, $correctAnswers),
@@ -337,6 +399,56 @@ class PracticeService
             'short_answer' => $this->matchShortAnswer((string) ($answer['text'] ?? ''), $correctAnswers),
             default => false,
         };
+    }
+
+    private function validateAnswerShape(string $type, array $answer): void
+    {
+        $valid = match ($type) {
+            'single_choice' => filled($answer['choice'] ?? null),
+            'multiple_choice' => is_array($answer['choices'] ?? null) && $answer['choices'] !== [],
+            'true_false' => array_key_exists('answer', $answer),
+            'short_answer', 'essay' => filled($answer['text'] ?? null),
+            default => false,
+        };
+        if (! $valid) {
+            throw ValidationException::withMessages([
+                'answer' => __('student-practice::app.validation.answer_invalid'),
+            ]);
+        }
+    }
+
+    private function questionSnapshot(Question $question): array
+    {
+        return [
+            'content' => $question->content,
+            'type' => $question->type,
+            'options' => $question->options,
+            'correct_answers' => $question->correct_answers,
+            'explanation' => $question->explanation,
+            'hint' => $question->hint,
+        ];
+    }
+
+    private function requestFingerprint(array $data): string
+    {
+        $identity = collect($data)->only([
+            'practice_set_id', 'skill_id', 'mode', 'subject', 'topic', 'difficulty',
+            'question_count', 'selection_strategy', 'is_adaptive',
+        ])->sortKeys()->all();
+
+        return hash('sha256', json_encode($identity, JSON_THROW_ON_ERROR));
+    }
+
+    private function markExpired(PracticeAttempt $attempt): void
+    {
+        if ($attempt->status !== PracticeAttempt::STATUS_IN_PROGRESS) {
+            return;
+        }
+        $attempt->update([
+            'status' => PracticeAttempt::STATUS_EXPIRED,
+            'last_activity_at' => now(),
+            'completed_at' => now(),
+        ]);
     }
 
     private function matchesMultipleChoice(mixed $answers, array $correctAnswers): bool

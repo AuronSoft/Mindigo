@@ -105,7 +105,8 @@ class StudentPracticePhaseZeroTest extends TestCase
 
         $this->actingAs($student)
             ->post(route('student.practice.complete', $attempt))
-            ->assertForbidden();
+            ->assertRedirect(route('student.practice.result', $attempt));
+        $this->assertSame(1, $attempt->fresh()->correct_answers);
     }
 
     public function test_personalized_set_uses_canonical_domain_and_links_the_attempt(): void
