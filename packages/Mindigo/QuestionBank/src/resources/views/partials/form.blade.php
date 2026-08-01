@@ -245,6 +245,24 @@
         </div>
 
         <div class="question-form-grid mt-5">
+            <label class="question-field">
+                <span>@lang('Mindigo-question-bank::app.grade_level')</span>
+                <input name="grade_level" value="{{ old('grade_level', $question->grade_level ?? '') }}" class="question-input" placeholder="@lang('Mindigo-question-bank::app.grade_level_hint')">
+                @error('grade_level')<strong>{{ $message }}</strong>@enderror
+            </label>
+
+            <label class="question-field">
+                <span>@lang('Mindigo-question-bank::app.estimated_seconds')</span>
+                <input type="number" min="10" max="7200" name="estimated_seconds" value="{{ old('estimated_seconds', $question->estimated_seconds ?? '') }}" class="question-input" placeholder="@lang('Mindigo-question-bank::app.estimated_seconds_hint')">
+                @error('estimated_seconds')<strong>{{ $message }}</strong>@enderror
+            </label>
+
+            <label class="question-field md:col-span-2">
+                <span>@lang('Mindigo-question-bank::app.practice_hint')</span>
+                <textarea name="hint" class="question-textarea" placeholder="@lang('Mindigo-question-bank::app.practice_hint_placeholder')">{{ old('hint', $question->hint ?? '') }}</textarea>
+                @error('hint')<strong>{{ $message }}</strong>@enderror
+            </label>
+
             <label class="question-field md:col-span-2">
                 <span>@lang('Mindigo-question-bank::app.explanation')</span>
                 <textarea name="explanation" class="question-textarea">{{ old('explanation', $question->explanation ?? '') }}</textarea>

@@ -3,49 +3,53 @@
 namespace Mindigo\QuestionBank\Services;
 
 use Illuminate\Validation\ValidationException;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
+use Mindigo\QuestionBank\Models\QuestionEditHistory;
 use Mindigo\QuestionBank\Models\QuestionFolder;
 use Mindigo\SubjectManagement\Models\Subject;
-use Mindigo\QuestionBank\Models\QuestionEditHistory;
 
 class QuestionBankService
 {
-    public function __construct(private QuestionImportService $imports)
-    {
-    }
+    public function __construct(
+        private QuestionImportService $imports,
+        private QuestionPracticeReadinessService $readiness,
+    ) {}
 
     public function importFromRows(array $rows, User $user, string $status, ?int $defaultFolderId): int
-{
-    if (empty($rows)) {
-        throw \Illuminate\Validation\ValidationException::withMessages([
-            'import_file' => __('Mindigo-question-bank::app.validation.import_empty'),
-        ]);
+    {
+        if (empty($rows)) {
+            throw ValidationException::withMessages([
+                'import_file' => __('Mindigo-question-bank::app.validation.import_empty'),
+            ]);
+        }
+
+        $created = 0;
+        foreach ($rows as $row) {
+            $question = Question::query()->create([
+                'created_by' => $user->getAuthIdentifier(),
+                'status' => $status,
+                'folder_id' => $row['folder_id'] ?? $defaultFolderId,
+                'subject' => $row['subject'] ?? null,
+                'topic' => $row['topic'] ?? null,
+                'type' => $row['type'] ?? 'single_choice',
+                'difficulty' => $row['difficulty'] ?? 'medium',
+                'content' => $row['content'],
+                'options' => $row['options'] ?? [],
+                'correct_answers' => $row['correct_answers'] ?? [],
+                'explanation' => $row['explanation'] ?? null,
+                'tags' => $row['tags'] ?? [],
+            ]);
+
+            $this->readiness->refresh($question);
+
+            $this->auditQuestion('import', [], $question->only($this->auditFields()), $question);
+            $created++;
+        }
+
+        return $created;
     }
-
-    $created = 0;
-    foreach ($rows as $row) {
-        $question = Question::query()->create([
-            'created_by'      => $user->getAuthIdentifier(),
-            'status'          => $status,
-            'folder_id'       => $row['folder_id'] ?? $defaultFolderId,
-            'subject'         => $row['subject'] ?? null,
-            'topic'           => $row['topic'] ?? null,
-            'type'            => $row['type']            ?? 'single_choice',
-            'difficulty'      => $row['difficulty']      ?? 'medium',
-            'content'         => $row['content'],
-            'options'         => $row['options']         ?? [],
-            'correct_answers' => $row['correct_answers'] ?? [],
-            'explanation'     => $row['explanation']     ?? null,
-            'tags'            => $row['tags']            ?? [],
-        ]);
-
-        $this->auditQuestion('import', [], $question->only($this->auditFields()), $question);
-        $created++;
-    }
-
-    return $created;
-}
 
     public function filteredList(User $user, array $filters)
     {
@@ -53,7 +57,7 @@ class QuestionBankService
             ->with(['creator:id,name,email,role', 'reviewer:id,name,email,role', 'folder:id,name,color'])
             ->latest('updated_at');
 
-        if (!$user->isAdmin()) {
+        if (! $user->isAdmin()) {
             $query->where('created_by', $user->getAuthIdentifier());
         }
 
@@ -108,6 +112,7 @@ class QuestionBankService
             $question = Question::query()->create(
                 $this->imports->questionDataFromRow($row, $user, $status, $defaultFolderId, $index + 2)
             );
+            $this->readiness->refresh($question);
             $this->auditQuestion('import', [], $question->only($this->auditFields()), $question);
             $created++;
         }
@@ -122,8 +127,10 @@ class QuestionBankService
             'created_by' => $user->getAuthIdentifier(),
         ]);
 
+        $this->readiness->refresh($question);
+
         $this->auditQuestion('create', [], $question->only($this->auditFields()), $question);
-        $this->recordHistory('create', [], $question->toArray(), $question); //record
+        $this->recordHistory('create', [], $question->toArray(), $question); // record
 
         return $question;
     }
@@ -132,9 +139,10 @@ class QuestionBankService
     {
         $oldValues = $question->only($this->auditFields());
         $question->fill($data)->save();
+        $this->readiness->refresh($question);
 
         $this->auditQuestion('update', $oldValues, $question->only($this->auditFields()), $question);
-         $this->recordHistory('update', $oldValues, $question->toArray(), $question);//record
+        $this->recordHistory('update', $oldValues, $question->toArray(), $question); // record
 
         return $question;
     }
@@ -148,9 +156,10 @@ class QuestionBankService
             'reviewed_by' => $reviewer->getAuthIdentifier(),
             'reviewed_at' => now(),
         ])->save();
+        $this->readiness->refresh($question);
 
         $this->auditQuestion('review', $oldValues, $question->only(['status', 'review_note', 'reviewed_by', 'reviewed_at']), $question);
-        $this->recordHistory('review', $oldValues, $question->toArray(), $question, $data['review_note'] ?? null);//record
+        $this->recordHistory('review', $oldValues, $question->toArray(), $question, $data['review_note'] ?? null); // record
     }
 
     public function delete(Question $question): void
@@ -175,7 +184,7 @@ class QuestionBankService
     {
         $query = Question::query();
 
-        if (!$user->isAdmin()) {
+        if (! $user->isAdmin()) {
             $query->where('created_by', $user->getAuthIdentifier());
         }
 
@@ -201,7 +210,7 @@ class QuestionBankService
                 ->values()
                 ->all();
 
-            if (!empty($subjects)) {
+            if (! empty($subjects)) {
                 return $subjects;
             }
         }
@@ -271,7 +280,7 @@ class QuestionBankService
             ->withCount('questions')
             ->orderBy('name');
 
-        if (!$user->isAdmin()) {
+        if (! $user->isAdmin()) {
             $query->where('created_by', $user->getAuthIdentifier());
         }
 
@@ -295,11 +304,11 @@ class QuestionBankService
 
     private function auditQuestion(string $action, array $oldValues, array $newValues, Question $question): void
     {
-        if (!class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
+        if (! class_exists(AuditLogService::class)) {
             return;
         }
 
-        app(\Mindigo\AuditLog\Services\AuditLogService::class)->record(
+        app(AuditLogService::class)->record(
             $action,
             'questions',
             $oldValues,
@@ -309,15 +318,13 @@ class QuestionBankService
         );
     }
 
-    
-
     private function auditFolder(string $action, array $oldValues, array $newValues, QuestionFolder $folder): void
     {
-        if (!class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
+        if (! class_exists(AuditLogService::class)) {
             return;
         }
 
-        app(\Mindigo\AuditLog\Services\AuditLogService::class)->record(
+        app(AuditLogService::class)->record(
             $action,
             'question_folders',
             $oldValues,
@@ -329,28 +336,32 @@ class QuestionBankService
 
     // Thêm method vào QuestionBankService:
 
-private function recordHistory(string $action, array $oldValues, array $newValues, Question $question, ?string $note = null): void
-{
-    $changes = [];
-    $trackFields = ['subject', 'topic', 'type', 'difficulty', 'status', 'content', 'explanation', 'tags', 'folder_id', 'review_note'];
+    private function recordHistory(string $action, array $oldValues, array $newValues, Question $question, ?string $note = null): void
+    {
+        $changes = [];
+        $trackFields = ['subject', 'topic', 'type', 'difficulty', 'status', 'content', 'explanation', 'tags', 'folder_id', 'review_note'];
 
-    foreach ($trackFields as $field) {
-        $old = $oldValues[$field] ?? null;
-        $new = $newValues[$field] ?? null;
-        // Normalize array để so sánh
-        if (is_array($old)) $old = implode(', ', $old);
-        if (is_array($new)) $new = implode(', ', $new);
-        if ($old !== $new) {
-            $changes[$field] = ['old' => $old, 'new' => $new];
+        foreach ($trackFields as $field) {
+            $old = $oldValues[$field] ?? null;
+            $new = $newValues[$field] ?? null;
+            // Normalize array để so sánh
+            if (is_array($old)) {
+                $old = implode(', ', $old);
+            }
+            if (is_array($new)) {
+                $new = implode(', ', $new);
+            }
+            if ($old !== $new) {
+                $changes[$field] = ['old' => $old, 'new' => $new];
+            }
         }
-    }
 
-    QuestionEditHistory::create([
-        'question_id' => $question->id,
-        'edited_by'   => auth()->id(),
-        'action'      => $action,
-        'changes'     => $changes ?: null,
-        'note'        => $note,
-    ]);
-}
+        QuestionEditHistory::create([
+            'question_id' => $question->id,
+            'edited_by' => auth()->id(),
+            'action' => $action,
+            'changes' => $changes ?: null,
+            'note' => $note,
+        ]);
+    }
 }

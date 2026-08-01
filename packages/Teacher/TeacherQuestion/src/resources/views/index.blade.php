@@ -94,6 +94,10 @@
                 <x-heroicon-o-check-circle class="h-4 w-4" />Chọn nhiều
             </button>
 
+                <a href="{{ route('practice.skills.index') }}"
+                   class="inline-flex h-9 items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-4 text-sm font-black text-green-700 no-underline transition hover:border-green-300 hover:bg-green-100">
+                    <x-heroicon-o-squares-plus class="h-4 w-4" />@lang('student-practice::app.skills.title')
+                </a>
                 <a href="{{ route('teacher.questions.import') }}"
                    class="inline-flex h-9 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">
                     <x-heroicon-o-arrow-up-tray class="h-4 w-4" />@lang('teacher-question::app.import')

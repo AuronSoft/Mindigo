@@ -6,10 +6,9 @@ use Database\Factories\QuestionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Mindigo\Auth\Models\User;
-use Mindigo\QuestionBank\Models\QuestionEditHistory;
-
 
 class Question extends Model
 {
@@ -21,8 +20,16 @@ class Question extends Model
     }
 
     public const TYPES = ['single_choice', 'multiple_choice', 'true_false', 'short_answer', 'essay'];
+
     public const DIFFICULTIES = ['easy', 'medium', 'hard'];
+
     public const STATUSES = ['draft', 'reviewing', 'approved', 'rejected'];
+
+    public const PRACTICE_READY = 'ready';
+
+    public const PRACTICE_NEEDS_REVIEW = 'needs_review';
+
+    public const PRACTICE_DISABLED = 'disabled';
 
     protected $table = 'question_bank_questions';
 
@@ -42,6 +49,14 @@ class Question extends Model
         'tags',
         'review_note',
         'reviewed_at',
+        'subject_id',
+        'subject_topic_id',
+        'grade_level',
+        'estimated_seconds',
+        'hint',
+        'practice_status',
+        'readiness_issues',
+        'practice_ready_at',
     ];
 
     protected function casts(): array
@@ -51,6 +66,8 @@ class Question extends Model
             'correct_answers' => 'array',
             'tags' => 'array',
             'reviewed_at' => 'datetime',
+            'readiness_issues' => 'array',
+            'practice_ready_at' => 'datetime',
         ];
     }
 
@@ -69,8 +86,13 @@ class Question extends Model
         return $this->belongsTo(QuestionFolder::class, 'folder_id');
     }
 
-    public function editHistories(): \Illuminate\Database\Eloquent\Relations\HasMany
-{
-    return $this->hasMany(QuestionEditHistory::class, 'question_id')->latest();
-}
+    public function scopePracticeReady($query)
+    {
+        return $query->where('status', 'approved')->where('practice_status', self::PRACTICE_READY);
+    }
+
+    public function editHistories(): HasMany
+    {
+        return $this->hasMany(QuestionEditHistory::class, 'question_id')->latest();
+    }
 }

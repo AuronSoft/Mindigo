@@ -7,7 +7,16 @@
 
 @section('content')
 <div class="min-h-screen bg-slate-50">
-    <header class="border-b border-slate-200 bg-white px-6 py-4"><p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('student-practice::app.area')</p><div class="flex items-end justify-between gap-3"><h1 class="text-lg font-black text-slate-950">@lang('student-practice::app.history')</h1><a href="{{ route('student.practice.index') }}" class="text-xs font-black text-green-700 no-underline">@lang('student-practice::app.back')</a></div></header>
+    <header class="flex items-center gap-3 border-b border-slate-200 bg-white px-6 py-4">
+        <a href="{{ route('student.practice.index') }}" aria-label="@lang('student-practice::app.back')" class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
+            <x-heroicon-o-arrow-left class="h-4 w-4" />
+        </a>
+        <div class="min-w-0">
+            <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('student-practice::app.area')</p>
+            <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('student-practice::app.history')</h1>
+            <p class="text-xs font-semibold text-slate-400">@lang('student-practice::app.history_subtitle')</p>
+        </div>
+    </header>
     <main class="p-6">
         <section class="grid overflow-hidden rounded-xl border border-slate-200 bg-white sm:grid-cols-4">
             @foreach([

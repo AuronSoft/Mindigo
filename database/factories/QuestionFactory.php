@@ -17,26 +17,28 @@ class QuestionFactory extends Factory
         $subject = $this->randomElement(['Toán', 'Văn', 'Anh', 'Lý', 'Hóa']);
 
         return [
-            'created_by'     => null,
-            'reviewed_by'    => null,
-            'folder_id'      => null,
-            'subject'        => $subject,
-            'topic'          => 'Chủ đề ' . $sequence,
-            'type'           => 'single_choice',
-            'difficulty'     => $this->randomElement(['easy', 'medium', 'hard']),
-            'status'         => 'approved',
-            'content'        => 'Câu hỏi demo ' . $sequence . ' cho môn ' . $subject . '?',
-            'options'        => [
+            'created_by' => null,
+            'reviewed_by' => null,
+            'folder_id' => null,
+            'subject' => $subject,
+            'topic' => 'Chủ đề '.$sequence,
+            'type' => 'single_choice',
+            'difficulty' => $this->randomElement(['easy', 'medium', 'hard']),
+            'status' => 'approved',
+            'content' => 'Câu hỏi demo '.$sequence.' cho môn '.$subject.'?',
+            'options' => [
                 ['key' => 'A', 'text' => 'Đáp án A'],
                 ['key' => 'B', 'text' => 'Đáp án B'],
                 ['key' => 'C', 'text' => 'Đáp án C'],
                 ['key' => 'D', 'text' => 'Đáp án D'],
             ],
-            'correct_answers'=> ['A'],
-            'explanation'    => null,
-            'tags'           => null,
-            'review_note'    => null,
-            'reviewed_at'    => null,
+            'correct_answers' => ['A'],
+            'explanation' => null,
+            'tags' => null,
+            'review_note' => null,
+            'reviewed_at' => null,
+            'practice_status' => Question::PRACTICE_READY,
+            'practice_ready_at' => now(),
         ];
     }
 

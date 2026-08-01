@@ -3,6 +3,7 @@
 namespace Mindigo\StudentPractice\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Mindigo\QuestionBank\Models\Question;
 
 class StartPracticeRequest extends FormRequest
@@ -15,11 +16,17 @@ class StartPracticeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mode' => ['required', 'string', 'in:subject,topic,mixed'],
+            'mode' => ['required', 'string', 'in:subject,topic,skill,mixed'],
             'subject' => ['nullable', 'required_if:mode,subject,topic', 'string', 'max:120'],
             'topic' => ['nullable', 'required_if:mode,topic', 'string', 'max:180'],
             'difficulty' => ['nullable', 'string', 'in:'.implode(',', Question::DIFFICULTIES)],
             'question_count' => ['required', 'integer', 'min:1', 'max:50'],
+            'skill_id' => [
+                'nullable',
+                'required_if:mode,skill',
+                'integer',
+                Rule::exists('practice_skills', 'id')->where('status', 'active')->whereNull('deleted_at'),
+            ],
         ];
     }
 

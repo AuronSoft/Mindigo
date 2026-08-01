@@ -2,6 +2,19 @@
 
 use Illuminate\Support\Facades\Route;
 use Mindigo\StudentPractice\Http\Controllers\PracticeController;
+use Mindigo\StudentPractice\Http\Controllers\PracticeSkillController;
+
+Route::middleware(['web', 'auth', 'role:teacher|admin'])
+    ->prefix('practice/skills')
+    ->name('practice.skills.')
+    ->group(function (): void {
+        Route::get('/', [PracticeSkillController::class, 'index'])->name('index');
+        Route::get('/create', [PracticeSkillController::class, 'create'])->name('create');
+        Route::post('/', [PracticeSkillController::class, 'store'])->name('store');
+        Route::get('/{skill}/edit', [PracticeSkillController::class, 'edit'])->name('edit');
+        Route::put('/{skill}', [PracticeSkillController::class, 'update'])->name('update');
+        Route::delete('/{skill}', [PracticeSkillController::class, 'destroy'])->name('destroy');
+    });
 
 Route::middleware(['web', 'auth', 'role:student|admin'])->prefix('student')->name('student.')->group(function () {
     Route::prefix('practice')->name('practice.')->group(function () {

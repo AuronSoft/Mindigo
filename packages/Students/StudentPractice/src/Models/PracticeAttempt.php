@@ -29,6 +29,7 @@ class PracticeAttempt extends Model
     protected $fillable = [
         'student_id',
         'practice_set_id',
+        'practice_skill_id',
         'mode', // 'subject', 'topic', 'mixed'
         'subject',
         'topic',
@@ -63,6 +64,11 @@ class PracticeAttempt extends Model
     public function practiceSet(): BelongsTo
     {
         return $this->belongsTo(PracticeSet::class, 'practice_set_id');
+    }
+
+    public function practiceSkill(): BelongsTo
+    {
+        return $this->belongsTo(PracticeSkill::class, 'practice_skill_id');
     }
 
     /**

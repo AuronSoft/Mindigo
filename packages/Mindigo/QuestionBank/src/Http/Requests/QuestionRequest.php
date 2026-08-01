@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\SubjectManagement\Models\SubjectTopic;
 
 class QuestionRequest extends FormRequest
 {
@@ -35,6 +36,9 @@ class QuestionRequest extends FormRequest
             'short_answer_text' => ['nullable', 'string', 'max:1000'],
             'explanation' => ['nullable', 'string', 'max:5000'],
             'tags_text' => ['nullable', 'string', 'max:1000'],
+            'grade_level' => ['nullable', 'string', 'max:40'],
+            'estimated_seconds' => ['nullable', 'integer', 'min:10', 'max:7200'],
+            'hint' => ['nullable', 'string', 'max:3000'],
         ];
     }
 
@@ -50,13 +54,13 @@ class QuestionRequest extends FormRequest
             $subject = trim((string) $this->input('subject'));
             $topic = trim((string) $this->input('topic'));
 
-            if (!array_key_exists($subject, $subjects)) {
+            if (! array_key_exists($subject, $subjects)) {
                 $validator->errors()->add('subject', __('Mindigo-question-bank::app.validation.subject_required_from_catalog'));
 
                 return;
             }
 
-            if ($topic !== '' && !in_array($topic, $subjects[$subject], true)) {
+            if ($topic !== '' && ! in_array($topic, $subjects[$subject], true)) {
                 $validator->errors()->add('topic', __('Mindigo-question-bank::app.validation.topic_must_match_subject'));
             }
         });
@@ -67,8 +71,15 @@ class QuestionRequest extends FormRequest
         $validated = $this->validated();
         $options = $this->cleanArray($validated['options'] ?? []);
         $correctAnswers = $this->answersFor($validated['type'], $validated, $options);
+        $subject = Subject::query()->where('name', $validated['subject'])->first();
+        $topic = $subject && filled($validated['topic'] ?? null)
+            ? SubjectTopic::query()
+                ->where('subject_id', $subject->getKey())
+                ->where('name', $validated['topic'])
+                ->first()
+            : null;
 
-        if (!in_array($validated['type'], ['short_answer', 'essay'], true) && count($options) < 2) {
+        if (! in_array($validated['type'], ['short_answer', 'essay'], true) && count($options) < 2) {
             throw ValidationException::withMessages([
                 'options' => __('Mindigo-question-bank::app.validation.options_required'),
             ]);
@@ -92,6 +103,11 @@ class QuestionRequest extends FormRequest
             'correct_answers' => $correctAnswers,
             'explanation' => $validated['explanation'] ?? null,
             'tags' => $this->csv($validated['tags_text'] ?? ''),
+            'subject_id' => $subject?->getKey(),
+            'subject_topic_id' => $topic?->getKey(),
+            'grade_level' => $validated['grade_level'] ?? null,
+            'estimated_seconds' => $validated['estimated_seconds'] ?? null,
+            'hint' => $validated['hint'] ?? null,
         ];
     }
 
@@ -134,7 +150,7 @@ class QuestionRequest extends FormRequest
 
     private function activeSubjectsWithTopics(): array
     {
-        if (!class_exists(Subject::class)) {
+        if (! class_exists(Subject::class)) {
             return [];
         }
 
