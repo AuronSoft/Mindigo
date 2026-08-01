@@ -29,7 +29,7 @@
         <section class="flex min-h-0 flex-col gap-4 lg:col-span-6">
             <article class="flex items-center justify-between gap-5 rounded-2xl border border-green-100 bg-linear-to-r from-green-50 to-white px-6 py-5">
                 <div><p class="text-[10px] font-black uppercase tracking-[0.18em] text-green-600">@lang('student-dashboard::app.welcome_back')</p><h1 class="mt-1 text-xl font-black text-slate-950">{{ __('student-dashboard::app.hello_name', ['name' => $student->name]) }}</h1><p class="mt-1 text-xs font-semibold text-slate-500">@lang('student-dashboard::app.banner_subtitle')</p></div>
-                @if(Route::has('student.progress.index'))<a href="{{ route('student.progress.index') }}" class="shrink-0 rounded-lg bg-green-600 px-5 py-2.5 text-xs font-bold text-white no-underline transition-colors hover:bg-green-700">@lang('student-dashboard::app.view_progress')</a>@endif
+                <div class="flex shrink-0 gap-2">@if(Route::has('student.practice.analytics.index'))<a href="{{ route('student.practice.analytics.index') }}" class="rounded-lg border border-green-200 bg-white px-4 py-2.5 text-xs font-bold text-green-700 no-underline transition-colors hover:bg-green-50">@lang('student-dashboard::app.practice_analytics')</a>@endif @if(Route::has('student.progress.index'))<a href="{{ route('student.progress.index') }}" class="rounded-lg bg-green-600 px-5 py-2.5 text-xs font-bold text-white no-underline transition-colors hover:bg-green-700">@lang('student-dashboard::app.view_progress')</a>@endif</div>
             </article>
 
             <section>

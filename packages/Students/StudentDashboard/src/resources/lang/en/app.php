@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'practice_analytics' => 'Practice analytics',
     // SEO / meta
     'meta_title' => 'Student Dashboard · Mindigo LMS',
     'meta_description' => 'Student learning area on Mindigo LMS: classrooms, assignments, exams, schedule, progress and results.',
