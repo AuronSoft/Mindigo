@@ -6,9 +6,11 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Mindigo\StudentPractice\Contracts\PracticeServiceInterface;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
+use Mindigo\StudentPractice\Models\PracticeLearningInsight;
 use Mindigo\StudentPractice\Models\PracticeSet;
 use Mindigo\StudentPractice\Models\PracticeSkill;
 use Mindigo\StudentPractice\Policies\PracticeAttemptPolicy;
+use Mindigo\StudentPractice\Policies\PracticeLearningInsightPolicy;
 use Mindigo\StudentPractice\Policies\PracticeSetPolicy;
 use Mindigo\StudentPractice\Policies\PracticeSkillPolicy;
 use Mindigo\StudentPractice\Services\PracticeService;
@@ -23,6 +25,7 @@ class StudentPracticeServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(PracticeAttempt::class, PracticeAttemptPolicy::class);
+        Gate::policy(PracticeLearningInsight::class, PracticeLearningInsightPolicy::class);
         Gate::policy(PracticeSet::class, PracticeSetPolicy::class);
         Gate::policy(PracticeSkill::class, PracticeSkillPolicy::class);
 

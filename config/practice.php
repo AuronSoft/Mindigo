@@ -15,4 +15,8 @@ return [
         'incorrect_streak_review' => 2,
         'recommendation_expiry_days' => 14,
     ],
+    'analytics' => [
+        'default_period' => '30',
+        'trend_threshold' => 5,
+    ],
 ];
