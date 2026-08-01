@@ -2,8 +2,12 @@
 
 namespace Mindigo\StudentPractice\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 use Mindigo\StudentPractice\Http\Requests\StartPracticeRequest;
 use Mindigo\StudentPractice\Http\Requests\SubmitAnswerRequest;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
@@ -11,114 +15,86 @@ use Mindigo\StudentPractice\Services\PracticeService;
 
 class PracticeController extends Controller
 {
-    public function __construct(protected PracticeService $service)
+    public function __construct(private readonly PracticeService $service) {}
+
+    public function index(Request $request): View
     {
+        return view('student-practice::index', [
+            'formData' => $this->service->formData($request->user()),
+            'questions' => $this->service->getQuestions(
+                $request->only(['subject', 'topic', 'type', 'difficulty', 'keyword'])
+            ),
+        ]);
     }
 
-    /**
-     * Danh sách bài luyện tập và form bắt đầu.
-     */
-    public function index(Request $request)
+    public function show(int $question): View
     {
-        $formData  = $this->service->formData(auth()->user());
-        $questions = $this->service->getQuestions($request->only(['subject', 'topic', 'type', 'difficulty', 'keyword']));
-
-        return view('student-practice::index', compact('formData', 'questions'));
-    }
-
-    /**
-     * Xem chi tiết một câu hỏi.
-     */
-    public function show(int $id)
-    {
-        $question = $this->service->getQuestion($id);
-
+        $question = $this->service->getQuestion($question);
         abort_if($question === null, 404);
 
         return view('student-practice::show', compact('question'));
     }
 
-    /**
-     * Bắt đầu một bài luyện tập mới.
-     */
-    public function start(StartPracticeRequest $request)
+    public function start(StartPracticeRequest $request): RedirectResponse
     {
-        $attempt = $this->service->startPractice(auth()->user(), $request->validated());
+        $attempt = $this->service->startPractice($request->user(), $request->validated());
 
-        return redirect()->route('student.practice.attempt', $attempt->id);
+        return to_route('student.practice.attempt', $attempt);
     }
 
-    /**
-     * Xem bài luyện tập đang tiến hành.
-     */
-    public function attempt(int $id)
+    public function attempt(Request $request, PracticeAttempt $attempt): View|RedirectResponse
     {
-        $attempt = PracticeAttempt::where('student_id', auth()->id())
-            ->findOrFail($id);
-
+        Gate::forUser($request->user())->authorize('view', $attempt);
         if ($attempt->isCompleted()) {
-            return redirect()->route('student.practice.result', $attempt->id);
+            return to_route('student.practice.result', $attempt);
         }
+
+        $attempt->loadMissing('answers.question');
 
         return view('student-practice::attempt', compact('attempt'));
     }
 
-    /**
-     * Gửi câu trả lời cho một câu hỏi.
-     */
-    public function submitAnswer(SubmitAnswerRequest $request, int $attemptId)
-    {
-        $attempt = PracticeAttempt::where('student_id', auth()->id())
-            ->findOrFail($attemptId);
-
-        abort_if($attempt->isCompleted(), 403, 'This practice session is already completed.');
-
-        $this->service->submitAnswer($attempt, $request->input('question_id'), $request->getAnswer());
+    public function submitAnswer(
+        SubmitAnswerRequest $request,
+        PracticeAttempt $attempt,
+    ): JsonResponse {
+        Gate::forUser($request->user())->authorize('update', $attempt);
+        $answer = $this->service->submitAnswer(
+            $attempt,
+            $request->integer('question_id'),
+            $request->answer()
+        );
 
         return response()->json([
-            'success' => true,
-            'message' => 'Answer submitted successfully',
+            'message' => __('student-practice::app.messages.answer_saved'),
+            'is_correct' => $answer->is_correct,
         ]);
     }
 
-    /**
-     * Hoàn thành bài luyện tập.
-     */
-    public function complete(Request $request, int $attemptId)
+    public function complete(Request $request, PracticeAttempt $attempt): RedirectResponse
     {
-        $attempt = PracticeAttempt::where('student_id', auth()->id())
-            ->findOrFail($attemptId);
+        Gate::forUser($request->user())->authorize('complete', $attempt);
+        $completed = $this->service->completePractice($attempt);
 
-        abort_if($attempt->isCompleted(), 403, 'This practice session is already completed.');
-
-        $attempt = $this->service->completePractice($attempt);
-
-        return redirect()->route('student.practice.result', $attempt->id);
+        return to_route('student.practice.result', $completed)
+            ->with('success', __('student-practice::app.messages.completed'));
     }
 
-    /**
-     * Xem kết quả bài luyện tập.
-     */
-    public function result(int $id)
+    public function result(Request $request, PracticeAttempt $attempt): View
     {
-        $attempt = PracticeAttempt::where('student_id', auth()->id())
-            ->findOrFail($id);
+        Gate::forUser($request->user())->authorize('view', $attempt);
+        abort_unless($attempt->isCompleted(), 404);
 
-        abort_if(!$attempt->isCompleted(), 403, 'This practice session is not completed yet.');
-
-        $details = $this->service->getPracticeDetails($attempt);
-
-        return view('student-practice::result', compact('attempt', 'details'));
+        return view('student-practice::result', [
+            'details' => $this->service->getPracticeDetails($attempt),
+        ]);
     }
 
-    /**
-     * Lịch sử luyện tập của học sinh.
-     */
-    public function history()
+    public function history(Request $request): View
     {
-        $history = $this->service->getStudentHistory(auth()->user());
-        $stats = $this->service->getStudentStats(auth()->user());
-
-        return view('student-practice::history', compact('history', 'stats'));
+        return view('student-practice::history', [
+            'history' => $this->service->getStudentHistory($request->user()),
+            'stats' => $this->service->getStudentStats($request->user()),
+        ]);
     }
 }

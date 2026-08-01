@@ -8,10 +8,10 @@ Route::middleware(['web', 'auth', 'role:student|admin'])->prefix('student')->nam
         Route::get('/', [PracticeController::class, 'index'])->name('index');
         Route::get('/history', [PracticeController::class, 'history'])->name('history');
         Route::post('/start', [PracticeController::class, 'start'])->name('start');
-        Route::get('/{id}', [PracticeController::class, 'show'])->name('show')->whereNumber('id');
-        Route::get('/{id}/attempt', [PracticeController::class, 'attempt'])->name('attempt')->whereNumber('id');
-        Route::post('/{id}/submit-answer', [PracticeController::class, 'submitAnswer'])->name('submit-answer')->whereNumber('id');
-        Route::post('/{id}/complete', [PracticeController::class, 'complete'])->name('complete')->whereNumber('id');
-        Route::get('/{id}/result', [PracticeController::class, 'result'])->name('result')->whereNumber('id');
+        Route::get('/questions/{question}', [PracticeController::class, 'show'])->name('show')->whereNumber('question');
+        Route::get('/{attempt}/attempt', [PracticeController::class, 'attempt'])->name('attempt')->whereNumber('attempt');
+        Route::post('/{attempt}/submit-answer', [PracticeController::class, 'submitAnswer'])->name('submit-answer')->whereNumber('attempt');
+        Route::post('/{attempt}/complete', [PracticeController::class, 'complete'])->name('complete')->whereNumber('attempt');
+        Route::get('/{attempt}/result', [PracticeController::class, 'result'])->name('result')->whereNumber('attempt');
     });
 });
