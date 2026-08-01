@@ -33,12 +33,10 @@ class StudentPracticeServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'student-practice');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'student-practice');
 
-        // Publish views
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/student-practice'),
         ], 'student-practice-views');
 
-        // Publish language files
         $this->publishes([
             __DIR__.'/../resources/lang' => lang_path('vendor/student-practice'),
         ], 'student-practice-lang');

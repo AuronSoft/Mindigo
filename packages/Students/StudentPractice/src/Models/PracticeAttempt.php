@@ -9,6 +9,21 @@ use Mindigo\Auth\Models\User;
 
 class PracticeAttempt extends Model
 {
+    public const MODE_SUBJECT = 'subject';
+
+    public const MODE_TOPIC = 'topic';
+
+    public const MODE_SKILL = 'skill';
+
+    public const MODE_MIXED = 'mixed';
+
+    public const MODES = [
+        self::MODE_SUBJECT,
+        self::MODE_TOPIC,
+        self::MODE_SKILL,
+        self::MODE_MIXED,
+    ];
+
     public const STATUS_IN_PROGRESS = 'in_progress';
 
     public const STATUS_COMPLETED = 'completed';
@@ -30,10 +45,10 @@ class PracticeAttempt extends Model
         'student_id',
         'practice_set_id',
         'practice_skill_id',
-        'mode', // 'subject', 'topic', 'mixed'
+        'mode',
         'subject',
         'topic',
-        'difficulty', // null = all, or specific level
+        'difficulty',
         'question_pool_size',
         'selection_strategy',
         'is_adaptive',

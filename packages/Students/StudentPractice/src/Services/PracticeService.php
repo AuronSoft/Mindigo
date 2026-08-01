@@ -72,7 +72,7 @@ class PracticeService implements PracticeServiceInterface
 
         return $this->createAttempt($student, $questions, [
             'skill_id' => $skill->getKey(),
-            'mode' => 'skill',
+            'mode' => PracticeAttempt::MODE_SKILL,
             'subject' => $skill->subject?->name,
             'topic' => $skill->topic?->name,
             'difficulty' => $data['difficulty'] ?? null,
@@ -91,7 +91,7 @@ class PracticeService implements PracticeServiceInterface
 
         return $this->createAttempt($student, $questions, [
             'skill_id' => $skill->getKey(),
-            'mode' => 'skill',
+            'mode' => PracticeAttempt::MODE_SKILL,
             'subject' => $skill->subject?->name,
             'topic' => $skill->topic?->name,
             'difficulty' => $difficulty,
@@ -114,7 +114,9 @@ class PracticeService implements PracticeServiceInterface
 
         return $this->createAttempt($student, $set->questions, [
             'practice_set_id' => $set->getKey(),
-            'mode' => $set->topic ? 'topic' : ($set->subject ? 'subject' : 'mixed'),
+            'mode' => $set->topic
+                ? PracticeAttempt::MODE_TOPIC
+                : ($set->subject ? PracticeAttempt::MODE_SUBJECT : PracticeAttempt::MODE_MIXED),
             'subject' => $set->subject,
             'topic' => $set->topic,
             'difficulty' => $set->difficulty,
@@ -354,7 +356,7 @@ class PracticeService implements PracticeServiceInterface
                 'student_id' => $student->getAuthIdentifier(),
                 'practice_set_id' => $data['practice_set_id'] ?? null,
                 'practice_skill_id' => $data['skill_id'] ?? null,
-                'mode' => $data['mode'] ?? 'mixed',
+                'mode' => $data['mode'] ?? PracticeAttempt::MODE_MIXED,
                 'subject' => $data['subject'] ?? null,
                 'topic' => $data['topic'] ?? null,
                 'difficulty' => $data['difficulty'] ?? null,

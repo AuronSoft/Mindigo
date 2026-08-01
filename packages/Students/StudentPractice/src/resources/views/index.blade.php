@@ -20,7 +20,7 @@
     <main class="grid gap-6 p-6 xl:grid-cols-[22rem_minmax(0,1fr)]">
         <section class="self-start rounded-xl border border-slate-200 bg-white p-5">
             <h2 class="text-base font-black text-slate-950">@lang('student-practice::app.start_new')</h2>
-            @if($errors->any())<div class="mt-4 border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700">{{ $errors->first() }}</div>@endif
+            @if($errors->any())<div role="alert" class="mt-4 border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700">{{ $errors->first() }}</div>@endif
             <form action="{{ route('student.practice.start') }}" method="POST" class="mt-5 space-y-4">
                 @csrf
                 <label class="block"><span class="mb-1.5 block text-xs font-bold text-slate-600">@lang('student-practice::app.mode')</span><select name="mode" class="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700"><option value="mixed">@lang('student-practice::app.modes.mixed')</option><option value="subject">@lang('student-practice::app.modes.subject')</option><option value="topic">@lang('student-practice::app.modes.topic')</option><option value="skill">@lang('student-practice::app.modes.skill')</option></select></label>
@@ -44,7 +44,7 @@
                     <form method="GET" action="{{ route('student.practice.index') }}" role="search" class="relative min-w-0 flex-1 sm:w-72 sm:flex-none">
                         @foreach($practiceFilterFields as $field)@if(request()->filled($field))<input type="hidden" name="{{ $field }}" value="{{ request($field) }}">@endif @endforeach
                         <x-heroicon-o-magnifying-glass class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-green-700" />
-                        <input type="search" name="keyword" value="{{ request('keyword') }}" placeholder="@lang('student-practice::app.search')" class="h-10 w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 text-sm font-semibold text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-green-500 focus:ring-2 focus:ring-green-100">
+                        <input type="search" name="keyword" value="{{ request('keyword') }}" aria-label="@lang('student-practice::app.search')" placeholder="@lang('student-practice::app.search')" class="h-10 w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 text-sm font-semibold text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-green-500 focus:ring-2 focus:ring-green-100">
                     </form>
                     <button type="button" data-mindigo-drawer-open="student-practice-filter" class="inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 shadow-sm transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
                         <x-heroicon-o-adjustments-horizontal class="h-4 w-4" />@lang('student-practice::app.filter')
@@ -70,8 +70,8 @@
     </main>
 
     <div data-mindigo-drawer="student-practice-filter" class="fixed inset-0 z-40 hidden bg-slate-950/45 opacity-0 backdrop-blur-sm transition-opacity duration-200"></div>
-    <aside data-mindigo-drawer-panel="student-practice-filter" class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl shadow-slate-950/20 transition-transform duration-200" style="transform: translateX(100%);">
-        <div class="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4"><div><p class="text-xs font-black uppercase tracking-wider text-green-700">@lang('student-practice::app.area')</p><h2 class="mt-1 text-xl font-black text-slate-950">@lang('student-practice::app.filter_title')</h2><p class="mt-1 text-sm font-semibold leading-relaxed text-slate-500">@lang('student-practice::app.filter_subtitle')</p></div><button type="button" data-mindigo-drawer-close="student-practice-filter" class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-800"><x-heroicon-o-x-mark class="h-5 w-5" /></button></div>
+    <aside data-mindigo-drawer-panel="student-practice-filter" aria-label="@lang('student-practice::app.filter_title')" class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl shadow-slate-950/20 transition-transform duration-200" style="transform: translateX(100%);">
+        <div class="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4"><div><p class="text-xs font-black uppercase tracking-wider text-green-700">@lang('student-practice::app.area')</p><h2 class="mt-1 text-xl font-black text-slate-950">@lang('student-practice::app.filter_title')</h2><p class="mt-1 text-sm font-semibold leading-relaxed text-slate-500">@lang('student-practice::app.filter_subtitle')</p></div><button type="button" aria-label="@lang('student-practice::app.close')" data-mindigo-drawer-close="student-practice-filter" class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-800"><x-heroicon-o-x-mark class="h-5 w-5" /></button></div>
         <form action="{{ route('student.practice.index') }}" method="GET" class="flex flex-1 flex-col">
             @if(request()->filled('keyword'))<input type="hidden" name="keyword" value="{{ request('keyword') }}">@endif
             <div class="flex-1 space-y-5 overflow-y-auto px-5 py-5">

@@ -43,6 +43,7 @@ return [
     'save_answer' => 'Save answer',
     'finish' => 'Complete practice',
     'back' => 'Back',
+    'close' => 'Close',
     'result' => 'Practice result',
     'score' => 'Score',
     'correct' => 'Correct',
