@@ -14,9 +14,9 @@ class SubmitExamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'answers'              => ['nullable', 'array'],
-            'answers.*'            => ['nullable'],
-            'tab_leave_count'      => ['nullable', 'integer', 'min:0'],
+            'answers' => ['nullable', 'array'],
+            'answers.*' => ['nullable'],
+            'tab_leave_count' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }
