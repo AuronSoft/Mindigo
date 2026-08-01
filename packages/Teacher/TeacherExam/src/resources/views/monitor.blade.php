@@ -51,7 +51,7 @@
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div class="border-b border-slate-100 px-5 py-4"><h2 class="text-sm font-black text-slate-950">@lang('teacher-exam::app.classroom_dashboard')</h2></div>
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[900px] text-left text-sm">
+                <table class="w-full min-w-225 text-left text-sm">
                     <thead class="bg-slate-50 text-[11px] font-black uppercase tracking-wide text-slate-400"><tr>
                         @foreach(['classroom', 'assigned', 'started', 'submitted', 'completion_rate', 'average_score', 'highest_score', 'lowest_score', 'grading_progress'] as $heading)
                             <th class="px-4 py-3">{{ __('teacher-exam::app.'.$heading) }}</th>
@@ -101,7 +101,7 @@
                 </form>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[900px] text-left">
+                <table class="w-full min-w-225 text-left">
                     <thead class="bg-slate-50 text-[11px] font-black uppercase tracking-wide text-slate-400"><tr>
                         @foreach(['student', 'connection', 'exam_status', 'progress', 'remaining_time', 'last_activity', 'score'] as $heading)<th class="px-5 py-3">{{ __('teacher-exam::app.'.$heading) }}</th>@endforeach
                     </tr></thead>

@@ -6,14 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mindigo\Auth\Models\User;
-use Mindigo\QuestionBank\Models\Question;
 
 class PracticeAttempt extends Model
 {
+    public const STATUS_IN_PROGRESS = 'in_progress';
+
+    public const STATUS_COMPLETED = 'completed';
+
+    public const STATUS_ABANDONED = 'abandoned';
+
+    public const STATUS_EXPIRED = 'expired';
+
+    public const STATUSES = [
+        self::STATUS_IN_PROGRESS,
+        self::STATUS_COMPLETED,
+        self::STATUS_ABANDONED,
+        self::STATUS_EXPIRED,
+    ];
+
     protected $table = 'student_practice_attempts';
 
     protected $fillable = [
         'student_id',
+        'practice_set_id',
         'mode', // 'subject', 'topic', 'mixed'
         'subject',
         'topic',
@@ -21,7 +36,9 @@ class PracticeAttempt extends Model
         'total_questions',
         'correct_answers',
         'score', // percentage
+        'status',
         'started_at',
+        'last_activity_at',
         'completed_at',
     ];
 
@@ -29,6 +46,7 @@ class PracticeAttempt extends Model
     {
         return [
             'started_at' => 'datetime',
+            'last_activity_at' => 'datetime',
             'completed_at' => 'datetime',
             'score' => 'float',
         ];
@@ -40,6 +58,11 @@ class PracticeAttempt extends Model
     public function student(): BelongsTo
     {
         return $this->belongsTo(User::class, 'student_id');
+    }
+
+    public function practiceSet(): BelongsTo
+    {
+        return $this->belongsTo(PracticeSet::class, 'practice_set_id');
     }
 
     /**
@@ -78,15 +101,15 @@ class PracticeAttempt extends Model
      */
     public function isCompleted(): bool
     {
-        return $this->completed_at !== null;
+        return $this->status === self::STATUS_COMPLETED || $this->completed_at !== null;
     }
 
     /**
      * Lấy thời gian thực hiện (phút)
      */
-    public function getDurationInMinutesAttribute(): int|null
+    public function getDurationInMinutesAttribute(): ?int
     {
-        if (!$this->isCompleted()) {
+        if (! $this->isCompleted()) {
             return null;
         }
 

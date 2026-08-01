@@ -8,7 +8,7 @@ class SubmitAnswerRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->hasRole('student|admin');
+        return $this->user()?->hasAnyRole(['student', 'admin']) ?? false;
     }
 
     public function rules(): array
@@ -16,23 +16,28 @@ class SubmitAnswerRequest extends FormRequest
         return [
             'question_id' => ['required', 'integer', 'exists:question_bank_questions,id'],
             'answer' => ['required', 'array'],
+            'answer.choice' => ['nullable', 'string', 'max:255'],
+            'answer.choices' => ['nullable', 'array', 'max:20'],
+            'answer.choices.*' => ['string', 'max:255', 'distinct'],
+            'answer.answer' => ['nullable', 'boolean'],
+            'answer.text' => ['nullable', 'string', 'max:10000'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'question_id.required' => 'Question ID is required',
-            'question_id.exists' => 'The question does not exist',
-            'answer.required' => 'Please provide an answer',
-            'answer.array' => 'Answer must be in correct format',
+            'question_id.required' => __('student-practice::app.validation.question_required'),
+            'question_id.exists' => __('student-practice::app.validation.question_invalid'),
+            'answer.required' => __('student-practice::app.validation.answer_required'),
+            'answer.array' => __('student-practice::app.validation.answer_invalid'),
         ];
     }
 
     /**
      * Lấy câu trả lời của học sinh
      */
-    public function getAnswer(): array
+    public function answer(): array
     {
         return $this->input('answer', []);
     }

@@ -2,21 +2,24 @@
 
 namespace Mindigo\StudentPractice\Contracts;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Mindigo\Auth\Models\User;
-use Mindigo\StudentPractice\Models\PracticeAttempt;
+use Mindigo\QuestionBank\Models\Question;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
+use Mindigo\StudentPractice\Models\PracticeAttempt;
 
 interface PracticeServiceInterface
 {
     /**
      * Lấy danh sách câu hỏi approved để luyện tập theo filter.
      */
-    public function getQuestions(array $filters);
+    public function getQuestions(array $filters): LengthAwarePaginator;
 
     /**
      * Lấy một câu hỏi theo ID (chỉ approved).
      */
-    public function getQuestion(int $id);
+    public function getQuestion(int $id): ?Question;
 
     /**
      * Dữ liệu cho form filter / bắt đầu luyện tập.
@@ -41,7 +44,7 @@ interface PracticeServiceInterface
     /**
      * Lấy lịch sử luyện tập của học sinh.
      */
-    public function getStudentHistory(User $student, int $limit = 10);
+    public function getStudentHistory(User $student, int $limit = 10): Collection;
 
     /**
      * Lấy thống kê luyện tập của học sinh.
