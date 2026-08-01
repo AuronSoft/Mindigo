@@ -2,6 +2,7 @@
 
 namespace Mindigo\Core\Http\Controllers;
 
+use App\Support\RoleRedirector;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -20,39 +21,39 @@ class HomeController extends Controller
     public function terms()
     {
         return view('core::legal.terms', [
-            'title' => __('core::terms.hero.title') . ' | Mindigo',
+            'title' => __('core::terms.hero.title').' | Mindigo',
         ]);
     }
 
     public function privacy()
     {
         return view('core::legal.privacy', [
-            'title' => __('core::privacy.hero.title') . ' | Mindigo',
+            'title' => __('core::privacy.hero.title').' | Mindigo',
         ]);
     }
 
     public function technicalSupportPolicy()
     {
         return view('core::legal.technical-support', [
-            'title' => __('core::technical_support.hero.title') . ' | Mindigo',
+            'title' => __('core::technical_support.hero.title').' | Mindigo',
         ]);
     }
 
     public function aiAssistantPolicy()
     {
         return view('core::legal.ai-assistant-policy', [
-            'title' => __('core::ai_policy.hero.title') . ' | Mindigo',
+            'title' => __('core::ai_policy.hero.title').' | Mindigo',
         ]);
     }
 
     public function refundPolicy()
     {
         return view('core::legal.refund-policy', [
-            'title' => __('core::refund_policy.hero.title') . ' | Mindigo',
+            'title' => __('core::refund_policy.hero.title').' | Mindigo',
         ]);
     }
 
-    public function examTips()
+    public function examTips(Request $request)
     {
         $categories = collect(__('core::exam_tips.categories'));
         $categoryLabels = $categories->keyBy('id')->map(fn (array $category) => $category['label']);
@@ -64,12 +65,13 @@ class HomeController extends Controller
             ->get();
 
         return view('core::pages.exam-tips', [
-            'title' => __('core::exam_tips.meta.title') . ' | Mindigo',
+            'title' => __('core::exam_tips.meta.title').' | Mindigo',
             'posts' => $posts->map(fn (ExamTipPost $post) => $this->formatExamTipPost($post, $categoryLabels)),
             'stats' => $this->examTipStats($posts),
             'trendingTags' => $this->examTipTrendingTags($posts),
             'contributors' => $this->examTipContributors($posts),
             'upcomingExams' => $this->examTipUpcomingExams(),
+            'accountUrl' => RoleRedirector::pathFor($request->user()),
         ]);
     }
 
@@ -83,7 +85,7 @@ class HomeController extends Controller
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:120'],
-            'category' => ['required', 'string', 'in:' . implode(',', $categories)],
+            'category' => ['required', 'string', 'in:'.implode(',', $categories)],
             'content' => ['required', 'string', 'min:20', 'max:5000'],
             'tags' => ['nullable', 'string', 'max:255'],
         ]);
@@ -209,11 +211,11 @@ class HomeController extends Controller
     private function shortNumber(int $value): string
     {
         if ($value >= 1000000) {
-            return round($value / 1000000, 1) . 'M';
+            return round($value / 1000000, 1).'M';
         }
 
         if ($value >= 1000) {
-            return round($value / 1000, 1) . 'K';
+            return round($value / 1000, 1).'K';
         }
 
         return (string) $value;
