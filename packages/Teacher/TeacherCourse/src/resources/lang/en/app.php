@@ -1,15 +1,15 @@
 <?php
 
 return [
-    'title'         => 'My Courses',
-    'courses'       => 'Courses',
-    'chapters'      => 'Chapters',
-    'lessons'       => 'Lessons',
+    'title' => 'My Courses',
+    'courses' => 'Courses',
+    'chapters' => 'Chapters',
+    'lessons' => 'Lessons',
     'create_course' => 'Create Course',
-    'edit_course'   => 'Edit Course',
-    'active'        => 'Active',
-    'inactive'      => 'Inactive',
-    'no_courses'    => 'No courses yet',
+    'edit_course' => 'Edit Course',
+    'active' => 'Active',
+    'inactive' => 'Inactive',
+    'no_courses' => 'No courses yet',
 
     // Controller responses
     'course_created' => 'Course created successfully!',
@@ -26,6 +26,12 @@ return [
 
     // Index view
     'teaching_content' => 'Teaching Content',
+    'index_subtitle' => 'Organize courses, curricula, and lesson content in one consistent workspace.',
+    'create_subtitle' => 'Set up the essential information before building chapters and lessons.',
+    'edit_subtitle' => 'Update the course information, cover image, and publishing status.',
+    'detail_subtitle' => 'Review the course structure and manage its chapters and lessons.',
+    'lesson_create_subtitle' => 'Add learning content, resources, and an assignment to this chapter.',
+    'lesson_edit_subtitle' => 'Update the lesson content, resources, prerequisites, and assignment.',
     'create_course_btn' => 'Create New Course',
     'search_placeholder' => 'Search by course name...',
     'all_status' => 'All statuses',
@@ -34,6 +40,12 @@ return [
     'lessons_count' => ':count lessons',
     'manage' => 'Manage',
     'edit' => 'Edit',
+    'delete' => 'Delete',
+    'filter' => 'Filter',
+    'course' => 'Course',
+    'actions' => 'Actions',
+    'updated_at' => 'Last updated',
+    'no_description' => 'No description provided.',
     'delete_course_title' => 'Delete Course',
     'delete_course_confirm' => 'Deleting course \':name\' will remove all its chapters and lessons. Are you sure?',
     'cancel' => 'Cancel',

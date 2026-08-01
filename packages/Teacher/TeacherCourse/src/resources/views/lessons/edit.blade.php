@@ -1,6 +1,6 @@
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', 'Sửa bài học — ' . $lesson->name)
+@section('title', __('teacher-course::app.edit_lesson_title').' — '.$lesson->name)
 
 @section('styles')
     @vite([
@@ -17,8 +17,9 @@
             <x-heroicon-o-arrow-left class="h-4 w-4" />
         </a>
         <div>
-            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">{{ $course->name }} › {{ $chapter->name }}</p>
-            <h1 class="mt-0.5 text-lg font-black text-slate-950">Chỉnh sửa bài học</h1>
+            <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('teacher-course::app.lesson_content_title')</p>
+            <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-course::app.edit_lesson_title')</h1>
+            <p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-course::app.lesson_edit_subtitle')</p>
         </div>
     </header>
 
@@ -26,18 +27,18 @@
         <div class="w-full max-w-3xl">
             <form method="POST" action="{{ route('teacher.courses.lessons.update', $lesson) }}"
                   enctype="multipart/form-data"
-                  class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
+                  class="space-y-6 rounded-xl border border-slate-200 bg-white p-6">
                 @csrf
                 {{-- Use method spoofing via POST override (our route uses POST for update) --}}
                 @include('teacher-course::lessons.partials.form', ['editing' => true])
                 <div class="flex items-center justify-end gap-2 border-t border-slate-100 pt-5">
                     <a href="{{ route('teacher.courses.show', $course) }}"
                        class="inline-flex h-10 items-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-black text-slate-600 no-underline hover:bg-slate-50">
-                        Hủy
+                        @lang('teacher-course::app.cancel')
                     </a>
                     <button type="submit"
-                            class="inline-flex h-10 items-center gap-2 rounded-2xl bg-green-600 px-6 text-sm font-black text-white shadow-sm shadow-green-200 hover:bg-green-500">
-                        <x-heroicon-o-check class="h-4 w-4" /> Lưu thay đổi
+                            class="inline-flex h-10 items-center gap-2 rounded-lg bg-green-600 px-6 text-sm font-black text-white hover:bg-green-500">
+                        <x-heroicon-o-check class="h-4 w-4" />@lang('teacher-course::app.save_changes')
                     </button>
                 </div>
             </form>

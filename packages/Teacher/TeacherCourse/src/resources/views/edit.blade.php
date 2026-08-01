@@ -17,8 +17,9 @@
             <x-heroicon-o-arrow-left class="h-4 w-4" />
         </a>
         <div>
-            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">{{ $course->name }}</p>
+            <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('teacher-course::app.teaching_content')</p>
             <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-course::app.edit_course')</h1>
+            <p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-course::app.edit_subtitle')</p>
         </div>
     </header>
 
@@ -26,7 +27,7 @@
         <div class="w-full max-w-2xl">
             <form method="POST" action="{{ route('teacher.courses.update', $course) }}"
                   enctype="multipart/form-data"
-                  class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+                  class="space-y-5 rounded-xl border border-slate-200 bg-white p-6">
                 @csrf @method('PUT')
                 @include('teacher-course::partials.form', ['course' => $course])
                 <div class="flex items-center justify-end gap-2 border-t border-slate-100 pt-5">
@@ -35,7 +36,7 @@
                         @lang('teacher-course::app.cancel')
                     </a>
                     <button type="submit"
-                            class="inline-flex h-10 items-center gap-2 rounded-2xl bg-green-600 px-6 text-sm font-black text-white shadow-sm shadow-green-200 transition hover:bg-green-500">
+                            class="inline-flex h-10 items-center gap-2 rounded-lg bg-green-600 px-6 text-sm font-black text-white transition hover:bg-green-500">
                         <x-heroicon-o-check class="h-4 w-4" /> @lang('teacher-course::app.save_changes')
                     </button>
                 </div>

@@ -1,15 +1,15 @@
 <?php
 
 return [
-    'title'         => 'Khóa học của tôi',
-    'courses'       => 'Khóa học',
-    'chapters'      => 'Chương học',
-    'lessons'       => 'Bài học',
+    'title' => 'Khóa học của tôi',
+    'courses' => 'Khóa học',
+    'chapters' => 'Chương học',
+    'lessons' => 'Bài học',
     'create_course' => 'Tạo khóa học',
-    'edit_course'   => 'Chỉnh sửa khóa học',
-    'active'        => 'Đang hoạt động',
-    'inactive'      => 'Tạm dừng',
-    'no_courses'    => 'Chưa có khóa học nào',
+    'edit_course' => 'Chỉnh sửa khóa học',
+    'active' => 'Đang hoạt động',
+    'inactive' => 'Tạm dừng',
+    'no_courses' => 'Chưa có khóa học nào',
 
     // Controller responses
     'course_created' => 'Đã tạo khóa học thành công!',
@@ -26,6 +26,12 @@ return [
 
     // Index view
     'teaching_content' => 'Nội dung giảng dạy',
+    'index_subtitle' => 'Tổ chức khóa học, chương trình và nội dung bài giảng trong một không gian thống nhất.',
+    'create_subtitle' => 'Thiết lập thông tin cơ bản trước khi xây dựng chương và bài học.',
+    'edit_subtitle' => 'Cập nhật thông tin, ảnh bìa và trạng thái xuất bản của khóa học.',
+    'detail_subtitle' => 'Theo dõi cấu trúc khóa học và quản lý các chương, bài học bên trong.',
+    'lesson_create_subtitle' => 'Bổ sung nội dung, tài liệu và bài tập cho chương học này.',
+    'lesson_edit_subtitle' => 'Cập nhật nội dung, tài liệu, điều kiện tiên quyết và bài tập của bài học.',
     'create_course_btn' => 'Tạo khóa học mới',
     'search_placeholder' => 'Tìm theo tên khóa học...',
     'all_status' => 'Tất cả trạng thái',
@@ -34,6 +40,12 @@ return [
     'lessons_count' => ':count bài học',
     'manage' => 'Quản lý',
     'edit' => 'Sửa',
+    'delete' => 'Xóa',
+    'filter' => 'Lọc',
+    'course' => 'Khóa học',
+    'actions' => 'Thao tác',
+    'updated_at' => 'Cập nhật gần nhất',
+    'no_description' => 'Chưa có mô tả.',
     'delete_course_title' => 'Xóa khóa học',
     'delete_course_confirm' => 'Xóa khóa học \':name\' sẽ xóa toàn bộ chương và bài học bên trong. Bạn có chắc chắn?',
     'cancel' => 'Hủy',

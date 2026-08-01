@@ -22,10 +22,11 @@
                 <x-heroicon-o-arrow-left class="h-4 w-4" />
             </a>
             <div>
-                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">
-                    @lang('teacher-course::app.courses') · {{ __('teacher-course::app.' . $course->status) }}
+                <p class="text-[11px] font-black uppercase tracking-widest text-green-700">
+                    @lang('teacher-course::app.teaching_content')
                 </p>
                 <h1 class="mt-0.5 text-lg font-black text-slate-950">{{ $course->name }}</h1>
+                <p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-course::app.detail_subtitle')</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
@@ -52,7 +53,7 @@
 
         {{-- Stats bar --}}
         <div class="grid grid-cols-3 gap-4">
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex items-center gap-3">
+            <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4">
                 <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-green-50 text-green-600">
                     <x-heroicon-o-squares-2x2 class="h-5 w-5" />
                 </span>
@@ -61,7 +62,7 @@
                     <p class="text-xl font-black text-slate-900">{{ $course->chapters->count() }}</p>
                 </div>
             </div>
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex items-center gap-3">
+            <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4">
                 <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-sky-50 text-sky-600">
                     <x-heroicon-o-play class="h-5 w-5" />
                 </span>
@@ -70,7 +71,7 @@
                     <p class="text-xl font-black text-slate-900">{{ $course->chapters->flatMap->lessons->count() }}</p>
                 </div>
             </div>
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex items-center gap-3">
+            <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4">
                 <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-violet-50 text-violet-600">
                     <x-heroicon-o-paper-clip class="h-5 w-5" />
                 </span>
@@ -84,7 +85,7 @@
         </div>
 
         {{-- Curriculum --}}
-        <div class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
                 <div>
                     <h2 class="text-sm font-black text-slate-900">@lang('teacher-course::app.curriculum')</h2>
