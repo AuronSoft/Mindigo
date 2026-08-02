@@ -16,4 +16,10 @@ return [
     'curriculum' => 'Chương trình khóa học', 'curriculum_summary' => ':chapters chương · :lessons bài học',
     'lesson_count' => '{0} Chưa có bài học|:count bài học', 'curriculum_empty' => 'Chương trình học đang được chuẩn bị.',
     'enrollment_phase_notice' => 'Chức năng tham gia khóa học sẽ được mở ở phase tiếp theo.', 'instructor' => 'Giảng viên', 'instructor_default' => 'Giảng viên Mindigo',
+    'detail_subtitle' => 'Xem tổng quan, chương trình học và các bài học được phép học thử.',
+    'back_to_catalog' => 'Quay về danh mục khóa học', 'back_to_course' => 'Quay về chi tiết khóa học',
+    'preview_mode' => 'Chế độ xem trước', 'preview' => 'Học thử', 'preview_lesson' => 'Cho phép học thử bài này',
+    'preview_lesson_help' => 'Người học đã đăng nhập có thể mở bài học này trước khi chức năng tham gia khóa học được triển khai.',
+    'chapters' => 'Chương', 'course_information' => 'Thông tin khóa học', 'language' => 'Ngôn ngữ',
+    'attachments' => 'Tài liệu bài học', 'attachment' => 'Tài liệu đính kèm',
 ];

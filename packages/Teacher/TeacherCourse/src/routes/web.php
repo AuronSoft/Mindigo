@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherCourse\Http\Controllers\ChapterController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseLessonController;
 use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
 use Mindigo\TeacherCourse\Http\Controllers\PublicCourseController;
@@ -12,6 +13,11 @@ Route::middleware('web')->group(function (): void {
     Route::get('/courses/{course}', [PublicCourseController::class, 'show'])
         ->middleware('auth')
         ->name('courses.show');
+    Route::middleware('auth')->prefix('/courses/{course}/lessons/{lesson}')->name('courses.lessons.')->group(function (): void {
+        Route::get('/', [CourseLessonController::class, 'show'])->name('show');
+        Route::get('/video', [CourseLessonController::class, 'video'])->name('video');
+        Route::get('/attachments/{attachment}', [CourseLessonController::class, 'attachment'])->name('attachments.show');
+    });
 });
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])

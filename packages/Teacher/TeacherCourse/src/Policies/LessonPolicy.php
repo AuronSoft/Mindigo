@@ -9,7 +9,10 @@ class LessonPolicy
 {
     public function view(User $user, Lesson $lesson): bool
     {
-        return $user->can('view', $lesson->chapter->course);
+        $course = $lesson->course();
+
+        return $user->can('view', $course)
+            || ($lesson->is_preview && $user->can('viewDetail', $course));
     }
 
     public function create(User $user): bool

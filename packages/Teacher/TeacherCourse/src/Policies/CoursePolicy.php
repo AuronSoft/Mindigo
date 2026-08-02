@@ -17,6 +17,11 @@ class CoursePolicy
         return $user->isAdmin() || (int) $course->teacher_id === (int) $user->getAuthIdentifier();
     }
 
+    public function viewDetail(User $user, Course $course): bool
+    {
+        return $course->isPublished() || $this->view($user, $course);
+    }
+
     public function create(User $user): bool
     {
         return $user->hasAnyRole(['teacher', 'admin']);

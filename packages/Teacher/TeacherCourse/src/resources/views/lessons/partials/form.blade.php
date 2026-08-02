@@ -9,6 +9,15 @@
     @error('name') <p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p> @enderror
 </div>
 
+<label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+    <input type="hidden" name="is_preview" value="0">
+    <input type="checkbox" name="is_preview" value="1" @checked(old('is_preview', $lesson->is_preview ?? false)) class="mt-0.5 h-4 w-4 accent-green-600">
+    <span>
+        <span class="block text-sm font-black text-slate-700">@lang('teacher-course::catalog.preview_lesson')</span>
+        <span class="mt-1 block text-xs font-semibold text-slate-500">@lang('teacher-course::catalog.preview_lesson_help')</span>
+    </span>
+</label>
+
 {{-- Mô tả ngắn --}}
 <div>
     <label class="mb-1.5 block text-xs font-black text-slate-600">Mô tả ngắn</label>
@@ -39,7 +48,7 @@
             <div class="mb-3 rounded-xl bg-white border border-slate-200 p-3">
                 <p class="text-xs font-bold text-slate-600 mb-1">Video hiện tại:</p>
                 <video controls class="w-full max-h-32 rounded-lg bg-slate-900">
-                    <source src="{{ asset('storage/' . $lesson->video_path) }}" type="video/mp4">
+                    <source src="{{ route('courses.lessons.video', [$course->slug, $lesson->id]) }}" type="video/mp4">
                 </video>
                 <label class="mt-2 flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" name="remove_video" value="1" class="h-3.5 w-3.5 accent-red-500">
