@@ -57,16 +57,18 @@
             </span>
         </a>
 
-        <div class="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3" data-sidebar-compact-center>
-            <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 fill-none stroke-current stroke-2 text-slate-500" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
+        <div id="sidebar-search-shell" class="flex h-11 items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3" data-sidebar-compact-center>
+            <span class="grid h-7 w-7 shrink-0 place-items-center text-slate-500">
+                <svg viewBox="0 0 24 24" class="h-[18px] w-[18px] fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="10.75" cy="10.75" r="7.25"/><path d="m16.25 16.25 4.25 4.25"/>
+                </svg>
+            </span>
             <input
                 id="sidebar-search-input"
                 type="text"
                 placeholder="@lang('Mindigo-dashboard::app.search_placeholder')"
                 autocomplete="off"
-                class="hidden min-w-0 flex-1 bg-transparent text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400"
+                class="hidden min-w-0 flex-1 bg-transparent text-sm font-bold leading-none text-slate-700 outline-none placeholder:text-slate-400"
                 data-sidebar-text
             >
         </div>
@@ -484,7 +486,7 @@
         </button>
     </aside>
 
-    <main class="min-w-0 {{ request()->routeIs('dashboard', 'teacher.*', 'student.*', 'reports.*', 'learning-tools.*') ? 'p-0' : 'p-6 max-md:p-4' }}">
+    <main class="min-w-0 {{ request()->routeIs('dashboard', 'teacher.*', 'student.*', 'reports.*', 'learning-tools.*', 'course-platform.*') ? 'p-0' : 'p-6 max-md:p-4' }}">
         @yield('content')
     </main>
 </div>
