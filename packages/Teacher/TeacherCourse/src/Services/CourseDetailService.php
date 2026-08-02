@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\TeacherCourse\Models\Course;
+use Mindigo\TeacherCourse\Models\CourseReview;
 use Mindigo\TeacherCourse\Models\Lesson;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -23,6 +24,7 @@ class CourseDetailService
                 'category:id,name,slug',
                 'chapters:id,course_id,name,sort_order',
                 'chapters.lessons:id,chapter_id,name,description,is_preview,sort_order',
+                'reviews' => fn ($query) => $query->visible()->with(['student:id,name,avatar', 'replier:id,name'])->latest()->limit(20),
             ])
             ->withCount(['chapters', 'lessons'])
             ->firstOrFail();
@@ -34,13 +36,25 @@ class CourseDetailService
         );
 
         if (method_exists($user, 'isStudent') && $user->isStudent()) {
-            $course->load(['enrollments' => fn ($query) => $query->where('student_id', $user->getAuthIdentifier())]);
+            $course->load(['enrollments' => fn ($query) => $query->where('student_id', $user->getAuthIdentifier())->with('review')]);
         }
 
         if ($course->isPublished()) {
             Course::query()->whereKey($course)->increment('view_count');
             $course->view_count++;
         }
+
+        $distribution = array_fill(1, 5, 0);
+        $ratingCounts = CourseReview::query()
+            ->where('course_id', $course->id)
+            ->visible()
+            ->selectRaw('rating, COUNT(*) as total')
+            ->groupBy('rating')
+            ->pluck('total', 'rating');
+        foreach ($ratingCounts as $rating => $count) {
+            $distribution[(int) $rating] = (int) $count;
+        }
+        $course->setAttribute('rating_distribution', $distribution);
 
         return $course;
     }

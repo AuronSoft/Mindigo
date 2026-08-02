@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 
@@ -83,5 +84,10 @@ class CourseEnrollment extends Model
     public function lessonProgress(): HasMany
     {
         return $this->hasMany(CourseLessonProgress::class, 'enrollment_id');
+    }
+
+    public function review(): HasOne
+    {
+        return $this->hasOne(CourseReview::class, 'enrollment_id');
     }
 }

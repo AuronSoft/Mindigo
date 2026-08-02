@@ -8,12 +8,15 @@ use Mindigo\TeacherCourse\Http\Controllers\CourseEnrollmentController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseLessonController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseMonitoringController;
 use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseReviewController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
 use Mindigo\TeacherCourse\Http\Controllers\PublicCourseController;
 use Mindigo\TeacherCourse\Http\Controllers\StudentCourseController;
+use Mindigo\TeacherCourse\Http\Controllers\TeacherProfileController;
 
 Route::middleware('web')->group(function (): void {
     Route::get('/courses', [PublicCourseController::class, 'index'])->name('courses.index');
+    Route::get('/teachers/{teacher}', [TeacherProfileController::class, 'show'])->name('teachers.show');
     Route::get('/courses/{course}', [PublicCourseController::class, 'show'])
         ->middleware('auth')
         ->name('courses.show');
@@ -25,6 +28,25 @@ Route::middleware('web')->group(function (): void {
         Route::get('/video', [CourseLessonController::class, 'video'])->name('video');
         Route::get('/attachments/{attachment}', [CourseLessonController::class, 'attachment'])->name('attachments.show');
     });
+});
+
+Route::middleware(['web', 'auth', 'role:student', 'throttle:10,1'])->scopeBindings()->group(function (): void {
+    Route::post('/courses/{course}/reviews', [CourseReviewController::class, 'store'])->name('courses.reviews.store');
+    Route::put('/courses/{course}/reviews/{review}', [CourseReviewController::class, 'update'])->name('courses.reviews.update');
+});
+
+Route::middleware(['web', 'auth', 'role:teacher|admin', 'throttle:20,1'])->group(function (): void {
+    Route::post('/course-reviews/{review}/reply', [CourseReviewController::class, 'reply'])->name('course-reviews.reply');
+});
+
+Route::middleware(['web', 'auth', 'role:teacher'])->group(function (): void {
+    Route::get('/teacher/public-profile/edit', [TeacherProfileController::class, 'edit'])->name('teacher.profile.edit');
+    Route::put('/teacher/public-profile/{profile}', [TeacherProfileController::class, 'update'])->name('teacher.profile.update');
+});
+
+Route::middleware(['web', 'auth', 'role:admin'])->group(function (): void {
+    Route::get('/admin/course-reviews', [CourseReviewController::class, 'index'])->name('admin.course-reviews.index');
+    Route::patch('/admin/course-reviews/{review}/moderate', [CourseReviewController::class, 'moderate'])->name('admin.course-reviews.moderate');
 });
 
 Route::middleware(['web', 'auth', 'role:student'])
