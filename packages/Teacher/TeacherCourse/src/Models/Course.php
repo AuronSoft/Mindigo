@@ -129,6 +129,11 @@ class Course extends Model
         return $this->hasMany(CourseClassroomAssignment::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(CourseReview::class);
+    }
+
     public function isPublished(): bool
     {
         return $this->publication_status === self::PUBLICATION_PUBLISHED && $this->is_active;

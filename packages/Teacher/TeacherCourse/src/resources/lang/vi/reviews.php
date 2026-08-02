@@ -1,0 +1,16 @@
+<?php
+
+return [
+    'title' => 'Đánh giá khóa học', 'summary' => ':count lượt đánh giá', 'distribution' => ':count đánh giá',
+    'your_review' => 'Đánh giá của bạn', 'rating' => 'Số sao', 'comment' => 'Nhận xét', 'comment_placeholder' => 'Chia sẻ trải nghiệm học tập thực tế của bạn...',
+    'submit' => 'Gửi đánh giá', 'update' => 'Cập nhật đánh giá', 'saved' => 'Đã gửi đánh giá.', 'updated' => 'Đã cập nhật đánh giá.',
+    'not_eligible' => 'Bạn cần hoàn thành khóa học hoặc đạt tiến độ tối thiểu trước khi đánh giá.', 'empty' => 'Khóa học chưa có đánh giá nào.',
+    'teacher_reply' => 'Phản hồi của giáo viên', 'reply_placeholder' => 'Viết phản hồi tới học sinh...', 'reply' => 'Phản hồi', 'reply_saved' => 'Đã lưu phản hồi.',
+    'hide' => 'Ẩn đánh giá', 'restore' => 'Khôi phục', 'reason' => 'Lý do kiểm duyệt', 'moderated' => 'Đã cập nhật trạng thái kiểm duyệt.',
+    'profile_title' => 'Hồ sơ giáo viên', 'profile_subtitle' => 'Thông tin giảng dạy và các khóa học đang xuất bản.', 'view_profile' => 'Xem hồ sơ',
+    'about' => 'Giới thiệu', 'specialization' => 'Chuyên môn', 'experience' => ':count năm kinh nghiệm', 'qualifications' => 'Trình độ và chứng chỉ',
+    'courses' => 'Khóa học đang giảng dạy', 'students' => 'Học viên', 'reviews' => 'Lượt đánh giá', 'average_rating' => 'Điểm trung bình',
+    'edit_profile' => 'Chỉnh sửa hồ sơ công khai', 'headline' => 'Tiêu đề chuyên môn', 'biography' => 'Giới thiệu', 'experience_years' => 'Số năm kinh nghiệm',
+    'public' => 'Công khai hồ sơ', 'save_profile' => 'Lưu hồ sơ', 'profile_saved' => 'Đã cập nhật hồ sơ giáo viên.', 'profile_empty' => 'Giáo viên chưa có khóa học công khai.',
+    'statuses' => ['visible' => 'Đang hiển thị', 'hidden' => 'Đã ẩn'],
+];
