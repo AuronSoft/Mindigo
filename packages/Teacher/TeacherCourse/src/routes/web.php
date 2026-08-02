@@ -3,22 +3,38 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherCourse\Http\Controllers\ChapterController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseEnrollmentController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseLessonController;
 use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
 use Mindigo\TeacherCourse\Http\Controllers\PublicCourseController;
+use Mindigo\TeacherCourse\Http\Controllers\StudentCourseController;
 
 Route::middleware('web')->group(function (): void {
     Route::get('/courses', [PublicCourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/{course}', [PublicCourseController::class, 'show'])
         ->middleware('auth')
         ->name('courses.show');
+    Route::post('/courses/{course}/enroll', [CourseEnrollmentController::class, 'store'])
+        ->middleware(['auth', 'role:student'])
+        ->name('courses.enroll');
     Route::middleware('auth')->prefix('/courses/{course}/lessons/{lesson}')->name('courses.lessons.')->group(function (): void {
         Route::get('/', [CourseLessonController::class, 'show'])->name('show');
         Route::get('/video', [CourseLessonController::class, 'video'])->name('video');
         Route::get('/attachments/{attachment}', [CourseLessonController::class, 'attachment'])->name('attachments.show');
     });
 });
+
+Route::middleware(['web', 'auth', 'role:student'])
+    ->prefix('student/courses')
+    ->name('student.courses.')
+    ->group(function (): void {
+        Route::get('/', [StudentCourseController::class, 'index'])->name('index');
+        Route::get('/{course}', [StudentCourseController::class, 'show'])->name('show');
+        Route::get('/{course}/lessons/{lesson}', [StudentCourseController::class, 'lesson'])->name('lessons.show');
+        Route::post('/{course}/lessons/{lesson}/activity', [StudentCourseController::class, 'activity'])->name('lessons.activity');
+        Route::post('/{course}/lessons/{lesson}/complete', [StudentCourseController::class, 'complete'])->name('lessons.complete');
+    });
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])
     ->prefix('teacher/courses')
@@ -35,6 +51,7 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::put('/{course}', [CourseController::class, 'update'])->name('update');
         Route::delete('/{course}', [CourseController::class, 'destroy'])->name('destroy');
         Route::patch('/{course}/publication', [CoursePublicationController::class, 'update'])->name('publication.update');
+        Route::post('/{course}/assign', [CourseEnrollmentController::class, 'assign'])->name('assign');
 
         // Chapters
         Route::post('/{course}/chapters', [ChapterController::class, 'store'])->name('chapters.store');

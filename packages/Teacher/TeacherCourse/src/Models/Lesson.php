@@ -4,6 +4,7 @@ namespace Mindigo\TeacherCourse\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mindigo\TeacherAssignment\Models\Assignment;
 
 class Lesson extends Model
@@ -46,5 +47,10 @@ class Lesson extends Model
     public function course(): Course
     {
         return $this->chapter->course;
+    }
+
+    public function learningProgress(): HasMany
+    {
+        return $this->hasMany(CourseLessonProgress::class);
     }
 }

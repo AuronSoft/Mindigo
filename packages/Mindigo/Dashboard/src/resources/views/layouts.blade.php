@@ -94,6 +94,7 @@
                         'icon' => 'heroicon-o-academic-cap',
                         'items' => [
                             ['route' => 'student.classrooms.index', 'match' => 'student.classrooms.*', 'label' => __('student-dashboard::app.nav_classrooms'), 'icon' => 'heroicon-o-user-group'],
+                            ['route' => 'student.courses.index', 'match' => 'student.courses.*', 'label' => __('student-dashboard::app.nav_courses'), 'icon' => 'heroicon-o-book-open'],
                             ['route' => 'student.assignments.index', 'match' => 'student.assignments.*', 'label' => __('student-dashboard::app.nav_assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
                             ['route' => 'student.exams.index', 'match' => 'student.exams.*', 'label' => __('student-dashboard::app.nav_exams'), 'icon' => 'heroicon-o-document-text'],
                             ['route' => 'student.practice.index', 'match' => 'student.practice.*', 'label' => __('student-dashboard::app.nav_practice'), 'icon' => 'heroicon-o-pencil-square'],

@@ -90,6 +90,16 @@
             </div>
 
             <aside class="space-y-5 xl:sticky xl:top-5 xl:self-start">
+                @if(auth()->user()->isStudent())
+                    @php $currentEnrollment = $course->enrollments->first(); @endphp
+                    <section class="rounded-xl border border-green-200 bg-green-50 p-5">
+                        @if($currentEnrollment && in_array($currentEnrollment->status, \Mindigo\TeacherCourse\Models\CourseEnrollment::ACTIVE_STATUSES, true))
+                            <a href="{{ route('student.courses.show', $course->slug) }}" class="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 text-sm font-black text-white no-underline hover:bg-green-700"><x-heroicon-o-play class="h-4 w-4" />@lang('teacher-course::learning.continue_learning')</a>
+                        @else
+                            <form method="POST" action="{{ route('courses.enroll', $course->slug) }}">@csrf<button type="submit" class="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 text-sm font-black text-white hover:bg-green-700"><x-heroicon-o-plus class="h-4 w-4" />@lang('teacher-course::learning.enroll_now')</button></form>
+                        @endif
+                    </section>
+                @endif
                 <section class="rounded-xl border border-slate-200 bg-white p-5">
                     <p class="text-[10px] font-black uppercase tracking-wider text-green-700">@lang('teacher-course::catalog.instructor')</p>
                     <div class="mt-3 flex items-center gap-3"><span class="grid h-11 w-11 place-items-center overflow-hidden rounded-full bg-green-50 font-black text-green-700">@if($course->teacher->avatar)<img src="{{ asset('storage/'.$course->teacher->avatar) }}" alt="" class="h-full w-full object-cover">@else{{ str($course->teacher->name)->substr(0, 1)->upper() }}@endif</span><div class="min-w-0"><h2 class="truncate font-black text-slate-900">{{ $course->teacher->name }}</h2><p class="truncate text-xs font-semibold text-slate-400">{{ $course->teacher->teacherProfile?->headline ?? __('teacher-course::catalog.instructor_default') }}</p></div></div>
