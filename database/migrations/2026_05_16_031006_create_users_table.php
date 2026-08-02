@@ -20,14 +20,14 @@ return new class extends Migration
             $table->enum('role', [
                 'admin',
                 'teacher',
-                'student'
+                'student',
             ])->default('student');
             $table->string('phone')->nullable();
             $table->string('avatar')->nullable();
             $table->enum('gender', [
                 'male',
                 'female',
-                'other'
+                'other',
             ])->nullable();
             $table->date('date_of_birth')->nullable();
             $table->text('address')->nullable();

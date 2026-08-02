@@ -12,9 +12,7 @@ use Mindigo\TeacherAssignment\Models\Assignment;
 
 class AssignmentController extends Controller
 {
-    public function __construct(protected AssignmentService $service)
-    {
-    }
+    public function __construct(protected AssignmentService $service) {}
 
     public function index(Request $request)
     {

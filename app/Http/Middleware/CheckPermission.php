@@ -12,11 +12,11 @@ class CheckPermission
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login');
         }
 
-        if (!method_exists($user, 'hasPermissionTo') || !$user->hasPermissionTo($permission)) {
+        if (! method_exists($user, 'hasPermissionTo') || ! $user->hasPermissionTo($permission)) {
             abort(403);
         }
 

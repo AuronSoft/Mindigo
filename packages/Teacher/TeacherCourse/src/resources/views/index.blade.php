@@ -42,6 +42,15 @@
                         <option value="inactive" @selected(($filters['status'] ?? '') === 'inactive')>@lang('teacher-course::app.inactive')</option>
                     </select>
                 </label>
+                <label>
+                    <span class="sr-only">@lang('teacher-course::app.publication_status_field')</span>
+                    <select name="publication_status" data-mindigo-auto-submit class="h-10 min-w-44 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-green-500">
+                        <option value="">@lang('teacher-course::app.all_publication_statuses')</option>
+                        @foreach(\Mindigo\TeacherCourse\Models\Course::PUBLICATION_STATUSES as $publicationStatus)
+                            <option value="{{ $publicationStatus }}" @selected(($filters['publication_status'] ?? '') === $publicationStatus)>@lang('teacher-course::app.publication_statuses.'.$publicationStatus)</option>
+                        @endforeach
+                    </select>
+                </label>
                 <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 text-sm font-black text-slate-700 transition hover:border-green-300 hover:text-green-700">
                     <x-heroicon-o-funnel class="h-4 w-4" />@lang('teacher-course::app.filter')
                 </button>
@@ -92,7 +101,10 @@
                                         <span>{{ __('teacher-course::app.lessons_count', ['count' => $course->lessons_count]) }}</span>
                                     </td>
                                     <td class="px-5 py-4">
-                                        <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-black {{ $course->status === 'active' ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500' }}">{{ __('teacher-course::app.'.$course->status) }}</span>
+                                        <div class="flex flex-wrap gap-1.5">
+                                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-black {{ $course->is_active ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500' }}">{{ __('teacher-course::app.'.($course->is_active ? 'active' : 'inactive')) }}</span>
+                                            <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-black text-slate-600">@lang('teacher-course::app.publication_statuses.'.$course->publication_status)</span>
+                                        </div>
                                     </td>
                                     <td class="px-5 py-4 text-xs font-semibold text-slate-500">{{ $course->updated_at->format('d/m/Y H:i') }}</td>
                                     <td class="px-5 py-4">

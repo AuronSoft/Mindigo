@@ -31,12 +31,12 @@ class SearchController extends Controller
 
         foreach ($exams as $exam) {
             $results[] = [
-                'type'     => 'exam',
-                'label'    => $exam->title,
-                'sub'      => $exam->subject ?: $exam->status,
-                'url'      => route('exams.show', $exam->id),
-                'icon'     => 'document-text',
-                'badge'    => $exam->status,
+                'type' => 'exam',
+                'label' => $exam->title,
+                'sub' => $exam->subject ?: $exam->status,
+                'url' => route('exams.show', $exam->id),
+                'icon' => 'document-text',
+                'badge' => $exam->status,
             ];
         }
 
@@ -48,11 +48,11 @@ class SearchController extends Controller
 
         foreach ($users as $user) {
             $results[] = [
-                'type'  => 'user',
+                'type' => 'user',
                 'label' => $user->name,
-                'sub'   => $user->email,
-                'url'   => route('users.show', $user->id),
-                'icon'  => 'user',
+                'sub' => $user->email,
+                'url' => route('users.show', $user->id),
+                'icon' => 'user',
                 'badge' => $user->role,
             ];
         }
@@ -65,11 +65,11 @@ class SearchController extends Controller
 
         foreach ($questions as $question) {
             $results[] = [
-                'type'  => 'question',
+                'type' => 'question',
                 'label' => mb_substr(strip_tags($question->content), 0, 60),
-                'sub'   => $question->subject ?: $question->status,
-                'url'   => route('question-bank.show', $question->id),
-                'icon'  => 'circle-stack',
+                'sub' => $question->subject ?: $question->status,
+                'url' => route('question-bank.show', $question->id),
+                'icon' => 'circle-stack',
                 'badge' => $question->status,
             ];
         }
@@ -83,15 +83,16 @@ class SearchController extends Controller
 
                 foreach ($tickets as $ticket) {
                     $results[] = [
-                        'type'  => 'ticket',
+                        'type' => 'ticket',
                         'label' => $ticket->subject,
-                        'sub'   => $ticket->status,
-                        'url'   => route('support-tickets.show', $ticket->id),
-                        'icon'  => 'chat-bubble-left-ellipsis',
+                        'sub' => $ticket->status,
+                        'url' => route('support-tickets.show', $ticket->id),
+                        'icon' => 'chat-bubble-left-ellipsis',
                         'badge' => $ticket->status,
                     ];
                 }
-            } catch (\Exception) {}
+            } catch (\Exception) {
+            }
         }
 
         return response()->json(['results' => $results, 'query' => $q]);

@@ -14,11 +14,11 @@ class ClassroomScheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'        => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
             'session_date' => ['required', 'date'],
-            'start_time'   => ['required', 'string'],
-            'end_time'     => ['required', 'string'],
-            'description'  => ['nullable', 'string', 'max:1000'],
+            'start_time' => ['required', 'string'],
+            'end_time' => ['required', 'string'],
+            'description' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

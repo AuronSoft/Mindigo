@@ -2,7 +2,7 @@
 
 namespace Mindigo\TeacherAssignment\Services;
 
-use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\Notification\Notifications\AssignmentGraded;
@@ -11,7 +11,7 @@ use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 
 class AssignmentService
 {
-    //Lấy danh sách bài tập của GV
+    // Lấy danh sách bài tập của GV
 
     public function getAssignmentsByTeacher(int|string $teacherId, int $perPage = 15)
     {
@@ -22,7 +22,7 @@ class AssignmentService
             ->paginate($perPage);
     }
 
-    //Tạo bài tập
+    // Tạo bài tập
 
     public function create(array $data, ?array $files = null): Assignment
     {
@@ -66,10 +66,11 @@ class AssignmentService
         $data['file_path'] = count($currentPaths) > 0 ? $currentPaths : null;
 
         $assignment->update($data);
+
         return $assignment->fresh();
     }
 
-    //Xoá bài tập
+    // Xoá bài tập
 
     public function delete(Assignment $assignment): void
     {
@@ -81,14 +82,14 @@ class AssignmentService
         $assignment->delete();
     }
 
-    //Chấm bài 
+    // Chấm bài
 
     public function grade(AssignmentSubmission $submission, array $data): AssignmentSubmission
     {
         $submission->update([
-            'score'     => $data['score'],
-            'feedback'  => $data['feedback'] ?? null,
-            'status'    => $data['status'],
+            'score' => $data['score'],
+            'feedback' => $data['feedback'] ?? null,
+            'status' => $data['status'],
             'graded_at' => now(),
         ]);
 
@@ -109,32 +110,32 @@ class AssignmentService
     // Lấy danh sách SV trong lớp kèm trạng thái bài nộp
     // Trả về tất cả SV — ai nộp thì có submission, ai chưa thì null
 
-    public function getStudentSubmissionList(Assignment $assignment): \Illuminate\Support\Collection
+    public function getStudentSubmissionList(Assignment $assignment): Collection
     {
-        $students   = $assignment->classroom->students; // many-to-many
+        $students = $assignment->classroom->students; // many-to-many
         $submissions = $assignment->submissions->keyBy('student_id');
 
         return $students->map(function ($student) use ($submissions) {
             return (object) [
-                'student'    => $student,
+                'student' => $student,
                 'submission' => $submissions->get($student->id), // null = chưa nộp
             ];
         });
     }
 
-    //Thống kê
+    // Thống kê
     public function getStats(Assignment $assignment): array
     {
-        $submissions  = $assignment->submissions;
+        $submissions = $assignment->submissions;
         $totalStudents = $assignment->classroom->students()->count();
 
         return [
             'total_students' => $totalStudents,
-            'submitted'      => $submissions->count(),
-            'not_submitted'  => $totalStudents - $submissions->count(),
-            'graded'         => $submissions->whereIn('status', ['graded', 'returned'])->count(),
-            'late'           => $submissions->where('is_late', true)->count(),
-            'avg_score'      => round($submissions->whereNotNull('score')->avg('score'), 2),
+            'submitted' => $submissions->count(),
+            'not_submitted' => $totalStudents - $submissions->count(),
+            'graded' => $submissions->whereIn('status', ['graded', 'returned'])->count(),
+            'late' => $submissions->where('is_late', true)->count(),
+            'avg_score' => round($submissions->whereNotNull('score')->avg('score'), 2),
         ];
     }
 }

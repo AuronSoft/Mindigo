@@ -5,6 +5,7 @@ namespace Mindigo\Dashboard\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
@@ -87,7 +88,7 @@ class DashboardController extends Controller
                 ['label' => 'Đạt',    'count' => Question::where('status', 'approved')->count(),   'color' => '#16a34a'],
                 ['label' => 'Duyệt',  'count' => Question::where('status', 'reviewing')->count(),  'color' => '#f59e0b'],
                 ['label' => 'Nháp',   'count' => Question::where('status', 'draft')->count(),      'color' => '#94a3b8'],
-                ['label' => 'Từ chối','count' => Question::where('status', 'rejected')->count(),   'color' => '#ef4444'],
+                ['label' => 'Từ chối', 'count' => Question::where('status', 'rejected')->count(),   'color' => '#ef4444'],
             ],
             'subject' => DB::table('question_bank_questions')
                 ->whereNull('deleted_at')
@@ -95,7 +96,7 @@ class DashboardController extends Controller
                 ->selectRaw('subject as label, COUNT(*) as count')
                 ->groupBy('subject')->orderByDesc('count')->limit(7)
                 ->get()
-                ->map(fn ($r) => ['label' => \Illuminate\Support\Str::limit($r->label, 6), 'count' => $r->count, 'color' => '#22c55e'])
+                ->map(fn ($r) => ['label' => Str::limit($r->label, 6), 'count' => $r->count, 'color' => '#22c55e'])
                 ->toArray(),
         ];
 
@@ -117,7 +118,7 @@ class DashboardController extends Controller
         $totalSubjectAttempts = $topSubjects->sum('attempt_count') ?: 1;
 
         $rankingLabels = $topPerformers->map(
-            fn ($p) => mb_strlen($p->name) > 14 ? mb_substr($p->name, 0, 14) . '…' : $p->name
+            fn ($p) => mb_strlen($p->name) > 14 ? mb_substr($p->name, 0, 14).'…' : $p->name
         )->values()->toArray();
         $rankingData = $topPerformers->pluck('avg_score')->map(fn ($v) => (float) $v)->values()->toArray();
 
@@ -129,7 +130,7 @@ class DashboardController extends Controller
             ['initial' => 'ON', 'value' => $stats['active_users'], 'tone' => 'bg-emerald-100 text-emerald-700 ring-emerald-100'],
         ];
 
-        /** @var \Mindigo\Auth\Models\User $dashboardUser */
+        /** @var User $dashboardUser */
         $dashboardUser = Auth::user();
 
         // Header badge users: 1 admin, 1 teacher, 1 student (other than current user)

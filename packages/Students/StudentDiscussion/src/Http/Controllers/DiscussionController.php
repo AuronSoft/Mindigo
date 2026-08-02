@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Mindigo\Auth\Models\User;
 use Mindigo\StudentDiscussion\Http\Requests\StoreDiscussionMessageRequest;
 use Mindigo\StudentDiscussion\Services\DiscussionService;
 use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
@@ -14,15 +15,13 @@ use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 
 class DiscussionController extends Controller
 {
-    public function __construct(protected DiscussionService $service)
-    {
-    }
+    public function __construct(protected DiscussionService $service) {}
 
     public function index(Request $request)
     {
         session()->forget('url.intended');
 
-        /** @var \Mindigo\Auth\Models\User $student */
+        /** @var User $student */
         $student = Auth::user();
 
         $threads = $this->service->threads($student);
@@ -36,7 +35,7 @@ class DiscussionController extends Controller
 
     public function store(StoreDiscussionMessageRequest $request, DiscussionThread $thread): RedirectResponse
     {
-        /** @var \Mindigo\Auth\Models\User $student */
+        /** @var User $student */
         $student = Auth::user();
 
         abort_unless($this->service->canAccess($thread, $student->getAuthIdentifier()), 403);
@@ -55,7 +54,7 @@ class DiscussionController extends Controller
 
         abort_unless($thread instanceof DiscussionThread, 404);
 
-        /** @var \Mindigo\Auth\Models\User $student */
+        /** @var User $student */
         $student = Auth::user();
         abort_unless($this->service->canAccess($thread, $student->getAuthIdentifier()), 403);
 
@@ -68,7 +67,7 @@ class DiscussionController extends Controller
 
         return response()->file($storage->path($attachment->path), [
             'Content-Type' => $attachment->mime_type ?: 'application/octet-stream',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            'Content-Disposition' => 'inline; filename="'.$filename.'"',
         ]);
     }
 }

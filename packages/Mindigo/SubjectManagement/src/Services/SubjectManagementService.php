@@ -3,6 +3,7 @@
 namespace Mindigo\SubjectManagement\Services;
 
 use Illuminate\Support\Str;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\QuestionBank\Models\Question;
@@ -140,7 +141,7 @@ class SubjectManagementService
         $counter = 2;
 
         while (Subject::query()->when($ignore, fn ($query) => $query->whereKeyNot($ignore->id))->where('slug', $slug)->exists()) {
-            $slug = $base . '-' . $counter++;
+            $slug = $base.'-'.$counter++;
         }
 
         return $slug;
@@ -153,7 +154,7 @@ class SubjectManagementService
         $counter = 2;
 
         while ($subject->topics()->when($ignore, fn ($query) => $query->whereKeyNot($ignore->id))->where('slug', $slug)->exists()) {
-            $slug = $base . '-' . $counter++;
+            $slug = $base.'-'.$counter++;
         }
 
         return $slug;
@@ -171,11 +172,11 @@ class SubjectManagementService
 
     private function audit(string $action, array $oldValues, array $newValues, Subject $subject): void
     {
-        if (!class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
+        if (! class_exists(AuditLogService::class)) {
             return;
         }
 
-        app(\Mindigo\AuditLog\Services\AuditLogService::class)->record(
+        app(AuditLogService::class)->record(
             $action,
             'subjects',
             $oldValues,
@@ -187,11 +188,11 @@ class SubjectManagementService
 
     private function auditTopic(string $action, array $oldValues, array $newValues, SubjectTopic $topic): void
     {
-        if (!class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
+        if (! class_exists(AuditLogService::class)) {
             return;
         }
 
-        app(\Mindigo\AuditLog\Services\AuditLogService::class)->record(
+        app(AuditLogService::class)->record(
             $action,
             'subject_topics',
             $oldValues,

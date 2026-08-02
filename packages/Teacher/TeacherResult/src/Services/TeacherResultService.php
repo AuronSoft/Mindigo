@@ -242,37 +242,39 @@ class TeacherResultService
     }
 
     public function gradeManualAnswers(ExamAttempt $attempt, array $grades): void
-{
-    \Illuminate\Support\Facades\DB::transaction(function () use ($attempt, $grades) {
-        foreach ($grades as $answerId => $points) {
-            $answer = ExamAttemptAnswer::find($answerId);
-            if (!$answer || $answer->exam_attempt_id !== $attempt->id) continue;
+    {
+        DB::transaction(function () use ($attempt, $grades) {
+            foreach ($grades as $answerId => $points) {
+                $answer = ExamAttemptAnswer::find($answerId);
+                if (! $answer || $answer->exam_attempt_id !== $attempt->id) {
+                    continue;
+                }
 
-            $maxPoints = (float) ($answer->question?->points ?? 0);
-            $awarded   = min((float) $points, $maxPoints); // không vượt điểm tối đa
+                $maxPoints = (float) ($answer->question?->points ?? 0);
+                $awarded = min((float) $points, $maxPoints); // không vượt điểm tối đa
 
-            $answer->update([
-                'points_awarded' => $awarded,
-                'is_correct'     => $awarded >= $maxPoints,
-                'needs_review'   => false,
-            ]);
-        }
+                $answer->update([
+                    'points_awarded' => $awarded,
+                    'is_correct' => $awarded >= $maxPoints,
+                    'needs_review' => false,
+                ]);
+            }
 
-        // Tính lại tổng điểm
-        $attempt->load('answers');
-        $score     = (float) $attempt->answers->sum('points_awarded');
-        $maxScore  = (float) $attempt->max_score;
-        $percentage = $maxScore > 0 ? round($score / $maxScore * 100, 2) : 0;
+            // Tính lại tổng điểm
+            $attempt->load('answers');
+            $score = (float) $attempt->answers->sum('points_awarded');
+            $maxScore = (float) $attempt->max_score;
+            $percentage = $maxScore > 0 ? round($score / $maxScore * 100, 2) : 0;
 
-        $stillPending = $attempt->answers->where('needs_review', true)->count();
+            $stillPending = $attempt->answers->where('needs_review', true)->count();
 
-        $attempt->forceFill([
-            'score'      => $score,
-            'percentage' => $percentage,
-            'passed'     => $stillPending > 0
-                ? null
-                : ($score >= (float) $attempt->exam->passing_score),
-        ])->save();
-    });
-}
+            $attempt->forceFill([
+                'score' => $score,
+                'percentage' => $percentage,
+                'passed' => $stillPending > 0
+                    ? null
+                    : ($score >= (float) $attempt->exam->passing_score),
+            ])->save();
+        });
+    }
 }

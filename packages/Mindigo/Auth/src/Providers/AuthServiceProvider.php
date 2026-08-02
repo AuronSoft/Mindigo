@@ -3,7 +3,6 @@
 namespace Mindigo\Auth\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -19,10 +18,10 @@ class AuthServiceProvider extends ServiceProvider
     {
 
         // Đăng ký routes
-        Route::middleware(['web'])->group(__DIR__ . '/../Routes/web.php');
+        Route::middleware(['web'])->group(__DIR__.'/../Routes/web.php');
 
         // Đăng ký views
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'Mindigo-auth');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'Mindigo-auth');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'Mindigo-auth');
 
         // Đăng ký rate limiters
@@ -34,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         // Gửi Magic Link / OTP: tối đa 5 lần / 10 phút / per email+IP
         RateLimiter::for('mindigo-id-send', function ($request) {
             return Limit::perMinutes(10, 5)
-                ->by(strtolower($request->input('email')) . '|' . $request->ip())
+                ->by(strtolower($request->input('email')).'|'.$request->ip())
                 ->response(fn () => response()->json([
                     'message' => 'Quá nhiều yêu cầu. Vui lòng thử lại sau.',
                 ], 429));
@@ -43,7 +42,7 @@ class AuthServiceProvider extends ServiceProvider
         // Verify OTP: tối đa 10 lần / 10 phút / per email+IP
         RateLimiter::for('mindigo-id-otp', function ($request) {
             return Limit::perMinutes(10, 10)
-                ->by(strtolower($request->input('email')) . '|' . $request->ip())
+                ->by(strtolower($request->input('email')).'|'.$request->ip())
                 ->response(fn () => response()->json([
                     'message' => 'Quá nhiều lần thử. Vui lòng thử lại sau.',
                 ], 429));

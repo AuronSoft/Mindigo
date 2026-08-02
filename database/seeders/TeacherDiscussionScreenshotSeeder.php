@@ -41,7 +41,7 @@ class TeacherDiscussionScreenshotSeeder extends Seeder
             $classroom = Classroom::withTrashed()
                 ->where('code', '12A3-THPT')
                 ->orWhere('slug', 'lop-12a3-luyen-thi-thpt')
-                ->first() ?? new Classroom();
+                ->first() ?? new Classroom;
 
             $classroom->forceFill([
                 'created_by' => $teacher->id,
@@ -119,7 +119,7 @@ class TeacherDiscussionScreenshotSeeder extends Seeder
                 foreach ($attachments as $attachment) {
                     $safeName = Str::slug(pathinfo($attachment['file'], PATHINFO_FILENAME));
                     $extension = pathinfo($attachment['file'], PATHINFO_EXTENSION);
-                    $path = 'teacher-discussions/demo/' . $message->id . '-' . $safeName . '.' . $extension;
+                    $path = 'teacher-discussions/demo/'.$message->id.'-'.$safeName.'.'.$extension;
 
                     if (isset($attachment['source']) && is_file($attachment['source'])) {
                         Storage::disk('public')->put($path, file_get_contents($attachment['source']));

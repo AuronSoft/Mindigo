@@ -2,6 +2,7 @@
 
 namespace Mindigo\Report\Services;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -75,7 +76,7 @@ class ReportService
         return compact('labels', 'counts', 'scores');
     }
 
-    public function getTopExams(int $limit = 10): \Illuminate\Support\Collection
+    public function getTopExams(int $limit = 10): Collection
     {
         return Exam::whereHas('attempts', fn ($q) => $q->where('status', 'submitted'))
             ->withCount(['attempts' => fn ($q) => $q->where('status', 'submitted')])
@@ -85,7 +86,7 @@ class ReportService
             ->get();
     }
 
-    public function getTopStudents(int $limit = 10): \Illuminate\Support\Collection
+    public function getTopStudents(int $limit = 10): Collection
     {
         return DB::table('exam_attempts')
             ->join('users', 'users.id', '=', 'exam_attempts.user_id')
@@ -103,7 +104,7 @@ class ReportService
             ->get();
     }
 
-    public function getSubjectBreakdown(): \Illuminate\Support\Collection
+    public function getSubjectBreakdown(): Collection
     {
         return DB::table('exam_attempts')
             ->join('exams', 'exams.id', '=', 'exam_attempts.exam_id')
@@ -224,7 +225,7 @@ class ReportService
         ];
     }
 
-    public function getAllExams(int $perPage = 15): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getAllExams(int $perPage = 15): LengthAwarePaginator
     {
         return Exam::withCount(['attempts' => fn ($q) => $q->where('status', 'submitted')])
             ->withAvg(['attempts' => fn ($q) => $q->where('status', 'submitted')], 'percentage')
@@ -232,7 +233,7 @@ class ReportService
             ->paginate($perPage);
     }
 
-    public function getAllStudents(int $perPage = 15): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getAllStudents(int $perPage = 15): LengthAwarePaginator
     {
         return User::students()
             ->select('users.*')

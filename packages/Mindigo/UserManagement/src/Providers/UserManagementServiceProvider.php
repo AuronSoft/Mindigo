@@ -8,8 +8,8 @@ class UserManagementServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'Mindigo-user-management');
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'Mindigo-user-management');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'Mindigo-user-management');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'Mindigo-user-management');
     }
 }

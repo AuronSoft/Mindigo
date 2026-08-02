@@ -284,6 +284,6 @@ class TeacherAssignmentDemoSeeder extends Seeder
 
     private function putSubmissionFile(string $path, string $content): void
     {
-        Storage::disk('public')->put($path, $content . "\nGenerated at: " . now()->toDateTimeString() . "\n");
+        Storage::disk('public')->put($path, $content."\nGenerated at: ".now()->toDateTimeString()."\n");
     }
 }

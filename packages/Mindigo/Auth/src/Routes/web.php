@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Mindigo\Auth\Http\Controllers\LoginController;
 use Mindigo\Auth\Http\Controllers\ForgotPasswordController;
+use Mindigo\Auth\Http\Controllers\LoginController;
 use Mindigo\Auth\Http\Controllers\MindigoIdController;
 
 Route::middleware(['web', 'guest'])->group(function () {
@@ -14,10 +14,10 @@ Route::middleware(['web', 'guest'])->group(function () {
     Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('password.verify-otp');
     Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'reset'])->name('password.reset');
 
-    // Mindigo ID (passwordless) 
+    // Mindigo ID (passwordless)
     Route::prefix('Mindigo-id')->name('Mindigo-id.')->group(function () {
-        Route::post('send',       [MindigoIdController::class, 'send'])          ->name('send')       ->middleware('throttle:Mindigo-id-send');
-        Route::post('verify-otp', [MindigoIdController::class, 'verifyOtp'])     ->name('verify-otp') ->middleware('throttle:Mindigo-id-otp');
+        Route::post('send', [MindigoIdController::class, 'send'])->name('send')->middleware('throttle:Mindigo-id-send');
+        Route::post('verify-otp', [MindigoIdController::class, 'verifyOtp'])->name('verify-otp')->middleware('throttle:Mindigo-id-otp');
     });
 });
 

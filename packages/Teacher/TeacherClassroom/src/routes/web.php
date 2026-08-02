@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Mindigo\TeacherClassroom\Http\Controllers\TeacherClassroomController;
 use Mindigo\TeacherClassroom\Http\Controllers\ClassroomAttendanceController;
 use Mindigo\TeacherClassroom\Http\Controllers\ClassroomScheduleController;
+use Mindigo\TeacherClassroom\Http\Controllers\TeacherClassroomController;
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])
     ->prefix('teacher/classrooms')

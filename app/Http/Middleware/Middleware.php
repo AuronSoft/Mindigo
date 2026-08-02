@@ -28,7 +28,7 @@ abstract class Middleware
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 

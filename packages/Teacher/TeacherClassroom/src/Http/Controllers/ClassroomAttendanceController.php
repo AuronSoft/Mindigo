@@ -3,9 +3,9 @@
 namespace Mindigo\TeacherClassroom\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\TeacherClassroom\Http\Requests\ClassroomAttendanceRequest;
 use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
@@ -38,7 +38,7 @@ class ClassroomAttendanceController extends Controller
 
     private function authorizeOwnership(Classroom $classroom): void
     {
-        /** @var \Mindigo\Auth\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         abort_unless(

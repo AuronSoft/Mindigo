@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\TeacherClassroom\Http\Requests\TeacherClassroomRequest;
 use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
@@ -22,8 +23,8 @@ class TeacherClassroomController extends Controller
 
         return view('teacher-classroom::index', [
             'classrooms' => $this->service->ownedList($request->user(), $filters),
-            'stats'      => $this->service->stats($request->user()),
-            'filters'    => $filters,
+            'stats' => $this->service->stats($request->user()),
+            'filters' => $filters,
         ]);
     }
 
@@ -57,14 +58,14 @@ class TeacherClassroomController extends Controller
         $announcements = $classroom->announcements()->latest('published_at')->get();
 
         return view('teacher-classroom::show', [
-            'classroom'          => $classroom,
-            'allStudents'        => $formData['students'],
-            'assistants'         => $formData['assistants'],
-            'selectedDate'       => $selectedDate,
-            'attendanceRecords'  => $attendanceRecords,
-            'attendanceHistory'  => $attendanceHistory,
-            'schedules'          => $schedules,
-            'announcements'      => $announcements,
+            'classroom' => $classroom,
+            'allStudents' => $formData['students'],
+            'assistants' => $formData['assistants'],
+            'selectedDate' => $selectedDate,
+            'attendanceRecords' => $attendanceRecords,
+            'attendanceHistory' => $attendanceHistory,
+            'schedules' => $schedules,
+            'announcements' => $announcements,
         ]);
     }
 
@@ -104,7 +105,7 @@ class TeacherClassroomController extends Controller
         $this->authorizeOwnership($classroom);
 
         $validated = $request->validate([
-            'student_ids'   => ['array'],
+            'student_ids' => ['array'],
             'student_ids.*' => ['integer', 'exists:users,id'],
         ]);
 
@@ -115,13 +116,12 @@ class TeacherClassroomController extends Controller
             ->with('success', __('teacher-classroom::app.students_updated'));
     }
 
-
     /**
      * Chặn giáo viên truy cập lớp của người khác. Admin được phép xem tất cả.
      */
     private function authorizeOwnership(Classroom $classroom): void
     {
-        /** @var \Mindigo\Auth\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         abort_unless(

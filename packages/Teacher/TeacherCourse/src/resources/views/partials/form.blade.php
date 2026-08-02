@@ -13,6 +13,60 @@
     @enderror
 </div>
 
+<div class="grid gap-4 md:grid-cols-2">
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.subject_field')</label>
+        <select name="subject_id" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 outline-none focus:border-green-400">
+            <option value="">@lang('teacher-course::app.not_selected')</option>
+            @foreach($subjects as $subject)
+                <option value="{{ $subject->id }}" @selected((string) old('subject_id', $course->subject_id ?? '') === (string) $subject->id)>{{ $subject->name }}</option>
+            @endforeach
+        </select>
+        @error('subject_id')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+    </div>
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.category_field')</label>
+        <select name="category_id" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 outline-none focus:border-green-400">
+            <option value="">@lang('teacher-course::app.not_selected')</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}" @selected((string) old('category_id', $course->category_id ?? '') === (string) $category->id)>{{ $category->name }}</option>
+            @endforeach
+        </select>
+        @error('category_id')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+    </div>
+</div>
+
+<div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.education_level_field')</label>
+        <select name="education_level" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700">
+            <option value="">@lang('teacher-course::app.not_selected')</option>
+            @foreach(\Mindigo\TeacherCourse\Models\Course::EDUCATION_LEVELS as $level)
+                <option value="{{ $level }}" @selected(old('education_level', $course->education_level ?? '') === $level)>@lang('teacher-course::app.education_levels.'.$level)</option>
+            @endforeach
+        </select>
+    </div>
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.difficulty_field')</label>
+        <select name="difficulty" required class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700">
+            @foreach(\Mindigo\TeacherCourse\Models\Course::DIFFICULTIES as $difficulty)
+                <option value="{{ $difficulty }}" @selected(old('difficulty', $course->difficulty ?? 'beginner') === $difficulty)>@lang('teacher-course::app.difficulties.'.$difficulty)</option>
+            @endforeach
+        </select>
+    </div>
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.language_field')</label>
+        <select name="language" required class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700">
+            <option value="vi" @selected(old('language', $course->language ?? 'vi') === 'vi')>@lang('teacher-course::app.languages.vi')</option>
+            <option value="en" @selected(old('language', $course->language ?? 'vi') === 'en')>@lang('teacher-course::app.languages.en')</option>
+        </select>
+    </div>
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.duration_field')</label>
+        <input type="number" name="estimated_duration_minutes" min="1" max="525600" value="{{ old('estimated_duration_minutes', $course->estimated_duration_minutes ?? '') }}" class="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700">
+    </div>
+</div>
+
 {{-- Trạng thái --}}
 <div>
     <label class="mb-1.5 block text-xs font-black text-slate-600">Trạng thái <span class="text-red-500">*</span></label>
@@ -27,6 +81,14 @@
         </label>
     </div>
 </div>
+
+@foreach(['learning_outcomes', 'requirements', 'target_learners'] as $metadataField)
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.'.$metadataField.'_field')</label>
+        <textarea name="{{ $metadataField }}" rows="4" placeholder="@lang('teacher-course::app.'.$metadataField.'_placeholder')" class="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold leading-relaxed text-slate-800 outline-none focus:border-green-400 focus:ring-2 focus:ring-green-50">{{ old($metadataField, isset($course) ? implode("\n", $course->{$metadataField} ?? []) : '') }}</textarea>
+        @error($metadataField)<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+    </div>
+@endforeach
 
 {{-- Ảnh bìa --}}
 <div>

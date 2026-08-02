@@ -4,6 +4,8 @@ namespace Mindigo\StudentClassroom\Services;
 
 use Illuminate\Support\Collection;
 use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherAssignment\Models\Assignment;
+use Mindigo\TeacherLiveSession\Models\LiveSession;
 
 class ClassroomService
 {
@@ -14,7 +16,7 @@ class ClassroomService
         return Classroom::query()
             ->whereHas('students', function ($q) use ($studentId) {
                 $q->where('student_id', $studentId)
-                  ->where('classroom_students.status', 'active');
+                    ->where('classroom_students.status', 'active');
             })
             ->pluck('id');
     }
@@ -63,14 +65,14 @@ class ClassroomService
             ->get();
 
         // Bài tập đã phát hành của lớp
-        $assignments = \Mindigo\TeacherAssignment\Models\Assignment::query()
+        $assignments = Assignment::query()
             ->where('classroom_id', $classroom->id)
             ->where('status', 'published')
             ->latest('due_date')
             ->get();
 
         // Buổi học trực tuyến của lớp (trừ huỷ)
-        $liveSessions = \Mindigo\TeacherLiveSession\Models\LiveSession::query()
+        $liveSessions = LiveSession::query()
             ->where('classroom_id', $classroom->id)
             ->where('status', '!=', 'cancelled')
             ->orderByDesc('scheduled_start')

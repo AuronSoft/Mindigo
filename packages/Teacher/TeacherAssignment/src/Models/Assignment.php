@@ -2,9 +2,11 @@
 
 namespace Mindigo\TeacherAssignment\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Mindigo\Auth\Models\User;
+use Mindigo\ClassroomManagement\Models\Classroom;
 
 class Assignment extends Model
 {
@@ -38,12 +40,12 @@ class Assignment extends Model
 
     public function classroom()
     {
-        return $this->belongsTo(\Mindigo\ClassroomManagement\Models\Classroom::class);
+        return $this->belongsTo(Classroom::class);
     }
 
     public function teacher()
     {
-        return $this->belongsTo(\Mindigo\Auth\Models\User::class, 'teacher_id');
+        return $this->belongsTo(User::class, 'teacher_id');
     }
 
     public function submissions()
@@ -51,7 +53,7 @@ class Assignment extends Model
         return $this->hasMany(AssignmentSubmission::class);
     }
 
-    //Scopes 
+    // Scopes
 
     public function scopePublished($query)
     {
@@ -63,7 +65,7 @@ class Assignment extends Model
         return $query->where('teacher_id', $teacherId);
     }
 
-    //Helpers
+    // Helpers
 
     public function isOverdue(): bool
     {

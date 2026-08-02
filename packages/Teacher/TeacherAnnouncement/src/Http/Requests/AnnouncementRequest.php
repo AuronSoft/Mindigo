@@ -16,11 +16,11 @@ class AnnouncementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'        => ['required', 'string', 'max:200'],
-            'content'      => ['required', 'string', 'max:10000'],
-            'type'         => ['required', Rule::in(Announcement::TYPES)],
-            'is_pinned'    => ['nullable', 'boolean'],
-            'classroom_ids'=> ['nullable', 'array'],
+            'title' => ['required', 'string', 'max:200'],
+            'content' => ['required', 'string', 'max:10000'],
+            'type' => ['required', Rule::in(Announcement::TYPES)],
+            'is_pinned' => ['nullable', 'boolean'],
+            'classroom_ids' => ['nullable', 'array'],
             'classroom_ids.*' => ['exists:classrooms,id'],
         ];
     }

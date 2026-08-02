@@ -36,9 +36,9 @@ class DiscussionAttachment extends Model
     public function sizeLabel(): string
     {
         if ($this->size >= 1048576) {
-            return round($this->size / 1048576, 1) . ' MB';
+            return round($this->size / 1048576, 1).' MB';
         }
 
-        return max(1, round($this->size / 1024)) . ' KB';
+        return max(1, round($this->size / 1024)).' KB';
     }
 }

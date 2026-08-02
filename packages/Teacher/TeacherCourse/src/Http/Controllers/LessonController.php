@@ -5,182 +5,75 @@ namespace Mindigo\TeacherCourse\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 use Mindigo\TeacherCourse\Http\Requests\LessonRequest;
 use Mindigo\TeacherCourse\Models\Chapter;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\Lesson;
-use Mindigo\TeacherAssignment\Models\Assignment;
+use Mindigo\TeacherCourse\Services\CurriculumService;
 
 class LessonController extends Controller
 {
-    public function create(Course $course, Chapter $chapter)
+    public function __construct(private readonly CurriculumService $curriculum) {}
+
+    public function create(Request $request, Course $course, Chapter $chapter): View
     {
-        $this->authorizeOwnership($course);
+        Gate::authorize('update', $course);
 
-        $assignments = Assignment::query()
-            ->where('teacher_id', Auth::id())
-            ->where('status', 'published')
-            ->orderBy('title')
-            ->get(['id', 'title']);
-
-        // All lessons in this course for prerequisite selection
-        $existingLessons = $course->chapters->flatMap->lessons->pluck('name', 'id');
-
-        return view('teacher-course::lessons.create', compact('course', 'chapter', 'assignments', 'existingLessons'));
+        return view('teacher-course::lessons.create', [
+            'course' => $course,
+            'chapter' => $chapter,
+            ...$this->curriculum->lessonFormData($course, (int) $request->user()->getAuthIdentifier()),
+        ]);
     }
 
     public function store(LessonRequest $request, Course $course, Chapter $chapter): RedirectResponse
     {
-        $this->authorizeOwnership($course);
+        $this->curriculum->createLesson(
+            $chapter,
+            $request->safe()->except(['video', 'attachments', 'remove_video']),
+            $request->file('video'),
+            $request->file('attachments', []),
+        );
 
-        $data = $request->validated();
-
-        $maxOrder = $chapter->lessons()->max('sort_order') ?? 0;
-
-        $videoPath = null;
-        if ($request->hasFile('video')) {
-            $videoPath = $request->file('video')->store('courses/videos', 'public');
-        }
-
-        $attachmentPaths = [];
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $attachmentPaths[] = [
-                    'path'         => $file->store('courses/attachments', 'public'),
-                    'original_name' => $file->getClientOriginalName(),
-                    'mime'         => $file->getMimeType(),
-                    'size'         => $file->getSize(),
-                ];
-            }
-        }
-
-        $chapter->lessons()->create([
-            'name'                   => $data['name'],
-            'description'            => $data['description'] ?? null,
-            'content'                => $data['content'] ?? null,
-            'video_path'             => $videoPath,
-            'attachment_paths'       => $attachmentPaths ?: null,
-            'assignment_id'          => $data['assignment_id'] ?? null,
-            'prerequisite_lesson_id' => $data['prerequisite_lesson_id'] ?? null,
-            'sort_order'             => $maxOrder + 1,
-        ]);
-
-        return redirect()
-            ->route('teacher.courses.show', $course)
-            ->with('success', __('teacher-course::app.lesson_created'));
+        return to_route('teacher.courses.show', $course)->with('success', __('teacher-course::app.lesson_created'));
     }
 
-    public function edit(Lesson $lesson)
+    public function edit(Request $request, Lesson $lesson): View
     {
+        Gate::authorize('update', $lesson);
         $chapter = $lesson->chapter;
-        $course  = $chapter->course;
-        $this->authorizeOwnership($course);
+        $course = $chapter->course;
 
-        $assignments = Assignment::query()
-            ->where('teacher_id', Auth::id())
-            ->where('status', 'published')
-            ->orderBy('title')
-            ->get(['id', 'title']);
-
-        $existingLessons = $course->chapters->flatMap->lessons
-            ->where('id', '!=', $lesson->id)
-            ->pluck('name', 'id');
-
-        return view('teacher-course::lessons.edit', compact('course', 'chapter', 'lesson', 'assignments', 'existingLessons'));
+        return view('teacher-course::lessons.edit', [
+            'course' => $course,
+            'chapter' => $chapter,
+            'lesson' => $lesson,
+            ...$this->curriculum->lessonFormData($course, (int) $request->user()->getAuthIdentifier(), $lesson),
+        ]);
     }
 
     public function update(LessonRequest $request, Lesson $lesson): RedirectResponse
     {
-        $chapter = $lesson->chapter;
-        $course  = $chapter->course;
-        $this->authorizeOwnership($course);
+        $course = $lesson->chapter->course;
+        $this->curriculum->updateLesson(
+            $lesson,
+            $request->safe()->except(['video', 'attachments', 'remove_video']),
+            $request->file('video'),
+            $request->file('attachments', []),
+            $request->boolean('remove_video'),
+        );
 
-        $data = $request->validated();
-
-        // Handle video
-        $videoPath = $lesson->video_path;
-        if ($request->boolean('remove_video') && $videoPath) {
-            Storage::disk('public')->delete($videoPath);
-            $videoPath = null;
-        }
-        if ($request->hasFile('video')) {
-            if ($videoPath) {
-                Storage::disk('public')->delete($videoPath);
-            }
-            $videoPath = $request->file('video')->store('courses/videos', 'public');
-        }
-
-        // Handle attachments
-        $existingAttachments = $lesson->attachment_paths ?? [];
-        $toRemove = $data['remove_attachments'] ?? [];
-        if (!empty($toRemove)) {
-            foreach ($existingAttachments as $key => $att) {
-                if (in_array($att['path'], $toRemove)) {
-                    Storage::disk('public')->delete($att['path']);
-                    unset($existingAttachments[$key]);
-                }
-            }
-            $existingAttachments = array_values($existingAttachments);
-        }
-
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $existingAttachments[] = [
-                    'path'          => $file->store('courses/attachments', 'public'),
-                    'original_name' => $file->getClientOriginalName(),
-                    'mime'          => $file->getMimeType(),
-                    'size'          => $file->getSize(),
-                ];
-            }
-        }
-
-        $lesson->update([
-            'name'                   => $data['name'],
-            'description'            => $data['description'] ?? null,
-            'content'                => $data['content'] ?? null,
-            'video_path'             => $videoPath,
-            'attachment_paths'       => $existingAttachments ?: null,
-            'assignment_id'          => $data['assignment_id'] ?? null,
-            'prerequisite_lesson_id' => $data['prerequisite_lesson_id'] ?? null,
-        ]);
-
-        return redirect()
-            ->route('teacher.courses.show', $course)
-            ->with('success', __('teacher-course::app.lesson_updated'));
+        return to_route('teacher.courses.show', $course)->with('success', __('teacher-course::app.lesson_updated'));
     }
 
     public function destroy(Lesson $lesson): RedirectResponse
     {
-        $chapter = $lesson->chapter;
-        $course  = $chapter->course;
-        $this->authorizeOwnership($course);
+        Gate::authorize('delete', $lesson);
+        $course = $lesson->chapter->course;
+        $this->curriculum->deleteLesson($lesson);
 
-        // Clean up stored files
-        if ($lesson->video_path) {
-            Storage::disk('public')->delete($lesson->video_path);
-        }
-        if ($lesson->attachment_paths) {
-            foreach ($lesson->attachment_paths as $att) {
-                Storage::disk('public')->delete($att['path']);
-            }
-        }
-
-        $lesson->delete();
-
-        return redirect()
-            ->route('teacher.courses.show', $course)
-            ->with('success', __('teacher-course::app.lesson_deleted'));
-    }
-
-    private function authorizeOwnership(Course $course): void
-    {
-        $user = Auth::user();
-        abort_unless(
-            $user->isAdmin() || $course->teacher_id === (int) $user->getAuthIdentifier(),
-            403,
-            __('teacher-course::app.unauthorized_course_action')
-        );
+        return to_route('teacher.courses.show', $course)->with('success', __('teacher-course::app.lesson_deleted'));
     }
 }

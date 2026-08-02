@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Mindigo\Auth\Mail\MindigoIdMagicLinkMail;
 use Mindigo\Auth\Mail\MindigoIdOtpMail;
-use Mindigo\Auth\Models\User;
 use Mindigo\Auth\Models\MindigoIdToken;
+use Mindigo\Auth\Models\User;
 
 class MindigoIdService
 {
@@ -34,9 +34,9 @@ class MindigoIdService
         $plainToken = Str::random(64);
 
         MindigoIdToken::create([
-            'email'      => $email,
-            'token'      => hash('sha256', $plainToken),
-            'type'       => 'magic_link',
+            'email' => $email,
+            'token' => hash('sha256', $plainToken),
+            'type' => 'magic_link',
             'expires_at' => now()->addMinutes(self::EXPIRES_MINUTES),
         ]);
 
@@ -54,10 +54,10 @@ class MindigoIdService
         $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
         MindigoIdToken::create([
-            'email'      => $email,
-            'token'      => Str::random(64),
-            'otp'        => $otp,
-            'type'       => 'otp',
+            'email' => $email,
+            'token' => Str::random(64),
+            'otp' => $otp,
+            'type' => 'otp',
             'expires_at' => now()->addMinutes(self::EXPIRES_MINUTES),
         ]);
 
@@ -81,7 +81,7 @@ class MindigoIdService
             ->latest('created_at')
             ->first();
 
-        if (!$record || !$record->isValid()) {
+        if (! $record || ! $record->isValid()) {
             return null;
         }
 

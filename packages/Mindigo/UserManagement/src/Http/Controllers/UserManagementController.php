@@ -12,9 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserManagementController extends Controller
 {
-    public function __construct(private UserManagementService $users)
-    {
-    }
+    public function __construct(private UserManagementService $users) {}
 
     public function index(Request $request)
     {

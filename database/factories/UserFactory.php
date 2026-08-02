@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Mindigo\Auth\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -32,8 +32,8 @@ class UserFactory extends Factory
         $sequence = ++static::$sequence;
 
         return [
-            'name' => 'Demo User ' . $sequence,
-            'email' => 'user' . $sequence . '.' . Str::lower(Str::random(8)) . '@example.com',
+            'name' => 'Demo User '.$sequence,
+            'email' => 'user'.$sequence.'.'.Str::lower(Str::random(8)).'@example.com',
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('123456'),
             'role' => $this->randomElement([
@@ -42,7 +42,7 @@ class UserFactory extends Factory
                 'student',
             ]),
 
-            'phone' => '09' . random_int(10000000, 99999999),
+            'phone' => '09'.random_int(10000000, 99999999),
             'avatar' => null,
             'gender' => $this->randomElement([
                 'male',
@@ -51,7 +51,7 @@ class UserFactory extends Factory
             ]),
 
             'date_of_birth' => now()->subYears(random_int(18, 45))->subDays(random_int(0, 365))->toDateString(),
-            'address' => 'Demo address ' . $sequence,
+            'address' => 'Demo address '.$sequence,
             'bio' => 'Demo user account for Mindigo testing.',
             'is_active' => true,
             'remember_token' => Str::random(10),

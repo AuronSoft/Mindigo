@@ -1,4 +1,5 @@
 <?php
+
 // packages/Mindigo/QuestionBank/src/Models/QuestionEditHistory.php
 
 namespace Mindigo\QuestionBank\Models;
@@ -31,23 +32,23 @@ class QuestionEditHistory extends Model
     // Label màu cho action
     public function actionColor(): string
     {
-        return match($this->action) {
-            'create'  => 'bg-green-100 text-green-700',
-            'update'  => 'bg-blue-100 text-blue-700',
-            'review'  => 'bg-amber-100 text-amber-700',
-            'import'  => 'bg-purple-100 text-purple-700',
-            default   => 'bg-slate-100 text-slate-600',
+        return match ($this->action) {
+            'create' => 'bg-green-100 text-green-700',
+            'update' => 'bg-blue-100 text-blue-700',
+            'review' => 'bg-amber-100 text-amber-700',
+            'import' => 'bg-purple-100 text-purple-700',
+            default => 'bg-slate-100 text-slate-600',
         };
     }
 
     public function actionLabel(): string
     {
-        return match($this->action) {
-            'create'  => 'Tạo mới',
-            'update'  => 'Chỉnh sửa',
-            'review'  => 'Duyệt',
-            'import'  => 'Import',
-            default   => $this->action,
+        return match ($this->action) {
+            'create' => 'Tạo mới',
+            'update' => 'Chỉnh sửa',
+            'review' => 'Duyệt',
+            'import' => 'Import',
+            default => $this->action,
         };
     }
 }

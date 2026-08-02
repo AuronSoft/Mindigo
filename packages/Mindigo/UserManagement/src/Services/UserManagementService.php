@@ -2,6 +2,7 @@
 
 namespace Mindigo\UserManagement\Services;
 
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 
 class UserManagementService
@@ -98,11 +99,11 @@ class UserManagementService
 
     private function audit(string $action, array $oldValues, array $newValues, User $user): void
     {
-        if (!class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
+        if (! class_exists(AuditLogService::class)) {
             return;
         }
 
-        app(\Mindigo\AuditLog\Services\AuditLogService::class)->record(
+        app(AuditLogService::class)->record(
             $action,
             'users',
             $oldValues,

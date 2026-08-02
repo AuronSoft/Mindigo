@@ -156,7 +156,7 @@ return [
         ],
     ],
     'footer' => [
-        'copyright' => '© ' . date('Y') . ' Mindigo. All rights reserved.',
+        'copyright' => '© '.date('Y').' Mindigo. All rights reserved.',
         'home' => 'Trang chủ',
         'terms' => 'Điều khoản sử dụng',
         'privacy' => 'Chính sách bảo mật',

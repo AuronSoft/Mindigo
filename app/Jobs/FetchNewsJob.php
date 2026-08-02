@@ -2,14 +2,15 @@
 
 namespace App\Jobs;
 
-use Mindigo\BlogManagement\Models\NewsArticle;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Mindigo\BlogManagement\Models\NewsArticle;
 
 class FetchNewsJob implements ShouldQueue
 {
@@ -17,15 +18,15 @@ class FetchNewsJob implements ShouldQueue
 
     private array $sources = [
         'vnexpress' => [
-            'url'  => 'https://vnexpress.net/rss/giao-duc.rss',
+            'url' => 'https://vnexpress.net/rss/giao-duc.rss',
             'name' => 'VnExpress',
         ],
         'thanhnien' => [
-            'url'  => 'https://thanhnien.vn/rss/giao-duc.rss',
+            'url' => 'https://thanhnien.vn/rss/giao-duc.rss',
             'name' => 'Thanh Niên',
         ],
         'tuoitre' => [
-            'url'  => 'https://tuoitre.vn/rss/giao-duc.rss',
+            'url' => 'https://tuoitre.vn/rss/giao-duc.rss',
             'name' => 'Tuổi Trẻ',
         ],
     ];
@@ -39,15 +40,18 @@ class FetchNewsJob implements ShouldQueue
         foreach ($this->sources as $key => $source) {
             try {
                 $xml = simplexml_load_file($source['url']);
-                if (!$xml) {
+                if (! $xml) {
                     Log::warning("FetchNewsJob: không load được RSS [{$key}]");
+
                     continue;
                 }
 
                 $count = 0;
                 foreach ($xml->channel->item as $item) {
                     $url = (string) $item->link;
-                    if (NewsArticle::where('url', $url)->exists()) continue;
+                    if (NewsArticle::where('url', $url)->exists()) {
+                        continue;
+                    }
 
                     // Lấy ảnh từ enclosure hoặc media:content hoặc description
                     $image = null;
@@ -61,19 +65,19 @@ class FetchNewsJob implements ShouldQueue
                     }
 
                     // Decode HTML entities để hiển thị tiếng Việt đúng
-                    $title       = $this->decode((string) $item->title);
+                    $title = $this->decode((string) $item->title);
                     $description = $this->decode(strip_tags((string) $item->description));
 
                     NewsArticle::create([
-                        'title'        => $title,
-                        'slug'         => Str::slug($title) . '-' . Str::random(6),
-                        'description'  => $description,
-                        'image'        => $image,
-                        'url'          => $url,
-                        'source'       => $source['name'],
-                        'category'     => 'Giáo dục',
+                        'title' => $title,
+                        'slug' => Str::slug($title).'-'.Str::random(6),
+                        'description' => $description,
+                        'image' => $image,
+                        'url' => $url,
+                        'source' => $source['name'],
+                        'category' => 'Giáo dục',
                         'published_at' => isset($item->pubDate)
-                                            ? \Carbon\Carbon::parse((string) $item->pubDate)
+                                            ? Carbon::parse((string) $item->pubDate)
                                             : now(),
                     ]);
 
@@ -83,7 +87,7 @@ class FetchNewsJob implements ShouldQueue
                 Log::info("FetchNewsJob: [{$key}] thêm {$count} bài mới");
 
             } catch (\Exception $e) {
-                Log::error("FetchNewsJob error [{$key}]: " . $e->getMessage());
+                Log::error("FetchNewsJob error [{$key}]: ".$e->getMessage());
             }
         }
     }

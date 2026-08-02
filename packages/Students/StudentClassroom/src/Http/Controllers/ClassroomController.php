@@ -9,9 +9,7 @@ use Mindigo\StudentClassroom\Services\ClassroomService;
 
 class ClassroomController extends Controller
 {
-    public function __construct(protected ClassroomService $service)
-    {
-    }
+    public function __construct(protected ClassroomService $service) {}
 
     public function index(Request $request)
     {

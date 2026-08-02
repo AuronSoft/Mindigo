@@ -11,8 +11,7 @@ class AssignmentGraded extends Notification
         public float|int|null $score = null,
         public float|int|null $maxScore = null,
         public ?string $url = null,
-    ) {
-    }
+    ) {}
 
     public function via(object $notifiable): array
     {
@@ -22,13 +21,13 @@ class AssignmentGraded extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'category'  => 'assignment_graded',
-            'icon'      => 'clipboard-check',
-            'tone'      => 'green',
-            'title'     => $this->title,
-            'score'     => $this->score,
+            'category' => 'assignment_graded',
+            'icon' => 'clipboard-check',
+            'tone' => 'green',
+            'title' => $this->title,
+            'score' => $this->score,
             'max_score' => $this->maxScore,
-            'url'       => $this->url,
+            'url' => $this->url,
         ];
     }
 }

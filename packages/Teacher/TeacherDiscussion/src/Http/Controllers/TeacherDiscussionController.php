@@ -20,7 +20,7 @@ class TeacherDiscussionController extends Controller
     {
         session()->forget('url.intended');
 
-        /** @var \Mindigo\Auth\Models\User $teacher */
+        /** @var User $teacher */
         $teacher = Auth::user();
         $this->service->ensureThreadsForClassrooms($teacher);
 
@@ -37,7 +37,7 @@ class TeacherDiscussionController extends Controller
     {
         $this->authorizeThread($thread);
 
-        /** @var \Mindigo\Auth\Models\User $teacher */
+        /** @var User $teacher */
         $teacher = Auth::user();
         $this->service->send($thread, $teacher, $request->input('body'), $request->file('attachments', []));
 
@@ -63,13 +63,13 @@ class TeacherDiscussionController extends Controller
 
         return response()->file($storage->path($attachment->path), [
             'Content-Type' => $attachment->mime_type ?: 'application/octet-stream',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            'Content-Disposition' => 'inline; filename="'.$filename.'"',
         ]);
     }
 
     private function authorizeThread(DiscussionThread $thread): void
     {
-        /** @var \Mindigo\Auth\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         abort_unless(

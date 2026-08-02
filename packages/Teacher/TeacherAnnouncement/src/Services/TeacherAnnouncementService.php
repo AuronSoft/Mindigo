@@ -3,6 +3,7 @@
 namespace Mindigo\TeacherAnnouncement\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
@@ -37,14 +38,14 @@ class TeacherAnnouncementService
 
     public function stats(User $teacher): array
     {
-        $tid  = $teacher->getAuthIdentifier();
+        $tid = $teacher->getAuthIdentifier();
         $base = Announcement::where('teacher_id', $tid);
 
         return [
-            'total'     => (clone $base)->count(),
+            'total' => (clone $base)->count(),
             'published' => (clone $base)->whereNotNull('published_at')->count(),
-            'draft'     => (clone $base)->whereNull('published_at')->count(),
-            'pinned'    => (clone $base)->where('is_pinned', true)->count(),
+            'draft' => (clone $base)->whereNull('published_at')->count(),
+            'pinned' => (clone $base)->where('is_pinned', true)->count(),
         ];
     }
 
@@ -52,10 +53,10 @@ class TeacherAnnouncementService
     {
         $ann = Announcement::create([
             'teacher_id' => $teacher->getAuthIdentifier(),
-            'title'      => $request->input('title'),
-            'content'    => $request->input('content'),
-            'type'       => $request->input('type', 'info'),
-            'is_pinned'  => $request->boolean('is_pinned'),
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'type' => $request->input('type', 'info'),
+            'is_pinned' => $request->boolean('is_pinned'),
         ]);
 
         if ($request->filled('classroom_ids')) {
@@ -68,9 +69,9 @@ class TeacherAnnouncementService
     public function update(Announcement $ann, AnnouncementRequest $request): Announcement
     {
         $ann->update([
-            'title'     => $request->input('title'),
-            'content'   => $request->input('content'),
-            'type'      => $request->input('type', 'info'),
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'type' => $request->input('type', 'info'),
             'is_pinned' => $request->boolean('is_pinned'),
         ]);
 
@@ -127,7 +128,7 @@ class TeacherAnnouncementService
         $ann->delete();
     }
 
-    public function myClassrooms(User $teacher): \Illuminate\Support\Collection
+    public function myClassrooms(User $teacher): Collection
     {
         return Classroom::where('teacher_id', $teacher->getAuthIdentifier())
             ->where('status', 'active')

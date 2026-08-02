@@ -10,9 +10,7 @@ use Mindigo\StudentNotebook\Services\NotebookService;
 
 class NotebookController extends Controller
 {
-    public function __construct(protected NotebookService $service)
-    {
-    }
+    public function __construct(protected NotebookService $service) {}
 
     public function index(Request $request)
     {
@@ -21,8 +19,8 @@ class NotebookController extends Controller
         $notes = $this->service->listForStudent($studentId);
 
         $noteParam = $request->input('note');
-        $selected  = null;
-        $creating  = false;
+        $selected = null;
+        $creating = false;
 
         if ($noteParam === 'new') {
             $creating = true;

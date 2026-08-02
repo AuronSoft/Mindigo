@@ -20,7 +20,7 @@ class ScheduleService
         return Classroom::query()
             ->whereHas('students', function ($q) use ($studentId) {
                 $q->where('student_id', $studentId)
-                  ->where('classroom_students.status', 'active');
+                    ->where('classroom_students.status', 'active');
             })
             ->pluck('id');
     }
@@ -49,14 +49,14 @@ class ScheduleService
                 ->each(function ($s) use ($events) {
                     $at = $this->combine($s->session_date, $s->start_time);
                     $events->push((object) [
-                        'type'      => 'class',
-                        'title'     => $s->title,
-                        'at'        => $at,
-                        'end'       => $s->end_time ? $this->combine($s->session_date, $s->end_time) : null,
-                        'url'       => Route::has('student.classrooms.show') && $s->classroom ? route('student.classrooms.show', $s->classroom_id) : null,
+                        'type' => 'class',
+                        'title' => $s->title,
+                        'at' => $at,
+                        'end' => $s->end_time ? $this->combine($s->session_date, $s->end_time) : null,
+                        'url' => Route::has('student.classrooms.show') && $s->classroom ? route('student.classrooms.show', $s->classroom_id) : null,
                         'classroom' => $s->classroom?->name,
-                        'tone'      => 'indigo',
-                        'icon'      => 'heroicon-o-calendar-days',
+                        'tone' => 'indigo',
+                        'icon' => 'heroicon-o-calendar-days',
                     ]);
                 });
 
@@ -69,14 +69,14 @@ class ScheduleService
                 ->get()
                 ->each(function ($a) use ($events) {
                     $events->push((object) [
-                        'type'      => 'assignment',
-                        'title'     => $a->title,
-                        'at'        => $a->due_date,
-                        'end'       => null,
-                        'url'       => Route::has('student.assignments.index') ? route('student.assignments.index') : null,
+                        'type' => 'assignment',
+                        'title' => $a->title,
+                        'at' => $a->due_date,
+                        'end' => null,
+                        'url' => Route::has('student.assignments.index') ? route('student.assignments.index') : null,
                         'classroom' => $a->classroom?->name,
-                        'tone'      => 'amber',
-                        'icon'      => 'heroicon-o-clipboard-document-list',
+                        'tone' => 'amber',
+                        'icon' => 'heroicon-o-clipboard-document-list',
                     ]);
                 });
 
@@ -89,14 +89,14 @@ class ScheduleService
                 ->get()
                 ->each(function ($l) use ($events) {
                     $events->push((object) [
-                        'type'      => 'live',
-                        'title'     => $l->title,
-                        'at'        => $l->scheduled_start,
-                        'end'       => $l->scheduled_end,
-                        'url'       => Route::has('student.live-sessions.index') ? route('student.live-sessions.index') : null,
+                        'type' => 'live',
+                        'title' => $l->title,
+                        'at' => $l->scheduled_start,
+                        'end' => $l->scheduled_end,
+                        'url' => Route::has('student.live-sessions.index') ? route('student.live-sessions.index') : null,
                         'classroom' => $l->classroom?->name,
-                        'tone'      => 'rose',
-                        'icon'      => 'heroicon-o-video-camera',
+                        'tone' => 'rose',
+                        'icon' => 'heroicon-o-video-camera',
                     ]);
                 });
         }
@@ -109,14 +109,14 @@ class ScheduleService
             ->get()
             ->each(function ($e) use ($events) {
                 $events->push((object) [
-                    'type'      => 'exam',
-                    'title'     => $e->title,
-                    'at'        => $e->starts_at,
-                    'end'       => $e->ends_at,
-                    'url'       => Route::has('student.exams.index') ? route('student.exams.index') : null,
+                    'type' => 'exam',
+                    'title' => $e->title,
+                    'at' => $e->starts_at,
+                    'end' => $e->ends_at,
+                    'url' => Route::has('student.exams.index') ? route('student.exams.index') : null,
                     'classroom' => null,
-                    'tone'      => 'violet',
-                    'icon'      => 'heroicon-o-document-text',
+                    'tone' => 'violet',
+                    'icon' => 'heroicon-o-document-text',
                 ]);
             });
 
@@ -129,12 +129,12 @@ class ScheduleService
     public function buildCalendar(int|string $studentId, Carbon $month): array
     {
         $gridStart = $month->copy()->startOfMonth()->startOfWeek(Carbon::MONDAY);
-        $gridEnd   = $month->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
+        $gridEnd = $month->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
 
         $byDay = $this->eventsBetween($studentId, $gridStart, $gridEnd)
             ->groupBy(fn ($e) => $e->at->format('Y-m-d'));
 
-        $weeks  = [];
+        $weeks = [];
         $cursor = $gridStart->copy();
 
         while ($cursor <= $gridEnd) {
@@ -142,10 +142,10 @@ class ScheduleService
             for ($i = 0; $i < 7; $i++) {
                 $key = $cursor->format('Y-m-d');
                 $week[] = (object) [
-                    'date'     => $cursor->copy(),
+                    'date' => $cursor->copy(),
                     'in_month' => $cursor->month === $month->month,
                     'is_today' => $cursor->isToday(),
-                    'events'   => ($byDay->get($key) ?? collect())->values(),
+                    'events' => ($byDay->get($key) ?? collect())->values(),
                 ];
                 $cursor->addDay();
             }
@@ -171,6 +171,6 @@ class ScheduleService
         $d = $date instanceof Carbon ? $date->format('Y-m-d') : Carbon::parse($date)->format('Y-m-d');
         $t = $time ? substr($time, 0, 8) : '00:00:00';
 
-        return Carbon::parse($d . ' ' . $t);
+        return Carbon::parse($d.' '.$t);
     }
 }

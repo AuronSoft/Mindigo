@@ -15,9 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ClassroomController extends Controller
 {
-    public function __construct(private ClassroomManagementService $classrooms)
-    {
-    }
+    public function __construct(private ClassroomManagementService $classrooms) {}
 
     public function index(Request $request)
     {

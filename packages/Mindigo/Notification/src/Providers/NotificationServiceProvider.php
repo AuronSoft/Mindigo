@@ -9,9 +9,9 @@ class NotificationServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'notification');
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'notification');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'notification');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'notification');
 
         // Chia sẻ thông báo cho mọi view (chuông + badge + dropdown xem nhanh trên sidebar).
         // Cache trong 1 request để không query lặp ở mỗi view.

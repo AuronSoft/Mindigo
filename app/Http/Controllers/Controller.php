@@ -18,21 +18,20 @@ class Controller extends BaseController
     }
 
     // Helper dùng chung
-    protected function successResponse($data, $message = "OK", $code = 200)
+    protected function successResponse($data, $message = 'OK', $code = 200)
     {
         return response()->json([
             'status' => 'success',
             'message' => $message,
-            'data' => $data
+            'data' => $data,
         ], $code);
     }
 
-    protected function errorResponse($message = "Error", $code = 400)
+    protected function errorResponse($message = 'Error', $code = 400)
     {
         return response()->json([
             'status' => 'error',
-            'message' => $message
+            'message' => $message,
         ], $code);
     }
 }
-

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'save' => 'Lưu',
@@ -113,10 +113,10 @@ return [
         'no_submission_badge' => 'Chưa nộp',
         'submitted_badge' => 'Đã nộp',
         'late_badge' => 'Nộp trễ',
-        'search_placeholder'   => 'Tìm học sinh hoặc email',
-        'search_label'         => 'Tìm học sinh',
-        'grade_panel_title'    => 'Chấm bài',
-        'empty_state_title'    => 'Không tìm thấy học sinh phù hợp.',
+        'search_placeholder' => 'Tìm học sinh hoặc email',
+        'search_label' => 'Tìm học sinh',
+        'grade_panel_title' => 'Chấm bài',
+        'empty_state_title' => 'Không tìm thấy học sinh phù hợp.',
         'empty_state_subtitle' => 'Hãy đổi bộ lọc hoặc từ khóa tìm kiếm.',
     ],
 

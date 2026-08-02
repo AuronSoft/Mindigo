@@ -1,13 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Mindigo\TeacherCourse\Http\Controllers\CourseController;
 use Mindigo\TeacherCourse\Http\Controllers\ChapterController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseController;
+use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])
     ->prefix('teacher/courses')
     ->name('teacher.courses.')
+    ->scopeBindings()
     ->group(function () {
 
         // Courses
@@ -18,6 +20,7 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::get('/{course}/edit', [CourseController::class, 'edit'])->name('edit');
         Route::put('/{course}', [CourseController::class, 'update'])->name('update');
         Route::delete('/{course}', [CourseController::class, 'destroy'])->name('destroy');
+        Route::patch('/{course}/publication', [CoursePublicationController::class, 'update'])->name('publication.update');
 
         // Chapters
         Route::post('/{course}/chapters', [ChapterController::class, 'store'])->name('chapters.store');
