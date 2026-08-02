@@ -1,0 +1,179 @@
+<?php
+
+namespace Mindigo\TeacherCourse\Services;
+
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\ValidationException;
+use Mindigo\Auth\Models\User;
+use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\Notification\Notifications\CourseAssigned;
+use Mindigo\TeacherCourse\Models\Course;
+use Mindigo\TeacherCourse\Models\CourseClassroomAssignment;
+use Mindigo\TeacherCourse\Models\CourseEnrollment;
+
+class CourseEnrollmentService
+{
+    public function selfEnroll(User $student, string $slug): CourseEnrollment
+    {
+        $course = Course::query()->publiclyListed()->where('slug', $slug)->firstOrFail();
+
+        return DB::transaction(function () use ($course, $student): CourseEnrollment {
+            $enrollment = CourseEnrollment::query()
+                ->where('course_id', $course->id)
+                ->where('student_id', $student->id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($enrollment && $enrollment->status !== CourseEnrollment::STATUS_WITHDRAWN) {
+                return $enrollment;
+            }
+
+            $values = [
+                'status' => CourseEnrollment::STATUS_ENROLLED,
+                'source' => 'self',
+                'enrolled_at' => now(),
+                'withdrawn_at' => null,
+                'last_activity_at' => now(),
+            ];
+
+            if ($enrollment) {
+                $enrollment->update($values);
+            } else {
+                CourseEnrollment::query()->insertOrIgnore([[
+                    'course_id' => $course->id,
+                    'student_id' => $student->id,
+                    ...$values,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]]);
+                $enrollment = CourseEnrollment::query()
+                    ->where('course_id', $course->id)
+                    ->where('student_id', $student->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+            }
+
+            $this->syncEnrollmentCount($course);
+
+            return $enrollment;
+        });
+    }
+
+    public function assignToClassrooms(Course $course, User $teacher, array $classroomIds): int
+    {
+        if (! $course->isPublished()) {
+            throw ValidationException::withMessages(['course' => __('teacher-course::learning.published_required')]);
+        }
+
+        $classrooms = Classroom::query()
+            ->whereIn('id', $classroomIds)
+            ->where('status', 'active')
+            ->when(! $teacher->isAdmin(), fn ($query) => $query->where('teacher_id', $teacher->id))
+            ->with(['students' => fn ($query) => $query->where('classroom_students.status', 'active')->where('users.role', 'student')])
+            ->get();
+
+        if ($classrooms->count() !== count(array_unique($classroomIds))) {
+            throw ValidationException::withMessages(['classroom_ids' => __('teacher-course::learning.invalid_classroom')]);
+        }
+
+        $newStudentIds = DB::transaction(function () use ($course, $teacher, $classrooms): Collection {
+            $created = collect();
+
+            foreach ($classrooms as $classroom) {
+                CourseClassroomAssignment::query()->firstOrCreate(
+                    ['course_id' => $course->id, 'classroom_id' => $classroom->id],
+                    ['assigned_by' => $teacher->id, 'assigned_at' => now()],
+                );
+
+                foreach ($classroom->students as $student) {
+                    $enrollment = CourseEnrollment::query()
+                        ->where('course_id', $course->id)
+                        ->where('student_id', $student->id)
+                        ->lockForUpdate()
+                        ->first();
+
+                    if ($enrollment && $enrollment->status !== CourseEnrollment::STATUS_WITHDRAWN) {
+                        continue;
+                    }
+
+                    $values = [
+                        'classroom_id' => $classroom->id,
+                        'assigned_by' => $teacher->id,
+                        'status' => CourseEnrollment::STATUS_INVITED,
+                        'source' => 'classroom',
+                        'invited_at' => now(),
+                        'withdrawn_at' => null,
+                        'last_activity_at' => now(),
+                    ];
+
+                    if ($enrollment) {
+                        $enrollment->update($values);
+                        $wasCreated = true;
+                    } else {
+                        $wasCreated = CourseEnrollment::query()->insertOrIgnore([[
+                            'course_id' => $course->id,
+                            'student_id' => $student->id,
+                            ...$values,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]]) === 1;
+                    }
+
+                    if ($wasCreated) {
+                        $created->push($student->id);
+                    }
+                }
+            }
+
+            $this->syncEnrollmentCount($course);
+
+            return $created->unique()->values();
+        });
+
+        if ($newStudentIds->isNotEmpty()) {
+            $students = User::query()->whereIn('id', $newStudentIds)->get();
+            Notification::send($students, new CourseAssigned(
+                $course->id,
+                $course->name,
+                $teacher->name,
+                route('student.courses.show', $course->slug),
+            ));
+        }
+
+        return $newStudentIds->count();
+    }
+
+    public function teacherClassrooms(User $teacher): Collection
+    {
+        return Classroom::query()
+            ->when(! $teacher->isAdmin(), fn ($query) => $query->where('teacher_id', $teacher->id))
+            ->where('status', 'active')
+            ->withCount(['students' => fn ($query) => $query->where('classroom_students.status', 'active')])
+            ->orderBy('name')
+            ->get(['id', 'name']);
+    }
+
+    public function studentCourses(User $student): LengthAwarePaginator
+    {
+        return CourseEnrollment::query()
+            ->where('student_id', $student->id)
+            ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
+            ->with(['course.teacher:id,name', 'course.subject:id,name', 'lastLesson:id,name'])
+            ->latest('last_activity_at')
+            ->latest('id')
+            ->paginate(12);
+    }
+
+    private function syncEnrollmentCount(Course $course): void
+    {
+        Course::query()->whereKey($course)->update([
+            'enrollment_count' => CourseEnrollment::query()
+                ->where('course_id', $course->id)
+                ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
+                ->count(),
+        ]);
+    }
+}

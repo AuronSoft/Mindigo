@@ -9,11 +9,15 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Mindigo\TeacherCourse\Http\Requests\CourseRequest;
 use Mindigo\TeacherCourse\Models\Course;
+use Mindigo\TeacherCourse\Services\CourseEnrollmentService;
 use Mindigo\TeacherCourse\Services\CourseService;
 
 class CourseController extends Controller
 {
-    public function __construct(private readonly CourseService $courses) {}
+    public function __construct(
+        private readonly CourseService $courses,
+        private readonly CourseEnrollmentService $enrollments,
+    ) {}
 
     public function index(Request $request): View
     {
@@ -41,11 +45,14 @@ class CourseController extends Controller
         return redirect()->route('teacher.courses.show', $course)->with('success', __('teacher-course::app.course_created'));
     }
 
-    public function show(Course $course): View
+    public function show(Request $request, Course $course): View
     {
         Gate::authorize('view', $course);
 
-        return view('teacher-course::show', ['course' => $this->courses->detail($course)]);
+        return view('teacher-course::show', [
+            'course' => $this->courses->detail($course),
+            'classrooms' => $this->enrollments->teacherClassrooms($request->user()),
+        ]);
     }
 
     public function edit(Course $course): View

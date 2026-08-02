@@ -29,6 +29,7 @@ class DashboardController extends Controller
         $todayTasks = $activeTasks->filter(fn ($task) => $task->at?->isToday())->values();
         $upcomingExams = $activeTasks->where('type', 'exam')->take(3)->values();
         $assignments = $activeTasks->where('type', 'assignment')->take(4)->values();
+        $activeCourses = $this->service->activeCourses($student);
 
         return view('student-dashboard::dashboard', compact(
             'student',
@@ -43,6 +44,7 @@ class DashboardController extends Controller
             'upcomingExams',
             'assignments',
             'classroomIds',
+            'activeCourses',
         ));
     }
 }

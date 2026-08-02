@@ -119,6 +119,16 @@ class Course extends Model
         return $this->hasManyThrough(Lesson::class, Chapter::class, 'course_id', 'chapter_id');
     }
 
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(CourseEnrollment::class);
+    }
+
+    public function classroomAssignments(): HasMany
+    {
+        return $this->hasMany(CourseClassroomAssignment::class);
+    }
+
     public function isPublished(): bool
     {
         return $this->publication_status === self::PUBLICATION_PUBLISHED && $this->is_active;

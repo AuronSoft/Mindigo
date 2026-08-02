@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'nav_courses' => 'Khóa học của tôi',
     'practice_analytics' => 'Phân tích luyện tập',
     // SEO / meta
     'meta_title' => 'Bảng điều khiển học sinh · Mindigo LMS',

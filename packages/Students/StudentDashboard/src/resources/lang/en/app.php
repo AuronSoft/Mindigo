@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'nav_courses' => 'My courses',
     'practice_analytics' => 'Practice analytics',
     // SEO / meta
     'meta_title' => 'Student Dashboard · Mindigo LMS',

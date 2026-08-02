@@ -10,9 +10,21 @@ use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
+use Mindigo\TeacherCourse\Models\CourseEnrollment;
 
 class DashboardService
 {
+    public function activeCourses(User $student): Collection
+    {
+        return CourseEnrollment::query()
+            ->where('student_id', $student->id)
+            ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
+            ->with('course:id,name,slug,cover_image')
+            ->latest('last_activity_at')
+            ->take(3)
+            ->get();
+    }
+
     /**
      * ID các lớp mà học sinh đang tham gia.
      */

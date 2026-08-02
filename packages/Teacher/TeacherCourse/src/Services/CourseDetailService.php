@@ -33,6 +33,10 @@ class CourseDetailService
             fn ($chapter) => $chapter->setRelation('course', $course)
         );
 
+        if (method_exists($user, 'isStudent') && $user->isStudent()) {
+            $course->load(['enrollments' => fn ($query) => $query->where('student_id', $user->getAuthIdentifier())]);
+        }
+
         if ($course->isPublished()) {
             Course::query()->whereKey($course)->increment('view_count');
             $course->view_count++;

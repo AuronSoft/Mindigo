@@ -3,6 +3,8 @@
 namespace Mindigo\TeacherCourse\Policies;
 
 use Mindigo\Auth\Models\User;
+use Mindigo\TeacherCourse\Models\Course;
+use Mindigo\TeacherCourse\Models\CourseEnrollment;
 use Mindigo\TeacherCourse\Models\Lesson;
 
 class LessonPolicy
@@ -12,7 +14,15 @@ class LessonPolicy
         $course = $lesson->course();
 
         return $user->can('view', $course)
-            || ($lesson->is_preview && $user->can('viewDetail', $course));
+            || ($lesson->is_preview && $user->can('viewDetail', $course))
+            || ($user->isStudent() && CourseEnrollment::query()
+                ->where('course_id', $course->id)
+                ->where('student_id', $user->id)
+                ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
+                ->whereHas('course', fn ($query) => $query
+                    ->where('is_active', true)
+                    ->where('publication_status', '!=', Course::PUBLICATION_ARCHIVED))
+                ->exists());
     }
 
     public function create(User $user): bool

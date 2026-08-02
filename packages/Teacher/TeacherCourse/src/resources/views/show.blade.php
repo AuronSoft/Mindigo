@@ -55,6 +55,20 @@
 
     <div class="flex flex-1 flex-col gap-6 p-6">
 
+        @if($course->isPublished())
+            <section class="rounded-xl border border-slate-200 bg-white p-5">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div><h2 class="text-sm font-black text-slate-900">@lang('teacher-course::learning.assign_title')</h2><p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-course::learning.assign_description')</p></div>
+                </div>
+                <form method="POST" action="{{ route('teacher.courses.assign', $course) }}" class="mt-4 flex flex-wrap items-end gap-3">
+                    @csrf
+                    <label class="min-w-64 flex-1"><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::learning.classrooms')</span><select name="classroom_ids[]" multiple required class="min-h-24 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-green-400">@foreach($classrooms as $classroom)<option value="{{ $classroom->id }}">{{ $classroom->name }} · {{ trans_choice('teacher-course::learning.student_count', $classroom->students_count, ['count' => $classroom->students_count]) }}</option>@endforeach</select></label>
+                    <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-lg bg-green-600 px-5 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-paper-airplane class="h-4 w-4" />@lang('teacher-course::learning.assign_action')</button>
+                </form>
+                @if($classrooms->isEmpty())<p class="mt-3 text-xs font-semibold text-slate-400">@lang('teacher-course::learning.no_classrooms')</p>@endif
+            </section>
+        @endif
+
         {{-- Stats bar --}}
         <div class="grid grid-cols-3 gap-4">
             <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4">
