@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(CourseMasterDataSeeder::class);
+
         // Admin account
         User::firstOrCreate(['email' => 'admin@mindigo.com'], [
             'name' => 'Quản trị viên Mindigo',

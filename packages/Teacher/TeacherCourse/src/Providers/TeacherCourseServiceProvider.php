@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Mindigo\TeacherCourse\Models\Chapter;
 use Mindigo\TeacherCourse\Models\Course;
+use Mindigo\TeacherCourse\Models\CourseCategory;
 use Mindigo\TeacherCourse\Models\CourseClassroomAssignment;
 use Mindigo\TeacherCourse\Models\CourseEnrollment;
 use Mindigo\TeacherCourse\Models\CourseReview;
@@ -15,6 +16,7 @@ use Mindigo\TeacherCourse\Models\Lesson;
 use Mindigo\TeacherCourse\Models\TeacherProfile;
 use Mindigo\TeacherCourse\Observers\CoursePlatformAuditObserver;
 use Mindigo\TeacherCourse\Policies\ChapterPolicy;
+use Mindigo\TeacherCourse\Policies\CourseCategoryPolicy;
 use Mindigo\TeacherCourse\Policies\CourseEnrollmentPolicy;
 use Mindigo\TeacherCourse\Policies\CoursePolicy;
 use Mindigo\TeacherCourse\Policies\CourseReviewPolicy;
@@ -28,6 +30,7 @@ class TeacherCourseServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Course::class, CoursePolicy::class);
+        Gate::policy(CourseCategory::class, CourseCategoryPolicy::class);
         Gate::policy(CourseEnrollment::class, CourseEnrollmentPolicy::class);
         Gate::policy(CourseReview::class, CourseReviewPolicy::class);
         Gate::policy(Chapter::class, ChapterPolicy::class);

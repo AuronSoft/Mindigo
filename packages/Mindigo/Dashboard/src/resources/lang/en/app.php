@@ -38,6 +38,7 @@ return [
     'classrooms' => 'Classrooms',
     'my_classrooms' => 'My Classrooms',
     'subjects' => 'Subjects',
+    'course_categories' => 'Course categories',
     'documents' => 'Documents',
     'ai_review' => 'AI question review',
     'exam_sessions' => 'Exam sessions',

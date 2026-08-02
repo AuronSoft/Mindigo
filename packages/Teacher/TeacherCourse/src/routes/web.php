@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherCourse\Http\Controllers\ChapterController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseAnalyticsController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseBuilderController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseCategoryController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseDiscoveryController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseEnrollmentController;
@@ -60,6 +61,9 @@ Route::middleware(['web', 'auth', 'role:teacher'])->group(function (): void {
 });
 
 Route::middleware(['web', 'auth', 'role:admin'])->group(function (): void {
+    Route::resource('/admin/course-categories', CourseCategoryController::class)
+        ->except(['show'])
+        ->names('admin.course-categories');
     Route::get('/admin/course-reviews', [CourseReviewController::class, 'index'])->name('admin.course-reviews.index');
     Route::patch('/admin/course-reviews/{review}/moderate', [CourseReviewController::class, 'moderate'])->name('admin.course-reviews.moderate');
     Route::patch('/admin/courses/{course}/featured', FeaturedCourseController::class)->name('admin.courses.featured');

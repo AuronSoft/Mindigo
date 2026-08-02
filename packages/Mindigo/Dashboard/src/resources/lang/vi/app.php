@@ -38,6 +38,7 @@ return [
     'classrooms' => 'Lớp học',
     'my_classrooms' => 'Lớp học của tôi',
     'subjects' => 'Môn học',
+    'course_categories' => 'Danh mục khóa học',
     'documents' => 'Tài liệu',
     'ai_review' => 'Duyệt câu hỏi AI',
     'exam_sessions' => 'Ca thi',

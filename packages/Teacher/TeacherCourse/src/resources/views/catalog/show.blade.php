@@ -43,7 +43,7 @@
                             <dl class="mt-5 grid grid-cols-3 gap-3 border-t border-slate-100 pt-4 text-center">
                                 <div><dt class="text-[10px] font-black uppercase text-slate-400">@lang('teacher-course::catalog.chapters')</dt><dd class="mt-1 font-black text-slate-900">{{ $course->chapters_count }}</dd></div>
                                 <div><dt class="text-[10px] font-black uppercase text-slate-400">@lang('teacher-course::catalog.lessons')</dt><dd class="mt-1 font-black text-slate-900">{{ $course->lessons_count }}</dd></div>
-                                <div><dt class="text-[10px] font-black uppercase text-slate-400">@lang('teacher-course::catalog.duration')</dt><dd class="mt-1 font-black text-slate-900">{{ $course->estimated_duration_minutes ? __('teacher-course::catalog.minutes', ['count' => $course->estimated_duration_minutes]) : '—' }}</dd></div>
+                                <div><dt class="text-[10px] font-black uppercase text-slate-400">@lang('teacher-course::catalog.duration')</dt><dd class="mt-1 font-black text-slate-900">{{ $course->durationLabel() }}</dd></div>
                             </dl>
                         </div>
                     </div>

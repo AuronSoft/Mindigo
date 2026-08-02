@@ -39,6 +39,8 @@ class Course extends Model
 
     public const ACCESS_TYPES = ['free', 'paid'];
 
+    public const DURATION_UNITS = ['minute', 'hour', 'session', 'day', 'week'];
+
     protected $table = 'courses';
 
     protected $fillable = [
@@ -56,6 +58,8 @@ class Course extends Model
         'difficulty',
         'language',
         'estimated_duration_minutes',
+        'duration_value',
+        'duration_unit',
         'learning_outcomes',
         'requirements',
         'target_learners',
@@ -79,6 +83,7 @@ class Course extends Model
         return [
             'is_active' => 'boolean',
             'estimated_duration_minutes' => 'integer',
+            'duration_value' => 'decimal:2',
             'learning_outcomes' => 'array',
             'requirements' => 'array',
             'target_learners' => 'array',
@@ -153,6 +158,19 @@ class Course extends Model
     public function isPublished(): bool
     {
         return $this->publication_status === self::PUBLICATION_PUBLISHED && $this->is_active;
+    }
+
+    public function durationLabel(): string
+    {
+        if ($this->duration_value && in_array($this->duration_unit, self::DURATION_UNITS, true)) {
+            $value = rtrim(rtrim(number_format((float) $this->duration_value, 2, '.', ''), '0'), '.');
+
+            return __('teacher-course::catalog.duration_units.'.$this->duration_unit, ['count' => $value]);
+        }
+
+        return $this->estimated_duration_minutes
+            ? __('teacher-course::catalog.duration_units.minute', ['count' => $this->estimated_duration_minutes])
+            : '—';
     }
 
     public function scopePubliclyListed(Builder $query): Builder

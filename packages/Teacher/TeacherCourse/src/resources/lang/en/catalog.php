@@ -10,6 +10,7 @@ return [
     'result_count' => '{0} No courses|{1} :count course|[2,*] :count courses', 'clear_filters' => 'Clear filters',
     'empty_title' => 'No matching courses', 'empty_description' => 'Try changing the keyword or filters.', 'results' => 'Course results',
     'access' => ['free' => 'Free', 'paid' => 'Paid'], 'free' => 'Free', 'minutes' => ':count min', 'duration' => 'Duration',
+    'duration_units' => ['minute' => ':count min', 'hour' => ':count hours', 'session' => ':count sessions', 'day' => ':count days', 'week' => ':count weeks'],
     'lessons' => 'Lessons', 'rating' => 'Rating', 'students' => 'Students', 'view_detail' => 'View details',
     'course_detail' => 'Course details', 'no_description' => 'This course has no description yet.',
     'learning_outcomes' => 'What you will learn', 'requirements' => 'Requirements', 'target_learners' => 'Who this course is for',
