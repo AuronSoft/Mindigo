@@ -23,9 +23,9 @@ class DashboardTest extends TestCase
     {
         parent::setUp();
 
-        $this->admin = User::factory()->create(['role' => 'admin',   'is_active' => true]);
-        $this->teacher = User::factory()->create(['role' => 'teacher', 'is_active' => true]);
-        $this->student = User::factory()->create(['role' => 'student', 'is_active' => true]);
+        $this->admin = $this->createUser(['role' => 'admin',   'is_active' => true]);
+        $this->teacher = $this->createUser(['role' => 'teacher', 'is_active' => true]);
+        $this->student = $this->createUser(['role' => 'student', 'is_active' => true]);
     }
 
     // Access control

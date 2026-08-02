@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\StudentExam\Services\ExamService;
@@ -15,9 +14,9 @@ class ExamClassroomDistributionTest extends TestCase
 
     public function test_student_only_receives_exams_assigned_to_an_active_classroom(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $student = User::factory()->create(['role' => 'student']);
-        $otherStudent = User::factory()->create(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
+        $otherStudent = $this->createUser(['role' => 'student']);
         $classroom = Classroom::query()->create([
             'created_by' => $teacher->id,
             'teacher_id' => $teacher->id,
@@ -45,7 +44,7 @@ class ExamClassroomDistributionTest extends TestCase
 
     public function test_student_cannot_start_an_exam_from_an_unassigned_classroom(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $exam = Exam::factory()->create([
             'audience' => ['roles' => ['student'], 'classrooms' => [999]],
         ]);

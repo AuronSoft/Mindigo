@@ -34,6 +34,9 @@
             </div>
         </div>
         <div class="flex items-center gap-2">
+            <a href="{{ route('courses.show', $course) }}" target="_blank" class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline hover:bg-slate-50"><x-heroicon-o-eye class="h-4 w-4" />@lang('teacher-course::publishing.preview')</a>
+            <a href="{{ route('teacher.courses.monitor', $course) }}" class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline hover:bg-slate-50"><x-heroicon-o-chart-bar class="h-4 w-4" />@lang('teacher-course::publishing.monitor')</a>
+            <form method="POST" action="{{ route('teacher.courses.duplicate', $course) }}">@csrf<button class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 hover:bg-slate-50"><x-heroicon-o-document-duplicate class="h-4 w-4" />@lang('teacher-course::publishing.duplicate')</button></form>
             <a href="{{ route('teacher.courses.edit', $course) }}"
                class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline transition hover:bg-slate-50">
                 <x-heroicon-o-pencil-square class="h-4 w-4" /> @lang('teacher-course::app.edit_course_btn')
@@ -55,15 +58,31 @@
 
     <div class="flex flex-1 flex-col gap-6 p-6">
 
+        <section class="rounded-xl border border-slate-200 bg-white p-5">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div><h2 class="text-sm font-black text-slate-900">@lang('teacher-course::publishing.workflow')</h2><p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-course::publishing.workflow_description')</p></div>
+                <div class="flex flex-wrap gap-2">
+                    @if(auth()->user()->can('submitForReview', $course))<form method="POST" action="{{ route('teacher.courses.publication.update', $course) }}">@csrf @method('PATCH')<input type="hidden" name="publication_status" value="pending_review"><button class="rounded-lg bg-green-600 px-4 py-2 text-xs font-black text-white">@lang('teacher-course::publishing.submit_review')</button></form>@endif
+                    @if(auth()->user()->can('withdrawReview', $course))<form method="POST" action="{{ route('teacher.courses.publication.update', $course) }}">@csrf @method('PATCH')<input type="hidden" name="publication_status" value="draft"><button class="rounded-lg border border-slate-200 px-4 py-2 text-xs font-black text-slate-700">@lang('teacher-course::publishing.withdraw_review')</button></form>@endif
+                    @if(auth()->user()->can('publish', $course))<form method="POST" action="{{ route('teacher.courses.publication.update', $course) }}">@csrf @method('PATCH')<input type="hidden" name="publication_status" value="published"><button class="rounded-lg bg-green-600 px-4 py-2 text-xs font-black text-white">@lang('teacher-course::publishing.publish')</button></form>@endif
+                    @if($course->publication_status === \Mindigo\TeacherCourse\Models\Course::PUBLICATION_PUBLISHED && auth()->user()->can('update', $course))<form method="POST" action="{{ route('teacher.courses.publication.update', $course) }}">@csrf @method('PATCH')<input type="hidden" name="publication_status" value="unlisted"><button class="rounded-lg border border-slate-200 px-4 py-2 text-xs font-black text-slate-700">@lang('teacher-course::publishing.unlist')</button></form>@endif
+                    @if(auth()->user()->can('archive', $course))<form method="POST" action="{{ route('teacher.courses.publication.update', $course) }}">@csrf @method('PATCH')<input type="hidden" name="publication_status" value="archived"><button class="rounded-lg border border-red-200 px-4 py-2 text-xs font-black text-red-600">@lang('teacher-course::publishing.archive')</button></form>@endif
+                </div>
+            </div>
+        </section>
+
         @if($course->isPublished())
             <section class="rounded-xl border border-slate-200 bg-white p-5">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div><h2 class="text-sm font-black text-slate-900">@lang('teacher-course::learning.assign_title')</h2><p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-course::learning.assign_description')</p></div>
                 </div>
-                <form method="POST" action="{{ route('teacher.courses.assign', $course) }}" class="mt-4 flex flex-wrap items-end gap-3">
+                <form method="POST" action="{{ route('teacher.courses.assign', $course) }}" class="mt-4 grid items-end gap-3 lg:grid-cols-6">
                     @csrf
                     <label class="min-w-64 flex-1"><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::learning.classrooms')</span><select name="classroom_ids[]" multiple required class="min-h-24 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-green-400">@foreach($classrooms as $classroom)<option value="{{ $classroom->id }}">{{ $classroom->name }} · {{ trans_choice('teacher-course::learning.student_count', $classroom->students_count, ['count' => $classroom->students_count]) }}</option>@endforeach</select></label>
-                    <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-lg bg-green-600 px-5 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-paper-airplane class="h-4 w-4" />@lang('teacher-course::learning.assign_action')</button>
+                    <label><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::publishing.starts_at')</span><input type="date" name="starts_at" class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"></label>
+                    <label><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::publishing.due_at')</span><input type="date" name="due_at" class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"></label>
+                    <label><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::publishing.visibility')</span><select name="visibility" class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"><option value="visible">@lang('teacher-course::publishing.visible')</option><option value="hidden">@lang('teacher-course::publishing.hidden')</option></select></label>
+                    <div><label class="mb-2 flex items-center gap-2 text-xs font-black text-slate-600"><input type="hidden" name="is_mandatory" value="0"><input type="checkbox" name="is_mandatory" value="1" checked class="h-4 w-4 accent-green-600">@lang('teacher-course::publishing.mandatory')</label><button type="submit" class="inline-flex h-10 items-center gap-2 rounded-lg bg-green-600 px-5 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-paper-airplane class="h-4 w-4" />@lang('teacher-course::learning.assign_action')</button></div>
                 </form>
                 @if($classrooms->isEmpty())<p class="mt-3 text-xs font-semibold text-slate-400">@lang('teacher-course::learning.no_classrooms')</p>@endif
             </section>
@@ -126,9 +145,9 @@
                     </button>
                 </div>
             @else
-                <div class="divide-y divide-slate-100">
+                <div class="divide-y divide-slate-100" data-course-curriculum data-reorder-url="{{ route('teacher.courses.curriculum.reorder', $course) }}" data-order-error="{{ __('teacher-course::publishing.order_failed') }}">
                     @foreach($course->chapters as $chapterIndex => $chapter)
-                        <div class="chapter-block p-5">
+                        <div class="chapter-block p-5" draggable="true" data-chapter-id="{{ $chapter->id }}">
                             {{-- Chapter header --}}
                             <div class="flex items-center justify-between gap-4 mb-3">
                                 <div class="flex items-center gap-3">
@@ -174,9 +193,9 @@
                                     <p class="text-xs font-bold text-slate-400">@lang('teacher-course::app.no_lessons_in_chapter')</p>
                                 </div>
                             @else
-                                <div class="ml-11 divide-y divide-slate-100 rounded-2xl border border-slate-100 overflow-hidden">
+                                <div class="ml-11 divide-y divide-slate-100 rounded-2xl border border-slate-100 overflow-hidden" data-lesson-list>
                                     @foreach($chapter->lessons as $lessonIndex => $lesson)
-                                        <div class="lesson-row flex items-center gap-3 bg-white px-4 py-3 hover:bg-slate-50">
+                                        <div class="lesson-row flex items-center gap-3 bg-white px-4 py-3 hover:bg-slate-50" draggable="true" data-lesson-id="{{ $lesson->id }}">
                                             <span class="text-xs font-black text-slate-400 w-5 text-right">{{ $lessonIndex + 1 }}</span>
                                             <div class="flex flex-1 items-center gap-2 min-w-0">
                                                 {{-- Type icons --}}

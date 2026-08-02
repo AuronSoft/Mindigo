@@ -5,6 +5,7 @@ namespace Mindigo\TeacherCourse\Services;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherCourse\Models\Chapter;
 use Mindigo\TeacherCourse\Models\Course;
@@ -108,6 +109,31 @@ class CurriculumService
 
             $lesson->delete();
             DB::afterCommit(fn () => $files->each(fn (string $path) => $this->deleteStoredFile($path)));
+        });
+    }
+
+    public function reorder(Course $course, array $chapters): void
+    {
+        DB::transaction(function () use ($course, $chapters): void {
+            $ownedChapters = $course->chapters()->with('lessons:id,chapter_id')->lockForUpdate()->get()->keyBy('id');
+
+            foreach ($chapters as $chapterData) {
+                $chapter = $ownedChapters->get($chapterData['id']);
+                if (! $chapter) {
+                    throw ValidationException::withMessages(['chapters' => __('teacher-course::publishing.invalid_order')]);
+                }
+
+                $chapter->update(['sort_order' => $chapterData['order']]);
+                $ownedLessonIds = $chapter->lessons->pluck('id');
+
+                foreach ($chapterData['lessons'] as $lessonData) {
+                    if (! $ownedLessonIds->contains($lessonData['id'])) {
+                        throw ValidationException::withMessages(['chapters' => __('teacher-course::publishing.invalid_order')]);
+                    }
+
+                    Lesson::query()->whereKey($lessonData['id'])->update(['sort_order' => $lessonData['order']]);
+                }
+            }
         });
     }
 

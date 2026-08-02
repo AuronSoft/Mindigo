@@ -19,7 +19,7 @@ class CourseEnrollmentLearningTest extends TestCase
 
     public function test_student_can_self_enroll_once_and_open_my_courses(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course();
 
         $this->actingAs($student)->post(route('courses.enroll', $course->slug))
@@ -39,8 +39,8 @@ class CourseEnrollmentLearningTest extends TestCase
     public function test_teacher_assigns_only_own_classroom_without_duplicate_enrollment_and_notifies_students(): void
     {
         Notification::fake();
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $student = User::factory()->create(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course($teacher);
         $classroom = $this->classroom($teacher, $student);
 
@@ -58,10 +58,10 @@ class CourseEnrollmentLearningTest extends TestCase
 
     public function test_teacher_cannot_assign_course_to_another_teachers_classroom(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $other = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $other = $this->createUser(['role' => 'teacher']);
         $course = $this->course($teacher);
-        $classroom = $this->classroom($other, User::factory()->create(['role' => 'student']));
+        $classroom = $this->classroom($other, $this->createUser(['role' => 'student']));
 
         $this->actingAs($teacher)->post(route('teacher.courses.assign', $course), [
             'classroom_ids' => [$classroom->id],
@@ -72,8 +72,8 @@ class CourseEnrollmentLearningTest extends TestCase
 
     public function test_student_cannot_access_another_students_enrollment_or_unenrolled_course(): void
     {
-        $owner = User::factory()->create(['role' => 'student']);
-        $outsider = User::factory()->create(['role' => 'student']);
+        $owner = $this->createUser(['role' => 'student']);
+        $outsider = $this->createUser(['role' => 'student']);
         $course = $this->course();
         $this->enrollment($course, $owner);
 
@@ -83,7 +83,7 @@ class CourseEnrollmentLearningTest extends TestCase
 
     public function test_lessons_must_be_opened_in_order_and_respect_prerequisite(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course();
         $lessons = $this->lessons($course, 3);
         $lessons[2]->update(['prerequisite_lesson_id' => $lessons[1]->id]);
@@ -100,7 +100,7 @@ class CourseEnrollmentLearningTest extends TestCase
 
     public function test_continue_learning_uses_last_incomplete_lesson(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course();
         $lessons = $this->lessons($course, 2);
         $this->enrollment($course, $student);
@@ -113,7 +113,7 @@ class CourseEnrollmentLearningTest extends TestCase
 
     public function test_activity_and_completion_update_lesson_and_course_progress_idempotently(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course();
         $lessons = $this->lessons($course, 2);
         $this->enrollment($course, $student);
@@ -137,7 +137,7 @@ class CourseEnrollmentLearningTest extends TestCase
 
     public function test_student_dashboard_is_synchronized_with_active_course_progress(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course();
         $enrollment = $this->enrollment($course, $student);
         $enrollment->update(['completion_percentage' => 42]);
@@ -150,7 +150,7 @@ class CourseEnrollmentLearningTest extends TestCase
 
     private function course(?User $teacher = null): Course
     {
-        $teacher ??= User::factory()->create(['role' => 'teacher']);
+        $teacher ??= $this->createUser(['role' => 'teacher']);
 
         return Course::query()->create([
             'teacher_id' => $teacher->id, 'name' => 'Course '.str()->random(6),

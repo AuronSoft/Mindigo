@@ -17,7 +17,7 @@ class LearningToolsPhaseTwoTest extends TestCase
 
     public function test_student_can_create_deck_add_card_and_save_review(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)->post(route('learning-tools.flashcards.store'), [
             'title' => 'Biology deck',
@@ -45,8 +45,8 @@ class LearningToolsPhaseTwoTest extends TestCase
 
     public function test_teacher_can_assign_deck_to_own_classroom(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $student = User::factory()->create(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
         $classroom = $this->classroom($teacher);
         $classroom->students()->attach($student->id);
 
@@ -66,7 +66,7 @@ class LearningToolsPhaseTwoTest extends TestCase
 
     public function test_student_can_manage_personal_plan_and_complete_task(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)->post(route('learning-tools.plans.store'), [
             'title' => 'Exam plan',
@@ -94,9 +94,9 @@ class LearningToolsPhaseTwoTest extends TestCase
 
     public function test_class_plan_is_visible_only_to_students_in_the_classroom(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $member = User::factory()->create(['role' => 'student']);
-        $outsider = User::factory()->create(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $member = $this->createUser(['role' => 'student']);
+        $outsider = $this->createUser(['role' => 'student']);
         $classroom = $this->classroom($teacher);
         $classroom->students()->attach($member->id);
 
@@ -115,8 +115,8 @@ class LearningToolsPhaseTwoTest extends TestCase
 
     public function test_phase_two_pages_render_for_supported_roles(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
 
         foreach ([
             'learning-tools.flashcards.index',

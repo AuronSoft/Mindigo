@@ -71,7 +71,7 @@ class HomepageTest extends TestCase
      */
     public function test_exam_tips_page_is_accessible(): void
     {
-        $user = User::factory()->create(['name' => 'Nguyen Minh Anh']);
+        $user = $this->createUser(['name' => 'Nguyen Minh Anh']);
 
         ExamTipPost::create([
             'user_id' => $user->id,
@@ -102,7 +102,7 @@ class HomepageTest extends TestCase
      */
     public function test_authenticated_user_can_create_exam_tip_post(): void
     {
-        $user = User::factory()->create(['role' => 'student']);
+        $user = $this->createUser(['role' => 'student']);
 
         $this->actingAs($user)->post('/exam-tips', [
             'title' => 'Cach on thi tu du lieu that',
@@ -124,7 +124,7 @@ class HomepageTest extends TestCase
      */
     public function test_exam_tips_header_shows_user_indicator_when_authenticated(): void
     {
-        $user = User::factory()->create([
+        $user = $this->createUser([
             'name' => 'Nguyen Minh Anh',
             'role' => 'student',
         ]);
@@ -144,7 +144,7 @@ class HomepageTest extends TestCase
      */
     public function test_exam_tips_page_follows_selected_locale(): void
     {
-        $user = User::factory()->create(['name' => 'Tran Bao Chau']);
+        $user = $this->createUser(['name' => 'Tran Bao Chau']);
 
         ExamTipPost::create([
             'user_id' => $user->id,
@@ -323,7 +323,7 @@ class HomepageTest extends TestCase
      */
     public function test_authenticated_user_can_access_homepage(): void
     {
-        $user = User::factory()->create([
+        $user = $this->createUser([
             'role' => 'student',
         ]);
 
@@ -339,7 +339,7 @@ class HomepageTest extends TestCase
      */
     public function test_student_sidebar_links_to_exam_tips(): void
     {
-        $user = User::factory()->create([
+        $user = $this->createUser([
             'role' => 'student',
         ]);
 
@@ -354,7 +354,7 @@ class HomepageTest extends TestCase
      */
     public function test_login_from_exam_tip_action_returns_to_exam_tips(): void
     {
-        $user = User::factory()->create([
+        $user = $this->createUser([
             'role' => 'student',
             'password' => '123456',
         ]);
@@ -374,7 +374,7 @@ class HomepageTest extends TestCase
      */
     public function test_normal_student_login_still_uses_role_dashboard(): void
     {
-        $user = User::factory()->create([
+        $user = $this->createUser([
             'role' => 'student',
             'password' => '123456',
         ]);
@@ -390,7 +390,7 @@ class HomepageTest extends TestCase
      */
     public function test_user_factory_creates_valid_user(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $this->assertDatabaseHas('users', [
             'email' => $user->email,
@@ -402,7 +402,7 @@ class HomepageTest extends TestCase
      */
     public function test_admin_role_is_assigned_correctly(): void
     {
-        $admin = User::factory()->create([
+        $admin = $this->createUser([
             'role' => 'admin',
         ]);
 
@@ -414,7 +414,7 @@ class HomepageTest extends TestCase
      */
     public function test_student_role_is_assigned_correctly(): void
     {
-        $student = User::factory()->create([
+        $student = $this->createUser([
             'role' => 'student',
         ]);
 

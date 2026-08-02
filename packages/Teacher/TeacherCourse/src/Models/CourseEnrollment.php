@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherCourse\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,7 +26,7 @@ class CourseEnrollment extends Model
     public const ACTIVE_STATUSES = [self::STATUS_INVITED, self::STATUS_ENROLLED, self::STATUS_IN_PROGRESS, self::STATUS_COMPLETED];
 
     protected $fillable = [
-        'course_id', 'student_id', 'classroom_id', 'assigned_by', 'last_lesson_id', 'status', 'source',
+        'course_id', 'student_id', 'classroom_id', 'distribution_id', 'assigned_by', 'last_lesson_id', 'status', 'source',
         'completion_percentage', 'time_spent_seconds', 'invited_at', 'enrolled_at', 'started_at',
         'completed_at', 'withdrawn_at', 'last_activity_at',
     ];
@@ -52,6 +53,21 @@ class CourseEnrollment extends Model
     public function classroom(): BelongsTo
     {
         return $this->belongsTo(Classroom::class);
+    }
+
+    public function distribution(): BelongsTo
+    {
+        return $this->belongsTo(CourseClassroomAssignment::class, 'distribution_id');
+    }
+
+    public function scopeAvailableToStudent(Builder $query): Builder
+    {
+        return $query->where(function (Builder $query): void {
+            $query->where('source', 'self')
+                ->orWhereHas('distribution', fn (Builder $assignment) => $assignment
+                    ->where('visibility', 'visible')
+                    ->where(fn (Builder $dates) => $dates->whereNull('starts_at')->orWhere('starts_at', '<=', now())));
+        });
     }
 
     public function assigner(): BelongsTo

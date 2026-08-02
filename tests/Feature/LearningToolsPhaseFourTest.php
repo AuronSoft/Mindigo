@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\Auth\Models\User;
 use Mindigo\LearningTools\Models\AcademicScoreScenario;
 use Mindigo\LearningTools\Models\AdmissionProgram;
 use Mindigo\LearningTools\Models\GpaScenario;
@@ -17,7 +16,7 @@ class LearningToolsPhaseFourTest extends TestCase
 
     public function test_student_can_calculate_and_save_score_scenario(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)->post(route('learning-tools.scores.store'), [
             'title' => 'Target scenario', 'combination_code' => 'A00',
@@ -31,8 +30,8 @@ class LearningToolsPhaseFourTest extends TestCase
 
     public function test_score_scenarios_are_scoped_to_owner(): void
     {
-        $owner = User::factory()->create(['role' => 'student']);
-        $outsider = User::factory()->create(['role' => 'student']);
+        $owner = $this->createUser(['role' => 'student']);
+        $outsider = $this->createUser(['role' => 'student']);
         $scenario = ScoreScenario::create([
             'user_id' => $owner->id, 'title' => 'Private target', 'combination_code' => 'D01',
             'subject_scores' => [8, 8, 8], 'priority_score' => 0, 'bonus_score' => 0, 'total_score' => 24,
@@ -43,7 +42,7 @@ class LearningToolsPhaseFourTest extends TestCase
 
     public function test_user_can_search_and_favorite_an_admission_program(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $university = University::create(['code' => 'MGO', 'name' => 'Mindigo University', 'province' => 'Ha Noi']);
         $program = AdmissionProgram::create([
             'university_id' => $university->id, 'major_code' => '7480201', 'major_name' => 'Information Technology',
@@ -60,7 +59,7 @@ class LearningToolsPhaseFourTest extends TestCase
 
     public function test_unverified_admission_data_is_never_shown_or_favorited(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $university = University::create(['code' => 'UNVERIFIED', 'name' => 'Unverified University']);
         $program = AdmissionProgram::create(['university_id' => $university->id, 'major_name' => 'Unverified Major', 'year' => 2026, 'method' => 'Unknown']);
 
@@ -76,7 +75,7 @@ class LearningToolsPhaseFourTest extends TestCase
 
     public function test_student_can_use_a_custom_school_score_formula(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $this->actingAs($student)->post(route('learning-tools.academic.store'), [
             'title' => 'Semester math', 'type' => 'subject_semester',
             'items' => [
@@ -91,7 +90,7 @@ class LearningToolsPhaseFourTest extends TestCase
 
     public function test_student_can_calculate_course_components_and_credit_gpa(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $this->actingAs($student)->post(route('learning-tools.gpa.store'), [
             'title' => 'Semester one',
             'courses' => [[

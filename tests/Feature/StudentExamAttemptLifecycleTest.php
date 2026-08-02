@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamQuestion;
@@ -46,8 +45,8 @@ class StudentExamAttemptLifecycleTest extends TestCase
 
     private function examFixture(): array
     {
-        $student = User::factory()->create(['role' => 'student']);
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $classroom = Classroom::query()->create([
             'created_by' => $teacher->id,
             'teacher_id' => $teacher->id,

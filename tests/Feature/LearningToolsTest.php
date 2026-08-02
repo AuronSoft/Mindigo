@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\Auth\Models\User;
 use Tests\TestCase;
 
 class LearningToolsTest extends TestCase
@@ -17,7 +16,7 @@ class LearningToolsTest extends TestCase
 
     public function test_student_can_view_learning_tools(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)->get(route('learning-tools.index'))
             ->assertOk()
@@ -27,7 +26,7 @@ class LearningToolsTest extends TestCase
 
     public function test_teacher_can_view_learning_tools(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
 
         $this->actingAs($teacher)->get(route('learning-tools.index'))
             ->assertOk()
@@ -36,7 +35,7 @@ class LearningToolsTest extends TestCase
 
     public function test_tools_can_be_filtered_and_searched(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)
             ->get(route('learning-tools.index', ['category' => 'orientation']))

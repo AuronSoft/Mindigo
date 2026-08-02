@@ -118,6 +118,56 @@ class CourseService
         });
     }
 
+    public function duplicate(Course $course, User $actor): Course
+    {
+        return DB::transaction(function () use ($course, $actor): Course {
+            $course->load('chapters.lessons');
+            $copy = $course->replicate([
+                'slug', 'publication_status', 'submitted_for_review_at', 'published_at', 'published_by',
+                'view_count', 'enrollment_count', 'rating_average', 'rating_count',
+            ]);
+            $copy->teacher_id = $actor->isAdmin() ? $course->teacher_id : $actor->id;
+            $copy->name = __('teacher-course::publishing.copy_name', ['name' => $course->name]);
+            $copy->slug = $this->uniqueSlug($copy->name);
+            $copy->publication_status = Course::PUBLICATION_DRAFT;
+            $copy->cover_image = $this->copyStoredFile($course->cover_image, 'public', 'courses/covers');
+            $copy->view_count = 0;
+            $copy->enrollment_count = 0;
+            $copy->rating_average = 0;
+            $copy->rating_count = 0;
+            $copy->save();
+
+            $lessonMap = [];
+            foreach ($course->chapters as $chapter) {
+                $chapterCopy = $chapter->replicate();
+                $chapterCopy->course_id = $copy->id;
+                $chapterCopy->save();
+
+                foreach ($chapter->lessons as $lesson) {
+                    $lessonCopy = $lesson->replicate(['prerequisite_lesson_id', 'video_path', 'attachment_paths']);
+                    $lessonCopy->chapter_id = $chapterCopy->id;
+                    $lessonCopy->video_path = $this->copyStoredFile($lesson->video_path, 'local', 'course-content/videos');
+                    $lessonCopy->attachment_paths = collect($lesson->attachment_paths ?? [])->map(function (array $attachment): array {
+                        $disk = $attachment['disk'] ?? 'local';
+                        $attachment['path'] = $this->copyStoredFile($attachment['path'] ?? null, $disk, 'course-content/attachments');
+
+                        return $attachment;
+                    })->filter(fn (array $attachment) => filled($attachment['path']))->values()->all() ?: null;
+                    $lessonCopy->save();
+                    $lessonMap[$lesson->id] = $lessonCopy;
+                }
+            }
+
+            foreach ($course->chapters->flatMap->lessons as $lesson) {
+                if ($lesson->prerequisite_lesson_id && isset($lessonMap[$lesson->prerequisite_lesson_id])) {
+                    $lessonMap[$lesson->id]->update(['prerequisite_lesson_id' => $lessonMap[$lesson->prerequisite_lesson_id]->id]);
+                }
+            }
+
+            return $copy;
+        });
+    }
+
     private function normalize(array $data): array
     {
         $data['is_active'] = ($data['status'] ?? 'active') === 'active';
@@ -146,5 +196,17 @@ class CourseService
         }
 
         return $slug;
+    }
+
+    private function copyStoredFile(?string $path, string $disk, string $directory): ?string
+    {
+        if (! $path || ! Storage::disk($disk)->exists($path)) {
+            return null;
+        }
+
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        $copy = $directory.'/'.Str::uuid().($extension ? '.'.$extension : '');
+
+        return Storage::disk($disk)->copy($path, $copy) ? $copy : null;
     }
 }

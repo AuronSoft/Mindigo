@@ -2,9 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherCourse\Http\Controllers\ChapterController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseBuilderController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseEnrollmentController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseLessonController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseMonitoringController;
 use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
 use Mindigo\TeacherCourse\Http\Controllers\PublicCourseController;
@@ -52,6 +54,9 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::delete('/{course}', [CourseController::class, 'destroy'])->name('destroy');
         Route::patch('/{course}/publication', [CoursePublicationController::class, 'update'])->name('publication.update');
         Route::post('/{course}/assign', [CourseEnrollmentController::class, 'assign'])->name('assign');
+        Route::post('/{course}/duplicate', [CourseBuilderController::class, 'duplicate'])->name('duplicate');
+        Route::patch('/{course}/curriculum-order', [CourseBuilderController::class, 'reorder'])->name('curriculum.reorder');
+        Route::get('/{course}/monitor', CourseMonitoringController::class)->name('monitor');
 
         // Chapters
         Route::post('/{course}/chapters', [ChapterController::class, 'store'])->name('chapters.store');

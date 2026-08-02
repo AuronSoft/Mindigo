@@ -124,10 +124,11 @@ class StudentCourseLearningService
         return CourseEnrollment::query()
             ->where('student_id', $student->id)
             ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
+            ->availableToStudent()
             ->whereHas('course', fn ($query) => $query->where('slug', $courseSlug)->where('is_active', true))
             ->with([
                 'course.teacher:id,name,avatar', 'course.subject:id,name', 'course.category:id,name',
-                'course.chapters.lessons', 'lessonProgress', 'lastLesson',
+                'course.chapters.lessons', 'lessonProgress', 'lastLesson', 'distribution',
             ])
             ->when($lock, fn ($query) => $query->lockForUpdate())
             ->firstOrFail();

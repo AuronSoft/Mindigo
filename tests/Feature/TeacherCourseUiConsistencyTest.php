@@ -15,8 +15,8 @@ class TeacherCourseUiConsistencyTest extends TestCase
 
     public function test_teacher_course_index_uses_the_system_header_and_translated_actions(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $otherTeacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $otherTeacher = $this->createUser(['role' => 'teacher']);
 
         $course = $this->courseFor($teacher, 'My owned course');
         $this->courseFor($otherTeacher, 'Another teacher course');
@@ -35,7 +35,7 @@ class TeacherCourseUiConsistencyTest extends TestCase
 
     public function test_course_pages_render_the_complete_three_level_system_header(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $course = $this->courseFor($teacher, 'Mindigo LMS');
 
         $pages = [
@@ -57,7 +57,7 @@ class TeacherCourseUiConsistencyTest extends TestCase
 
     public function test_lesson_pages_render_the_complete_three_level_system_header(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $course = $this->courseFor($teacher, 'Lesson test course');
         $chapter = Chapter::query()->create([
             'course_id' => $course->getKey(),

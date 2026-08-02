@@ -62,12 +62,13 @@ class CourseEnrollmentService
         });
     }
 
-    public function assignToClassrooms(Course $course, User $teacher, array $classroomIds): int
+    public function assignToClassrooms(Course $course, User $teacher, array $data): int
     {
         if (! $course->isPublished()) {
             throw ValidationException::withMessages(['course' => __('teacher-course::learning.published_required')]);
         }
 
+        $classroomIds = $data['classroom_ids'];
         $classrooms = Classroom::query()
             ->whereIn('id', $classroomIds)
             ->where('status', 'active')
@@ -79,13 +80,20 @@ class CourseEnrollmentService
             throw ValidationException::withMessages(['classroom_ids' => __('teacher-course::learning.invalid_classroom')]);
         }
 
-        $newStudentIds = DB::transaction(function () use ($course, $teacher, $classrooms): Collection {
+        $newStudentIds = DB::transaction(function () use ($course, $teacher, $classrooms, $data): Collection {
             $created = collect();
 
             foreach ($classrooms as $classroom) {
-                CourseClassroomAssignment::query()->firstOrCreate(
+                $distribution = CourseClassroomAssignment::query()->updateOrCreate(
                     ['course_id' => $course->id, 'classroom_id' => $classroom->id],
-                    ['assigned_by' => $teacher->id, 'assigned_at' => now()],
+                    [
+                        'assigned_by' => $teacher->id,
+                        'assigned_at' => now(),
+                        'starts_at' => $data['starts_at'] ?? null,
+                        'due_at' => $data['due_at'] ?? null,
+                        'is_mandatory' => $data['is_mandatory'],
+                        'visibility' => $data['visibility'],
+                    ],
                 );
 
                 foreach ($classroom->students as $student) {
@@ -96,11 +104,21 @@ class CourseEnrollmentService
                         ->first();
 
                     if ($enrollment && $enrollment->status !== CourseEnrollment::STATUS_WITHDRAWN) {
+                        if (! $enrollment->distribution_id) {
+                            $enrollment->update([
+                                'classroom_id' => $classroom->id,
+                                'distribution_id' => $distribution->id,
+                                'assigned_by' => $teacher->id,
+                            ]);
+                            $created->push($student->id);
+                        }
+
                         continue;
                     }
 
                     $values = [
                         'classroom_id' => $classroom->id,
+                        'distribution_id' => $distribution->id,
                         'assigned_by' => $teacher->id,
                         'status' => CourseEnrollment::STATUS_INVITED,
                         'source' => 'classroom',
@@ -161,7 +179,8 @@ class CourseEnrollmentService
         return CourseEnrollment::query()
             ->where('student_id', $student->id)
             ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
-            ->with(['course.teacher:id,name', 'course.subject:id,name', 'lastLesson:id,name'])
+            ->availableToStudent()
+            ->with(['course.teacher:id,name', 'course.subject:id,name', 'lastLesson:id,name', 'distribution'])
             ->latest('last_activity_at')
             ->latest('id')
             ->paginate(12);

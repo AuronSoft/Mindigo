@@ -19,6 +19,7 @@ class DashboardService
         return CourseEnrollment::query()
             ->where('student_id', $student->id)
             ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
+            ->availableToStudent()
             ->with('course:id,name,slug,cover_image')
             ->latest('last_activity_at')
             ->take(3)

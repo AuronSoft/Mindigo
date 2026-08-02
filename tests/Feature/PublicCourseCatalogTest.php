@@ -15,7 +15,7 @@ class PublicCourseCatalogTest extends TestCase
 
     public function test_guest_catalog_only_displays_active_published_courses(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $published = $this->courseFor($teacher, 'Published course');
         $this->courseFor($teacher, 'Draft course', ['publication_status' => Course::PUBLICATION_DRAFT]);
         $this->courseFor($teacher, 'Pending course', ['publication_status' => Course::PUBLICATION_PENDING_REVIEW]);
@@ -35,14 +35,14 @@ class PublicCourseCatalogTest extends TestCase
 
     public function test_catalog_searches_course_teacher_subject_and_category(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher', 'name' => 'Nguyen Minh Teacher']);
+        $teacher = $this->createUser(['role' => 'teacher', 'name' => 'Nguyen Minh Teacher']);
         $subject = $this->subject('Physics');
         $category = $this->category('Exam preparation');
         $course = $this->courseFor($teacher, 'Mechanics foundation', [
             'subject_id' => $subject->id,
             'category_id' => $category->id,
         ]);
-        $this->courseFor(User::factory()->create(['role' => 'teacher']), 'Literature writing');
+        $this->courseFor($this->createUser(['role' => 'teacher']), 'Literature writing');
 
         foreach (['Mechanics', 'Nguyen Minh', 'Physics', 'Exam preparation'] as $search) {
             $this->get(route('courses.index', ['search' => $search]))
@@ -54,7 +54,7 @@ class PublicCourseCatalogTest extends TestCase
 
     public function test_catalog_filters_by_subject_category_education_level_and_difficulty(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $subject = $this->subject('Mathematics');
         $category = $this->category('High school');
         $matching = $this->courseFor($teacher, 'Advanced algebra', [
@@ -75,7 +75,7 @@ class PublicCourseCatalogTest extends TestCase
 
     public function test_catalog_sort_options_use_real_aggregate_columns(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $newest = $this->courseFor($teacher, 'Newest and enrolled', [
             'published_at' => now(),
             'view_count' => 10,
@@ -99,8 +99,8 @@ class PublicCourseCatalogTest extends TestCase
 
     public function test_course_detail_requires_login_and_returns_to_the_same_course_after_login(): void
     {
-        $student = User::factory()->create(['role' => 'student', 'password' => 'password']);
-        $course = $this->courseFor(User::factory()->create(['role' => 'teacher']), 'Login protected course');
+        $student = $this->createUser(['role' => 'student', 'password' => 'password']);
+        $course = $this->courseFor($this->createUser(['role' => 'teacher']), 'Login protected course');
         $detailUrl = route('courses.show', $course->slug);
 
         $this->get($detailUrl)->assertRedirect(route('login'));
@@ -114,8 +114,8 @@ class PublicCourseCatalogTest extends TestCase
 
     public function test_unpublished_course_detail_is_not_visible_to_authenticated_users(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
-        $course = $this->courseFor(User::factory()->create(['role' => 'teacher']), 'Hidden draft', [
+        $student = $this->createUser(['role' => 'student']);
+        $course = $this->courseFor($this->createUser(['role' => 'teacher']), 'Hidden draft', [
             'publication_status' => Course::PUBLICATION_DRAFT,
         ]);
 
@@ -124,7 +124,7 @@ class PublicCourseCatalogTest extends TestCase
 
     public function test_catalog_is_paginated_and_preserves_filters(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         foreach (range(1, 13) as $index) {
             $this->courseFor($teacher, "Course {$index}");
         }
