@@ -66,6 +66,12 @@ return [
             'update' => 'Cập nhật môn học',
             'delete' => 'Xóa môn học',
         ],
+        'course_categories' => [
+            'view' => 'Xem danh mục khóa học',
+            'create' => 'Tạo danh mục khóa học',
+            'update' => 'Cập nhật danh mục khóa học',
+            'delete' => 'Xóa danh mục khóa học',
+        ],
         'classrooms' => [
             'view' => 'Xem lớp học',
             'create' => 'Tạo lớp học',

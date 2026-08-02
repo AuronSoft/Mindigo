@@ -66,6 +66,12 @@ return [
             'update' => 'Update subjects',
             'delete' => 'Delete subjects',
         ],
+        'course_categories' => [
+            'view' => 'View course categories',
+            'create' => 'Create course categories',
+            'update' => 'Update course categories',
+            'delete' => 'Delete course categories',
+        ],
         'classrooms' => [
             'view' => 'View classrooms',
             'create' => 'Create classrooms',

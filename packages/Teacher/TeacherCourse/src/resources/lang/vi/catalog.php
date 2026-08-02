@@ -10,6 +10,7 @@ return [
     'result_count' => '{0} Chưa có khóa học|:count khóa học', 'clear_filters' => 'Xóa bộ lọc',
     'empty_title' => 'Không tìm thấy khóa học phù hợp', 'empty_description' => 'Hãy thử thay đổi từ khóa hoặc điều kiện lọc.', 'results' => 'Kết quả khóa học',
     'access' => ['free' => 'Miễn phí', 'paid' => 'Trả phí'], 'free' => 'Miễn phí', 'minutes' => ':count phút', 'duration' => 'Thời lượng',
+    'duration_units' => ['minute' => ':count phút', 'hour' => ':count giờ', 'session' => ':count buổi', 'day' => ':count ngày', 'week' => ':count tuần'],
     'lessons' => 'Bài học', 'rating' => 'Đánh giá', 'students' => 'Học viên', 'view_detail' => 'Xem chi tiết',
     'course_detail' => 'Chi tiết khóa học', 'no_description' => 'Khóa học chưa có mô tả.',
     'learning_outcomes' => 'Bạn sẽ học được gì', 'requirements' => 'Yêu cầu đầu vào', 'target_learners' => 'Khóa học dành cho ai',

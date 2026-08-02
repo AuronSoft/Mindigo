@@ -18,6 +18,72 @@ document.addEventListener('click', (event) => {
     window.MindigoOpenModal?.('edit-chapter-modal');
 });
 
+const normalizeMasterSearch = (value) => value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase();
+
+document.querySelectorAll('[data-course-master-picker]').forEach((picker) => {
+    const trigger = picker.querySelector('[data-course-master-trigger]');
+    const panel = picker.querySelector('[data-course-master-panel]');
+    const search = picker.querySelector('[data-course-master-search]');
+    const select = picker.querySelector('[data-course-master-select]');
+    const label = picker.querySelector('[data-course-master-label]');
+    const options = Array.from(picker.querySelectorAll('[data-course-master-option]'));
+    const empty = picker.querySelector('[data-course-master-empty]');
+
+    const close = () => {
+        panel?.classList.add('hidden');
+        trigger?.setAttribute('aria-expanded', 'false');
+    };
+
+    trigger?.addEventListener('click', () => {
+        const opening = panel?.classList.contains('hidden');
+        document.querySelectorAll('[data-course-master-panel]').forEach((item) => item.classList.add('hidden'));
+        panel?.classList.toggle('hidden', !opening);
+        trigger.setAttribute('aria-expanded', opening ? 'true' : 'false');
+        if (opening) window.requestAnimationFrame(() => search?.focus());
+    });
+
+    search?.addEventListener('input', () => {
+        const keyword = normalizeMasterSearch(search.value.trim());
+        let visible = 0;
+        options.forEach((option) => {
+            const matches = option.dataset.value === '' || normalizeMasterSearch(option.dataset.label || '').includes(keyword);
+            option.classList.toggle('hidden', !matches);
+            if (matches && option.dataset.value !== '') visible += 1;
+        });
+        empty?.classList.toggle('hidden', visible > 0);
+    });
+
+    options.forEach((option) => option.addEventListener('click', () => {
+        if (select) {
+            select.value = option.dataset.value || '';
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        if (label) {
+            label.textContent = option.dataset.label || '';
+            label.classList.toggle('text-slate-400', !option.dataset.value);
+        }
+        if (search) search.value = '';
+        options.forEach((item) => item.classList.remove('hidden'));
+        empty?.classList.add('hidden');
+        close();
+        trigger?.focus();
+    }));
+
+    picker.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            close();
+            trigger?.focus();
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!picker.contains(event.target)) close();
+    });
+});
+
 const curriculum = document.querySelector('[data-course-curriculum]');
 
 if (curriculum) {

@@ -10,9 +10,11 @@ class SubjectRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $permission = $this->route('subject') ? 'subjects.update' : 'subjects.create';
+        $subject = $this->route('subject');
 
-        return $this->user()?->hasPermissionTo($permission) ?? false;
+        return $subject instanceof Subject
+            ? ($this->user()?->can('update', $subject) ?? false)
+            : ($this->user()?->can('create', Subject::class) ?? false);
     }
 
     public function rules(): array
