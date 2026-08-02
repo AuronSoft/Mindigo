@@ -89,7 +89,7 @@
                     <p class="text-sm font-black text-slate-950">@lang('Mindigo-report::app.top_candidates')</p>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full min-w-[500px] text-left">
+                    <table class="w-full min-w-125 text-left">
                         <thead class="bg-slate-50 text-[11px] font-black uppercase text-slate-400">
                             <tr>
                                 <th class="px-4 py-3">@lang('Mindigo-report::app.rank')</th>

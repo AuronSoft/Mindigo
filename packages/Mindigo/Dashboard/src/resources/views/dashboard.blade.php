@@ -102,7 +102,7 @@
                 <button type="button" class="grid h-10 w-10 place-items-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-green-50 hover:text-green-700">
                     <x-heroicon-o-bars-3 class="h-5 w-5" />
                 </button>
-                <span class="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-amber-200 via-green-100 to-emerald-300 text-xs font-black text-slate-800 shadow-sm ring-2 ring-white">{{ mb_substr($dashboardUser?->name ?? 'A', 0, 1) }}</span>
+                <span class="grid h-10 w-10 place-items-center rounded-full bg-linear-to-br from-amber-200 via-green-100 to-emerald-300 text-xs font-black text-slate-800 shadow-sm ring-2 ring-white">{{ mb_substr($dashboardUser?->name ?? 'A', 0, 1) }}</span>
 
                 {{-- Quick create button --}}
                 <div class="relative" id="quick-create-wrap">
@@ -211,7 +211,7 @@
                         </div>
 
                         <div class="grid gap-3 sm:grid-cols-5">
-                            <article class="rounded-2xl border border-green-100 bg-gradient-to-br from-white to-green-50 p-3 shadow-sm sm:col-span-1">
+                            <article class="rounded-2xl border border-green-100 bg-linear-to-br from-white to-green-50 p-3 shadow-sm sm:col-span-1">
                                 <p class="text-[11px] font-black text-green-700">@lang('Mindigo-dashboard::app.top_candidate')</p>
                                 <strong class="mt-2 block text-2xl font-black text-slate-950">{{ $topPerformer ? round($topPerformer->avg_score) : '—' }}</strong>
                                 <div class="mt-3 flex items-center justify-between gap-2 text-xs font-bold text-slate-600">
@@ -219,7 +219,7 @@
                                     <x-heroicon-o-chevron-right class="h-4 w-4" />
                                 </div>
                             </article>
-                            <article class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-green-700 to-emerald-500 p-3 text-white shadow-sm sm:col-span-2">
+                            <article class="rounded-2xl border border-emerald-200 bg-linear-to-br from-green-700 to-emerald-500 p-3 text-white shadow-sm sm:col-span-2">
                                 <div class="flex items-center justify-between">
                                     <p class="text-[11px] font-black text-green-100">@lang('Mindigo-dashboard::app.best_exam')</p>
                                     <span class="grid h-7 w-7 place-items-center rounded-full bg-white/15">

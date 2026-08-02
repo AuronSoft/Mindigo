@@ -115,7 +115,12 @@ class CoursePublishingDistributionTest extends TestCase
         $enrollment->update(['status' => CourseEnrollment::STATUS_COMPLETED, 'completion_percentage' => 100, 'last_activity_at' => now()]);
         CourseLessonProgress::query()->create(['enrollment_id' => $enrollment->id, 'lesson_id' => $lesson->id, 'completed_at' => now()]);
 
-        $this->actingAs($teacher)->get(route('teacher.courses.monitor', $course))->assertOk()->assertSee($student->name)->assertSee('100%');
+        $this->actingAs($teacher)
+            ->get(route('teacher.courses.monitor', $course))
+            ->assertOk()
+            ->assertSee($student->name)
+            ->assertSee('100%')
+            ->assertSee('rel="stylesheet"', false);
         $this->actingAs($outsider)->get(route('teacher.courses.monitor', $course))->assertForbidden();
     }
 

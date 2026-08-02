@@ -370,7 +370,7 @@
             </div>
 
             <aside class="space-y-6">
-                <div class="rounded-2xl bg-gradient-to-br from-green-500 to-green-700 p-5 text-white">
+                <div class="rounded-2xl bg-linear-to-br from-green-500 to-green-700 p-5 text-white">
                     <h3 class="mb-1 text-lg font-black">@lang('core::exam_tips.sidebar.cta_title')</h3>
                     <p class="mb-4 text-sm font-semibold leading-6 text-white/75">@lang('core::exam_tips.sidebar.cta_text')</p>
                     @auth
