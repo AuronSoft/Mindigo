@@ -71,7 +71,7 @@ class LeaderboardService
 
         $userIds = $candidates->keys()->all();
 
-        // Aggregate scored work in two grouped queries (no N+1). 
+        // Aggregate scored work in two grouped queries (no N+1).
 
         // 1) Submitted exam attempts -> percentages keyed by user.
         $examPercents = [];
@@ -97,7 +97,7 @@ class LeaderboardService
                 }
             });
 
-        // Build a row per candidate. 
+        // Build a row per candidate.
         $rows = $candidates->map(function (User $member) use ($examPercents, $assignPercents, $studentId) {
             $uid = (int) $member->id;
             $percents = array_merge($examPercents[$uid] ?? [], $assignPercents[$uid] ?? []);
@@ -116,14 +116,15 @@ class LeaderboardService
             ];
         })->values();
 
-        // Sort: score desc, completed desc, name asc. 
+        // Sort: score desc, completed desc, name asc.
         $rows = $rows->sort(function ($a, $b) {
             return [$b->score, $b->completed, $a->name] <=> [$a->score, $a->completed, $b->name];
         })->values();
 
-        // Assign sequential 1-based rank. 
+        // Assign sequential 1-based rank.
         $rows = $rows->map(function ($row, $i) {
             $row->rank = $i + 1;
+
             return $row;
         });
 

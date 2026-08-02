@@ -3,6 +3,7 @@
 namespace Mindigo\ClassroomManagement\Services;
 
 use Illuminate\Support\Str;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\SubjectManagement\Models\Subject;
@@ -162,7 +163,7 @@ class ClassroomManagementService
         $counter = 2;
 
         while (Classroom::query()->when($ignore, fn ($query) => $query->whereKeyNot($ignore->id))->where('slug', $slug)->exists()) {
-            $slug = $base . '-' . $counter++;
+            $slug = $base.'-'.$counter++;
         }
 
         return $slug;
@@ -175,11 +176,11 @@ class ClassroomManagementService
 
     private function audit(string $action, array $oldValues, array $newValues, Classroom $classroom): void
     {
-        if (!class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
+        if (! class_exists(AuditLogService::class)) {
             return;
         }
 
-        app(\Mindigo\AuditLog\Services\AuditLogService::class)->record(
+        app(AuditLogService::class)->record(
             $action,
             'classrooms',
             $oldValues,

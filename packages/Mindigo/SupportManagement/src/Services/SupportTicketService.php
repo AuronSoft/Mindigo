@@ -5,6 +5,7 @@ namespace Mindigo\SupportManagement\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\SupportManagement\Models\SupportTicket;
 use Mindigo\SupportManagement\Models\SupportTicketAttachment;
@@ -19,7 +20,7 @@ class SupportTicketService
             ->withCount('messages')
             ->latest('updated_at');
 
-        if (!$user->isAdmin()) {
+        if (! $user->isAdmin()) {
             $query->where('user_id', $user->getAuthIdentifier());
         }
 
@@ -134,7 +135,7 @@ class SupportTicketService
     {
         $query = SupportTicket::query();
 
-        if (!$user->isAdmin()) {
+        if (! $user->isAdmin()) {
             $query->where('user_id', $user->getAuthIdentifier());
         }
 
@@ -164,7 +165,7 @@ class SupportTicketService
     private function makeTicketCode(): string
     {
         do {
-            $code = 'SP-' . now()->format('ymd') . '-' . Str::upper(Str::random(5));
+            $code = 'SP-'.now()->format('ymd').'-'.Str::upper(Str::random(5));
         } while (SupportTicket::query()->where('ticket_code', $code)->exists());
 
         return $code;
@@ -173,11 +174,11 @@ class SupportTicketService
     private function storeAttachments(Request $request, SupportTicket $ticket, SupportTicketMessage $message): void
     {
         foreach ($request->file('attachments', []) as $file) {
-            if (!$file) {
+            if (! $file) {
                 continue;
             }
 
-            $path = $file->store('support-tickets/' . $ticket->ticket_code, 'public');
+            $path = $file->store('support-tickets/'.$ticket->ticket_code, 'public');
 
             SupportTicketAttachment::query()->create([
                 'support_ticket_id' => $ticket->id,
@@ -194,11 +195,11 @@ class SupportTicketService
 
     private function audit(string $action, array $oldValues, array $newValues, SupportTicket $ticket): void
     {
-        if (!class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
+        if (! class_exists(AuditLogService::class)) {
             return;
         }
 
-        app(\Mindigo\AuditLog\Services\AuditLogService::class)->record(
+        app(AuditLogService::class)->record(
             $action,
             'support',
             $oldValues,

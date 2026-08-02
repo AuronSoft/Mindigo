@@ -19,10 +19,10 @@ class CheckMaintenanceMode
             if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Hệ thống đang bảo trì. Vui lòng quay lại sau.'
+                    'message' => 'Hệ thống đang bảo trì. Vui lòng quay lại sau.',
                 ], 503);
             }
-            
+
             return response()->view('maintenance', [], 503);
         }
 

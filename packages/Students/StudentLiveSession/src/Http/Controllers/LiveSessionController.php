@@ -9,15 +9,13 @@ use Mindigo\TeacherLiveSession\Models\LiveSession;
 
 class LiveSessionController extends Controller
 {
-    public function __construct(protected LiveSessionService $service)
-    {
-    }
+    public function __construct(protected LiveSessionService $service) {}
 
     public function index(Request $request)
     {
         $classroomId = $request->input('classroom_id');
 
-        $sessions   = $this->service->getSessionsForStudent(auth()->id(), $classroomId);
+        $sessions = $this->service->getSessionsForStudent(auth()->id(), $classroomId);
         $classrooms = $this->service->getClassroomsForStudent(auth()->id());
 
         return view('student-live-session::index', compact('sessions', 'classrooms'));

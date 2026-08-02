@@ -15,9 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SubjectController extends Controller
 {
-    public function __construct(private SubjectManagementService $subjects)
-    {
-    }
+    public function __construct(private SubjectManagementService $subjects) {}
 
     public function index(Request $request)
     {

@@ -12,11 +12,12 @@ use Illuminate\Validation\ValidationException;
 class LoginService
 {
     private int $maxAttempts = 5;
+
     private int $decaySeconds = 300;
 
     public function throttleKey(Request $request): string
     {
-        return Str::lower($request->input('email')) . '|' . $request->ip();
+        return Str::lower($request->input('email')).'|'.$request->ip();
     }
 
     public function checkThrottle(Request $request): void
@@ -35,7 +36,7 @@ class LoginService
     {
         $key = $this->throttleKey($request);
 
-        if (!Auth::attempt(
+        if (! Auth::attempt(
             $request->only('email', 'password'),
             $request->boolean('remember')
         )) {

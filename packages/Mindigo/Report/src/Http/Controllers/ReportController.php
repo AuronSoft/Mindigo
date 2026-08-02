@@ -61,7 +61,7 @@ class ReportController extends Controller
 
     public function teacher()
     {
-        /** @var \Mindigo\Auth\Models\User $teacher */
+        /** @var User $teacher */
         $teacher = Auth::user();
         $classrooms = $this->reportService->getTeacherClassrooms($teacher);
         $selectedClassroom = $this->selectedTeacherClassroom($teacher);

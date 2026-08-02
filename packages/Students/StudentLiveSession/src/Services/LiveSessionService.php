@@ -15,7 +15,7 @@ class LiveSessionService
         return Classroom::query()
             ->whereHas('students', function ($q) use ($studentId) {
                 $q->where('student_id', $studentId)
-                  ->where('classroom_students.status', 'active');
+                    ->where('classroom_students.status', 'active');
             })
             ->pluck('id');
     }

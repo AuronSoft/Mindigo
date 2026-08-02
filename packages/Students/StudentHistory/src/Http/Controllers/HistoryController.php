@@ -8,9 +8,7 @@ use Mindigo\StudentHistory\Services\HistoryService;
 
 class HistoryController extends Controller
 {
-    public function __construct(protected HistoryService $service)
-    {
-    }
+    public function __construct(protected HistoryService $service) {}
 
     public function index(Request $request)
     {
@@ -21,7 +19,7 @@ class HistoryController extends Controller
             $type = null;
         }
 
-        $items   = $this->service->timeline($studentId, $type);
+        $items = $this->service->timeline($studentId, $type);
         $summary = $this->service->summary($studentId);
 
         return view('student-history::index', compact('items', 'summary', 'type'));

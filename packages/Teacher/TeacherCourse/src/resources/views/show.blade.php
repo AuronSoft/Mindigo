@@ -27,6 +27,10 @@
                 </p>
                 <h1 class="mt-0.5 text-lg font-black text-slate-950">{{ $course->name }}</h1>
                 <p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-course::app.detail_subtitle')</p>
+                <div class="mt-2 flex flex-wrap gap-1.5">
+                    <span class="rounded-full px-2 py-0.5 text-[10px] font-black {{ $course->is_active ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500' }}">{{ __('teacher-course::app.'.($course->is_active ? 'active' : 'inactive')) }}</span>
+                    <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-600">@lang('teacher-course::app.publication_statuses.'.$course->publication_status)</span>
+                </div>
             </div>
         </div>
         <div class="flex items-center gap-2">

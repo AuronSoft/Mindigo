@@ -22,7 +22,7 @@ class MindigoIdMagicLinkMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'Mindigo-auth::magic-link',  
+            view: 'Mindigo-auth::magic-link',
             with: ['link' => $this->link],
         );
     }

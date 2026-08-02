@@ -1,8 +1,13 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use Mindigo\Notification\Providers\NotificationServiceProvider;
+use Mindigo\TeacherAssignment\Providers\TeacherAssignmentServiceProvider;
+use Mindigo\TeacherCourse\Providers\TeacherCourseServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    Mindigo\Notification\Providers\NotificationServiceProvider::class,
-    Mindigo\TeacherAssignment\Providers\TeacherAssignmentServiceProvider::class,
-    Mindigo\TeacherCourse\Providers\TeacherCourseServiceProvider::class,
+    AppServiceProvider::class,
+    NotificationServiceProvider::class,
+    TeacherAssignmentServiceProvider::class,
+    TeacherCourseServiceProvider::class,
 ];

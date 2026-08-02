@@ -2,39 +2,40 @@
 
 namespace Mindigo\TeacherAssignment\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
+use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\TeacherAssignment\Http\Requests\AssignmentRequest;
-use Mindigo\TeacherAssignment\Http\Requests\AssignmentSubmissionRequest;
 use Mindigo\TeacherAssignment\Models\Assignment;
+use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 use Mindigo\TeacherAssignment\Services\AssignmentService;
 
 class AssignmentController extends Controller
 {
-    public function __construct(protected AssignmentService $service)
-    {
-    }
+    public function __construct(protected AssignmentService $service) {}
 
-    public function index(\Illuminate\Http\Request $request)
+    public function index(Request $request)
     {
         $searchTitle = $request->input('search_title');
         $classroomId = $request->input('classroom_id');
 
-        $query = \Mindigo\TeacherAssignment\Models\Assignment::query()
+        $query = Assignment::query()
             ->where('teacher_id', auth()->id())
             ->with('classroom');
 
-        if (!empty($searchTitle)) {
-            $query->where('title', 'like', '%' . $searchTitle . '%');
+        if (! empty($searchTitle)) {
+            $query->where('title', 'like', '%'.$searchTitle.'%');
         }
 
-        if (!empty($classroomId)) {
+        if (! empty($classroomId)) {
             $query->where('classroom_id', $classroomId);
         }
 
         $assignments = $query->latest()->paginate(10)->withQueryString();
 
         $classrooms = $this->classroomsForTeacher();
+
         return view('teacher-assignment::index', compact('assignments', 'classrooms'));
     }
 
@@ -65,15 +66,15 @@ class AssignmentController extends Controller
                 ->where('teacher_id', auth()->id())
                 ->whereHas('submissions')
                 ->count(),
-            'pending' => \Mindigo\TeacherAssignment\Models\AssignmentSubmission::query()
+            'pending' => AssignmentSubmission::query()
                 ->whereHas('assignment', fn ($query) => $query->where('teacher_id', auth()->id()))
                 ->where('status', 'submitted')
                 ->count(),
-            'graded' => \Mindigo\TeacherAssignment\Models\AssignmentSubmission::query()
+            'graded' => AssignmentSubmission::query()
                 ->whereHas('assignment', fn ($query) => $query->where('teacher_id', auth()->id()))
                 ->whereIn('status', ['graded', 'returned'])
                 ->count(),
-            'submitted' => \Mindigo\TeacherAssignment\Models\AssignmentSubmission::query()
+            'submitted' => AssignmentSubmission::query()
                 ->whereHas('assignment', fn ($query) => $query->where('teacher_id', auth()->id()))
                 ->count(),
         ];
@@ -139,7 +140,7 @@ class AssignmentController extends Controller
 
     private function classroomsForTeacher()
     {
-        return \Mindigo\ClassroomManagement\Models\Classroom::query()
+        return Classroom::query()
             ->where('teacher_id', auth()->id())
             ->where('status', 'active')
             ->withCount('students')

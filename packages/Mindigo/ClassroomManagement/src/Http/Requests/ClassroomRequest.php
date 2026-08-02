@@ -34,7 +34,7 @@ class ClassroomRequest extends FormRequest
     {
         $data = $this->validated();
 
-        if ($this->user() instanceof User && $this->user()->isTeacher() && !$this->user()->isAdmin()) {
+        if ($this->user() instanceof User && $this->user()->isTeacher() && ! $this->user()->isAdmin()) {
             $data['teacher_id'] = $this->user()->getAuthIdentifier();
         }
 

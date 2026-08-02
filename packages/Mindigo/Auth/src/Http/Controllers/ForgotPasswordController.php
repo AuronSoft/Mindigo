@@ -2,11 +2,11 @@
 
 namespace Mindigo\Auth\Http\Controllers;
 
+use Illuminate\Routing\Controller;
+use Mindigo\Auth\Http\Requests\ResetPasswordRequest;
 use Mindigo\Auth\Http\Requests\SendOtpRequest;
 use Mindigo\Auth\Http\Requests\VerifyOtpRequest;
-use Mindigo\Auth\Http\Requests\ResetPasswordRequest;
 use Mindigo\Auth\Services\ForgotPasswordService;
-use Illuminate\Routing\Controller;
 
 class ForgotPasswordController extends Controller
 {
@@ -22,6 +22,7 @@ class ForgotPasswordController extends Controller
     public function sendOtp(SendOtpRequest $request)
     {
         $this->service->sendOtp($request->validated());
+
         return response()->json(['message' => 'Đã gửi mã OTP đến email của bạn.']);
     }
 
@@ -29,9 +30,9 @@ class ForgotPasswordController extends Controller
     {
         $result = $this->service->verifyOtp($request->validated());
 
-        if (!$result) {
+        if (! $result) {
             return response()->json([
-                'message' => 'Mã OTP không hợp lệ hoặc đã hết hạn.'
+                'message' => 'Mã OTP không hợp lệ hoặc đã hết hạn.',
             ], 422);
         }
 
@@ -42,9 +43,9 @@ class ForgotPasswordController extends Controller
     {
         $result = $this->service->resetPassword($request->validated());
 
-        if (!$result) {
+        if (! $result) {
             return response()->json([
-                'message' => 'Phiên xác thực đã hết hạn. Vui lòng thử lại.'
+                'message' => 'Phiên xác thực đã hết hạn. Vui lòng thử lại.',
             ], 422);
         }
 

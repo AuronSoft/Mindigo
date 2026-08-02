@@ -31,15 +31,15 @@ class NotebookService
     {
         return Note::create([
             'student_id' => $studentId,
-            'title'      => $data['title'],
-            'content'    => $data['content'] ?? null,
+            'title' => $data['title'],
+            'content' => $data['content'] ?? null,
         ]);
     }
 
     public function update(Note $note, array $data): Note
     {
         $note->update([
-            'title'   => $data['title'],
+            'title' => $data['title'],
             'content' => $data['content'] ?? null,
         ]);
 

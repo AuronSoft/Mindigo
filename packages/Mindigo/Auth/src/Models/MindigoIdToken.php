@@ -21,7 +21,7 @@ class MindigoIdToken extends Model
     ];
 
     protected $casts = [
-        'used'       => 'boolean',
+        'used' => 'boolean',
         'expires_at' => 'datetime',
         'created_at' => 'datetime',
     ];

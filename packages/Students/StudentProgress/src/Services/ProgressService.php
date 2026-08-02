@@ -19,7 +19,7 @@ class ProgressService
         return Classroom::query()
             ->whereHas('students', function ($q) use ($studentId) {
                 $q->where('student_id', $studentId)
-                  ->where('classroom_students.status', 'active');
+                    ->where('classroom_students.status', 'active');
             })
             ->pluck('id');
     }
@@ -39,11 +39,11 @@ class ProgressService
     public function computeForStudent(User $student, ?int $classroomId = null): array
     {
         $classroomIds = $this->classroomIdsForStudent($student->id);
-        $scopeIds     = $classroomId
+        $scopeIds = $classroomId
             ? collect([$classroomId])->intersect($classroomIds)->values()
             : $classroomIds;
 
-        // Bài tập 
+        // Bài tập
         $assignments = Assignment::query()
             ->whereIn('classroom_id', $scopeIds->isEmpty() ? [0] : $scopeIds)
             ->where('status', 'published')
@@ -58,10 +58,10 @@ class ProgressService
             ->get();
 
         $assignmentDone = $submissions->count();
-        $gradedSubs     = $submissions->whereIn('status', ['graded', 'returned'])
+        $gradedSubs = $submissions->whereIn('status', ['graded', 'returned'])
             ->filter(fn ($s) => ! is_null($s->score));
 
-        // Đề thi (toàn hệ thống, audience = student) 
+        // Đề thi (toàn hệ thống, audience = student)
         $examTotal = Exam::query()->where('status', 'published')->count();
 
         $attempts = ExamAttempt::query()
@@ -71,7 +71,7 @@ class ProgressService
 
         $examDone = $attempts->pluck('exam_id')->unique()->count();
 
-        // Điểm trung bình (gộp % đề thi + % bài tập đã chấm) 
+        // Điểm trung bình (gộp % đề thi + % bài tập đã chấm)
         $scorePercents = collect()
             ->merge($attempts->pluck('percentage')->filter(fn ($v) => ! is_null($v)))
             ->merge($gradedSubs->map(fn ($s) => $s->scorePercent())->filter(fn ($v) => ! is_null($v)));
@@ -80,19 +80,19 @@ class ProgressService
 
         return [
             'assignment' => [
-                'done'  => $assignmentDone,
+                'done' => $assignmentDone,
                 'total' => $assignmentTotal,
-                'rate'  => $this->rate($assignmentDone, $assignmentTotal),
+                'rate' => $this->rate($assignmentDone, $assignmentTotal),
             ],
             'exam' => [
-                'done'  => $examDone,
+                'done' => $examDone,
                 'total' => $examTotal,
-                'rate'  => $this->rate($examDone, $examTotal),
+                'rate' => $this->rate($examDone, $examTotal),
             ],
-            'graded_count'  => $gradedSubs->count(),
-            'avg_score'     => $avgScore,
+            'graded_count' => $gradedSubs->count(),
+            'avg_score' => $avgScore,
             'per_classroom' => $this->perClassroom($student, $classroomIds),
-            'timeline'      => $this->timeline($attempts, $gradedSubs),
+            'timeline' => $this->timeline($attempts, $gradedSubs),
         ];
     }
 
@@ -139,12 +139,12 @@ class ProgressService
             }
 
             return (object) [
-                'id'        => $classroom->id,
-                'name'      => $classroom->name,
-                'code'      => $classroom->code,
-                'done'      => $done,
-                'total'     => $total,
-                'rate'      => $this->rate($done, $total),
+                'id' => $classroom->id,
+                'name' => $classroom->name,
+                'code' => $classroom->code,
+                'done' => $done,
+                'total' => $total,
+                'rate' => $this->rate($done, $total),
                 'avg_score' => $percents->isNotEmpty() ? (int) round($percents->avg()) : null,
             ];
         });
@@ -156,11 +156,11 @@ class ProgressService
     protected function timeline(Collection $attempts, Collection $gradedSubs): array
     {
         $labels = [];
-        $data   = [];
+        $data = [];
 
         for ($i = 5; $i >= 0; $i--) {
             $month = now()->copy()->startOfMonth()->subMonths($i);
-            $key   = $month->format('Y-m');
+            $key = $month->format('Y-m');
             $labels[] = $month->format('m/Y');
 
             $monthScores = collect()

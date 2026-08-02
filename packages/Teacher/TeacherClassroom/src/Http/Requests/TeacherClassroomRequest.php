@@ -19,11 +19,11 @@ class TeacherClassroomRequest extends FormRequest
         $classroom = $this->route('classroom');
 
         return [
-            'name'        => ['required', 'string', 'max:180'],
-            'code'        => ['required', 'string', 'max:60', Rule::unique('classrooms', 'code')->ignore($classroom?->id)],
+            'name' => ['required', 'string', 'max:180'],
+            'code' => ['required', 'string', 'max:60', Rule::unique('classrooms', 'code')->ignore($classroom?->id)],
             'school_year' => ['nullable', 'string', 'max:40'],
             'description' => ['nullable', 'string', 'max:3000'],
-            'status'      => ['required', Rule::in(Classroom::STATUSES)],
+            'status' => ['required', Rule::in(Classroom::STATUSES)],
             'assistant_id' => ['nullable', 'integer', 'exists:users,id'],
         ];
     }

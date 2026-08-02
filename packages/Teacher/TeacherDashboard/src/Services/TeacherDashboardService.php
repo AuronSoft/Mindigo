@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherDashboard\Services;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Mindigo\Auth\Models\User;
@@ -26,9 +27,9 @@ class TeacherDashboardService
             ->distinct('classroom_students.student_id')
             ->count('classroom_students.student_id');
 
-        $totalExams     = Exam::where('created_by', $teacher->id)->count();
+        $totalExams = Exam::where('created_by', $teacher->id)->count();
         $publishedExams = Exam::where('created_by', $teacher->id)->where('status', 'published')->count();
-        $draftExams     = Exam::where('created_by', $teacher->id)->where('status', 'draft')->count();
+        $draftExams = Exam::where('created_by', $teacher->id)->where('status', 'draft')->count();
 
         $totalAttempts = ExamAttempt::whereHas('exam', fn ($q) => $q->where('created_by', $teacher->id))
             ->where('status', 'submitted')->count();
@@ -36,7 +37,7 @@ class TeacherDashboardService
         $passedAttempts = ExamAttempt::whereHas('exam', fn ($q) => $q->where('created_by', $teacher->id))
             ->where('status', 'submitted')->where('passed', true)->count();
 
-        $totalQuestions   = Question::where('created_by', $teacher->id)->count();
+        $totalQuestions = Question::where('created_by', $teacher->id)->count();
         $pendingQuestions = Question::where('created_by', $teacher->id)->where('status', 'reviewing')->count();
 
         return compact(
@@ -49,9 +50,9 @@ class TeacherDashboardService
 
     public function getAssignmentStats(User $teacher): array
     {
-        $total     = Assignment::where('teacher_id', $teacher->id)->count();
+        $total = Assignment::where('teacher_id', $teacher->id)->count();
         $published = Assignment::where('teacher_id', $teacher->id)->where('status', 'published')->count();
-        $draft     = Assignment::where('teacher_id', $teacher->id)->where('status', 'draft')->count();
+        $draft = Assignment::where('teacher_id', $teacher->id)->where('status', 'draft')->count();
         $pendingSubmissions = AssignmentSubmission::whereHas('assignment', fn ($q) => $q->where('teacher_id', $teacher->id))
             ->whereNull('graded_at')
             ->count();
@@ -69,7 +70,7 @@ class TeacherDashboardService
             ->get();
     }
 
-    public function getRecentAssignmentSubmissions(User $teacher, int $limit = 5): \Illuminate\Support\Collection
+    public function getRecentAssignmentSubmissions(User $teacher, int $limit = 5): Collection
     {
         return AssignmentSubmission::with(['assignment:id,title,teacher_id,classroom_id,max_score', 'assignment.classroom:id,name', 'student:id,name'])
             ->whereHas('assignment', fn ($q) => $q->where('teacher_id', $teacher->id))
@@ -78,7 +79,7 @@ class TeacherDashboardService
             ->get();
     }
 
-    public function getMyClassrooms(User $teacher, int $limit = 5): \Illuminate\Support\Collection
+    public function getMyClassrooms(User $teacher, int $limit = 5): Collection
     {
         return Classroom::where('teacher_id', $teacher->id)
             ->withCount('students')
@@ -87,7 +88,7 @@ class TeacherDashboardService
             ->get();
     }
 
-    public function getRecentExams(User $teacher, int $limit = 5): \Illuminate\Support\Collection
+    public function getRecentExams(User $teacher, int $limit = 5): Collection
     {
         return Exam::where('created_by', $teacher->id)
             ->withCount(['attempts' => fn ($q) => $q->where('status', 'submitted')])
@@ -97,7 +98,7 @@ class TeacherDashboardService
             ->get();
     }
 
-    public function getRecentAttempts(User $teacher, int $limit = 8): \Illuminate\Support\Collection
+    public function getRecentAttempts(User $teacher, int $limit = 8): Collection
     {
         return ExamAttempt::with(['exam:id,title,subject', 'user:id,name'])
             ->whereHas('exam', fn ($q) => $q->where('created_by', $teacher->id))
@@ -107,7 +108,7 @@ class TeacherDashboardService
             ->get();
     }
 
-    public function getTopStudents(User $teacher, int $limit = 5): \Illuminate\Support\Collection
+    public function getTopStudents(User $teacher, int $limit = 5): Collection
     {
         return DB::table('exam_attempts')
             ->join('exams', 'exams.id', '=', 'exam_attempts.exam_id')
@@ -136,7 +137,7 @@ class TeacherDashboardService
         $counts = [];
 
         for ($i = 6; $i >= 0; $i--) {
-            $date     = now()->subDays($i)->toDateString();
+            $date = now()->subDays($i)->toDateString();
             $labels[] = now()->subDays($i)->locale(app()->getLocale())->isoFormat('dd');
             $counts[] = $rows[$date]->count ?? 0;
         }
@@ -144,7 +145,7 @@ class TeacherDashboardService
         return compact('labels', 'counts');
     }
 
-    public function getUpcomingActivities(User $teacher, int $limit = 5): \Illuminate\Support\Collection
+    public function getUpcomingActivities(User $teacher, int $limit = 5): Collection
     {
         $assignments = Assignment::where('teacher_id', $teacher->id)
             ->whereNotNull('due_date')

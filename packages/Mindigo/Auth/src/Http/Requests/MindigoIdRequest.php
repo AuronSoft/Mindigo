@@ -15,7 +15,7 @@ class MindigoIdRequest extends FormRequest
     {
         return [
             'email' => ['required', 'email', 'max:255'],
-            'type'  => ['required', 'in:magic_link,otp'],
+            'type' => ['required', 'in:magic_link,otp'],
         ];
     }
 
@@ -23,8 +23,8 @@ class MindigoIdRequest extends FormRequest
     {
         return [
             'email.required' => 'Vui lòng nhập email.',
-            'email.email'    => 'Email không hợp lệ.',
-            'type.in'        => 'Loại xác thực không hợp lệ.',
+            'email.email' => 'Email không hợp lệ.',
+            'type.in' => 'Loại xác thực không hợp lệ.',
         ];
     }
 }

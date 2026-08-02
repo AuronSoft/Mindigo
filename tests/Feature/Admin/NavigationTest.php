@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Mindigo\Auth\Models\User;
 use Tests\TestCase;
 
@@ -22,7 +23,7 @@ class NavigationTest extends TestCase
         $this->admin = User::factory()->create(['role' => 'admin', 'is_active' => true]);
     }
 
-    // Sidebar links 
+    // Sidebar links
     public function test_sidebar_dashboard_link_works(): void
     {
         $this->actingAs($this->admin)->get('/dashboard')->assertOk();
@@ -68,15 +69,15 @@ class NavigationTest extends TestCase
         $this->actingAs($this->admin)->get('/reports')->assertOk();
     }
 
-    // Dashboard CTA buttons 
+    // Dashboard CTA buttons
     public function test_chi_tiet_button_route_exists(): void
     {
-        $this->assertTrue(\Illuminate\Support\Facades\Route::has('reports.index'));
+        $this->assertTrue(Route::has('reports.index'));
     }
 
     public function test_xem_bao_cao_button_route_exists(): void
     {
-        $this->assertTrue(\Illuminate\Support\Facades\Route::has('reports.exams'));
+        $this->assertTrue(Route::has('reports.exams'));
     }
 
     public function test_chi_tiet_button_url_leads_to_200(): void
@@ -91,11 +92,11 @@ class NavigationTest extends TestCase
         $this->actingAs($this->admin)->get($url)->assertOk();
     }
 
-    // Report sub-navigation 
+    // Report sub-navigation
 
     public function test_report_overview_back_to_dashboard_route_exists(): void
     {
-        $this->assertTrue(\Illuminate\Support\Facades\Route::has('dashboard'));
+        $this->assertTrue(Route::has('dashboard'));
     }
 
     public function test_report_exam_list_link_leads_to_200(): void
@@ -108,7 +109,7 @@ class NavigationTest extends TestCase
         $this->actingAs($this->admin)->get(route('reports.students'))->assertOk();
     }
 
-    // Language switcher 
+    // Language switcher
     public function test_switch_to_english_redirects_back(): void
     {
         $this->from('/dashboard')
@@ -125,7 +126,7 @@ class NavigationTest extends TestCase
             ->assertSessionHas('locale', 'vi');
     }
 
-    // Profile link 
+    // Profile link
     public function test_profile_page_accessible_by_admin(): void
     {
         $this->actingAs($this->admin)->get('/profile')->assertOk();

@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\Auth\Models\User;
 use Mindigo\Core\Models\ExamTipPost;
+use Tests\TestCase;
 
 class HomepageTest extends TestCase
 {

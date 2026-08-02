@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
+use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 
 class TeacherClassroomService
 {
@@ -25,8 +27,8 @@ class TeacherClassroomService
             $keyword = trim((string) $filters['keyword']);
             $query->where(function ($q) use ($keyword) {
                 $q->where('name', 'like', "%{$keyword}%")
-                  ->orWhere('code', 'like', "%{$keyword}%")
-                  ->orWhere('school_year', 'like', "%{$keyword}%");
+                    ->orWhere('code', 'like', "%{$keyword}%")
+                    ->orWhere('school_year', 'like', "%{$keyword}%");
             });
         }
 
@@ -42,8 +44,8 @@ class TeacherClassroomService
         $base = Classroom::query()->where('teacher_id', $teacher->getAuthIdentifier());
 
         return [
-            'total'    => (clone $base)->count(),
-            'active'   => (clone $base)->where('status', 'active')->count(),
+            'total' => (clone $base)->count(),
+            'active' => (clone $base)->where('status', 'active')->count(),
             'inactive' => (clone $base)->where('status', 'inactive')->count(),
             'students' => (clone $base)->withCount('students')->get()->sum('students_count'),
         ];
@@ -53,10 +55,10 @@ class TeacherClassroomService
     {
         return Classroom::query()->create([
             ...$data,
-            'created_by'  => $teacher->getAuthIdentifier(),
-            'teacher_id'  => $teacher->getAuthIdentifier(),
-            'code'        => Str::upper($data['code']),
-            'slug'        => $this->uniqueSlug($data['name']),
+            'created_by' => $teacher->getAuthIdentifier(),
+            'teacher_id' => $teacher->getAuthIdentifier(),
+            'code' => Str::upper($data['code']),
+            'slug' => $this->uniqueSlug($data['name']),
         ]);
     }
 
@@ -86,9 +88,9 @@ class TeacherClassroomService
     public function formData(): array
     {
         return [
-            'statuses'   => Classroom::STATUSES,
-            'students'   => User::query()->students()->active()->orderBy('name')->get(['id', 'name', 'email']),
-            'subjects'   => Subject::query()->where('status', 'active')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
+            'statuses' => Classroom::STATUSES,
+            'students' => User::query()->students()->active()->orderBy('name')->get(['id', 'name', 'email']),
+            'subjects' => Subject::query()->where('status', 'active')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
             'assistants' => User::query()->teachers()->active()->orderBy('name')->get(['id', 'name', 'email']),
         ];
     }
@@ -96,14 +98,14 @@ class TeacherClassroomService
     public function saveAttendance(Classroom $classroom, string $date, array $records): void
     {
         foreach ($records as $studentId => $record) {
-            \Mindigo\TeacherClassroom\Models\ClassroomAttendance::query()->updateOrCreate(
+            ClassroomAttendance::query()->updateOrCreate(
                 [
                     'classroom_id' => $classroom->id,
-                    'student_id'   => (int) $studentId,
+                    'student_id' => (int) $studentId,
                     'session_date' => $date,
                 ],
                 [
-                    'status'  => $record['status'] ?? 'present',
+                    'status' => $record['status'] ?? 'present',
                     'remarks' => $record['remarks'] ?? null,
                 ]
             );
@@ -112,7 +114,7 @@ class TeacherClassroomService
 
     public function getAttendanceByDate(Classroom $classroom, string $date)
     {
-        return \Mindigo\TeacherClassroom\Models\ClassroomAttendance::query()
+        return ClassroomAttendance::query()
             ->where('classroom_id', $classroom->id)
             ->where('session_date', $date)
             ->get()
@@ -121,7 +123,7 @@ class TeacherClassroomService
 
     public function getAttendanceHistory(Classroom $classroom)
     {
-        return \Mindigo\TeacherClassroom\Models\ClassroomAttendance::query()
+        return ClassroomAttendance::query()
             ->where('classroom_id', $classroom->id)
             ->with('student:id,name,email')
             ->orderBy('session_date', 'desc')
@@ -129,32 +131,32 @@ class TeacherClassroomService
             ->get();
     }
 
-    public function addSchedule(Classroom $classroom, array $data): \Mindigo\TeacherClassroom\Models\ClassroomSchedule
+    public function addSchedule(Classroom $classroom, array $data): ClassroomSchedule
     {
-        return \Mindigo\TeacherClassroom\Models\ClassroomSchedule::query()->create([
+        return ClassroomSchedule::query()->create([
             'classroom_id' => $classroom->id,
-            'title'        => $data['title'],
+            'title' => $data['title'],
             'session_date' => $data['session_date'],
-            'start_time'   => $data['start_time'],
-            'end_time'     => $data['end_time'],
-            'description'  => $data['description'] ?? null,
+            'start_time' => $data['start_time'],
+            'end_time' => $data['end_time'],
+            'description' => $data['description'] ?? null,
         ]);
     }
 
-    public function updateSchedule(\Mindigo\TeacherClassroom\Models\ClassroomSchedule $schedule, array $data): \Mindigo\TeacherClassroom\Models\ClassroomSchedule
+    public function updateSchedule(ClassroomSchedule $schedule, array $data): ClassroomSchedule
     {
         $schedule->update([
-            'title'        => $data['title'],
+            'title' => $data['title'],
             'session_date' => $data['session_date'],
-            'start_time'   => $data['start_time'],
-            'end_time'     => $data['end_time'],
-            'description'  => $data['description'] ?? null,
+            'start_time' => $data['start_time'],
+            'end_time' => $data['end_time'],
+            'description' => $data['description'] ?? null,
         ]);
 
         return $schedule;
     }
 
-    public function deleteSchedule(\Mindigo\TeacherClassroom\Models\ClassroomSchedule $schedule): void
+    public function deleteSchedule(ClassroomSchedule $schedule): void
     {
         $schedule->delete();
     }
@@ -171,7 +173,7 @@ class TeacherClassroomService
                 ->when($ignore, fn ($q) => $q->whereKeyNot($ignore->getKey()))
                 ->exists()
         ) {
-            $slug = $base . '-' . (++$i);
+            $slug = $base.'-'.(++$i);
         }
 
         return $slug;

@@ -2,9 +2,11 @@
 
 namespace Mindigo\TeacherLiveSession\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Mindigo\Auth\Models\User;
+use Mindigo\ClassroomManagement\Models\Classroom;
 
 class LiveSession extends Model
 {
@@ -28,21 +30,21 @@ class LiveSession extends Model
 
     protected $casts = [
         'scheduled_start' => 'datetime',
-        'scheduled_end'   => 'datetime',
-        'started_at'      => 'datetime',
-        'ended_at'        => 'datetime',
+        'scheduled_end' => 'datetime',
+        'started_at' => 'datetime',
+        'ended_at' => 'datetime',
     ];
 
     // Relationships
 
     public function classroom()
     {
-        return $this->belongsTo(\Mindigo\ClassroomManagement\Models\Classroom::class);
+        return $this->belongsTo(Classroom::class);
     }
 
     public function teacher()
     {
-        return $this->belongsTo(\Mindigo\Auth\Models\User::class, 'teacher_id');
+        return $this->belongsTo(User::class, 'teacher_id');
     }
 
     public function attendances()

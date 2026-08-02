@@ -24,8 +24,8 @@ class LiveSessionService
     public function create(array $data): LiveSession
     {
         $data['teacher_id'] = auth()->id();
-        $data['room_name']  = $this->generateRoomName();
-        $data['status']     = 'scheduled';
+        $data['room_name'] = $this->generateRoomName();
+        $data['status'] = 'scheduled';
 
         return LiveSession::create($data);
     }
@@ -52,7 +52,7 @@ class LiveSessionService
     {
         if ($session->status === 'scheduled') {
             $session->update([
-                'status'     => 'live',
+                'status' => 'live',
                 'started_at' => now(),
             ]);
         }
@@ -65,7 +65,7 @@ class LiveSessionService
     public function end(LiveSession $session): LiveSession
     {
         $session->update([
-            'status'   => 'ended',
+            'status' => 'ended',
             'ended_at' => now(),
         ]);
 
@@ -89,7 +89,7 @@ class LiveSessionService
     private function generateRoomName(): string
     {
         do {
-            $name = 'mindigo-' . Str::lower(Str::random(16));
+            $name = 'mindigo-'.Str::lower(Str::random(16));
         } while (LiveSession::where('room_name', $name)->exists());
 
         return $name;

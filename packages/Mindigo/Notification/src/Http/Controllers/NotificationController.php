@@ -19,7 +19,7 @@ class NotificationController extends Controller
         }
 
         $notifications = $query->paginate(15)->withQueryString();
-        $unreadCount   = $user->unreadNotifications()->count();
+        $unreadCount = $user->unreadNotifications()->count();
 
         return view('notification::index', compact('notifications', 'unreadCount', 'filter'));
     }

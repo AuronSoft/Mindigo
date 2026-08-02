@@ -11,8 +11,7 @@ class AnnouncementPublished extends Notification
         public ?string $message = null,
         public ?string $teacher = null,
         public ?string $url = null,
-    ) {
-    }
+    ) {}
 
     public function via(object $notifiable): array
     {
@@ -23,12 +22,12 @@ class AnnouncementPublished extends Notification
     {
         return [
             'category' => 'announcement',
-            'icon'     => 'megaphone',
-            'tone'     => 'blue',
-            'title'    => $this->title,
-            'message'  => $this->message,
-            'teacher'  => $this->teacher,
-            'url'      => $this->url,
+            'icon' => 'megaphone',
+            'tone' => 'blue',
+            'title' => $this->title,
+            'message' => $this->message,
+            'teacher' => $this->teacher,
+            'url' => $this->url,
         ];
     }
 }

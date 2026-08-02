@@ -8,25 +8,90 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Mindigo\Auth\Models\User;
+use Mindigo\SubjectManagement\Models\Subject;
 
 class Course extends Model
 {
     use SoftDeletes;
 
+    public const PUBLICATION_DRAFT = 'draft';
+
+    public const PUBLICATION_PENDING_REVIEW = 'pending_review';
+
+    public const PUBLICATION_PUBLISHED = 'published';
+
+    public const PUBLICATION_UNLISTED = 'unlisted';
+
+    public const PUBLICATION_ARCHIVED = 'archived';
+
+    public const PUBLICATION_STATUSES = [
+        self::PUBLICATION_DRAFT,
+        self::PUBLICATION_PENDING_REVIEW,
+        self::PUBLICATION_PUBLISHED,
+        self::PUBLICATION_UNLISTED,
+        self::PUBLICATION_ARCHIVED,
+    ];
+
+    public const DIFFICULTIES = ['beginner', 'intermediate', 'advanced'];
+
+    public const EDUCATION_LEVELS = ['primary', 'lower_secondary', 'upper_secondary', 'university', 'general'];
+
     protected $table = 'courses';
 
     protected $fillable = [
         'teacher_id',
+        'subject_id',
+        'category_id',
         'name',
         'slug',
         'description',
         'cover_image',
         'status',
+        'publication_status',
+        'is_active',
+        'education_level',
+        'difficulty',
+        'language',
+        'estimated_duration_minutes',
+        'learning_outcomes',
+        'requirements',
+        'target_learners',
+        'submitted_for_review_at',
+        'published_at',
+        'published_by',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'estimated_duration_minutes' => 'integer',
+            'learning_outcomes' => 'array',
+            'requirements' => 'array',
+            'target_learners' => 'array',
+            'submitted_for_review_at' => 'datetime',
+            'published_at' => 'datetime',
+        ];
+    }
 
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(CourseCategory::class, 'category_id');
+    }
+
+    public function publisher(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'published_by');
     }
 
     public function chapters(): HasMany
@@ -37,5 +102,10 @@ class Course extends Model
     public function lessons(): HasManyThrough
     {
         return $this->hasManyThrough(Lesson::class, Chapter::class, 'course_id', 'chapter_id');
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->publication_status === self::PUBLICATION_PUBLISHED && $this->is_active;
     }
 }

@@ -85,23 +85,23 @@ class ProfileService
     public function roleProfile(?string $role): array
     {
         $key = match ($role) {
-            "admin"   => "admin",
-            "teacher" => "teacher",
-            default   => "student",
+            'admin' => 'admin',
+            'teacher' => 'teacher',
+            default => 'student',
         };
 
         $tones = [
-            "admin"   => ["badge" => "bg-green-50 text-green-700 ring-green-100", "icon" => "shield"],
-            "teacher" => ["badge" => "bg-sky-50 text-sky-700 ring-sky-100",       "icon" => "book"],
-            "student" => ["badge" => "bg-amber-50 text-amber-700 ring-amber-100", "icon" => "user"],
+            'admin' => ['badge' => 'bg-green-50 text-green-700 ring-green-100', 'icon' => 'shield'],
+            'teacher' => ['badge' => 'bg-sky-50 text-sky-700 ring-sky-100',       'icon' => 'book'],
+            'student' => ['badge' => 'bg-amber-50 text-amber-700 ring-amber-100', 'icon' => 'user'],
         ];
 
         return [
-            "label"   => __("Mindigo-profile::app.role_{$key}_label"),
-            "summary" => __("Mindigo-profile::app.role_{$key}_summary"),
-            "badge"   => $tones[$key]["badge"],
-            "icon"    => $tones[$key]["icon"],
-            "items"   => [
+            'label' => __("Mindigo-profile::app.role_{$key}_label"),
+            'summary' => __("Mindigo-profile::app.role_{$key}_summary"),
+            'badge' => $tones[$key]['badge'],
+            'icon' => $tones[$key]['icon'],
+            'items' => [
                 __("Mindigo-profile::app.role_{$key}_item_1"),
                 __("Mindigo-profile::app.role_{$key}_item_2"),
                 __("Mindigo-profile::app.role_{$key}_item_3"),

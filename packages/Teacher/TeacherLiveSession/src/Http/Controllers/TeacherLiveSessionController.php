@@ -4,21 +4,20 @@ namespace Mindigo\TeacherLiveSession\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\TeacherLiveSession\Http\Requests\LiveSessionRequest;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Mindigo\TeacherLiveSession\Services\LiveSessionService;
 
 class TeacherLiveSessionController extends Controller
 {
-    public function __construct(protected LiveSessionService $service)
-    {
-    }
+    public function __construct(protected LiveSessionService $service) {}
 
     public function index(Request $request)
     {
         $classroomId = $request->input('classroom_id');
 
-        $sessions   = $this->service->getSessionsByTeacher(auth()->id(), $classroomId);
+        $sessions = $this->service->getSessionsByTeacher(auth()->id(), $classroomId);
         $classrooms = $this->classroomsForTeacher();
 
         return view('teacher-live-session::index', compact('sessions', 'classrooms'));
@@ -110,7 +109,7 @@ class TeacherLiveSessionController extends Controller
 
     private function classroomsForTeacher()
     {
-        return \Mindigo\ClassroomManagement\Models\Classroom::query()
+        return Classroom::query()
             ->where('teacher_id', auth()->id())
             ->where('status', 'active')
             ->withCount('students')

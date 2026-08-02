@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'title'    => 'Schedule',
+    'title' => 'Schedule',
     'subtitle' => 'Classes, deadlines, exams and live sessions',
-    'area'     => 'Student',
+    'area' => 'Student',
 
     // Calendar nav
-    'today'      => 'Today',
+    'today' => 'Today',
     'prev_month' => 'Previous month',
     'next_month' => 'Next month',
     'more_count' => '+:count more',
@@ -16,14 +16,14 @@ return [
     'd_fri' => 'Fri', 'd_sat' => 'Sat', 'd_sun' => 'Sun',
 
     // Event types
-    'type_class'      => 'Class',
+    'type_class' => 'Class',
     'type_assignment' => 'Deadline',
-    'type_exam'       => 'Exam',
-    'type_live'       => 'Live session',
-    'legend'          => 'Legend',
+    'type_exam' => 'Exam',
+    'type_live' => 'Live session',
+    'legend' => 'Legend',
 
     // Upcoming
-    'upcoming'       => 'Upcoming',
+    'upcoming' => 'Upcoming',
     'empty_upcoming' => 'No upcoming events.',
-    'all_day'        => 'All day',
+    'all_day' => 'All day',
 ];

@@ -2,9 +2,9 @@
 
 namespace Mindigo\BlogManagement\Http\Controllers;
 
-use Mindigo\BlogManagement\Models\NewsArticle;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Mindigo\BlogManagement\Models\NewsArticle;
 
 class NewsController extends Controller
 {
@@ -19,7 +19,7 @@ class NewsController extends Controller
         }
 
         $newsfeatured = (clone $query)->first();
-        $newsArticles  = (clone $query)->skip(1)->take(11)->get();
+        $newsArticles = (clone $query)->skip(1)->take(11)->get();
 
         return view('blog::news-page', compact('newsfeatured', 'newsArticles', 'source'));
     }

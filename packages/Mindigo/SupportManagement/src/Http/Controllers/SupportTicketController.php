@@ -15,9 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SupportTicketController extends Controller
 {
-    public function __construct(private SupportTicketService $tickets)
-    {
-    }
+    public function __construct(private SupportTicketService $tickets) {}
 
     public function index(Request $request)
     {
@@ -92,7 +90,7 @@ class SupportTicketController extends Controller
 
     public function destroy(Request $request, SupportTicket $supportTicket): RedirectResponse
     {
-        if (!$request->user()->isAdmin()) {
+        if (! $request->user()->isAdmin()) {
             abort(Response::HTTP_FORBIDDEN);
         }
 

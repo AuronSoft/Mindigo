@@ -13,9 +13,9 @@ class AuditLogServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'Mindigo-audit-log');
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'Mindigo-audit-log');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'Mindigo-audit-log');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'Mindigo-audit-log');
 
         Event::listen(Login::class, [AuditLogService::class, 'recordLogin']);
         Event::listen(Logout::class, [AuditLogService::class, 'recordLogout']);

@@ -29,7 +29,7 @@ class Announcement extends Model
     protected function casts(): array
     {
         return [
-            'is_pinned'    => 'boolean',
+            'is_pinned' => 'boolean',
             'published_at' => 'datetime',
         ];
     }

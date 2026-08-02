@@ -22,8 +22,8 @@ class SendOtpRequest extends FormRequest
     {
         return [
             'email.required' => 'Vui lòng nhập email.',
-            'email.email'    => 'Email không hợp lệ.',
-            'email.exists'   => 'Không tìm thấy tài khoản với email này.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.exists' => 'Không tìm thấy tài khoản với email này.',
         ];
     }
 }

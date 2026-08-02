@@ -96,7 +96,7 @@ class TeacherDiscussionService
         ]);
 
         foreach ($files as $file) {
-            $path = $file->store('teacher-discussions/' . $thread->id, 'public');
+            $path = $file->store('teacher-discussions/'.$thread->id, 'public');
 
             $message->attachments()->create([
                 'disk' => 'public',

@@ -13,7 +13,7 @@ class AuditLogController extends Controller
     {
         $logs = AuditLog::query()
             ->when($request->filled('keyword'), function ($query) use ($request) {
-                $keyword = '%' . trim($request->string('keyword')) . '%';
+                $keyword = '%'.trim($request->string('keyword')).'%';
 
                 $query->where(function ($query) use ($keyword) {
                     $query->where('user_name', 'like', $keyword)

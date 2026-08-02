@@ -11,17 +11,17 @@ use Mindigo\SubjectManagement\Models\Subject;
 class QuestionImportService
 {
     public function rowsFromFile($file): array
-{
-    $extension = strtolower($file->getClientOriginalExtension());
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
 
-    return match ($extension) {
-        'json'       => $this->parseJson((string) file_get_contents($file->getRealPath())),
-        'csv', 'txt' => $this->parseCsv($file->getRealPath()),
-        default      => throw ValidationException::withMessages([
-            'import_file' => 'File .docx cần được xử lý qua giao diện import, không phải upload trực tiếp.',
-        ]),
-    };
-}
+        return match ($extension) {
+            'json' => $this->parseJson((string) file_get_contents($file->getRealPath())),
+            'csv', 'txt' => $this->parseCsv($file->getRealPath()),
+            default => throw ValidationException::withMessages([
+                'import_file' => 'File .docx cần được xử lý qua giao diện import, không phải upload trực tiếp.',
+            ]),
+        };
+    }
 
     public function questionDataFromRow(array $row, User $user, string $defaultStatus, ?int $defaultFolderId, int $rowNumber): array
     {
@@ -37,13 +37,13 @@ class QuestionImportService
             ]);
         }
 
-        if (!in_array($type, Question::TYPES, true)) {
+        if (! in_array($type, Question::TYPES, true)) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_invalid_type', ['row' => $rowNumber]),
             ]);
         }
 
-        if (!in_array($difficulty, Question::DIFFICULTIES, true)) {
+        if (! in_array($difficulty, Question::DIFFICULTIES, true)) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_invalid_difficulty', ['row' => $rowNumber]),
             ]);
@@ -52,7 +52,7 @@ class QuestionImportService
         $this->validateCatalog($subject, $topic, $rowNumber);
 
         $status = trim((string) ($row['status'] ?? '')) ?: $defaultStatus;
-        if (!in_array($status, ['draft', 'reviewing'], true)) {
+        if (! in_array($status, ['draft', 'reviewing'], true)) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_invalid_status', ['row' => $rowNumber]),
             ]);
@@ -61,7 +61,7 @@ class QuestionImportService
         $options = $this->splitValue($row['options'] ?? []);
         $correctAnswers = $this->splitValue($row['correct_answers'] ?? $row['answer'] ?? []);
 
-        if (!in_array($type, ['short_answer', 'essay'], true) && count($options) < 2) {
+        if (! in_array($type, ['short_answer', 'essay'], true) && count($options) < 2) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_missing_options', ['row' => $rowNumber]),
             ]);
@@ -93,7 +93,7 @@ class QuestionImportService
     {
         $decoded = json_decode($contents, true);
 
-        if (!is_array($decoded)) {
+        if (! is_array($decoded)) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_invalid_json'),
             ]);
@@ -106,14 +106,14 @@ class QuestionImportService
     {
         $handle = fopen($path, 'rb');
 
-        if (!$handle) {
+        if (! $handle) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_unreadable'),
             ]);
         }
 
         $headers = fgetcsv($handle);
-        if (!$headers) {
+        if (! $headers) {
             fclose($handle);
 
             return [];
@@ -144,7 +144,7 @@ class QuestionImportService
         }
 
         $query = QuestionFolder::query()->where('name', $folderName);
-        if (!$user->isAdmin()) {
+        if (! $user->isAdmin()) {
             $query->where('created_by', $user->getAuthIdentifier());
         }
 
@@ -182,13 +182,13 @@ class QuestionImportService
             return;
         }
 
-        if (!array_key_exists($subject, $subjects)) {
+        if (! array_key_exists($subject, $subjects)) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_invalid_subject', ['row' => $rowNumber]),
             ]);
         }
 
-        if ($topic !== '' && !in_array($topic, $subjects[$subject], true)) {
+        if ($topic !== '' && ! in_array($topic, $subjects[$subject], true)) {
             throw ValidationException::withMessages([
                 'import_file' => __('Mindigo-question-bank::app.validation.import_invalid_topic', ['row' => $rowNumber]),
             ]);
@@ -197,7 +197,7 @@ class QuestionImportService
 
     private function activeSubjectsWithTopics(): array
     {
-        if (!class_exists(Subject::class)) {
+        if (! class_exists(Subject::class)) {
             return [];
         }
 

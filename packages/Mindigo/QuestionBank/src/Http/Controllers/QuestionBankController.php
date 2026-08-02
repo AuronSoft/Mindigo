@@ -16,9 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class QuestionBankController extends Controller
 {
-    public function __construct(private QuestionBankService $questions)
-    {
-    }
+    public function __construct(private QuestionBankService $questions) {}
 
     public function index(Request $request)
     {

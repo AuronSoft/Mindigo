@@ -13,7 +13,9 @@ class SupportTicket extends Model
     use SoftDeletes;
 
     public const STATUSES = ['open', 'in_progress', 'resolved', 'closed'];
+
     public const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
+
     public const CATEGORIES = ['account', 'exam', 'result', 'technical', 'content', 'other'];
 
     protected $fillable = [

@@ -22,7 +22,7 @@ class MindigoIdController extends Controller
         $email = strtolower($request->email);
         $type = $request->type;
 
-        if (!$this->service->findUser($email)) {
+        if (! $this->service->findUser($email)) {
             return response()->json(['ok' => true]);
         }
 
@@ -43,14 +43,14 @@ class MindigoIdController extends Controller
             $request->query('token', '')
         );
 
-        if (!$record) {
+        if (! $record) {
             return redirect()->route('login')
                 ->withErrors(['Mindigo_id' => 'Liên kết không hợp lệ hoặc đã hết hạn.']);
         }
 
         $user = $this->service->findUser($record->email);
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login')
                 ->withErrors(['Mindigo_id' => 'Tài khoản không tồn tại.']);
         }
@@ -70,7 +70,7 @@ class MindigoIdController extends Controller
         $email = strtolower($request->email);
         $record = $this->service->verifyOtpToken($email, $request->otp);
 
-        if (!$record) {
+        if (! $record) {
             return response()->json([
                 'message' => 'Mã OTP không hợp lệ hoặc đã hết hạn.',
             ], 422);
@@ -78,7 +78,7 @@ class MindigoIdController extends Controller
 
         $user = $this->service->findUser($email);
 
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'Tài khoản không tồn tại.'], 422);
         }
 

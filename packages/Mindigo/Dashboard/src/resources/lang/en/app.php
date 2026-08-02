@@ -35,7 +35,7 @@ return [
     'question_bank' => 'Question bank',
     'exams' => 'Multiple choice exams',
     'learners' => 'Learners',
-    'classrooms'    => 'Classrooms',
+    'classrooms' => 'Classrooms',
     'my_classrooms' => 'My Classrooms',
     'subjects' => 'Subjects',
     'documents' => 'Documents',

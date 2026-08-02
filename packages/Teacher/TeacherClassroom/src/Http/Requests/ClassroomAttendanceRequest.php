@@ -14,9 +14,9 @@ class ClassroomAttendanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'attendance_date'   => ['required', 'date'],
-            'records'           => ['required', 'array'],
-            'records.*.status'  => ['required', 'string', 'in:present,absent,late,excused'],
+            'attendance_date' => ['required', 'date'],
+            'records' => ['required', 'array'],
+            'records.*.status' => ['required', 'string', 'in:present,absent,late,excused'],
             'records.*.remarks' => ['nullable', 'string', 'max:255'],
         ];
     }

@@ -11,57 +11,57 @@ return new class extends Migration
         // Bảng bài tập
         if (! Schema::hasTable('assignments')) {
             Schema::create('assignments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('teacher_id')->constrained('users')->cascadeOnDelete();
-            $table->string('title');
-            $table->text('description')->nullable();       // đề bài dạng text
-            $table->string('file_path')->nullable();       // file đề đính kèm
-            $table->dateTime('due_date');
-            $table->boolean('allow_late')->default(false);
-            $table->unsignedTinyInteger('late_days')->nullable();
-            $table->unsignedSmallInteger('max_score')->default(10);
+                $table->id();
+                $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('teacher_id')->constrained('users')->cascadeOnDelete();
+                $table->string('title');
+                $table->text('description')->nullable();       // đề bài dạng text
+                $table->string('file_path')->nullable();       // file đề đính kèm
+                $table->dateTime('due_date');
+                $table->boolean('allow_late')->default(false);
+                $table->unsignedTinyInteger('late_days')->nullable();
+                $table->unsignedSmallInteger('max_score')->default(10);
 
-            // 'file' | 'text' | 'both'
-            $table->enum('submission_type', ['file', 'text', 'both'])->default('both');
+                // 'file' | 'text' | 'both'
+                $table->enum('submission_type', ['file', 'text', 'both'])->default('both');
 
-            // 'draft' | 'published'
-            $table->enum('status', ['draft', 'published'])->default('draft');
+                // 'draft' | 'published'
+                $table->enum('status', ['draft', 'published'])->default('draft');
 
-            $table->timestamps();
-            $table->softDeletes();
+                $table->timestamps();
+                $table->softDeletes();
             });
         }
 
         // Bảng bài nộp
         if (! Schema::hasTable('assignment_submissions')) {
             Schema::create('assignment_submissions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('assignment_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('student_id')->constrained('users')->cascadeOnDelete();
+                $table->id();
+                $table->foreignId('assignment_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('student_id')->constrained('users')->cascadeOnDelete();
 
-            // Hình thức 1: nộp file
-            $table->string('file_path')->nullable();
-            $table->string('file_original_name')->nullable();  // tên file gốc
+                // Hình thức 1: nộp file
+                $table->string('file_path')->nullable();
+                $table->string('file_original_name')->nullable();  // tên file gốc
 
-            // Hình thức 2: nộp văn bản
-            $table->text('text_content')->nullable();
+                // Hình thức 2: nộp văn bản
+                $table->text('text_content')->nullable();
 
-            $table->dateTime('submitted_at')->nullable();
-            $table->boolean('is_late')->default(false);
+                $table->dateTime('submitted_at')->nullable();
+                $table->boolean('is_late')->default(false);
 
-            // Chấm bài
-            $table->decimal('score', 5, 2)->nullable();
-            $table->text('feedback')->nullable();
-            $table->dateTime('graded_at')->nullable();
+                // Chấm bài
+                $table->decimal('score', 5, 2)->nullable();
+                $table->text('feedback')->nullable();
+                $table->dateTime('graded_at')->nullable();
 
-            // 'submitted' | 'graded' | 'returned'
-            $table->enum('status', ['submitted', 'graded', 'returned'])->default('submitted');
+                // 'submitted' | 'graded' | 'returned'
+                $table->enum('status', ['submitted', 'graded', 'returned'])->default('submitted');
 
-            $table->timestamps();
+                $table->timestamps();
 
-            // Mỗi SV chỉ nộp 1 lần / bài tập
-            $table->unique(['assignment_id', 'student_id']);
+                // Mỗi SV chỉ nộp 1 lần / bài tập
+                $table->unique(['assignment_id', 'student_id']);
             });
         }
     }

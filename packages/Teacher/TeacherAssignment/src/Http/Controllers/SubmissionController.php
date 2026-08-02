@@ -11,9 +11,7 @@ use Mindigo\TeacherAssignment\Services\AssignmentService;
 
 class SubmissionController extends Controller
 {
-    public function __construct(protected AssignmentService $service)
-    {
-    }
+    public function __construct(protected AssignmentService $service) {}
 
     public function index(Assignment $assignment)
     {

@@ -32,9 +32,9 @@ class MindigoIdOtpMail extends Mailable
         return new Content(
             view: 'Mindigo-auth::otp',
             with: [
-                'otp'   => $this->otp,
+                'otp' => $this->otp,
                 'email' => $this->email,
-                'type'  => $this->type,
+                'type' => $this->type,
             ],
         );
     }

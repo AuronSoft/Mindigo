@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Mindigo\Auth\Models\User;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\TeacherAnnouncement\Models\Announcement;
+use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
+use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 
 class Classroom extends Model
 {
@@ -63,17 +66,16 @@ class Classroom extends Model
 
     public function attendances(): HasMany
     {
-        return $this->hasMany(\Mindigo\TeacherClassroom\Models\ClassroomAttendance::class, 'classroom_id');
+        return $this->hasMany(ClassroomAttendance::class, 'classroom_id');
     }
 
     public function schedules(): HasMany
     {
-        return $this->hasMany(\Mindigo\TeacherClassroom\Models\ClassroomSchedule::class, 'classroom_id');
+        return $this->hasMany(ClassroomSchedule::class, 'classroom_id');
     }
 
     public function announcements(): BelongsToMany
     {
-        return $this->belongsToMany(\Mindigo\TeacherAnnouncement\Models\Announcement::class, 'announcement_classroom');
+        return $this->belongsToMany(Announcement::class, 'announcement_classroom');
     }
 }
-

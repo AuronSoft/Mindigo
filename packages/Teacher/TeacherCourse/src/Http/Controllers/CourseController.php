@@ -5,147 +5,68 @@ namespace Mindigo\TeacherCourse\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 use Mindigo\TeacherCourse\Http\Requests\CourseRequest;
 use Mindigo\TeacherCourse\Models\Course;
+use Mindigo\TeacherCourse\Services\CourseService;
 
 class CourseController extends Controller
 {
-    public function index(Request $request)
+    public function __construct(private readonly CourseService $courses) {}
+
+    public function index(Request $request): View
     {
+        Gate::authorize('viewAny', Course::class);
         session()->forget('url.intended');
-        $user = Auth::user();
-
-        $query = Course::query()
-            ->where('teacher_id', $user->getAuthIdentifier())
-            ->withCount(['chapters', 'lessons'])
-            ->latest();
-
-        if ($search = $request->get('search')) {
-            $query->where('name', 'like', "%{$search}%");
-        }
-        if ($status = $request->get('status')) {
-            $query->where('status', $status);
-        }
+        $filters = $request->only(['search', 'status', 'publication_status']);
 
         return view('teacher-course::index', [
-            'courses' => $query->paginate(12)->withQueryString(),
-            'filters' => $request->only(['search', 'status']),
+            'courses' => $this->courses->ownedList($request->user(), $filters),
+            'filters' => $filters,
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
-        return view('teacher-course::create');
+        Gate::authorize('create', Course::class);
+
+        return view('teacher-course::create', $this->courses->formData());
     }
 
     public function store(CourseRequest $request): RedirectResponse
     {
-        $data = $request->validated();
+        $course = $this->courses->create($request->user(), $request->validated(), $request->file('cover_image'));
 
-        $user = Auth::user();
-        $slug = $this->uniqueSlug($data['name']);
-
-        $coverPath = null;
-        if ($request->hasFile('cover_image')) {
-            $coverPath = $request->file('cover_image')->store('courses/covers', 'public');
-        }
-
-        $course = Course::create([
-            'teacher_id'  => $user->getAuthIdentifier(),
-            'name'        => $data['name'],
-            'slug'        => $slug,
-            'description' => $data['description'] ?? null,
-            'cover_image' => $coverPath,
-            'status'      => $data['status'],
-        ]);
-
-        return redirect()
-            ->route('teacher.courses.show', $course)
-            ->with('success', __('teacher-course::app.course_created'));
+        return redirect()->route('teacher.courses.show', $course)->with('success', __('teacher-course::app.course_created'));
     }
 
-    public function show(Course $course)
+    public function show(Course $course): View
     {
-        $this->authorizeOwnership($course);
+        Gate::authorize('view', $course);
 
-        $course->load(['chapters.lessons.assignment:id,title', 'chapters.lessons.prerequisite:id,name']);
-
-        return view('teacher-course::show', compact('course'));
+        return view('teacher-course::show', ['course' => $this->courses->detail($course)]);
     }
 
-    public function edit(Course $course)
+    public function edit(Course $course): View
     {
-        $this->authorizeOwnership($course);
+        Gate::authorize('update', $course);
 
-        return view('teacher-course::edit', compact('course'));
+        return view('teacher-course::edit', ['course' => $course, ...$this->courses->formData()]);
     }
 
     public function update(CourseRequest $request, Course $course): RedirectResponse
     {
-        $this->authorizeOwnership($course);
+        $this->courses->update($course, $request->validated(), $request->file('cover_image'));
 
-        $data = $request->validated();
-
-        $slug = $course->name === $data['name'] ? $course->slug : $this->uniqueSlug($data['name'], $course);
-
-        $coverPath = $course->cover_image;
-        if ($request->hasFile('cover_image')) {
-            if ($course->cover_image) {
-                Storage::disk('public')->delete($course->cover_image);
-            }
-            $coverPath = $request->file('cover_image')->store('courses/covers', 'public');
-        }
-
-        $course->update([
-            'name'        => $data['name'],
-            'slug'        => $slug,
-            'description' => $data['description'] ?? null,
-            'cover_image' => $coverPath,
-            'status'      => $data['status'],
-        ]);
-
-        return redirect()
-            ->route('teacher.courses.show', $course)
-            ->with('success', __('teacher-course::app.course_updated'));
+        return redirect()->route('teacher.courses.show', $course)->with('success', __('teacher-course::app.course_updated'));
     }
 
     public function destroy(Course $course): RedirectResponse
     {
-        $this->authorizeOwnership($course);
-        $course->delete();
+        Gate::authorize('delete', $course);
+        $this->courses->delete($course);
 
-        return redirect()
-            ->route('teacher.courses.index')
-            ->with('success', __('teacher-course::app.course_deleted'));
-    }
-
-    private function authorizeOwnership(Course $course): void
-    {
-        $user = Auth::user();
-        abort_unless(
-            $user->isAdmin() || $course->teacher_id === (int) $user->getAuthIdentifier(),
-            403,
-            __('teacher-course::app.unauthorized_course')
-        );
-    }
-
-    private function uniqueSlug(string $name, ?Course $ignore = null): string
-    {
-        $base = Str::slug($name) ?: 'khoa-hoc';
-        $slug = $base;
-        $i = 1;
-        while (
-            Course::query()
-                ->where('slug', $slug)
-                ->when($ignore, fn ($q) => $q->whereKeyNot($ignore->getKey()))
-                ->withTrashed()
-                ->exists()
-        ) {
-            $slug = $base . '-' . (++$i);
-        }
-        return $slug;
+        return redirect()->route('teacher.courses.index')->with('success', __('teacher-course::app.course_deleted'));
     }
 }

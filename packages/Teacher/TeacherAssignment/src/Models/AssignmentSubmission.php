@@ -2,8 +2,9 @@
 
 namespace Mindigo\TeacherAssignment\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Mindigo\Auth\Models\User;
 
 class AssignmentSubmission extends Model
 {
@@ -35,7 +36,7 @@ class AssignmentSubmission extends Model
         'score' => 'float',
     ];
 
-    //Relationships
+    // Relationships
 
     public function assignment()
     {
@@ -44,10 +45,10 @@ class AssignmentSubmission extends Model
 
     public function student()
     {
-        return $this->belongsTo(\Mindigo\Auth\Models\User::class, 'student_id');
+        return $this->belongsTo(User::class, 'student_id');
     }
 
-    //Helpers 
+    // Helpers
 
     public function isGraded(): bool
     {
@@ -56,19 +57,21 @@ class AssignmentSubmission extends Model
 
     public function hasFile(): bool
     {
-        return !empty($this->file_path);
+        return ! empty($this->file_path);
     }
 
     public function hasText(): bool
     {
-        return !empty($this->text_content);
+        return ! empty($this->text_content);
     }
 
     public function scorePercent(): ?float
     {
-        if (is_null($this->score))
+        if (is_null($this->score)) {
             return null;
+        }
         $max = $this->assignment->max_score;
+
         return $max > 0 ? round(($this->score / $max) * 100, 1) : 0;
     }
 }

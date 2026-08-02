@@ -13,6 +13,7 @@ class Subject extends Model
     use SoftDeletes;
 
     public const STATUSES = ['active', 'inactive'];
+
     public const COLORS = ['green', 'sky', 'amber', 'rose', 'slate'];
 
     protected $fillable = [

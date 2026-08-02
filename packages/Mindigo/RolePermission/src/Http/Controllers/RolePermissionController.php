@@ -4,6 +4,7 @@ namespace Mindigo\RolePermission\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\RolePermission\Http\Requests\RolePermissionRequest;
 use Mindigo\RolePermission\Services\RolePermissionService;
 
@@ -35,8 +36,8 @@ class RolePermissionController extends Controller
         $oldMap = RolePermissionService::permissionMap();
         $newMap = RolePermissionService::updatePermissionMap($request->submittedPermissions());
 
-        if (class_exists(\Mindigo\AuditLog\Services\AuditLogService::class)) {
-            app(\Mindigo\AuditLog\Services\AuditLogService::class)->record(
+        if (class_exists(AuditLogService::class)) {
+            app(AuditLogService::class)->record(
                 'update',
                 'role_permission',
                 ['permissions' => $oldMap],

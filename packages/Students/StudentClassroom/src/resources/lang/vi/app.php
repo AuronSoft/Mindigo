@@ -1,48 +1,48 @@
 <?php
 
 return [
-    'title'    => 'Lớp của tôi',
+    'title' => 'Lớp của tôi',
     'subtitle' => 'Các lớp học bạn đang tham gia',
-    'area'     => 'Học sinh',
+    'area' => 'Học sinh',
 
     // Index
     'empty_title' => 'Bạn chưa tham gia lớp nào',
-    'empty_desc'  => 'Khi được giáo viên thêm vào lớp, lớp học sẽ hiển thị ở đây.',
-    'teacher'     => 'Giáo viên',
-    'no_teacher'  => 'Chưa có giáo viên',
-    'students'    => 'học sinh',
-    'subjects'    => 'Môn học',
-    'no_subject'  => 'Chưa có môn học',
-    'view_class'  => 'Vào lớp',
-    'code'        => 'Mã lớp',
+    'empty_desc' => 'Khi được giáo viên thêm vào lớp, lớp học sẽ hiển thị ở đây.',
+    'teacher' => 'Giáo viên',
+    'no_teacher' => 'Chưa có giáo viên',
+    'students' => 'học sinh',
+    'subjects' => 'Môn học',
+    'no_subject' => 'Chưa có môn học',
+    'view_class' => 'Vào lớp',
+    'code' => 'Mã lớp',
     'school_year' => 'Năm học',
 
     // Show
-    'back'               => 'Quay lại',
-    'section_schedule'   => 'Lịch học sắp tới',
-    'section_announce'   => 'Thông báo',
-    'section_assignments'=> 'Bài tập',
-    'section_live'       => 'Học trực tuyến',
-    'section_members'    => 'Thành viên lớp',
-    'section_info'       => 'Thông tin lớp',
-    'assistant'          => 'Trợ giảng',
-    'description'        => 'Mô tả',
+    'back' => 'Quay lại',
+    'section_schedule' => 'Lịch học sắp tới',
+    'section_announce' => 'Thông báo',
+    'section_assignments' => 'Bài tập',
+    'section_live' => 'Học trực tuyến',
+    'section_members' => 'Thành viên lớp',
+    'section_info' => 'Thông tin lớp',
+    'assistant' => 'Trợ giảng',
+    'description' => 'Mô tả',
 
-    'empty_schedule'   => 'Chưa có lịch học sắp tới.',
-    'empty_announce'   => 'Chưa có thông báo nào.',
-    'empty_assignments'=> 'Chưa có bài tập nào.',
-    'empty_live'       => 'Chưa có buổi học trực tuyến.',
+    'empty_schedule' => 'Chưa có lịch học sắp tới.',
+    'empty_announce' => 'Chưa có thông báo nào.',
+    'empty_assignments' => 'Chưa có bài tập nào.',
+    'empty_live' => 'Chưa có buổi học trực tuyến.',
 
     // Assignment
-    'due_date'        => 'Hạn nộp',
-    'overdue'         => 'Quá hạn',
+    'due_date' => 'Hạn nộp',
+    'overdue' => 'Quá hạn',
     'open_assignment' => 'Xem bài tập',
 
     // Live session
     'status_scheduled' => 'Đã lên lịch',
-    'status_live'      => 'Đang diễn ra',
-    'status_ended'     => 'Đã kết thúc',
-    'join_live'        => 'Vào phòng',
+    'status_live' => 'Đang diễn ra',
+    'status_ended' => 'Đã kết thúc',
+    'join_live' => 'Vào phòng',
 
     // Misc
     'you' => 'Bạn',

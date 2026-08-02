@@ -18,7 +18,7 @@ class TeacherResultController extends Controller
     {
         session()->forget('url.intended');
 
-        /** @var \Mindigo\Auth\Models\User $teacher */
+        /** @var User $teacher */
         $teacher = Auth::user();
         $keyword = request('q', '');
         $classrooms = $this->service->getMyClassrooms($teacher);
@@ -41,7 +41,7 @@ class TeacherResultController extends Controller
 
     public function byExam(Exam $exam)
     {
-        /** @var \Mindigo\Auth\Models\User $teacher */
+        /** @var User $teacher */
         $teacher = Auth::user();
         $classrooms = $this->service->getMyClassrooms($teacher);
         $selectedClassroom = $this->selectedClassroom($teacher, $classrooms, false);
@@ -54,7 +54,7 @@ class TeacherResultController extends Controller
     {
         abort_if($user->role !== 'student', 404);
 
-        /** @var \Mindigo\Auth\Models\User $teacher */
+        /** @var User $teacher */
         $teacher = Auth::user();
         $classrooms = $this->service->getMyClassrooms($teacher);
         $selectedClassroom = $this->selectedClassroom($teacher, $classrooms, false);
@@ -76,48 +76,48 @@ class TeacherResultController extends Controller
 
         return $defaultFirst ? $classrooms->first() : null;
     }
+
     // Chấm điểm thủ công
     public function reviewAttempt(ExamAttempt $attempt)
-{
-    /** @var \Mindigo\Auth\Models\User $teacher */
-    $teacher = Auth::user();
+    {
+        /** @var User $teacher */
+        $teacher = Auth::user();
 
-    // Chỉ teacher sở hữu đề thi mới được chấm
-    abort_unless(
-        $teacher->isAdmin() || $attempt->exam?->created_by === (int) $teacher->getAuthIdentifier(),
-        403
-    );
+        // Chỉ teacher sở hữu đề thi mới được chấm
+        abort_unless(
+            $teacher->isAdmin() || $attempt->exam?->created_by === (int) $teacher->getAuthIdentifier(),
+            403
+        );
 
-    $attempt->load(['exam', 'answers.question', 'user']);
+        $attempt->load(['exam', 'answers.question', 'user']);
 
-    $pendingAnswers = $attempt->answers
-        ->where('needs_review', true)
-        ->sortBy('id')
-        ->values();
+        $pendingAnswers = $attempt->answers
+            ->where('needs_review', true)
+            ->sortBy('id')
+            ->values();
 
-    return view('teacher-result::review-attempt', compact('attempt', 'pendingAnswers'));
-}
+        return view('teacher-result::review-attempt', compact('attempt', 'pendingAnswers'));
+    }
 
-public function gradeAttempt(ExamAttempt $attempt)
-{
-    /** @var \Mindigo\Auth\Models\User $teacher */
-    $teacher = Auth::user();
+    public function gradeAttempt(ExamAttempt $attempt)
+    {
+        /** @var User $teacher */
+        $teacher = Auth::user();
 
-    abort_unless(
-        $teacher->isAdmin() || $attempt->exam?->created_by === (int) $teacher->getAuthIdentifier(),
-        403
-    );
+        abort_unless(
+            $teacher->isAdmin() || $attempt->exam?->created_by === (int) $teacher->getAuthIdentifier(),
+            403
+        );
 
-    request()->validate([
-        'grades'   => ['required', 'array'],
-        'grades.*' => ['required', 'numeric', 'min:0'],
-    ]);
+        request()->validate([
+            'grades' => ['required', 'array'],
+            'grades.*' => ['required', 'numeric', 'min:0'],
+        ]);
 
-    $this->service->gradeManualAnswers($attempt, request()->input('grades'));
+        $this->service->gradeManualAnswers($attempt, request()->input('grades'));
 
-    return redirect()
-        ->route('teacher.results.by_exam', ['exam' => $attempt->exam_id])
-        ->with('success', 'Đã chấm điểm thành công.');
-}
-
+        return redirect()
+            ->route('teacher.results.by_exam', ['exam' => $attempt->exam_id])
+            ->with('success', 'Đã chấm điểm thành công.');
+    }
 }

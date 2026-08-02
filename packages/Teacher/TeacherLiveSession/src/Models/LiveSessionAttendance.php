@@ -3,6 +3,7 @@
 namespace Mindigo\TeacherLiveSession\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Mindigo\Auth\Models\User;
 
 class LiveSessionAttendance extends Model
 {
@@ -17,7 +18,7 @@ class LiveSessionAttendance extends Model
 
     protected $casts = [
         'joined_at' => 'datetime',
-        'left_at'   => 'datetime',
+        'left_at' => 'datetime',
     ];
 
     public function session()
@@ -27,6 +28,6 @@ class LiveSessionAttendance extends Model
 
     public function user()
     {
-        return $this->belongsTo(\Mindigo\Auth\Models\User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

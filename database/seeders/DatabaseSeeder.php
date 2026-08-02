@@ -22,10 +22,10 @@ class DatabaseSeeder extends Seeder
 
         // Teacher account cố định để test
         User::firstOrCreate(['email' => 'teacher@mindigo.com'], [
-            'name'     => 'Nguyễn Văn Giáo',
+            'name' => 'Nguyễn Văn Giáo',
             'password' => Hash::make('123456'),
-            'role'     => 'teacher',
-            'is_active'=> true,
+            'role' => 'teacher',
+            'is_active' => true,
         ]);
 
         // Teacher accounts
@@ -35,10 +35,10 @@ class DatabaseSeeder extends Seeder
 
         // Student account cố định để test
         User::firstOrCreate(['email' => 'student@mindigo.com'], [
-            'name'     => 'Trần Văn Học',
+            'name' => 'Trần Văn Học',
             'password' => Hash::make('123456'),
-            'role'     => 'student',
-            'is_active'=> true,
+            'role' => 'student',
+            'is_active' => true,
         ]);
 
         // Student accounts

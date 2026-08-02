@@ -14,19 +14,21 @@ class DashboardTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private User $teacher;
+
     private User $student;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->admin   = User::factory()->create(['role' => 'admin',   'is_active' => true]);
+        $this->admin = User::factory()->create(['role' => 'admin',   'is_active' => true]);
         $this->teacher = User::factory()->create(['role' => 'teacher', 'is_active' => true]);
         $this->student = User::factory()->create(['role' => 'student', 'is_active' => true]);
     }
 
-    // Access control 
+    // Access control
     public function test_guest_is_redirected_to_login(): void
     {
         $this->get('/dashboard')->assertRedirect('/login');
@@ -54,7 +56,7 @@ class DashboardTest extends TestCase
             ->assertOk();
     }
 
-    // Page renders without errors 
+    // Page renders without errors
     public function test_dashboard_returns_200_with_no_data(): void
     {
         $this->actingAs($this->admin)
@@ -76,7 +78,7 @@ class DashboardTest extends TestCase
         ]);
     }
 
-    // Real data rendering 
+    // Real data rendering
 
     public function test_dashboard_shows_correct_user_counts(): void
     {
@@ -84,7 +86,7 @@ class DashboardTest extends TestCase
         User::factory()->count(2)->create(['role' => 'teacher', 'is_active' => true]);
 
         $response = $this->actingAs($this->admin)->get('/dashboard');
-        $stats    = $response->viewData('stats');
+        $stats = $response->viewData('stats');
 
         // setUp created 1 admin, 1 teacher, 1 student; factory added 3 more students + 2 teachers
         $this->assertEquals(1, $stats['admins']);
@@ -96,8 +98,8 @@ class DashboardTest extends TestCase
     {
         Exam::factory()->count(5)->create(['created_by' => $this->admin->id, 'status' => 'published']);
 
-        $response     = $this->actingAs($this->admin)->get('/dashboard');
-        $totalExams   = $response->viewData('totalExams');
+        $response = $this->actingAs($this->admin)->get('/dashboard');
+        $totalExams = $response->viewData('totalExams');
 
         $this->assertEquals(5, $totalExams);
     }
@@ -120,7 +122,7 @@ class DashboardTest extends TestCase
         Question::factory()->count(3)->create(['status' => 'reviewing', 'created_by' => $this->teacher->id]);
         Question::factory()->count(2)->create(['status' => 'approved',  'created_by' => $this->teacher->id]);
 
-        $response      = $this->actingAs($this->admin)->get('/dashboard');
+        $response = $this->actingAs($this->admin)->get('/dashboard');
         $pendingReview = $response->viewData('pendingReview');
 
         $this->assertEquals(3, $pendingReview);
@@ -131,8 +133,8 @@ class DashboardTest extends TestCase
         $old = Exam::factory()->create(['created_by' => $this->admin->id, 'created_at' => now()->subDays(10)]);
         $new = Exam::factory()->create(['created_by' => $this->admin->id, 'created_at' => now()]);
 
-        $response     = $this->actingAs($this->admin)->get('/dashboard');
-        $latestExams  = $response->viewData('latestExams');
+        $response = $this->actingAs($this->admin)->get('/dashboard');
+        $latestExams = $response->viewData('latestExams');
 
         $this->assertEquals($new->id, $latestExams->first()->id);
     }
@@ -140,7 +142,7 @@ class DashboardTest extends TestCase
     public function test_dashboard_top_performers_limited_to_5(): void
     {
         $students = User::factory()->count(8)->create(['role' => 'student']);
-        $exam     = Exam::factory()->create(['created_by' => $this->admin->id, 'total_points' => 10]);
+        $exam = Exam::factory()->create(['created_by' => $this->admin->id, 'total_points' => 10]);
 
         foreach ($students as $s) {
             ExamAttempt::factory()->create([
@@ -149,7 +151,7 @@ class DashboardTest extends TestCase
             ]);
         }
 
-        $response      = $this->actingAs($this->admin)->get('/dashboard');
+        $response = $this->actingAs($this->admin)->get('/dashboard');
         $topPerformers = $response->viewData('topPerformers');
 
         $this->assertLessThanOrEqual(5, count($topPerformers));
@@ -158,11 +160,11 @@ class DashboardTest extends TestCase
     // User metrics card
     public function test_user_metrics_contains_correct_roles(): void
     {
-        $response    = $this->actingAs($this->admin)->get('/dashboard');
+        $response = $this->actingAs($this->admin)->get('/dashboard');
         $userMetrics = $response->viewData('userMetrics');
 
         $initials = array_column($userMetrics, 'initial');
-        $this->assertContains('A',  $initials);
+        $this->assertContains('A', $initials);
         $this->assertContains('GV', $initials);
         $this->assertContains('HS', $initials);
         $this->assertContains('ON', $initials);
@@ -170,13 +172,13 @@ class DashboardTest extends TestCase
 
     public function test_total_users_not_zero_to_prevent_division_by_zero(): void
     {
-        $response   = $this->actingAs($this->admin)->get('/dashboard');
+        $response = $this->actingAs($this->admin)->get('/dashboard');
         $totalUsers = $response->viewData('totalUsers');
 
         $this->assertGreaterThan(0, $totalUsers);
     }
 
-    // Ranking chart data 
+    // Ranking chart data
     public function test_ranking_labels_and_data_are_arrays(): void
     {
         $response = $this->actingAs($this->admin)->get('/dashboard');
