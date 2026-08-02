@@ -9,11 +9,13 @@ use Mindigo\ClassroomManagement\Models\Classroom;
 
 class CourseClassroomAssignment extends Model
 {
-    protected $fillable = ['course_id', 'classroom_id', 'assigned_by', 'assigned_at'];
+    public const VISIBILITIES = ['visible', 'hidden'];
+
+    protected $fillable = ['course_id', 'classroom_id', 'assigned_by', 'assigned_at', 'starts_at', 'due_at', 'is_mandatory', 'visibility'];
 
     protected function casts(): array
     {
-        return ['assigned_at' => 'datetime'];
+        return ['assigned_at' => 'datetime', 'starts_at' => 'datetime', 'due_at' => 'datetime', 'is_mandatory' => 'boolean'];
     }
 
     public function course(): BelongsTo

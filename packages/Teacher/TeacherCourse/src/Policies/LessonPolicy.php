@@ -19,6 +19,7 @@ class LessonPolicy
                 ->where('course_id', $course->id)
                 ->where('student_id', $user->id)
                 ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
+                ->availableToStudent()
                 ->whereHas('course', fn ($query) => $query
                     ->where('is_active', true)
                     ->where('publication_status', '!=', Course::PUBLICATION_ARCHIVED))

@@ -23,7 +23,7 @@ class CourseEnrollmentController extends Controller
 
     public function assign(CourseAssignmentRequest $request, Course $course): RedirectResponse
     {
-        $count = $this->enrollments->assignToClassrooms($course, $request->user(), $request->validated('classroom_ids'));
+        $count = $this->enrollments->assignToClassrooms($course, $request->user(), $request->validated());
 
         return to_route('teacher.courses.show', $course)
             ->with('success', trans_choice('teacher-course::learning.assigned_successfully', $count, ['count' => $count]));
