@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('courses.show', $course) }}" target="_blank" class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline hover:bg-slate-50"><x-heroicon-o-eye class="h-4 w-4" />@lang('teacher-course::publishing.preview')</a>
+            <a href="{{ route('courses.show', $course->slug) }}" target="_blank" class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline hover:bg-slate-50"><x-heroicon-o-eye class="h-4 w-4" />@lang('teacher-course::publishing.preview')</a>
             <a href="{{ route('teacher.courses.monitor', $course) }}" class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline hover:bg-slate-50"><x-heroicon-o-chart-bar class="h-4 w-4" />@lang('teacher-course::publishing.monitor')</a>
             <form method="POST" action="{{ route('teacher.courses.duplicate', $course) }}">@csrf<button class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 hover:bg-slate-50"><x-heroicon-o-document-duplicate class="h-4 w-4" />@lang('teacher-course::publishing.duplicate')</button></form>
             <a href="{{ route('teacher.courses.edit', $course) }}"
@@ -57,6 +57,16 @@
     </header>
 
     <div class="flex flex-1 flex-col gap-6 p-6">
+
+        @if(auth()->user()->isAdmin())
+            <section class="rounded-xl border border-slate-200 bg-white p-5">
+                <form method="POST" action="{{ route('admin.courses.featured', $course) }}" class="flex flex-wrap items-end justify-between gap-4">
+                    @csrf @method('PATCH')
+                    <div><h2 class="text-sm font-black text-slate-900">@lang('teacher-course::discovery.featured')</h2><p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-course::discovery.featured_description')</p></div>
+                    <div class="flex items-end gap-3"><label class="flex items-center gap-2 pb-2 text-xs font-black text-slate-600"><input type="hidden" name="is_featured" value="0"><input type="checkbox" name="is_featured" value="1" @checked($course->is_featured) class="h-4 w-4 accent-green-600">@lang('teacher-course::discovery.featured')</label><label><span class="mb-1 block text-[10px] font-black uppercase text-slate-400">@lang('teacher-course::discovery.featured_order')</span><input type="number" name="featured_order" min="0" value="{{ $course->featured_order }}" class="h-9 w-24 rounded-lg border border-slate-200 px-3 text-sm"></label><button class="h-9 rounded-lg bg-green-600 px-4 text-xs font-black text-white">@lang('teacher-course::discovery.save')</button></div>
+                </form>
+            </section>
+        @endif
 
         <section class="rounded-xl border border-slate-200 bg-white p-5">
             <div class="flex flex-wrap items-center justify-between gap-4">

@@ -4,6 +4,7 @@ namespace Mindigo\TeacherCourse\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\CourseCategory;
@@ -11,6 +12,15 @@ use Mindigo\TeacherCourse\Models\CourseCategory;
 class CourseCatalogService
 {
     public function catalog(array $filters): LengthAwarePaginator
+    {
+        $version = Course::query()->selectRaw('COUNT(*) AS aggregate_count, MAX(updated_at) AS latest_update')->first();
+        $key = 'courses:catalog:'.sha1(json_encode([$filters, request()->integer('page', 1), $version?->aggregate_count, $version?->latest_update]));
+
+        return Cache::remember($key, (int) config('course.discovery.cache_seconds', 600), fn () => $this->catalogQuery($filters)
+            ->paginate(12)->withQueryString());
+    }
+
+    private function catalogQuery(array $filters): Builder
     {
         $query = Course::query()
             ->publiclyListed()
@@ -37,15 +47,15 @@ class CourseCatalogService
 
         $this->applySort($query, $filters['sort'] ?? 'newest');
 
-        return $query->paginate(12)->withQueryString();
+        return $query;
     }
 
     public function filters(): array
     {
-        return [
+        return Cache::remember('courses:catalog:filters', (int) config('course.discovery.cache_seconds', 600), fn () => [
             'subjects' => Subject::query()->where('status', 'active')->orderBy('sort_order')->orderBy('name')->get(['id', 'name']),
             'categories' => CourseCategory::query()->where('is_active', true)->orderBy('sort_order')->orderBy('name')->get(['id', 'name']),
-        ];
+        ]);
     }
 
     private function applySort(Builder $query, string $sort): void

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'back_to_courses' => 'Back to course management',
     'title' => 'Course reviews', 'summary' => ':count reviews', 'distribution' => ':count reviews',
     'your_review' => 'Your review', 'rating' => 'Rating', 'comment' => 'Review', 'comment_placeholder' => 'Share your real learning experience...',
     'submit' => 'Submit review', 'update' => 'Update review', 'saved' => 'Your review was submitted.', 'updated' => 'Your review was updated.',

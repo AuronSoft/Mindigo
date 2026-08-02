@@ -33,6 +33,23 @@ class TeacherCourseUiConsistencyTest extends TestCase
             ->assertDontSee('teacher-course::app.delete');
     }
 
+    public function test_teacher_course_search_and_drawer_filters_apply_and_preserve_scope(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $draft = $this->courseFor($teacher, 'Algebra draft', ['publication_status' => Course::PUBLICATION_DRAFT]);
+        $this->courseFor($teacher, 'Physics published', ['publication_status' => Course::PUBLICATION_PUBLISHED]);
+        $this->courseFor($teacher, 'Inactive algebra', ['status' => 'inactive', 'is_active' => false]);
+
+        $this->actingAs($teacher)->get(route('teacher.courses.index', [
+            'search' => 'Algebra',
+            'status' => 'active',
+            'publication_status' => Course::PUBLICATION_DRAFT,
+        ]))->assertOk()->assertSee($draft->name)->assertDontSee('Physics published')->assertDontSee('Inactive algebra');
+
+        $this->actingAs($teacher)->get(route('teacher.courses.index', ['status' => '-', 'publication_status' => '-']))
+            ->assertOk()->assertSee('Algebra draft')->assertSee('Physics published')->assertSee('Inactive algebra');
+    }
+
     public function test_course_pages_render_the_complete_three_level_system_header(): void
     {
         $teacher = $this->createUser(['role' => 'teacher']);
@@ -85,7 +102,7 @@ class TeacherCourseUiConsistencyTest extends TestCase
         }
     }
 
-    private function courseFor(User $teacher, string $name): Course
+    private function courseFor(User $teacher, string $name, array $attributes = []): Course
     {
         return Course::query()->create([
             'teacher_id' => $teacher->getKey(),
@@ -93,6 +110,8 @@ class TeacherCourseUiConsistencyTest extends TestCase
             'slug' => str($name)->slug()->append('-', $teacher->getKey())->toString(),
             'description' => 'Course interface regression test.',
             'status' => 'active',
+            'is_active' => true,
+            ...$attributes,
         ]);
     }
 }

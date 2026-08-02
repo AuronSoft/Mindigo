@@ -23,11 +23,11 @@
         </div>
     </header>
 
-    <div class="flex flex-1 items-start justify-center p-6">
-        <div class="w-full max-w-2xl">
+    <div class="flex flex-1 items-start p-4 sm:p-6">
+        <div class="w-full">
             <form method="POST" action="{{ route('teacher.courses.store') }}"
                   enctype="multipart/form-data"
-                  class="space-y-5 rounded-xl border border-slate-200 bg-white p-6">
+                  class="space-y-5 rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
                 @csrf
                 @include('teacher-course::partials.form')
                 <div class="flex items-center justify-end gap-2 border-t border-slate-100 pt-5">

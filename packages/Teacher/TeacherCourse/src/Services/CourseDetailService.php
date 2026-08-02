@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Mindigo\Auth\Models\User;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\CourseReview;
 use Mindigo\TeacherCourse\Models\Lesson;
@@ -13,6 +14,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CourseDetailService
 {
+    public function __construct(private readonly CourseDiscoveryService $discovery) {}
+
     public function detail(Authenticatable $user, string $slug): Course
     {
         $course = Course::query()
@@ -42,6 +45,9 @@ class CourseDetailService
         if ($course->isPublished()) {
             Course::query()->whereKey($course)->increment('view_count');
             $course->view_count++;
+            if ($user instanceof User) {
+                $this->discovery->recordView($user, $course);
+            }
         }
 
         $distribution = array_fill(1, 5, 0);

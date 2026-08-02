@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Mindigo\TeacherCourse\Http\Requests\CourseIndexRequest;
 use Mindigo\TeacherCourse\Http\Requests\CourseRequest;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Services\CourseEnrollmentService;
@@ -19,11 +20,11 @@ class CourseController extends Controller
         private readonly CourseEnrollmentService $enrollments,
     ) {}
 
-    public function index(Request $request): View
+    public function index(CourseIndexRequest $request): View
     {
         Gate::authorize('viewAny', Course::class);
         session()->forget('url.intended');
-        $filters = $request->only(['search', 'status', 'publication_status']);
+        $filters = $request->safe()->only(['search', 'status', 'publication_status']);
 
         return view('teacher-course::index', [
             'courses' => $this->courses->ownedList($request->user(), $filters),

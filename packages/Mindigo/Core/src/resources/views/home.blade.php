@@ -9,6 +9,14 @@
     <div id="home-sections">
         @include('core::partials.home.hero')
         @include('core::partials.home.trust')
+        @if(isset($featuredCourses) && $featuredCourses->isNotEmpty())
+            <section class="border-y border-slate-100 bg-slate-50 px-5 py-12 sm:px-8">
+                <div class="mx-auto max-w-7xl">
+                    <div class="mb-5 flex items-end justify-between gap-4"><div><p class="text-xs font-black uppercase tracking-widest text-green-700">@lang('teacher-course::catalog.eyebrow')</p><h2 class="mt-1 text-2xl font-black text-slate-950">@lang('teacher-course::discovery.featured')</h2><p class="mt-1 text-sm font-semibold text-slate-500">@lang('teacher-course::discovery.featured_description')</p></div><a href="{{ route('courses.index') }}" class="shrink-0 text-sm font-black text-green-700 no-underline">@lang('core::app.home.cta_search')</a></div>
+                    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">@foreach($featuredCourses->take(4) as $course) @include('teacher-course::catalog.partials.course-card', ['course' => $course]) @endforeach</div>
+                </div>
+            </section>
+        @endif
         @include('core::partials.home.feature-ai')
         @include('core::partials.home.feature-personalize')
         @include('core::partials.home.feature-virtual-exam')
