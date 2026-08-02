@@ -7,7 +7,18 @@
 
 @section('content')
 <div class="min-h-screen bg-slate-50">
-    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-6"><p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('teacher-course::app.teaching_content')</p><h1 class="text-lg font-black text-slate-950">@lang('teacher-course::analytics.title')</h1><p class="text-xs font-semibold text-slate-400">{{ __($isAdminAnalytics ? 'teacher-course::analytics.admin_subtitle' : 'teacher-course::analytics.teacher_subtitle') }}</p></header>
+    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-6">
+        <div class="flex items-center gap-4">
+            <a href="{{ route($isAdminAnalytics ? 'dashboard' : 'teacher.dashboard') }}" aria-label="@lang('teacher-course::analytics.back_to_dashboard')" title="@lang('teacher-course::analytics.back_to_dashboard')" class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
+                <x-heroicon-o-arrow-left class="h-4 w-4" />
+            </a>
+            <div class="min-w-0">
+                <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('teacher-course::app.teaching_content')</p>
+                <h1 class="text-lg font-black text-slate-950">@lang('teacher-course::analytics.title')</h1>
+                <p class="text-xs font-semibold text-slate-400">{{ __($isAdminAnalytics ? 'teacher-course::analytics.admin_subtitle' : 'teacher-course::analytics.teacher_subtitle') }}</p>
+            </div>
+        </div>
+    </header>
     <main class="space-y-5 p-4 sm:p-6">
         <section class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6">
             @foreach($stats as $key => $value)

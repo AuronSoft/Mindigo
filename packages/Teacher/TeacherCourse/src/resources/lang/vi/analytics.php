@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Phân tích khóa học', 'teacher_subtitle' => 'Theo dõi chất lượng nội dung và hiệu quả học tập trong các khóa học của bạn.',
+    'title' => 'Phân tích khóa học', 'back_to_dashboard' => 'Quay về bảng điều khiển', 'teacher_subtitle' => 'Theo dõi chất lượng nội dung và hiệu quả học tập trong các khóa học của bạn.',
     'admin_subtitle' => 'Theo dõi tăng trưởng, chất lượng và mức độ hoàn thành trên toàn nền tảng.',
     'total_courses' => 'Tổng khóa học', 'total_enrollments' => 'Tổng lượt tham gia', 'in_progress' => 'Đang học', 'completed' => 'Đã hoàn thành',
     'completion_rate' => 'Tỷ lệ hoàn thành', 'average_learning_time' => 'Thời gian học TB', 'lesson_completion_rate' => 'Hoàn thành bài học',
