@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         // Admin account
         User::firstOrCreate(['email' => 'admin@mindigo.com'], [
-            'name' => 'Admin',
+            'name' => 'Quản trị viên Mindigo',
             'password' => Hash::make('123456'),
             'role' => 'admin',
         ]);

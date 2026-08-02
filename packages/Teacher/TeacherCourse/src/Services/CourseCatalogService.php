@@ -48,28 +48,6 @@ class CourseCatalogService
         ];
     }
 
-    public function detail(string $slug): Course
-    {
-        $course = Course::query()
-            ->publiclyListed()
-            ->where('slug', $slug)
-            ->with([
-                'teacher:id,name,avatar,bio',
-                'teacher.teacherProfile:id,user_id,headline,biography,specialization,experience_years,qualifications,is_public',
-                'subject:id,name,slug',
-                'category:id,name,slug',
-                'chapters:id,course_id,name,sort_order',
-                'chapters.lessons:id,chapter_id,name,description,sort_order',
-            ])
-            ->withCount('lessons')
-            ->firstOrFail();
-
-        Course::query()->whereKey($course)->increment('view_count');
-        $course->view_count++;
-
-        return $course;
-    }
-
     private function applySort(Builder $query, string $sort): void
     {
         match ($sort) {

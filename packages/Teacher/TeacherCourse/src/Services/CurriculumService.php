@@ -55,7 +55,7 @@ class CurriculumService
         return DB::transaction(function () use ($chapter, $data, $video, $attachments): Lesson {
             $sortOrder = ((int) $chapter->lessons()->lockForUpdate()->max('sort_order')) + 1;
             $data['sort_order'] = $sortOrder;
-            $data['video_path'] = $video?->store('courses/videos', 'public');
+            $data['video_path'] = $video?->store('course-content/videos', 'local');
             $data['attachment_paths'] = $this->storeAttachments($attachments) ?: null;
 
             return $chapter->lessons()->create($data);
@@ -79,7 +79,7 @@ class CurriculumService
             }
 
             if ($video) {
-                $videoPath = $video->store('courses/videos', 'public');
+                $videoPath = $video->store('course-content/videos', 'local');
             }
 
             $existing = collect($lesson->attachment_paths ?? []);
@@ -92,7 +92,7 @@ class CurriculumService
             $data['attachment_paths'] = array_merge($kept, $this->storeAttachments($attachments)) ?: null;
             $lesson->update($data);
 
-            DB::afterCommit(fn () => collect($filesToDelete)->each(fn (string $path) => Storage::disk('public')->delete($path)));
+            DB::afterCommit(fn () => collect($filesToDelete)->each(fn (string $path) => $this->deleteStoredFile($path)));
 
             return $lesson->refresh();
         });
@@ -107,17 +107,23 @@ class CurriculumService
             }
 
             $lesson->delete();
-            DB::afterCommit(fn () => $files->each(fn (string $path) => Storage::disk('public')->delete($path)));
+            DB::afterCommit(fn () => $files->each(fn (string $path) => $this->deleteStoredFile($path)));
         });
     }
 
     private function storeAttachments(array $attachments): array
     {
         return collect($attachments)->map(fn (UploadedFile $file): array => [
-            'path' => $file->store('courses/attachments', 'public'),
+            'path' => $file->store('course-content/attachments', 'local'),
+            'disk' => 'local',
             'original_name' => $file->getClientOriginalName(),
             'mime' => $file->getMimeType(),
             'size' => $file->getSize(),
         ])->all();
+    }
+
+    private function deleteStoredFile(string $path): void
+    {
+        Storage::disk(str_starts_with($path, 'course-content/') ? 'local' : 'public')->delete($path);
     }
 }

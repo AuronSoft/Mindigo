@@ -5,11 +5,16 @@ namespace Mindigo\TeacherCourse\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Mindigo\TeacherCourse\Http\Requests\CourseCatalogRequest;
+use Mindigo\TeacherCourse\Http\Requests\CourseDetailRequest;
 use Mindigo\TeacherCourse\Services\CourseCatalogService;
+use Mindigo\TeacherCourse\Services\CourseDetailService;
 
 class PublicCourseController extends Controller
 {
-    public function __construct(private readonly CourseCatalogService $catalog) {}
+    public function __construct(
+        private readonly CourseCatalogService $catalog,
+        private readonly CourseDetailService $details,
+    ) {}
 
     public function index(CourseCatalogRequest $request): View
     {
@@ -22,8 +27,10 @@ class PublicCourseController extends Controller
         ]);
     }
 
-    public function show(string $course): View
+    public function show(CourseDetailRequest $request, string $course): View
     {
-        return view('teacher-course::catalog.show', ['course' => $this->catalog->detail($course)]);
+        return view('teacher-course::catalog.show', [
+            'course' => $this->details->detail($request->user(), $course),
+        ]);
     }
 }

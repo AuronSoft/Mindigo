@@ -27,6 +27,7 @@ class LessonRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'is_preview' => ['nullable', 'boolean'],
             'content' => ['nullable', 'string'],
             'video' => ['nullable', 'file', 'mimes:mp4,mov,avi,webm', 'max:512000'],
             'remove_video' => ['nullable', 'boolean'],

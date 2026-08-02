@@ -14,6 +14,7 @@ class Lesson extends Model
         'chapter_id',
         'name',
         'description',
+        'is_preview',
         'content',
         'video_path',
         'attachment_paths',
@@ -24,6 +25,7 @@ class Lesson extends Model
 
     protected $casts = [
         'attachment_paths' => 'array',
+        'is_preview' => 'boolean',
     ];
 
     public function chapter(): BelongsTo
@@ -39,5 +41,10 @@ class Lesson extends Model
     public function prerequisite(): BelongsTo
     {
         return $this->belongsTo(Lesson::class, 'prerequisite_lesson_id');
+    }
+
+    public function course(): Course
+    {
+        return $this->chapter->course;
     }
 }
