@@ -120,6 +120,9 @@ class CoursePublishingDistributionTest extends TestCase
             ->assertOk()
             ->assertSee($student->name)
             ->assertSee('100%')
+            ->assertSee('data-mindigo-drawer-panel="course-monitor-filter"', false)
+            ->assertSee(__('teacher-course::publishing.monitor_filter_title'))
+            ->assertSee('sticky top-0', false)
             ->assertSee('rel="stylesheet"', false);
         $this->actingAs($outsider)->get(route('teacher.courses.monitor', $course))->assertForbidden();
     }
