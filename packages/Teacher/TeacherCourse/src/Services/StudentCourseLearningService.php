@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
+use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\CourseEnrollment;
 use Mindigo\TeacherCourse\Models\CourseLessonProgress;
 use Mindigo\TeacherCourse\Models\Lesson;
@@ -125,7 +126,11 @@ class StudentCourseLearningService
             ->where('student_id', $student->id)
             ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
             ->availableToStudent()
-            ->whereHas('course', fn ($query) => $query->where('slug', $courseSlug)->where('is_active', true))
+            ->whereHas('course', fn ($query) => $query
+                ->where('slug', $courseSlug)
+                ->whereNull('deleted_at')
+                ->where('is_active', true)
+                ->whereIn('publication_status', [Course::PUBLICATION_PUBLISHED, Course::PUBLICATION_UNLISTED]))
             ->with([
                 'course.teacher:id,name,avatar', 'course.subject:id,name', 'course.category:id,name',
                 'course.chapters.lessons', 'lessonProgress', 'lastLesson', 'distribution',

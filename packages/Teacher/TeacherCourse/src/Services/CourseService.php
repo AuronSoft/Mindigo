@@ -86,21 +86,22 @@ class CourseService
 
     public function transition(Course $course, string $status, User $actor): Course
     {
-        $allowedTransitions = [
-            Course::PUBLICATION_DRAFT => [Course::PUBLICATION_PENDING_REVIEW, Course::PUBLICATION_ARCHIVED],
-            Course::PUBLICATION_PENDING_REVIEW => [Course::PUBLICATION_DRAFT, Course::PUBLICATION_PUBLISHED, Course::PUBLICATION_ARCHIVED],
-            Course::PUBLICATION_PUBLISHED => [Course::PUBLICATION_UNLISTED, Course::PUBLICATION_ARCHIVED],
-            Course::PUBLICATION_UNLISTED => [Course::PUBLICATION_PENDING_REVIEW, Course::PUBLICATION_ARCHIVED],
-            Course::PUBLICATION_ARCHIVED => [],
-        ];
-
-        if (! in_array($status, $allowedTransitions[$course->publication_status] ?? [], true)) {
-            throw ValidationException::withMessages([
-                'publication_status' => __('teacher-course::app.invalid_publication_transition'),
-            ]);
-        }
-
         return DB::transaction(function () use ($course, $status, $actor): Course {
+            $lockedCourse = Course::query()->lockForUpdate()->findOrFail($course->id);
+            $allowedTransitions = [
+                Course::PUBLICATION_DRAFT => [Course::PUBLICATION_PENDING_REVIEW, Course::PUBLICATION_ARCHIVED],
+                Course::PUBLICATION_PENDING_REVIEW => [Course::PUBLICATION_DRAFT, Course::PUBLICATION_PUBLISHED, Course::PUBLICATION_ARCHIVED],
+                Course::PUBLICATION_PUBLISHED => [Course::PUBLICATION_UNLISTED, Course::PUBLICATION_ARCHIVED],
+                Course::PUBLICATION_UNLISTED => [Course::PUBLICATION_PENDING_REVIEW, Course::PUBLICATION_ARCHIVED],
+                Course::PUBLICATION_ARCHIVED => [],
+            ];
+
+            if (! in_array($status, $allowedTransitions[$lockedCourse->publication_status] ?? [], true)) {
+                throw ValidationException::withMessages([
+                    'publication_status' => __('teacher-course::app.invalid_publication_transition'),
+                ]);
+            }
+
             $attributes = ['publication_status' => $status];
 
             if ($status === Course::PUBLICATION_PENDING_REVIEW) {
@@ -112,9 +113,9 @@ class CourseService
                 $attributes['published_by'] = $actor->getAuthIdentifier();
             }
 
-            $course->update($attributes);
+            $lockedCourse->update($attributes);
 
-            return $course->refresh();
+            return $lockedCourse->refresh();
         });
     }
 
