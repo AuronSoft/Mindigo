@@ -59,7 +59,9 @@ class AuthenticatedCourseDetailTest extends TestCase
 
         $this->actingAs($owner)->get(route('courses.show', $course->slug))
             ->assertOk()
-            ->assertSee(__('teacher-course::catalog.preview_mode'));
+            ->assertSee(__('teacher-course::catalog.preview_mode'))
+            ->assertSee(route('teacher.courses.show', $course), false)
+            ->assertSee('rel="stylesheet"', false);
 
         $this->actingAs($admin)->get(route('courses.show', $course->slug))
             ->assertOk()

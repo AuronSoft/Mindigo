@@ -1,6 +1,12 @@
 @extends('Mindigo-dashboard::layouts')
 
 @section('title', __('teacher-course::publishing.monitor_title').' — '.$course->name)
+@section('styles')
+    @vite([
+        'packages/Mindigo/Dashboard/src/resources/css/app.css',
+        'packages/Mindigo/Dashboard/src/resources/js/app.js',
+    ])
+@endsection
 
 @section('content')
 <main class="min-h-screen bg-slate-50">

@@ -7,6 +7,12 @@
 @endsection
 
 @section('content')
+@php
+    $isTeacherPreview = auth()->user()?->isTeacher() && (int) $course->teacher_id === (int) auth()->id();
+    $backUrl = $isTeacherPreview
+        ? route('teacher.courses.show', $course)
+        : route('courses.index');
+@endphp
 <div class="min-h-screen bg-slate-50">
     <header class="border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
         <div class="flex flex-wrap items-center justify-between gap-4">
@@ -15,7 +21,7 @@
                 <h1 class="mt-0.5 truncate text-lg font-black text-slate-950">{{ $course->name }}</h1>
                 <p class="text-xs font-semibold text-slate-400">@lang('teacher-course::catalog.detail_subtitle')</p>
             </div>
-            <a href="{{ route('courses.index') }}" aria-label="@lang('teacher-course::catalog.back_to_catalog')" class="grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline hover:text-green-700">
+            <a href="{{ $backUrl }}" aria-label="@lang('teacher-course::catalog.back_to_catalog')" class="grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline hover:text-green-700">
                 <x-heroicon-o-arrow-left class="h-5 w-5" />
             </a>
         </div>
