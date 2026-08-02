@@ -21,7 +21,7 @@ class CurriculumOrderRequest extends FormRequest
             'chapters.*.id' => ['required', 'integer', 'distinct'],
             'chapters.*.order' => ['required', 'integer', 'min:0'],
             'chapters.*.lessons' => ['present', 'array'],
-            'chapters.*.lessons.*.id' => ['required', 'integer'],
+            'chapters.*.lessons.*.id' => ['required', 'integer', 'distinct'],
             'chapters.*.lessons.*.order' => ['required', 'integer', 'min:0'],
         ];
     }

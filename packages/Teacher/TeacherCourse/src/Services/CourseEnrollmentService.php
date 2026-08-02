@@ -180,6 +180,10 @@ class CourseEnrollmentService
             ->where('student_id', $student->id)
             ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
             ->availableToStudent()
+            ->whereHas('course', fn ($query) => $query
+                ->whereNull('deleted_at')
+                ->where('is_active', true)
+                ->whereIn('publication_status', [Course::PUBLICATION_PUBLISHED, Course::PUBLICATION_UNLISTED]))
             ->with(['course.teacher:id,name', 'course.subject:id,name', 'lastLesson:id,name', 'distribution'])
             ->latest('last_activity_at')
             ->latest('id')

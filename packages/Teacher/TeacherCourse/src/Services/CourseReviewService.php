@@ -50,19 +50,23 @@ class CourseReviewService
 
     public function reply(CourseReview $review, User $teacher, string $reply): CourseReview
     {
-        $review->update(['teacher_reply' => $reply, 'replied_by' => $teacher->id, 'replied_at' => now()]);
+        return DB::transaction(function () use ($review, $teacher, $reply): CourseReview {
+            $lockedReview = CourseReview::query()->lockForUpdate()->findOrFail($review->id);
+            $lockedReview->update(['teacher_reply' => $reply, 'replied_by' => $teacher->id, 'replied_at' => now()]);
 
-        return $review->refresh();
+            return $lockedReview->refresh();
+        });
     }
 
     public function moderate(CourseReview $review, User $admin, array $data): CourseReview
     {
         return DB::transaction(function () use ($review, $admin, $data): CourseReview {
-            Course::query()->whereKey($review->course_id)->lockForUpdate()->firstOrFail();
-            $review->update(['moderation_status' => $data['moderation_status'], 'moderation_reason' => $data['moderation_status'] === CourseReview::STATUS_HIDDEN ? $data['moderation_reason'] : null, 'moderated_by' => $admin->id, 'moderated_at' => now()]);
-            $this->syncRating($review->course);
+            $lockedReview = CourseReview::query()->lockForUpdate()->findOrFail($review->id);
+            $course = Course::query()->whereKey($lockedReview->course_id)->lockForUpdate()->firstOrFail();
+            $lockedReview->update(['moderation_status' => $data['moderation_status'], 'moderation_reason' => $data['moderation_status'] === CourseReview::STATUS_HIDDEN ? $data['moderation_reason'] : null, 'moderated_by' => $admin->id, 'moderated_at' => now()]);
+            $this->syncRating($course);
 
-            return $review->refresh();
+            return $lockedReview->refresh();
         });
     }
 

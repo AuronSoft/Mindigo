@@ -117,6 +117,10 @@ class CurriculumService
         DB::transaction(function () use ($course, $chapters): void {
             $ownedChapters = $course->chapters()->with('lessons:id,chapter_id')->lockForUpdate()->get()->keyBy('id');
 
+            if ($ownedChapters->keys()->diff(collect($chapters)->pluck('id'))->isNotEmpty()) {
+                throw ValidationException::withMessages(['chapters' => __('teacher-course::publishing.invalid_order')]);
+            }
+
             foreach ($chapters as $chapterData) {
                 $chapter = $ownedChapters->get($chapterData['id']);
                 if (! $chapter) {
@@ -125,6 +129,11 @@ class CurriculumService
 
                 $chapter->update(['sort_order' => $chapterData['order']]);
                 $ownedLessonIds = $chapter->lessons->pluck('id');
+                $submittedLessonIds = collect($chapterData['lessons'])->pluck('id');
+
+                if ($ownedLessonIds->diff($submittedLessonIds)->isNotEmpty()) {
+                    throw ValidationException::withMessages(['chapters' => __('teacher-course::publishing.invalid_order')]);
+                }
 
                 foreach ($chapterData['lessons'] as $lessonData) {
                     if (! $ownedLessonIds->contains($lessonData['id'])) {

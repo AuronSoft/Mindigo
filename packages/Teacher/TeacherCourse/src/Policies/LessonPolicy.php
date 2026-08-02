@@ -21,8 +21,9 @@ class LessonPolicy
                 ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
                 ->availableToStudent()
                 ->whereHas('course', fn ($query) => $query
+                    ->whereNull('deleted_at')
                     ->where('is_active', true)
-                    ->where('publication_status', '!=', Course::PUBLICATION_ARCHIVED))
+                    ->whereIn('publication_status', [Course::PUBLICATION_PUBLISHED, Course::PUBLICATION_UNLISTED]))
                 ->exists());
     }
 
