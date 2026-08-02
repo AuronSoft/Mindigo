@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'back_to_courses' => 'Quay lại quản lý khóa học',
     'title' => 'Đánh giá khóa học', 'summary' => ':count lượt đánh giá', 'distribution' => ':count đánh giá',
     'your_review' => 'Đánh giá của bạn', 'rating' => 'Số sao', 'comment' => 'Nhận xét', 'comment_placeholder' => 'Chia sẻ trải nghiệm học tập thực tế của bạn...',
     'submit' => 'Gửi đánh giá', 'update' => 'Cập nhật đánh giá', 'saved' => 'Đã gửi đánh giá.', 'updated' => 'Đã cập nhật đánh giá.',

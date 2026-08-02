@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'meta' => ['description' => 'Nền tảng quản lý học tập Mindigo dành cho khóa học, luyện tập và thi trực tuyến.'],
     'trust' => [
         'heading_1' => 'Được cộng đồng sinh viên, trường đại học và',
         'heading_2' => 'doanh nghiệp trên cả nước tin cậy',
@@ -67,7 +68,7 @@ return [
 
     'navbar' => [
         'features' => 'Tính năng',
-        'explore' => 'Khám phá đề thi',
+        'explore' => 'Khám phá khóa học',
         'exam_prep' => 'Luyện thi THPT',
         'classroom' => 'Quản lý lớp học',
         'pricing' => 'Bảng giá',

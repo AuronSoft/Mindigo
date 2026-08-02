@@ -4,11 +4,13 @@ use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherCourse\Http\Controllers\ChapterController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseBuilderController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseDiscoveryController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseEnrollmentController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseLessonController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseMonitoringController;
 use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseReviewController;
+use Mindigo\TeacherCourse\Http\Controllers\FeaturedCourseController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
 use Mindigo\TeacherCourse\Http\Controllers\PublicCourseController;
 use Mindigo\TeacherCourse\Http\Controllers\StudentCourseController;
@@ -16,6 +18,7 @@ use Mindigo\TeacherCourse\Http\Controllers\TeacherProfileController;
 
 Route::middleware('web')->group(function (): void {
     Route::get('/courses', [PublicCourseController::class, 'index'])->name('courses.index');
+    Route::get('/courses/search/suggestions', [CourseDiscoveryController::class, 'suggestions'])->name('courses.search.suggestions');
     Route::get('/teachers/{teacher}', [TeacherProfileController::class, 'show'])->name('teachers.show');
     Route::get('/courses/{course}', [PublicCourseController::class, 'show'])
         ->middleware('auth')
@@ -28,6 +31,14 @@ Route::middleware('web')->group(function (): void {
         Route::get('/video', [CourseLessonController::class, 'video'])->name('video');
         Route::get('/attachments/{attachment}', [CourseLessonController::class, 'attachment'])->name('attachments.show');
     });
+});
+
+Route::middleware(['web', 'auth', 'role:student'])->group(function (): void {
+    Route::get('/student/wishlist', [CourseDiscoveryController::class, 'wishlist'])->name('student.wishlist.index');
+    Route::get('/student/courses-recent', [CourseDiscoveryController::class, 'recent'])->name('student.courses.recent');
+    Route::get('/student/courses-recommended', [CourseDiscoveryController::class, 'recommended'])->name('student.courses.recommended');
+    Route::post('/courses/{course}/wishlist', [CourseDiscoveryController::class, 'store'])->name('courses.wishlist.store');
+    Route::delete('/courses/{course}/wishlist', [CourseDiscoveryController::class, 'destroy'])->name('courses.wishlist.destroy');
 });
 
 Route::middleware(['web', 'auth', 'role:student', 'throttle:10,1'])->scopeBindings()->group(function (): void {
@@ -47,6 +58,7 @@ Route::middleware(['web', 'auth', 'role:teacher'])->group(function (): void {
 Route::middleware(['web', 'auth', 'role:admin'])->group(function (): void {
     Route::get('/admin/course-reviews', [CourseReviewController::class, 'index'])->name('admin.course-reviews.index');
     Route::patch('/admin/course-reviews/{review}/moderate', [CourseReviewController::class, 'moderate'])->name('admin.course-reviews.moderate');
+    Route::patch('/admin/courses/{course}/featured', FeaturedCourseController::class)->name('admin.courses.featured');
 });
 
 Route::middleware(['web', 'auth', 'role:student'])

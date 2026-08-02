@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'meta' => ['description' => 'Mindigo learning management platform for courses, practice, and exams.'],
     'trust' => [
         'heading_1' => 'Trusted by students, universities and',
         'heading_2' => 'businesses across the country',

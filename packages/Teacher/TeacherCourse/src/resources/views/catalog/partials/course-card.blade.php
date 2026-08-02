@@ -1,5 +1,14 @@
 <article class="flex min-h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-green-200 hover:shadow-sm">
     <div class="relative aspect-[16/9] overflow-hidden bg-slate-100">
+        @auth
+            @if(auth()->user()->isStudent())
+                @php $isWishlisted = in_array($course->id, $wishlistedIds ?? [], true); @endphp
+                <form method="POST" action="{{ $isWishlisted ? route('courses.wishlist.destroy', $course) : route('courses.wishlist.store', $course) }}" class="absolute right-3 top-3 z-10">
+                    @csrf @if($isWishlisted) @method('DELETE') @endif
+                    <button type="submit" aria-label="{{ __($isWishlisted ? 'teacher-course::discovery.remove_wishlist' : 'teacher-course::discovery.add_wishlist') }}" class="grid h-9 w-9 place-items-center rounded-full border border-white/80 bg-white/95 text-green-700 shadow-sm">@if($isWishlisted)<x-heroicon-s-heart class="h-4 w-4" />@else<x-heroicon-o-heart class="h-4 w-4" />@endif</button>
+                </form>
+            @endif
+        @endauth
         @if($course->cover_image)
             <img src="{{ asset('storage/'.$course->cover_image) }}" alt="{{ $course->name }}" class="h-full w-full object-cover">
         @else

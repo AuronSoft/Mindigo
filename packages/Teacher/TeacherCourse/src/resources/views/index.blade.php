@@ -27,34 +27,20 @@
     </header>
 
     <main class="flex flex-1 flex-col gap-5 p-6">
+        @php($activeFilterCount = collect($filters)->except('search')->filter()->count())
         <section class="overflow-hidden rounded-xl border border-slate-200 bg-white">
-            <form method="GET" action="{{ route('teacher.courses.index') }}" class="flex flex-wrap items-center gap-3 border-b border-slate-200 px-5 py-4" role="search">
+            <div class="flex flex-wrap items-center gap-3 border-b border-slate-200 px-5 py-4">
+            <form method="GET" action="{{ route('teacher.courses.index') }}" class="min-w-64 flex-1" role="search">
+                @if(filled($filters['status'] ?? null))<input type="hidden" name="status" value="{{ $filters['status'] }}">@endif
+                @if(filled($filters['publication_status'] ?? null))<input type="hidden" name="publication_status" value="{{ $filters['publication_status'] }}">@endif
                 <label class="relative min-w-64 flex-1">
                     <span class="sr-only">@lang('teacher-course::app.search_placeholder')</span>
                     <x-heroicon-o-magnifying-glass class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <input type="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="@lang('teacher-course::app.search_placeholder')" class="h-10 w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100">
                 </label>
-                <label>
-                    <span class="sr-only">@lang('teacher-course::app.all_status')</span>
-                    <select name="status" data-mindigo-auto-submit class="h-10 min-w-44 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-green-500">
-                        <option value="">@lang('teacher-course::app.all_status')</option>
-                        <option value="active" @selected(($filters['status'] ?? '') === 'active')>@lang('teacher-course::app.active')</option>
-                        <option value="inactive" @selected(($filters['status'] ?? '') === 'inactive')>@lang('teacher-course::app.inactive')</option>
-                    </select>
-                </label>
-                <label>
-                    <span class="sr-only">@lang('teacher-course::app.publication_status_field')</span>
-                    <select name="publication_status" data-mindigo-auto-submit class="h-10 min-w-44 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-green-500">
-                        <option value="">@lang('teacher-course::app.all_publication_statuses')</option>
-                        @foreach(\Mindigo\TeacherCourse\Models\Course::PUBLICATION_STATUSES as $publicationStatus)
-                            <option value="{{ $publicationStatus }}" @selected(($filters['publication_status'] ?? '') === $publicationStatus)>@lang('teacher-course::app.publication_statuses.'.$publicationStatus)</option>
-                        @endforeach
-                    </select>
-                </label>
-                <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 text-sm font-black text-slate-700 transition hover:border-green-300 hover:text-green-700">
-                    <x-heroicon-o-funnel class="h-4 w-4" />@lang('teacher-course::app.filter')
-                </button>
             </form>
+            <button type="button" data-mindigo-drawer-open="teacher-course-filter" class="inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 shadow-sm transition hover:border-green-200 hover:bg-green-50 hover:text-green-700"><x-heroicon-o-adjustments-horizontal class="h-4 w-4" />@lang('teacher-course::app.filter')@if($activeFilterCount)<span class="grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[11px] text-white">{{ $activeFilterCount }}</span>@endif</button>
+            </div>
 
             @if($courses->isEmpty())
                 <div class="flex min-h-80 flex-col items-center justify-center px-6 py-16 text-center">
@@ -128,5 +114,19 @@
             @endif
         </section>
     </main>
+
+    <div data-mindigo-drawer="teacher-course-filter" class="fixed inset-0 z-40 hidden bg-slate-950/45 opacity-0 backdrop-blur-sm transition-opacity duration-200"></div>
+    <aside data-mindigo-drawer-panel="teacher-course-filter" aria-label="@lang('teacher-course::app.filter_title')" class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-2xl shadow-slate-950/20 transition-transform duration-200" style="transform: translateX(100%);">
+        <div class="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4"><div><p class="text-xs font-black uppercase tracking-wider text-green-700">@lang('teacher-course::app.teaching_content')</p><h2 class="mt-1 text-xl font-black text-slate-950">@lang('teacher-course::app.filter_title')</h2><p class="mt-1 text-sm font-semibold leading-relaxed text-slate-500">@lang('teacher-course::app.filter_description')</p></div><button type="button" aria-label="@lang('teacher-course::app.close')" data-mindigo-drawer-close="teacher-course-filter" class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-800"><x-heroicon-o-x-mark class="h-5 w-5" /></button></div>
+        <form action="{{ route('teacher.courses.index') }}" method="GET" class="flex flex-1 flex-col">
+            @if(filled($filters['search'] ?? null))<input type="hidden" name="search" value="{{ $filters['search'] }}">@endif
+            <div class="flex-1 space-y-5 overflow-y-auto px-5 py-5">
+                @php($drawerSelectClass = 'block h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 outline-none transition focus:border-green-300 focus:ring-4 focus:ring-green-50')
+                <label class="block space-y-2"><span class="block text-xs font-black uppercase tracking-wider text-slate-500">@lang('teacher-course::app.status_field')</span><select name="status" class="{{ $drawerSelectClass }}"><option value="">@lang('teacher-course::app.all_status')</option><option value="active" @selected(($filters['status'] ?? '') === 'active')>@lang('teacher-course::app.active')</option><option value="inactive" @selected(($filters['status'] ?? '') === 'inactive')>@lang('teacher-course::app.inactive')</option></select></label>
+                <label class="block space-y-2"><span class="block text-xs font-black uppercase tracking-wider text-slate-500">@lang('teacher-course::app.publication_status_field')</span><select name="publication_status" class="{{ $drawerSelectClass }}"><option value="">@lang('teacher-course::app.all_publication_statuses')</option>@foreach(\Mindigo\TeacherCourse\Models\Course::PUBLICATION_STATUSES as $publicationStatus)<option value="{{ $publicationStatus }}" @selected(($filters['publication_status'] ?? '') === $publicationStatus)>@lang('teacher-course::app.publication_statuses.'.$publicationStatus)</option>@endforeach</select></label>
+            </div>
+            <div class="grid grid-cols-2 gap-3 border-t border-slate-100 p-5"><a href="{{ route('teacher.courses.index') }}" class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">@lang('teacher-course::app.clear_filter')</a><button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-green-600 px-4 text-sm font-black text-white shadow-sm shadow-green-200 transition hover:bg-green-500"><x-heroicon-o-funnel class="h-4 w-4" />@lang('teacher-course::app.apply_filter')</button></div>
+        </form>
+    </aside>
 </div>
 @endsection

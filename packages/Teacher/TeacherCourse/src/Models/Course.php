@@ -69,6 +69,9 @@ class Course extends Model
         'enrollment_count',
         'rating_average',
         'rating_count',
+        'is_featured',
+        'featured_order',
+        'featured_at',
     ];
 
     protected function casts(): array
@@ -86,6 +89,9 @@ class Course extends Model
             'enrollment_count' => 'integer',
             'rating_average' => 'float',
             'rating_count' => 'integer',
+            'is_featured' => 'boolean',
+            'featured_order' => 'integer',
+            'featured_at' => 'datetime',
         ];
     }
 
@@ -132,6 +138,16 @@ class Course extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(CourseReview::class);
+    }
+
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(CourseWishlist::class);
+    }
+
+    public function views(): HasMany
+    {
+        return $this->hasMany(CourseView::class);
     }
 
     public function isPublished(): bool

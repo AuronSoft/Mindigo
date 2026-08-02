@@ -89,6 +89,10 @@
                 </section>
 
                 @include('teacher-course::catalog.partials.reviews')
+
+                @if($relatedCourses->isNotEmpty())
+                    <section><h2 class="mb-3 text-base font-black text-slate-950">@lang('teacher-course::discovery.related')</h2><div class="grid gap-4 md:grid-cols-2">@foreach($relatedCourses->take(4) as $relatedCourse) @include('teacher-course::catalog.partials.course-card', ['course' => $relatedCourse, 'wishlistedIds' => $wishlistedIds]) @endforeach</div></section>
+                @endif
             </div>
 
             <aside class="space-y-5 xl:sticky xl:top-5 xl:self-start">
@@ -120,4 +124,5 @@
         </div>
     </main>
 </div>
+<script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@type' => 'Course', 'name' => $course->name, 'description' => $course->description, 'provider' => ['@type' => 'Organization', 'name' => 'Mindigo'], 'author' => ['@type' => 'Person', 'name' => $course->teacher->name]], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
 @endsection

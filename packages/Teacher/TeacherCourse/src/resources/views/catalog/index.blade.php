@@ -1,5 +1,9 @@
 @extends('core::layouts.home')
 
+@section('title', __('teacher-course::catalog.title').' - Mindigo')
+@section('meta_description', __('teacher-course::catalog.subtitle'))
+@section('canonical', route('courses.index'))
+
 @section('content')
 <div class="min-h-screen bg-slate-50 text-slate-900">
     @include('core::partials.home.navbar')
@@ -18,12 +22,30 @@
     </header>
 
     <main class="mx-auto max-w-7xl px-5 py-7 sm:px-8 lg:px-10">
+        @if($featuredCourses->isNotEmpty())
+            <section class="mb-7" aria-labelledby="featured-courses-title">
+                <div class="mb-3"><h2 id="featured-courses-title" class="text-lg font-black text-slate-950">@lang('teacher-course::discovery.featured')</h2><p class="text-xs font-semibold text-slate-400">@lang('teacher-course::discovery.featured_description')</p></div>
+                <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">@foreach($featuredCourses->take(4) as $course) @include('teacher-course::catalog.partials.course-card', ['course' => $course]) @endforeach</div>
+            </section>
+        @endif
+
+        @auth
+            @if(auth()->user()->isStudent() && ($recentCourses->isNotEmpty() || $recommendedCourses->isNotEmpty()))
+                <nav class="mb-5 flex flex-wrap gap-2" aria-label="@lang('teacher-course::discovery.continue')">
+                    <a href="{{ route('student.courses.recent') }}" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-700 no-underline hover:border-green-300 hover:text-green-700">@lang('teacher-course::discovery.continue')</a>
+                    <a href="{{ route('student.courses.recommended') }}" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-700 no-underline hover:border-green-300 hover:text-green-700">@lang('teacher-course::discovery.recommended')</a>
+                    <a href="{{ route('student.wishlist.index') }}" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-700 no-underline hover:border-green-300 hover:text-green-700">@lang('teacher-course::discovery.wishlist')</a>
+                </nav>
+            @endif
+        @endauth
+
         <form method="GET" action="{{ route('courses.index') }}" class="rounded-xl border border-slate-200 bg-white" role="search">
             <div class="flex flex-col gap-3 border-b border-slate-200 p-4 lg:flex-row lg:items-center">
                 <label class="relative min-w-0 flex-1">
                     <span class="sr-only">@lang('teacher-course::catalog.search_label')</span>
                     <x-heroicon-o-magnifying-glass class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                    <input type="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="@lang('teacher-course::catalog.search_placeholder')" class="h-11 w-full rounded-lg border border-slate-300 bg-white pl-11 pr-4 text-sm font-semibold outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100">
+                    <input type="search" name="search" list="course-search-suggestions" value="{{ $filters['search'] ?? '' }}" placeholder="@lang('teacher-course::catalog.search_placeholder')" class="h-11 w-full rounded-lg border border-slate-300 bg-white pl-11 pr-4 text-sm font-semibold outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100">
+                    <datalist id="course-search-suggestions">@foreach($popularKeywords->merge($recentSearches)->unique() as $keyword)<option value="{{ $keyword }}"></option>@endforeach</datalist>
                 </label>
                 <label class="lg:w-52">
                     <span class="sr-only">@lang('teacher-course::catalog.sort_label')</span>
@@ -51,6 +73,13 @@
                 </div>
             </details>
         </form>
+
+        @if($popularKeywords->isNotEmpty() || $recentSearches->isNotEmpty())
+            <div class="mt-3 flex flex-wrap items-center gap-2 text-xs font-bold text-slate-400">
+                <span>@lang('teacher-course::discovery.popular_keywords'):</span>
+                @foreach($popularKeywords->take(6) as $keyword)<a href="{{ route('courses.index', ['search' => $keyword]) }}" class="rounded-full bg-white px-3 py-1.5 text-slate-600 no-underline ring-1 ring-slate-200 hover:text-green-700">{{ $keyword }}</a>@endforeach
+            </div>
+        @endif
 
         <div class="mt-6 flex items-center justify-between gap-4">
             <p class="text-sm font-bold text-slate-500">{{ trans_choice('teacher-course::catalog.result_count', $courses->total(), ['count' => $courses->total()]) }}</p>
