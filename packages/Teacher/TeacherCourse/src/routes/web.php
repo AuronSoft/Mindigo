@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherCourse\Http\Controllers\ChapterController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseAnalyticsController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseBuilderController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseDiscoveryController;
@@ -9,6 +10,7 @@ use Mindigo\TeacherCourse\Http\Controllers\CourseEnrollmentController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseLessonController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseMonitoringController;
 use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
+use Mindigo\TeacherCourse\Http\Controllers\CourseReportController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseReviewController;
 use Mindigo\TeacherCourse\Http\Controllers\FeaturedCourseController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
@@ -48,6 +50,8 @@ Route::middleware(['web', 'auth', 'role:student', 'throttle:10,1'])->scopeBindin
 
 Route::middleware(['web', 'auth', 'role:teacher|admin', 'throttle:20,1'])->group(function (): void {
     Route::post('/course-reviews/{review}/reply', [CourseReviewController::class, 'reply'])->name('course-reviews.reply');
+    Route::get('/course-platform/analytics', CourseAnalyticsController::class)->name('course-platform.analytics');
+    Route::get('/course-platform/reports/export', CourseReportController::class)->name('course-platform.reports.export');
 });
 
 Route::middleware(['web', 'auth', 'role:teacher'])->group(function (): void {

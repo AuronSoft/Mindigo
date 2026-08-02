@@ -7,10 +7,13 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Mindigo\TeacherCourse\Models\Chapter;
 use Mindigo\TeacherCourse\Models\Course;
+use Mindigo\TeacherCourse\Models\CourseClassroomAssignment;
 use Mindigo\TeacherCourse\Models\CourseEnrollment;
 use Mindigo\TeacherCourse\Models\CourseReview;
+use Mindigo\TeacherCourse\Models\CourseWishlist;
 use Mindigo\TeacherCourse\Models\Lesson;
 use Mindigo\TeacherCourse\Models\TeacherProfile;
+use Mindigo\TeacherCourse\Observers\CoursePlatformAuditObserver;
 use Mindigo\TeacherCourse\Policies\ChapterPolicy;
 use Mindigo\TeacherCourse\Policies\CourseEnrollmentPolicy;
 use Mindigo\TeacherCourse\Policies\CoursePolicy;
@@ -31,6 +34,10 @@ class TeacherCourseServiceProvider extends ServiceProvider
         Gate::policy(Lesson::class, LessonPolicy::class);
         Gate::policy(TeacherProfile::class, TeacherProfilePolicy::class);
         Gate::define('manageWishlist', [CourseWishlistPolicy::class, 'manage']);
+
+        foreach ([Course::class, CourseEnrollment::class, CourseReview::class, CourseWishlist::class, CourseClassroomAssignment::class] as $model) {
+            $model::observe(CoursePlatformAuditObserver::class);
+        }
 
         View::composer('core::home', function ($view): void {
             $view->with('featuredCourses', app(CourseDiscoveryService::class)->featured());

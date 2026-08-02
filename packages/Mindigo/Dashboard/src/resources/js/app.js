@@ -434,7 +434,7 @@ const syncSidebar = () => {
     compactCenteredItems.forEach((item) => {
         item.classList.toggle('justify-center', !expanded);
         item.classList.toggle('px-0', !expanded);
-        item.classList.toggle('px-3', expanded && item.id === 'sidebar-search-input');
+        item.classList.toggle('px-3', expanded && item.id === 'sidebar-search-shell');
     });
     sidebarToggleIcon?.classList.toggle('rotate-180', expanded);
 
