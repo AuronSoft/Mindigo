@@ -20,7 +20,7 @@ class CoursePublishingDistributionTest extends TestCase
 
     public function test_owner_can_duplicate_course_curriculum_as_a_draft(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $course = $this->course($teacher);
         [$first, $second] = $this->lessons($course, 2);
         $second->update(['prerequisite_lesson_id' => $first->id]);
@@ -37,8 +37,8 @@ class CoursePublishingDistributionTest extends TestCase
 
     public function test_teacher_cannot_duplicate_or_reorder_another_teachers_course(): void
     {
-        $owner = User::factory()->create(['role' => 'teacher']);
-        $outsider = User::factory()->create(['role' => 'teacher']);
+        $owner = $this->createUser(['role' => 'teacher']);
+        $outsider = $this->createUser(['role' => 'teacher']);
         $course = $this->course($owner);
 
         $this->actingAs($outsider)->post(route('teacher.courses.duplicate', $course))->assertForbidden();
@@ -47,7 +47,7 @@ class CoursePublishingDistributionTest extends TestCase
 
     public function test_owner_can_reorder_chapters_and_lessons(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $course = $this->course($teacher, Course::PUBLICATION_DRAFT);
         $chapterA = Chapter::query()->create(['course_id' => $course->id, 'name' => 'A', 'sort_order' => 0]);
         $chapterB = Chapter::query()->create(['course_id' => $course->id, 'name' => 'B', 'sort_order' => 1]);
@@ -71,8 +71,8 @@ class CoursePublishingDistributionTest extends TestCase
     public function test_distribution_metadata_is_updated_without_duplicate_enrollment_and_notifies_once(): void
     {
         Notification::fake();
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $student = User::factory()->create(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course($teacher);
         $classroom = $this->classroom($teacher, $student);
         $payload = ['classroom_ids' => [$classroom->id], 'starts_at' => now()->toDateString(), 'due_at' => now()->addWeek()->toDateString(), 'is_mandatory' => false, 'visibility' => 'visible'];
@@ -89,8 +89,8 @@ class CoursePublishingDistributionTest extends TestCase
 
     public function test_hidden_or_future_distribution_is_not_available_to_student(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $student = User::factory()->create(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course($teacher);
         $classroom = $this->classroom($teacher, $student);
 
@@ -104,9 +104,9 @@ class CoursePublishingDistributionTest extends TestCase
 
     public function test_monitoring_reports_progress_only_to_course_owner(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $outsider = User::factory()->create(['role' => 'teacher']);
-        $student = User::factory()->create(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $outsider = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course($teacher);
         $lesson = $this->lessons($course, 1)->first();
         $classroom = $this->classroom($teacher, $student);

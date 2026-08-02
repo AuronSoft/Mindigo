@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
-use Mindigo\Auth\Models\User;
 use Mindigo\TeacherCourse\Models\Chapter;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\Lesson;
@@ -16,7 +15,7 @@ class AuthenticatedCourseDetailTest extends TestCase
 
     public function test_guest_returns_to_the_original_course_after_login(): void
     {
-        $student = User::factory()->create(['role' => 'student', 'password' => 'password']);
+        $student = $this->createUser(['role' => 'student', 'password' => 'password']);
         $course = $this->course();
         $url = route('courses.show', $course->slug);
 
@@ -29,7 +28,7 @@ class AuthenticatedCourseDetailTest extends TestCase
 
     public function test_student_can_view_complete_published_course_information(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course([
             'learning_outcomes' => ['Solve linear equations'],
             'requirements' => ['Basic algebra'],
@@ -50,8 +49,8 @@ class AuthenticatedCourseDetailTest extends TestCase
 
     public function test_owner_and_admin_can_preview_an_unpublished_course(): void
     {
-        $owner = User::factory()->create(['role' => 'teacher']);
-        $admin = User::factory()->create(['role' => 'admin']);
+        $owner = $this->createUser(['role' => 'teacher']);
+        $admin = $this->createUser(['role' => 'admin']);
         $course = $this->course([
             'teacher_id' => $owner->id,
             'publication_status' => Course::PUBLICATION_DRAFT,
@@ -72,7 +71,7 @@ class AuthenticatedCourseDetailTest extends TestCase
         $course = $this->course(['publication_status' => Course::PUBLICATION_UNLISTED]);
 
         foreach (['student', 'teacher'] as $role) {
-            $this->actingAs(User::factory()->create(['role' => $role]))
+            $this->actingAs($this->createUser(['role' => $role]))
                 ->get(route('courses.show', $course->slug))
                 ->assertNotFound();
         }
@@ -80,7 +79,7 @@ class AuthenticatedCourseDetailTest extends TestCase
 
     public function test_student_can_only_open_preview_lessons(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $course = $this->course();
         $preview = $this->lesson($course, true);
         $protected = $this->lesson($course, false);
@@ -97,19 +96,19 @@ class AuthenticatedCourseDetailTest extends TestCase
 
     public function test_owner_and_admin_can_open_every_lesson_in_preview_mode(): void
     {
-        $owner = User::factory()->create(['role' => 'teacher']);
+        $owner = $this->createUser(['role' => 'teacher']);
         $course = $this->course(['teacher_id' => $owner->id, 'publication_status' => Course::PUBLICATION_DRAFT]);
         $lesson = $this->lesson($course, false);
 
         $this->actingAs($owner)->get(route('courses.lessons.show', [$course->slug, $lesson->id]))->assertOk();
-        $this->actingAs(User::factory()->create(['role' => 'admin']))
+        $this->actingAs($this->createUser(['role' => 'admin']))
             ->get(route('courses.lessons.show', [$course->slug, $lesson->id]))
             ->assertOk();
     }
 
     public function test_lesson_cannot_be_accessed_through_another_course_url(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $lesson = $this->lesson($this->course(), true);
         $otherCourse = $this->course();
 
@@ -134,7 +133,7 @@ class AuthenticatedCourseDetailTest extends TestCase
                 'mime' => 'application/pdf',
             ]],
         ]);
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->get(route('courses.lessons.video', [$course->slug, $lesson->id]))->assertRedirect(route('login'));
         $this->actingAs($student)->get(route('courses.lessons.video', [$course->slug, $lesson->id]))->assertOk();
@@ -147,7 +146,7 @@ class AuthenticatedCourseDetailTest extends TestCase
 
     private function course(array $attributes = []): Course
     {
-        $teacherId = $attributes['teacher_id'] ?? User::factory()->create(['role' => 'teacher'])->id;
+        $teacherId = $attributes['teacher_id'] ?? $this->createUser(['role' => 'teacher'])->id;
 
         return Course::query()->create([
             'teacher_id' => $teacherId,

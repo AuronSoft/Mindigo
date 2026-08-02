@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\Auth\Models\User;
 use Mindigo\StudentDashboard\Services\DashboardService;
 use Tests\TestCase;
 
@@ -13,7 +12,7 @@ class StudentDashboardRedesignTest extends TestCase
 
     public function test_student_dashboard_renders_the_three_primary_regions(): void
     {
-        $student = User::factory()->create(['role' => 'student', 'name' => 'Mindigo Student']);
+        $student = $this->createUser(['role' => 'student', 'name' => 'Mindigo Student']);
 
         $this->actingAs($student)->get(route('student.dashboard'))
             ->assertOk()

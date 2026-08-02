@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
-use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
@@ -43,7 +42,7 @@ class ExamHardeningTest extends TestCase
     public function test_student_cannot_start_an_exam_assigned_to_another_classroom(): void
     {
         [, , , , $exam] = $this->fixture();
-        $outsider = User::factory()->create(['role' => 'student']);
+        $outsider = $this->createUser(['role' => 'student']);
 
         $this->actingAs($outsider)
             ->post(route('student.exams.start', $exam))
@@ -122,7 +121,7 @@ class ExamHardeningTest extends TestCase
         app(StudentExamService::class)->submitAttempt($attempt, ['answers' => [$exam->questions()->value('id') => 'Essay']]);
         $attempt->refresh();
         $answer = $attempt->answers()->firstOrFail();
-        $otherTeacher = User::factory()->create(['role' => 'teacher']);
+        $otherTeacher = $this->createUser(['role' => 'teacher']);
 
         $this->actingAs($otherTeacher)
             ->put(route('teacher.exams.attempts.grade.update', [$exam, $attempt]), $this->gradePayload($answer, 0))
@@ -144,7 +143,7 @@ class ExamHardeningTest extends TestCase
     public function test_teacher_cannot_open_another_teachers_exam_management_url(): void
     {
         [, , , , $exam] = $this->fixture();
-        $otherTeacher = User::factory()->create(['role' => 'teacher']);
+        $otherTeacher = $this->createUser(['role' => 'teacher']);
 
         $this->actingAs($otherTeacher)
             ->get(route('exams.edit', $exam))
@@ -170,9 +169,9 @@ class ExamHardeningTest extends TestCase
 
     private function fixture(string $questionType = 'single_choice'): array
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $student = User::factory()->create(['role' => 'student']);
-        $otherStudent = User::factory()->create(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
+        $otherStudent = $this->createUser(['role' => 'student']);
         $classroom = Classroom::query()->create([
             'created_by' => $teacher->id,
             'teacher_id' => $teacher->id,

@@ -17,8 +17,8 @@ class CourseDomainFoundationTest extends TestCase
 
     public function test_teacher_cannot_view_or_modify_another_teachers_course(): void
     {
-        $owner = User::factory()->create(['role' => 'teacher']);
-        $outsider = User::factory()->create(['role' => 'teacher']);
+        $owner = $this->createUser(['role' => 'teacher']);
+        $outsider = $this->createUser(['role' => 'teacher']);
         $course = $this->courseFor($owner);
 
         $this->actingAs($outsider)->get(route('teacher.courses.show', $course))->assertForbidden();
@@ -30,7 +30,7 @@ class CourseDomainFoundationTest extends TestCase
 
     public function test_scoped_binding_rejects_a_chapter_from_another_course(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $course = $this->courseFor($teacher, 'First course');
         $otherCourse = $this->courseFor($teacher, 'Second course');
         $foreignChapter = $this->chapterFor($otherCourse, 'Protected chapter');
@@ -44,8 +44,8 @@ class CourseDomainFoundationTest extends TestCase
 
     public function test_lesson_rejects_cross_course_prerequisite_and_cross_teacher_assignment(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $otherTeacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $otherTeacher = $this->createUser(['role' => 'teacher']);
         $course = $this->courseFor($teacher, 'Owned course');
         $chapter = $this->chapterFor($course, 'Owned chapter');
         $otherCourse = $this->courseFor($otherTeacher, 'Foreign course');
@@ -83,8 +83,8 @@ class CourseDomainFoundationTest extends TestCase
 
     public function test_publication_lifecycle_requires_the_correct_actor(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $admin = User::factory()->create(['role' => 'admin']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $admin = $this->createUser(['role' => 'admin']);
         $course = $this->courseFor($teacher);
 
         $this->actingAs($teacher)->patch(route('teacher.courses.publication.update', $course), [
@@ -110,7 +110,7 @@ class CourseDomainFoundationTest extends TestCase
 
     public function test_course_metadata_is_normalized_and_operational_status_is_separate(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
 
         $this->actingAs($teacher)->post(route('teacher.courses.store'), [
             ...$this->coursePayload(),

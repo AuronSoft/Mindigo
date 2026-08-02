@@ -14,7 +14,7 @@ class RoleAwareHomeNavigationTest extends TestCase
     {
         foreach ($this->roleHomes() as $role => $home) {
             /** @var User $user */
-            $user = User::factory()->create(['role' => $role]);
+            $user = $this->createUser(['role' => $role]);
 
             $this->actingAs($user)->get(route('profile.index'))
                 ->assertOk()
@@ -26,7 +26,7 @@ class RoleAwareHomeNavigationTest extends TestCase
     {
         foreach ($this->roleHomes() as $role => $home) {
             /** @var User $user */
-            $user = User::factory()->create(['role' => $role]);
+            $user = $this->createUser(['role' => $role]);
 
             $this->actingAs($user)->get(route('exam-tips'))
                 ->assertOk()

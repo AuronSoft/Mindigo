@@ -92,7 +92,7 @@ class StudentPracticePhaseThreeTest extends TestCase
     public function test_adaptive_dashboard_is_private_and_explains_recommendations(): void
     {
         [$student, $skill] = $this->fixture();
-        $other = User::factory()->create(['role' => 'student']);
+        $other = $this->createUser(['role' => 'student']);
         $progress = StudentSkillProgress::query()->create([
             'student_id' => $student->id, 'practice_skill_id' => $skill->id,
             'mastery_score' => 30, 'mastery_level' => 'novice', 'confidence_score' => 20,
@@ -122,8 +122,8 @@ class StudentPracticePhaseThreeTest extends TestCase
 
     private function fixture(): array
     {
-        $student = User::factory()->create(['role' => 'student']);
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $subject = Subject::query()->create([
             'name' => 'Mathematics', 'code' => 'MATH', 'slug' => 'mathematics', 'status' => 'active',
         ]);

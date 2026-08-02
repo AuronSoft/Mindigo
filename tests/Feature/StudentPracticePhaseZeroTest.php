@@ -16,7 +16,7 @@ class StudentPracticePhaseZeroTest extends TestCase
     public function test_student_can_open_practice_workspace_and_start_a_bounded_attempt(): void
     {
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         Question::factory()->count(5)->create([
             'subject' => 'Mathematics',
             'status' => 'approved',
@@ -52,9 +52,9 @@ class StudentPracticePhaseZeroTest extends TestCase
     public function test_student_cannot_access_or_update_another_students_attempt(): void
     {
         /** @var User $owner */
-        $owner = User::factory()->create(['role' => 'student']);
+        $owner = $this->createUser(['role' => 'student']);
         /** @var User $outsider */
-        $outsider = User::factory()->create(['role' => 'student']);
+        $outsider = $this->createUser(['role' => 'student']);
         $question = Question::factory()->create(['status' => 'approved']);
         $attempt = $this->attemptFor($owner, $question);
 
@@ -73,7 +73,7 @@ class StudentPracticePhaseZeroTest extends TestCase
     public function test_completing_practice_uses_current_answers_and_is_idempotent(): void
     {
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $question = Question::factory()->create([
             'status' => 'approved',
             'type' => 'single_choice',
@@ -112,7 +112,7 @@ class StudentPracticePhaseZeroTest extends TestCase
     public function test_personalized_set_uses_canonical_domain_and_links_the_attempt(): void
     {
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         Question::factory()->count(2)->create([
             'subject' => 'Physics',
             'status' => 'approved',
@@ -142,7 +142,7 @@ class StudentPracticePhaseZeroTest extends TestCase
     public function test_practice_requests_reject_invalid_role_and_payload(): void
     {
         /** @var User $teacher */
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
 
         $this->actingAs($teacher)->postJson(route('student.practice.start'), [
             'mode' => 'mixed',
@@ -150,7 +150,7 @@ class StudentPracticePhaseZeroTest extends TestCase
         ])->assertForbidden();
 
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $this->actingAs($student)->post(route('student.practice.start'), [
             'mode' => 'unknown',
             'question_count' => 0,

@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
 use Mindigo\StudentPractice\Models\PracticeSkill;
@@ -105,7 +104,7 @@ class StudentPracticePhaseTwoTest extends TestCase
     public function test_each_student_only_sees_their_own_skill_statistics(): void
     {
         [$student, $skill] = $this->fixture();
-        $other = User::factory()->create(['role' => 'student']);
+        $other = $this->createUser(['role' => 'student']);
         StudentSkillProgress::query()->create([
             'student_id' => $other->id, 'practice_skill_id' => $skill->id,
             'completed_attempts' => 9, 'total_questions' => 90, 'correct_answers' => 81,
@@ -118,8 +117,8 @@ class StudentPracticePhaseTwoTest extends TestCase
 
     private function fixture(): array
     {
-        $student = User::factory()->create(['role' => 'student']);
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $subject = Subject::query()->create([
             'name' => 'Mathematics', 'code' => 'MATH', 'slug' => 'mathematics', 'status' => 'active',
         ]);

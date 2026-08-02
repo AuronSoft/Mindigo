@@ -23,8 +23,8 @@ class AdminAuthorizationTest extends TestCase
     {
         parent::setUp();
 
-        $this->admin = User::factory()->create(['role' => 'admin',   'is_active' => true]);
-        $this->student = User::factory()->create(['role' => 'student', 'is_active' => true]);
+        $this->admin = $this->createUser(['role' => 'admin',   'is_active' => true]);
+        $this->student = $this->createUser(['role' => 'student', 'is_active' => true]);
     }
 
     /**
@@ -82,7 +82,7 @@ class AdminAuthorizationTest extends TestCase
     public function test_inactive_admin_still_passes_role_check(): void
     {
         /** @var User $inactive */
-        $inactive = User::factory()->create(['role' => 'admin', 'is_active' => false]);
+        $inactive = $this->createUser(['role' => 'admin', 'is_active' => false]);
 
         $this->actingAs($inactive)
             ->get('/dashboard')

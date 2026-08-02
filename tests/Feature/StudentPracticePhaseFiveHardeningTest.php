@@ -15,7 +15,7 @@ class StudentPracticePhaseFiveHardeningTest extends TestCase
     public function test_duplicate_start_resumes_the_same_active_session(): void
     {
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         Question::factory()->count(3)->create(['subject' => 'Physics', 'practice_status' => Question::PRACTICE_READY]);
         $payload = ['mode' => 'subject', 'subject' => 'Physics', 'question_count' => 3];
 
@@ -108,7 +108,7 @@ class StudentPracticePhaseFiveHardeningTest extends TestCase
     {
         [$student, $question, $attempt] = $this->startedAttempt();
         /** @var User $outsider */
-        $outsider = User::factory()->create(['role' => 'student']);
+        $outsider = $this->createUser(['role' => 'student']);
 
         $this->actingAs($outsider)->get(route('student.practice.attempt', $attempt))->assertForbidden();
         $this->actingAs($outsider)->get(route('student.practice.result', $attempt))->assertForbidden();
@@ -134,7 +134,7 @@ class StudentPracticePhaseFiveHardeningTest extends TestCase
     public function test_student_workspace_endpoints_reject_guests_and_teachers(): void
     {
         /** @var User $teacher */
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $routes = [
             route('student.practice.index'),
             route('student.practice.history'),
@@ -170,7 +170,7 @@ class StudentPracticePhaseFiveHardeningTest extends TestCase
     private function startedAttempt(string $content = 'Stable question'): array
     {
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $question = Question::factory()->create([
             'subject' => 'Mathematics',
             'content' => $content,

@@ -18,7 +18,7 @@ class StudentPracticePhaseOneTest extends TestCase
     public function test_teacher_can_create_skill_and_attach_matching_approved_questions(): void
     {
         /** @var User $teacher */
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         [$subject, $topic] = $this->catalog('Mathematics');
         $matching = Question::factory()->create(['subject' => $subject->name, 'topic' => $topic->name]);
         $foreign = Question::factory()->create(['subject' => 'Physics']);
@@ -49,9 +49,9 @@ class StudentPracticePhaseOneTest extends TestCase
     public function test_student_can_start_practice_by_active_skill_end_to_end(): void
     {
         /** @var User $teacher */
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         [$subject, $topic] = $this->catalog('Chemistry');
         $question = Question::factory()->create([
             'subject' => $subject->name,
@@ -107,9 +107,9 @@ class StudentPracticePhaseOneTest extends TestCase
     public function test_inactive_skill_and_mismatched_topic_are_rejected(): void
     {
         /** @var User $teacher */
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         [$subject] = $this->catalog('Biology');
         [, $foreignTopic] = $this->catalog('Literature');
         $skill = PracticeSkill::query()->create([
@@ -138,9 +138,9 @@ class StudentPracticePhaseOneTest extends TestCase
     public function test_teacher_cannot_modify_skill_owned_by_another_teacher(): void
     {
         /** @var User $owner */
-        $owner = User::factory()->create(['role' => 'teacher']);
+        $owner = $this->createUser(['role' => 'teacher']);
         /** @var User $outsider */
-        $outsider = User::factory()->create(['role' => 'teacher']);
+        $outsider = $this->createUser(['role' => 'teacher']);
         [$subject, $topic] = $this->catalog('English');
         $skill = $this->skill($owner, $subject, $topic);
 
@@ -161,7 +161,7 @@ class StudentPracticePhaseOneTest extends TestCase
     public function test_question_with_missing_answer_is_marked_for_review(): void
     {
         /** @var User $teacher */
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         [$subject, $topic] = $this->catalog('Geography');
         $question = Question::factory()->create([
             'subject' => $subject->name,
@@ -186,7 +186,7 @@ class StudentPracticePhaseOneTest extends TestCase
     public function test_teacher_question_metadata_is_normalized_to_the_shared_catalog(): void
     {
         /** @var User $teacher */
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         [$subject, $topic] = $this->catalog('Civics');
 
         $this->actingAs($teacher)->post(route('teacher.questions.store'), [

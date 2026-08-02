@@ -98,7 +98,7 @@ class ExamMonitoringTest extends TestCase
         [, , , $exam] = $this->fixture();
 
         /** @var User $otherTeacher */
-        $otherTeacher = User::factory()->create(['role' => 'teacher']);
+        $otherTeacher = $this->createUser(['role' => 'teacher']);
 
         $this->actingAs($otherTeacher)
             ->get(route('teacher.exams.monitor', $exam))
@@ -119,7 +119,7 @@ class ExamMonitoringTest extends TestCase
      */
     private function fixture(int $studentCount = 1): array
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $students = User::factory()->count($studentCount)->create(['role' => 'student']);
         $classroom = Classroom::query()->create([
             'created_by' => $teacher->id,

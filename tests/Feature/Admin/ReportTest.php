@@ -22,9 +22,9 @@ class ReportTest extends TestCase
     {
         parent::setUp();
 
-        $this->admin = User::factory()->create(['role' => 'admin',   'is_active' => true]);
-        $this->teacher = User::factory()->create(['role' => 'teacher', 'is_active' => true]);
-        $this->student = User::factory()->create(['role' => 'student', 'is_active' => true]);
+        $this->admin = $this->createUser(['role' => 'admin',   'is_active' => true]);
+        $this->teacher = $this->createUser(['role' => 'teacher', 'is_active' => true]);
+        $this->student = $this->createUser(['role' => 'student', 'is_active' => true]);
     }
 
     // Access control
@@ -135,7 +135,7 @@ class ReportTest extends TestCase
     public function test_exam_detail_report_excludes_in_progress_attempts(): void
     {
         $exam = Exam::factory()->create(['created_by' => $this->admin->id, 'total_points' => 10]);
-        $s2 = User::factory()->create(['role' => 'student']);
+        $s2 = $this->createUser(['role' => 'student']);
         ExamAttempt::factory()->create(['exam_id' => $exam->id, 'user_id' => $this->student->id, 'status' => 'submitted',  'passed' => true,  'percentage' => 80]);
         ExamAttempt::factory()->create(['exam_id' => $exam->id, 'user_id' => $s2->id,            'status' => 'in_progress', 'passed' => false, 'percentage' => 0]);
 

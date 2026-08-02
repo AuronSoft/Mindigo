@@ -17,7 +17,7 @@ class LearningToolsPhaseThreeTest extends TestCase
 
     public function test_student_can_create_and_start_personalized_practice(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         Question::factory()->count(3)->create(['subject' => 'Mathematics', 'topic' => 'Functions', 'status' => 'approved']);
 
         $this->actingAs($student)->post(route('learning-tools.personalized.store'), [
@@ -34,8 +34,8 @@ class LearningToolsPhaseThreeTest extends TestCase
 
     public function test_teacher_can_only_assign_practice_to_own_classroom(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $otherTeacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $otherTeacher = $this->createUser(['role' => 'teacher']);
         $classroom = $this->classroom($otherTeacher);
         Question::factory()->create(['status' => 'approved']);
 
@@ -47,7 +47,7 @@ class LearningToolsPhaseThreeTest extends TestCase
 
     public function test_mistake_notebook_and_gap_analysis_use_completed_practice_data(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $question = Question::factory()->create(['subject' => 'Physics', 'topic' => 'Motion', 'status' => 'approved']);
         $attempt = PracticeAttempt::create([
             'student_id' => $student->id, 'mode' => 'topic', 'subject' => 'Physics', 'topic' => 'Motion',
@@ -65,8 +65,8 @@ class LearningToolsPhaseThreeTest extends TestCase
 
     public function test_student_cannot_update_another_students_mistake(): void
     {
-        $owner = User::factory()->create(['role' => 'student']);
-        $outsider = User::factory()->create(['role' => 'student']);
+        $owner = $this->createUser(['role' => 'student']);
+        $outsider = $this->createUser(['role' => 'student']);
         $question = Question::factory()->create();
         $attempt = PracticeAttempt::create(['student_id' => $owner->id, 'mode' => 'mixed', 'total_questions' => 1, 'correct_answers' => 0, 'started_at' => now()]);
         $answer = PracticeAnswer::create(['attempt_id' => $attempt->id, 'question_id' => $question->id, 'is_correct' => false, 'points' => 0]);

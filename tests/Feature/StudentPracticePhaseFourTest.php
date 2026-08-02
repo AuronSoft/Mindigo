@@ -51,7 +51,7 @@ class StudentPracticePhaseFourTest extends TestCase
         ]);
 
         /** @var User $other */
-        $other = User::factory()->create(['role' => 'student']);
+        $other = $this->createUser(['role' => 'student']);
         $this->actingAs($other)->get(route('student.practice.analytics.index'))
             ->assertOk()
             ->assertViewHas('overview', fn (array $overview): bool => $overview['attempts'] === 0)
@@ -103,7 +103,7 @@ class StudentPracticePhaseFourTest extends TestCase
     {
         [$student, $skill] = $this->fixture();
         /** @var User $other */
-        $other = User::factory()->create(['role' => 'student']);
+        $other = $this->createUser(['role' => 'student']);
         $insight = PracticeLearningInsight::query()->create([
             'student_id' => $student->id,
             'practice_skill_id' => $skill->id,
@@ -121,7 +121,7 @@ class StudentPracticePhaseFourTest extends TestCase
     public function test_student_dashboard_links_to_practice_analytics(): void
     {
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)->get(route('student.dashboard'))
             ->assertOk()
@@ -132,9 +132,9 @@ class StudentPracticePhaseFourTest extends TestCase
     private function fixture(): array
     {
         /** @var User $student */
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         /** @var User $teacher */
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $teacher = $this->createUser(['role' => 'teacher']);
         $subject = Subject::query()->create([
             'name' => 'Mathematics', 'code' => 'MATH', 'slug' => 'mathematics', 'status' => 'active',
         ]);

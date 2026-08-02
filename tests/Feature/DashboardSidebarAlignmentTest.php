@@ -14,7 +14,7 @@ class DashboardSidebarAlignmentTest extends TestCase
     {
         foreach (['student' => 'student.dashboard', 'teacher' => 'teacher.dashboard'] as $role => $route) {
             /** @var User $user */
-            $user = User::factory()->create(['role' => $role]);
+            $user = $this->createUser(['role' => $role]);
 
             $this->actingAs($user)->get(route($route))
                 ->assertOk()

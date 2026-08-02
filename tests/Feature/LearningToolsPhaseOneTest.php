@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\Auth\Models\User;
 use Mindigo\LearningTools\Models\FocusSession;
 use Mindigo\LearningTools\Models\LearningNote;
 use Mindigo\LearningTools\Models\LearningResource;
@@ -15,7 +14,7 @@ class LearningToolsPhaseOneTest extends TestCase
 
     public function test_student_can_start_and_complete_a_focus_session(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)->post(route('learning-tools.pomodoro.store'), [
             'planned_minutes' => 25,
@@ -38,8 +37,8 @@ class LearningToolsPhaseOneTest extends TestCase
 
     public function test_learning_notes_are_scoped_to_their_owner(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
-        $otherStudent = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
+        $otherStudent = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)->post(route('learning-tools.notes.store'), [
             'title' => 'My private note',
@@ -56,8 +55,8 @@ class LearningToolsPhaseOneTest extends TestCase
 
     public function test_teacher_can_publish_resource_and_student_can_favorite_it(): void
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $student = User::factory()->create(['role' => 'student']);
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($teacher)->post(route('learning-tools.resources.store'), [
             'title' => 'Important formula',
@@ -85,7 +84,7 @@ class LearningToolsPhaseOneTest extends TestCase
 
     public function test_student_cannot_manage_learning_resources(): void
     {
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)
             ->get(route('learning-tools.resources.create'))

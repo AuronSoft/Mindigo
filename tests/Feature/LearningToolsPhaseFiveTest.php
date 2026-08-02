@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Mindigo\Auth\Models\User;
 use Mindigo\LearningTools\Models\AiConversation;
 use Tests\TestCase;
 
@@ -19,7 +18,7 @@ class LearningToolsPhaseFiveTest extends TestCase
             'candidates' => [['content' => ['parts' => [['text' => 'A guided learning response.']]]]],
             'usageMetadata' => ['promptTokenCount' => 12, 'candidatesTokenCount' => 8],
         ])]);
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
 
         $this->actingAs($student)->post(route('learning-tools.ai.store'), ['title' => 'Physics tutor', 'subject' => 'Physics', 'mode' => 'explain'])->assertRedirect();
         $conversation = AiConversation::where('user_id', $student->id)->sole();
@@ -31,8 +30,8 @@ class LearningToolsPhaseFiveTest extends TestCase
 
     public function test_ai_conversations_are_private_to_their_owner(): void
     {
-        $owner = User::factory()->create(['role' => 'student']);
-        $outsider = User::factory()->create(['role' => 'student']);
+        $owner = $this->createUser(['role' => 'student']);
+        $outsider = $this->createUser(['role' => 'student']);
         $conversation = AiConversation::create(['user_id' => $owner->id, 'title' => 'Private tutor', 'mode' => 'hint']);
 
         $this->actingAs($outsider)->get(route('learning-tools.ai.show', $conversation))->assertForbidden();
@@ -42,7 +41,7 @@ class LearningToolsPhaseFiveTest extends TestCase
     public function test_missing_mindigobot_configuration_is_handled_safely(): void
     {
         config(['services.mindigobot.key' => null, 'services.mindigobot.keys' => []]);
-        $student = User::factory()->create(['role' => 'student']);
+        $student = $this->createUser(['role' => 'student']);
         $conversation = AiConversation::create(['user_id' => $student->id, 'title' => 'Tutor', 'mode' => 'review']);
 
         $this->actingAs($student)->post(route('learning-tools.ai.send', $conversation), ['message' => 'Help me review'])->assertRedirect()->assertSessionHasErrors('message');
@@ -54,7 +53,7 @@ class LearningToolsPhaseFiveTest extends TestCase
     {
         $this->get(route('learning-tools.ai.index'))->assertRedirect();
         foreach (['student', 'teacher'] as $role) {
-            $this->actingAs(User::factory()->create(['role' => $role]))->get(route('learning-tools.ai.index'))->assertOk();
+            $this->actingAs($this->createUser(['role' => $role]))->get(route('learning-tools.ai.index'))->assertOk();
         }
     }
 }
