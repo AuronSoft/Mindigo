@@ -14,7 +14,7 @@
         : route('courses.index');
 @endphp
 <div class="min-h-screen bg-slate-50">
-    <header class="border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
+    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-6">
         <div class="flex flex-wrap items-center justify-between gap-4">
             <div class="min-w-0">
                 <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('teacher-course::catalog.course_detail')</p>

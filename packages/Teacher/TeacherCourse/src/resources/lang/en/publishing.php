@@ -28,6 +28,8 @@ return [
     'hidden' => 'Temporarily hidden',
     'monitor_title' => 'Course monitoring',
     'monitor_description' => 'Track each learner’s course progress by classroom.',
+    'monitor_filter_title' => 'Filter learners',
+    'monitor_filter_description' => 'Narrow the list by classroom and course enrollment status.',
     'assigned' => 'Assigned',
     'started' => 'Started',
     'completed' => 'Completed',

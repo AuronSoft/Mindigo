@@ -28,6 +28,8 @@ return [
     'hidden' => 'Ẩn tạm thời',
     'monitor_title' => 'Theo dõi khóa học',
     'monitor_description' => 'Theo dõi tiến độ học tập của từng học sinh theo lớp.',
+    'monitor_filter_title' => 'Lọc học viên',
+    'monitor_filter_description' => 'Thu hẹp danh sách theo lớp học và trạng thái tham gia khóa học.',
     'assigned' => 'Được giao',
     'started' => 'Đã bắt đầu',
     'completed' => 'Hoàn thành',
