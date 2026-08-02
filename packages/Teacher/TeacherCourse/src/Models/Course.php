@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherCourse\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -36,6 +37,8 @@ class Course extends Model
 
     public const EDUCATION_LEVELS = ['primary', 'lower_secondary', 'upper_secondary', 'university', 'general'];
 
+    public const ACCESS_TYPES = ['free', 'paid'];
+
     protected $table = 'courses';
 
     protected $fillable = [
@@ -59,6 +62,13 @@ class Course extends Model
         'submitted_for_review_at',
         'published_at',
         'published_by',
+        'access_type',
+        'price',
+        'currency',
+        'view_count',
+        'enrollment_count',
+        'rating_average',
+        'rating_count',
     ];
 
     protected function casts(): array
@@ -71,6 +81,11 @@ class Course extends Model
             'target_learners' => 'array',
             'submitted_for_review_at' => 'datetime',
             'published_at' => 'datetime',
+            'price' => 'decimal:2',
+            'view_count' => 'integer',
+            'enrollment_count' => 'integer',
+            'rating_average' => 'float',
+            'rating_count' => 'integer',
         ];
     }
 
@@ -107,5 +122,12 @@ class Course extends Model
     public function isPublished(): bool
     {
         return $this->publication_status === self::PUBLICATION_PUBLISHED && $this->is_active;
+    }
+
+    public function scopePubliclyListed(Builder $query): Builder
+    {
+        return $query
+            ->where('publication_status', self::PUBLICATION_PUBLISHED)
+            ->where('is_active', true);
     }
 }

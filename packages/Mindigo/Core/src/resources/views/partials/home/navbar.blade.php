@@ -1,7 +1,7 @@
 {{-- Navbar --}}
 <nav class="border-b border-gray-100 bg-white sticky top-0 z-50">
     <div class="max-w-7xl mx-auto flex items-center justify-between px-10 py-3">
-        <a href="#" class="flex items-center gap-2">
+        <a href="{{ route('home') }}" class="flex items-center gap-2">
             <svg width="36" height="36" viewBox="0 0 200 220" fill="none">
                 <path d="M48 160 L22 148 L38 158 L16 152 L35 164" fill="#15803d" stroke="#14532d" stroke-width="1"/>
                 <circle cx="105" cy="145" r="90" fill="#22c55e" stroke="#14532d" stroke-width="3"/>
@@ -105,7 +105,7 @@
                     </div>
                 </div>
             </div>
-            <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.explore')</a>
+            <a href="{{ route('courses.index') }}" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.explore')</a>
             <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.exam_prep')</a>
             <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.classroom')</a>
             <a href="#" id="btn-pricing" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.pricing')</a>

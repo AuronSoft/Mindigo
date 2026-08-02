@@ -72,6 +72,10 @@ class RoleRedirector
             return $path;
         }
 
+        if (Route::has('courses.show') && preg_match('#^/courses/[a-z0-9-]+$#i', $path) === 1) {
+            return $path;
+        }
+
         return null;
     }
 }
