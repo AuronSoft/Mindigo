@@ -152,7 +152,7 @@
                                         <td class="px-5 py-3 text-sm font-black text-slate-400">{{ $i + 1 }}</td>
                                         <td class="px-5 py-3">
                                             <div class="flex items-center gap-2.5">
-                                                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-green-200 to-green-400 text-xs font-black text-white">
+                                                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-linear-to-br from-green-200 to-green-400 text-xs font-black text-white">
                                                     {{ mb_substr($student->name, 0, 1) }}
                                                 </span>
                                                 <span class="text-sm font-black text-slate-900">{{ $student->name }}</span>

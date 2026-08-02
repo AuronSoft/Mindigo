@@ -1,6 +1,6 @@
 {{-- Hero --}}
 <section class="bg-green-50 relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-green-200 rounded-full opacity-30 translate-x-1/3 -translate-y-1/3 pointer-events-none"></div>
+    <div class="absolute top-0 right-0 h-125 w-125 bg-green-200 rounded-full opacity-30 translate-x-1/3 -translate-y-1/3 pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 w-80 h-80 bg-green-200 rounded-full opacity-20 -translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
 
     <div class="max-w-7xl mx-auto px-10 py-20 flex flex-col lg:flex-row items-center gap-16 relative z-10">
@@ -53,7 +53,7 @@
             {{-- Floating AI badge --}}
             <div class="absolute -top-4 left-6 bg-white border-2 border-green-200 rounded-2xl px-4 py-2.5 flex items-center gap-3 z-20"
                 style="box-shadow: 0 8px 32px rgba(22,163,74,0.18), 0 2px 8px rgba(0,0,0,0.08); animation: floatBadge 3s ease-in-out infinite;">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border border-purple-100 shadow-inner" aria-label="Gemini">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 border border-purple-100 shadow-inner" aria-label="Gemini">
                     <svg class="w-7 h-7" viewBox="0 0 32 32" fill="none" aria-hidden="true">
                         <defs>
                             <linearGradient id="gemini-logo-gradient" x1="5" y1="27" x2="27" y2="5" gradientUnits="userSpaceOnUse">
@@ -165,7 +165,7 @@
                             </div>
 
                             {{-- Progress --}}
-                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-3 border border-green-100"
+                            <div class="bg-linear-to-br from-green-50 to-emerald-50 rounded-xl p-3 border border-green-100"
                                 style="box-shadow: inset 0 1px 3px rgba(22,163,74,0.08);">
                                 <div class="flex items-center justify-between mb-2">
                                     <p class="text-[10px] font-black text-green-700">@lang('core::app.hero.progress')</p>

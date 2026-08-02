@@ -9,7 +9,7 @@
 
     {{-- Background shapes --}}
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute -top-[10%] -right-[5%] w-[55%] h-[80%] bg-gradient-to-br from-green-100 to-green-200 rounded-bl-[80px] -rotate-[8deg] opacity-60"></div>
+        <div class="absolute -top-[10%] -right-[5%] w-[55%] h-[80%] bg-linear-to-br from-green-100 to-green-200 rounded-bl-[80px] -rotate-[8deg] opacity-60"></div>
         <div class="absolute -bottom-[15%] -left-[5%] w-[45%] h-[60%] bg-gradient-to-tr from-green-100 to-green-50 rounded-t-[80px] opacity-40"></div>
     </div>
 

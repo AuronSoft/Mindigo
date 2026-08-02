@@ -1,5 +1,5 @@
 <article class="flex min-h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-green-200 hover:shadow-sm">
-    <div class="relative aspect-[16/9] overflow-hidden bg-slate-100">
+    <div class="relative aspect-video overflow-hidden bg-slate-100">
         @auth
             @if(auth()->user()->isStudent())
                 @php $isWishlisted = in_array($course->id, $wishlistedIds ?? [], true); @endphp

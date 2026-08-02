@@ -59,7 +59,7 @@
                 </div>
 
                 {{-- AI chip --}}
-                <div class="absolute left-0 top-1/3 z-30 w-16 h-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border border-purple-100 rounded-2xl flex items-center justify-center shadow-xl" style="animation:floatStar 3s ease-in-out infinite" aria-label="Gemini">
+                <div class="absolute left-0 top-1/3 z-30 w-16 h-16 bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 border border-purple-100 rounded-2xl flex items-center justify-center shadow-xl" style="animation:floatStar 3s ease-in-out infinite" aria-label="Gemini">
                     <svg class="w-11 h-11" viewBox="0 0 32 32" fill="none" aria-hidden="true">
                         <defs>
                             <linearGradient id="gemini-feature-gradient" x1="5" y1="27" x2="27" y2="5" gradientUnits="userSpaceOnUse">

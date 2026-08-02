@@ -18,7 +18,7 @@
                 <x-heroicon-o-arrow-left class="h-4 w-4" />
             </a>
             <div class="flex items-center gap-3">
-                <span class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-green-200 to-emerald-300 text-lg font-black text-slate-800">{{ mb_substr($user->name, 0, 1) }}</span>
+                <span class="grid h-11 w-11 place-items-center rounded-2xl bg-linear-to-br from-green-200 to-emerald-300 text-lg font-black text-slate-800">{{ mb_substr($user->name, 0, 1) }}</span>
                 <div>
                     <p class="text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-report::app.student_detail')</p>
                     <h1 class="mt-0.5 text-xl font-black text-slate-950">{{ $user->name }}</h1>
