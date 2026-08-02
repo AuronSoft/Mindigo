@@ -9,7 +9,7 @@
 <div class="min-h-screen bg-slate-50">
     <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-6">
         <div class="flex items-center gap-4">
-            <a href="{{ route($isAdminAnalytics ? 'dashboard' : 'teacher.dashboard') }}" aria-label="@lang('teacher-course::analytics.back_to_dashboard')" title="@lang('teacher-course::analytics.back_to_dashboard')" class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
+            <a href="{{ route('teacher.courses.index') }}" aria-label="@lang('teacher-course::reviews.back_to_courses')" title="@lang('teacher-course::reviews.back_to_courses')" class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
                 <x-heroicon-o-arrow-left class="h-4 w-4" />
             </a>
             <div class="min-w-0">

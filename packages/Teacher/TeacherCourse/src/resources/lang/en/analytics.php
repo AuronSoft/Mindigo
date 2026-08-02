@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Course analytics', 'back_to_dashboard' => 'Back to dashboard', 'teacher_subtitle' => 'Track content quality and learning effectiveness across your courses.',
+    'title' => 'Course analytics', 'teacher_subtitle' => 'Track content quality and learning effectiveness across your courses.',
     'admin_subtitle' => 'Track platform growth, quality, and completion performance.',
     'total_courses' => 'Total courses', 'total_enrollments' => 'Total enrollments', 'in_progress' => 'In progress', 'completed' => 'Completed',
     'completion_rate' => 'Completion rate', 'average_learning_time' => 'Average learning time', 'lesson_completion_rate' => 'Lesson completion',
