@@ -40,7 +40,7 @@
                     <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" stroke="white" stroke-width="1.5"/><path d="M6.5 5.5l5 2.5-5 2.5V5.5z" fill="white"/></svg>
                     @lang('core::app.hero.cta_create')
                 </a>
-                <a href="#" class="flex items-center gap-2 bg-white hover:bg-green-50 text-green-600 font-black text-sm px-7 py-4 rounded-2xl border-2 border-green-200 hover:border-green-400 transition-all">
+                <a href="{{ route('courses.index') }}" class="flex items-center gap-2 bg-white hover:bg-green-50 text-green-600 font-black text-sm px-7 py-4 rounded-2xl border-2 border-green-200 hover:border-green-400 transition-all">
                     <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke="#16a34a" stroke-width="1.5"/><path d="M10.5 10.5l3 3" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round"/></svg>
                     @lang('core::app.hero.cta_search')
                 </a>

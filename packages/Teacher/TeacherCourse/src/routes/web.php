@@ -5,6 +5,14 @@ use Mindigo\TeacherCourse\Http\Controllers\ChapterController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseController;
 use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
+use Mindigo\TeacherCourse\Http\Controllers\PublicCourseController;
+
+Route::middleware('web')->group(function (): void {
+    Route::get('/courses', [PublicCourseController::class, 'index'])->name('courses.index');
+    Route::get('/courses/{course}', [PublicCourseController::class, 'show'])
+        ->middleware('auth')
+        ->name('courses.show');
+});
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])
     ->prefix('teacher/courses')
