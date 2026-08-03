@@ -52,6 +52,18 @@ class CourseMasterDataTest extends TestCase
         $this->assertDatabaseMissing('course_categories', ['id' => $category->id]);
     }
 
+    public function test_course_category_workspace_uses_flush_header_and_icon_navigation(): void
+    {
+        $admin = $this->createUser(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.course-categories.index'))
+            ->assertOk()
+            ->assertSee('<main class="min-w-0 p-0">', false)
+            ->assertSee('sticky top-0', false)
+            ->assertDontSee('h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300', false);
+    }
+
     public function test_course_form_only_receives_active_master_data(): void
     {
         $teacher = $this->createUser(['role' => 'teacher']);
