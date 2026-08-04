@@ -2,8 +2,10 @@
 
 namespace Mindigo\StudentAssignment\Http\Controllers;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\StudentAssignment\Http\Requests\SubmitAssignmentRequest;
@@ -16,7 +18,7 @@ class AssignmentController extends Controller
 
     public function index(Request $request)
     {
-        $studentId = (int) auth()->id();
+        $studentId = (int) Auth::id();
         $filters = $request->only(['status', 'classroom_id']);
         $assignments = $this->service->getAssignmentsForStudent($studentId, $filters);
         $classrooms = Classroom::query()
@@ -29,7 +31,7 @@ class AssignmentController extends Controller
 
     public function show(Assignment $assignment)
     {
-        $studentId = (int) auth()->id();
+        $studentId = (int) Auth::id();
         $this->service->assertStudentCanAccess($assignment, $studentId);
         $assignment->load('classroom:id,name,code');
         $submission = $this->service->findSubmission($assignment, $studentId);
@@ -40,7 +42,7 @@ class AssignmentController extends Controller
 
     public function submit(SubmitAssignmentRequest $request, Assignment $assignment)
     {
-        $studentId = (int) auth()->id();
+        $studentId = (int) Auth::id();
         $this->service->assertStudentCanAccess($assignment, $studentId);
         $this->service->submit($assignment, $studentId, $request->validated(), $request->file('submission_file'));
 
@@ -50,22 +52,29 @@ class AssignmentController extends Controller
 
     public function assignmentFile(Assignment $assignment, int $fileIndex)
     {
-        $this->service->assertStudentCanAccess($assignment, (int) auth()->id());
+        $this->service->assertStudentCanAccess($assignment, (int) Auth::id());
+
         $files = is_array($assignment->file_path) ? array_values($assignment->file_path) : [];
         $path = $files[$fileIndex] ?? null;
         abort_if(! $path || ! Storage::disk('public')->exists($path), 404);
 
-        return Storage::disk('public')->response($path, basename($path));
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+
+        return $disk->response($path, basename($path));
     }
 
     public function submissionFile(Assignment $assignment)
     {
-        $studentId = (int) auth()->id();
+        $studentId = (int) Auth::id();
         $this->service->assertStudentCanAccess($assignment, $studentId);
         $submission = $this->service->findSubmission($assignment, $studentId);
         abort_if(! $submission?->hasFile() || ! Storage::disk('public')->exists($submission->file_path), 404);
 
-        return Storage::disk('public')->response(
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+
+        return $disk->response(
             $submission->file_path,
             $submission->file_original_name ?: basename($submission->file_path)
         );

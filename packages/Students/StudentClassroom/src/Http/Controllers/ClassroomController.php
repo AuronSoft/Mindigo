@@ -4,6 +4,7 @@ namespace Mindigo\StudentClassroom\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\StudentClassroom\Services\ClassroomService;
 
@@ -13,7 +14,7 @@ class ClassroomController extends Controller
 
     public function index(Request $request)
     {
-        $classrooms = $this->service->getClassroomsForStudent(auth()->id());
+        $classrooms = $this->service->getClassroomsForStudent(Auth::id());
 
         return view('student-classroom::index', compact('classrooms'));
     }
@@ -21,7 +22,7 @@ class ClassroomController extends Controller
     public function show(Classroom $classroom)
     {
         // Chặn xem lớp không thuộc về mình
-        abort_unless($this->service->isEnrolled($classroom, auth()->id()), 403);
+        abort_unless($this->service->isEnrolled($classroom, Auth::id()), 403);
 
         $detail = $this->service->getClassroomDetail($classroom);
 

@@ -11,7 +11,7 @@ use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 
 class DiscussionService
 {
-    public function classroomIdsForStudent($studentId): Collection
+    public function classroomIdsForStudent(int $studentId): Collection
     {
         return Classroom::query()
             ->whereHas('students', fn ($query) => $query
@@ -22,7 +22,7 @@ class DiscussionService
 
     public function threads(User $student): Collection
     {
-        $classroomIds = $this->classroomIdsForStudent($student->getAuthIdentifier());
+        $classroomIds = $this->classroomIdsForStudent((int) $student->getAuthIdentifier());
 
         if ($classroomIds->isEmpty()) {
             return collect();
@@ -42,7 +42,7 @@ class DiscussionService
 
     public function selectedThread(User $student, ?int $threadId = null): ?DiscussionThread
     {
-        $classroomIds = $this->classroomIdsForStudent($student->getAuthIdentifier());
+        $classroomIds = $this->classroomIdsForStudent((int) $student->getAuthIdentifier());
 
         if ($classroomIds->isEmpty()) {
             return null;
@@ -89,7 +89,7 @@ class DiscussionService
             ->get();
     }
 
-    public function canAccess(DiscussionThread $thread, $studentId): bool
+    public function canAccess(DiscussionThread $thread, int $studentId): bool
     {
         return $this->classroomIdsForStudent($studentId)
             ->map(fn ($id) => (int) $id)
