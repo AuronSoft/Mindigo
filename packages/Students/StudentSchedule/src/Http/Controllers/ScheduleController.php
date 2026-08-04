@@ -5,6 +5,7 @@ namespace Mindigo\StudentSchedule\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\StudentSchedule\Services\ScheduleService;
 
 class ScheduleController extends Controller
@@ -13,7 +14,7 @@ class ScheduleController extends Controller
 
     public function index(Request $request)
     {
-        $studentId = auth()->id();
+        $studentId = Auth::id();
 
         // Tháng đang xem (?month=YYYY-MM), mặc định tháng hiện tại
         $month = $this->resolveMonth($request->input('month'));

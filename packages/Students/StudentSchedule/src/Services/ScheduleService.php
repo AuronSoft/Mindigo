@@ -10,6 +10,8 @@ use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
+use Carbon\CarbonInterface;
+use DateTimeInterface;
 
 class ScheduleService
 {
@@ -166,11 +168,14 @@ class ScheduleService
             ->values();
     }
 
-    private function combine($date, ?string $time): Carbon
+    private function combine(CarbonInterface|DateTimeInterface|string $date, ?string $time): Carbon
     {
-        $d = $date instanceof Carbon ? $date->format('Y-m-d') : Carbon::parse($date)->format('Y-m-d');
+        $d = $date instanceof DateTimeInterface 
+            ? $date->format('Y-m-d') 
+            : Carbon::parse($date)->format('Y-m-d');
+            
         $t = $time ? substr($time, 0, 8) : '00:00:00';
 
-        return Carbon::parse($d.' '.$t);
+        return Carbon::parse("{$d} {$t}");
     }
 }
