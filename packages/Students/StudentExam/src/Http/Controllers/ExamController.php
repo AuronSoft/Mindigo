@@ -5,6 +5,7 @@ namespace Mindigo\StudentExam\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\StudentExam\Http\Requests\AutosaveExamAnswerRequest;
@@ -17,7 +18,7 @@ class ExamController extends Controller
 
     public function index(Request $request)
     {
-        $studentId = auth()->id();
+        $studentId = Auth::id();
 
         $data = $this->service->getExamsForStudent($studentId);
 
@@ -26,7 +27,7 @@ class ExamController extends Controller
 
     public function start(Exam $exam)
     {
-        $studentId = auth()->id();
+        $studentId = Auth::id();
         $attempt = $this->service->startAttempt($exam, $studentId);
 
         return redirect()->route('student.exams.take', $attempt);
@@ -34,9 +35,9 @@ class ExamController extends Controller
 
     public function take(ExamAttempt $attempt)
     {
-        abort_unless((int) $attempt->user_id === (int) auth()->id(), 403);
+        abort_unless((int) $attempt->user_id === (int) Auth::id(), 403);
         abort_unless($attempt->exam, 404);
-        abort_unless($this->service->isEnrolledInExamClassroom($attempt->exam, auth()->id()), 403);
+        abort_unless($this->service->isEnrolledInExamClassroom($attempt->exam, Auth::id()), 403);
 
         if (in_array($attempt->status, ['submitted', 'expired'])) {
             return redirect()->route('student.exams.result', $attempt);
@@ -70,7 +71,7 @@ class ExamController extends Controller
 
     public function result(ExamAttempt $attempt)
     {
-        abort_unless((int) $attempt->user_id === (int) auth()->id(), 403);
+        abort_unless((int) $attempt->user_id === (int) Auth::id(), 403);
 
         abort_unless(
             in_array($attempt->status, ['submitted', 'expired']),
@@ -99,7 +100,7 @@ class ExamController extends Controller
 
     public function heartbeat(ExamAttempt $attempt): JsonResponse
     {
-        abort_unless((int) $attempt->user_id === (int) auth()->id(), 403);
+        abort_unless((int) $attempt->user_id === (int) Auth::id(), 403);
         abort_unless($attempt->status === 'in_progress', 422);
 
         $active = $this->service->recordActivity($attempt);

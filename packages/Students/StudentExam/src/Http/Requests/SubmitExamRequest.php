@@ -4,6 +4,7 @@ namespace Mindigo\StudentExam\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Illuminate\Validation\Validator;
 
 class SubmitExamRequest extends FormRequest
 {
@@ -26,9 +27,9 @@ class SubmitExamRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator): void {
+        $validator->after(function (Validator $validator): void {
             /** @var ExamAttempt $attempt */
             $attempt = $this->route('attempt');
             $answers = $this->input('answers', []);
