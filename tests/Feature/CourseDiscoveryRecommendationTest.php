@@ -10,6 +10,7 @@ use Mindigo\TeacherCourse\Models\CourseEnrollment;
 use Mindigo\TeacherCourse\Models\CourseView;
 use Mindigo\TeacherCourse\Services\CourseDiscoveryService;
 use Mindigo\TeacherCourse\Services\CourseRecommendationService;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class CourseDiscoveryRecommendationTest extends TestCase
@@ -43,7 +44,7 @@ class CourseDiscoveryRecommendationTest extends TestCase
 
         $this->actingAs($teacher)->post(route('courses.wishlist.store', $draft))->assertRedirect();
         $this->assertDatabaseCount('course_wishlists', 0);
-        auth()->logout();
+        Auth::logout();
         $this->get(route('student.wishlist.index'))->assertRedirect(route('login'));
     }
 
