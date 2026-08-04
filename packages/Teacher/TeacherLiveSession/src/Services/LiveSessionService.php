@@ -4,6 +4,7 @@ namespace Mindigo\TeacherLiveSession\Services;
 
 use Illuminate\Support\Str;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
+use Illuminate\Support\Facades\Auth;
 
 class LiveSessionService
 {
@@ -23,7 +24,7 @@ class LiveSessionService
 
     public function create(array $data): LiveSession
     {
-        $data['teacher_id'] = auth()->id();
+        $data['teacher_id'] = Auth::id();
         $data['room_name'] = $this->generateRoomName();
         $data['status'] = 'scheduled';
 

@@ -114,9 +114,13 @@ class CourseDetailService
         ?string $disk = null,
     ): StreamedResponse {
         $disk ??= str_starts_with($path, 'course-content/') ? 'local' : 'public';
-        abort_unless(Storage::disk($disk)->exists($path), 404);
 
-        return Storage::disk($disk)->response($path, $name, array_filter([
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+        $storage = Storage::disk($disk);
+
+        abort_unless($storage->exists($path), 404);
+
+        return $storage->response($path, $name, array_filter([
             'Content-Type' => $mime,
             'Content-Disposition' => $disposition.'; filename="'.addslashes($name).'"',
             'X-Content-Type-Options' => 'nosniff',

@@ -4,6 +4,7 @@ namespace Mindigo\TeacherExam\Http\Requests;
 
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Http\Requests\ExamRequest;
+use Illuminate\Validation\Validator;
 
 class TeacherExamRequest extends ExamRequest
 {
@@ -15,11 +16,11 @@ class TeacherExamRequest extends ExamRequest
         return $this->user() !== null;
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
         parent::withValidator($validator);
 
-        $validator->after(function ($validator): void {
+        $validator->after(function (Validator $validator): void {
             if ($validator->errors()->has('classroom_ids') || $this->user()?->isAdmin()) {
                 return;
             }

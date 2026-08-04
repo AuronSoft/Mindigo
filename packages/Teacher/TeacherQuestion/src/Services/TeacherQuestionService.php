@@ -8,6 +8,7 @@ use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionFolder;
 use Mindigo\QuestionBank\Services\QuestionBankService;
 use Mindigo\TeacherQuestion\Http\Requests\TeacherQuestionRequest;
+use Illuminate\Http\UploadedFile;
 
 class TeacherQuestionService
 {
@@ -69,7 +70,7 @@ class TeacherQuestionService
             ->get();
     }
 
-    public function import($file, User $teacher, string $status, ?int $folderId): int
+    public function import(UploadedFile $file, User $teacher, string $status, ?int $folderId): int
     {
         return $this->bank->import($file, $teacher, $status, $folderId);
     }

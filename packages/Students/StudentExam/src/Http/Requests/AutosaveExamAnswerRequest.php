@@ -4,6 +4,7 @@ namespace Mindigo\StudentExam\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Illuminate\Validation\Validator;
 
 class AutosaveExamAnswerRequest extends FormRequest
 {
@@ -25,9 +26,9 @@ class AutosaveExamAnswerRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator): void {
+        $validator->after(function (Validator $validator): void {
             $answer = $this->input('answer');
             if (! is_null($answer) && ! is_scalar($answer) && ! is_array($answer)) {
                 $validator->errors()->add('answer', __('student-exam::app.invalid_answer'));

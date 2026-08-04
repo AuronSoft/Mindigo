@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
+use Illuminate\Validation\Validator;
 
 class GradeExamAttemptRequest extends FormRequest
 {
@@ -35,9 +36,9 @@ class GradeExamAttemptRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator): void {
+        $validator->after(function (Validator $validator): void {
             if ($validator->errors()->isNotEmpty()) {
                 return;
             }

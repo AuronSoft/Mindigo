@@ -4,6 +4,7 @@ namespace Mindigo\TeacherLiveSession\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\TeacherLiveSession\Http\Requests\LiveSessionRequest;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
@@ -17,7 +18,7 @@ class TeacherLiveSessionController extends Controller
     {
         $classroomId = $request->input('classroom_id');
 
-        $sessions = $this->service->getSessionsByTeacher(auth()->id(), $classroomId);
+        $sessions = $this->service->getSessionsByTeacher(Auth::id(), $classroomId);
         $classrooms = $this->classroomsForTeacher();
 
         return view('teacher-live-session::index', compact('sessions', 'classrooms'));
@@ -85,7 +86,7 @@ class TeacherLiveSessionController extends Controller
         $this->authorizeOwner($liveSession);
         abort_unless($liveSession->canJoin(), 403);
 
-        $this->service->recordJoin($liveSession, auth()->id());
+        $this->service->recordJoin($liveSession, Auth::id());
 
         return view('teacher-live-session::room', ['session' => $liveSession]);
     }
@@ -104,13 +105,13 @@ class TeacherLiveSessionController extends Controller
 
     private function authorizeOwner(LiveSession $session): void
     {
-        abort_if($session->teacher_id !== auth()->id(), 403);
+        abort_if($session->teacher_id !== Auth::id(), 403);
     }
 
     private function classroomsForTeacher()
     {
         return Classroom::query()
-            ->where('teacher_id', auth()->id())
+            ->where('teacher_id', Auth::id())
             ->where('status', 'active')
             ->withCount('students')
             ->orderBy('name')

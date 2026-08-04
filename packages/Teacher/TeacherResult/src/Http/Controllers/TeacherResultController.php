@@ -9,6 +9,7 @@ use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherResult\Services\TeacherResultService;
+use Illuminate\Support\Collection;
 
 class TeacherResultController extends Controller
 {
@@ -63,7 +64,7 @@ class TeacherResultController extends Controller
         return view('teacher-result::by-student', compact('user', 'detail', 'selectedClassroom'));
     }
 
-    private function selectedClassroom(User $teacher, $classrooms, bool $defaultFirst = true): ?Classroom
+    private function selectedClassroom(User $teacher, Collection $classrooms, bool $defaultFirst = true): ?Classroom
     {
         $requestedId = request()->integer('classroom_id');
 
