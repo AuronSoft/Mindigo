@@ -2,8 +2,10 @@
 
 namespace Mindigo\TeacherAssignment\Http\Controllers;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\TeacherAssignment\Http\Requests\AssignmentRequest;
@@ -21,7 +23,7 @@ class AssignmentController extends Controller
         $classroomId = $request->input('classroom_id');
 
         $query = Assignment::query()
-            ->where('teacher_id', auth()->id())
+            ->where('teacher_id', Auth::id())
             ->with('classroom');
 
         if (! empty($searchTitle)) {
@@ -49,7 +51,7 @@ class AssignmentController extends Controller
     public function grading()
     {
         $assignments = Assignment::query()
-            ->where('teacher_id', auth()->id())
+            ->where('teacher_id', Auth::id())
             ->with('classroom:id,name,code')
             ->withCount([
                 'submissions',
@@ -63,19 +65,19 @@ class AssignmentController extends Controller
 
         $summary = [
             'assignments' => Assignment::query()
-                ->where('teacher_id', auth()->id())
+                ->where('teacher_id', Auth::id())
                 ->whereHas('submissions')
                 ->count(),
             'pending' => AssignmentSubmission::query()
-                ->whereHas('assignment', fn ($query) => $query->where('teacher_id', auth()->id()))
+                ->whereHas('assignment', fn ($query) => $query->where('teacher_id', Auth::id()))
                 ->where('status', 'submitted')
                 ->count(),
             'graded' => AssignmentSubmission::query()
-                ->whereHas('assignment', fn ($query) => $query->where('teacher_id', auth()->id()))
+                ->whereHas('assignment', fn ($query) => $query->where('teacher_id', Auth::id()))
                 ->whereIn('status', ['graded', 'returned'])
                 ->count(),
             'submitted' => AssignmentSubmission::query()
-                ->whereHas('assignment', fn ($query) => $query->where('teacher_id', auth()->id()))
+                ->whereHas('assignment', fn ($query) => $query->where('teacher_id', Auth::id()))
                 ->count(),
         ];
 
@@ -101,7 +103,10 @@ class AssignmentController extends Controller
 
         abort_if(! $path || ! Storage::disk('public')->exists($path), 404);
 
-        return Storage::disk('public')->response($path, basename($path));
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+
+        return $disk->response($path, basename($path));
     }
 
     public function edit(Assignment $assignment)
@@ -135,13 +140,13 @@ class AssignmentController extends Controller
 
     private function authorize(Assignment $assignment): void
     {
-        abort_if($assignment->teacher_id !== auth()->id(), 403);
+        abort_if($assignment->teacher_id !== Auth::id(), 403);
     }
 
     private function classroomsForTeacher()
     {
         return Classroom::query()
-            ->where('teacher_id', auth()->id())
+            ->where('teacher_id', Auth::id())
             ->where('status', 'active')
             ->withCount('students')
             ->orderBy('name')

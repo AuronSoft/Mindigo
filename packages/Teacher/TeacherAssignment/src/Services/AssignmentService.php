@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Mindigo\Notification\Notifications\AssignmentGraded;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
+use Illuminate\Support\Facades\Auth;
 
 class AssignmentService
 {
@@ -33,11 +34,10 @@ class AssignmentService
             }
             $data['file_path'] = $paths;
         }
-        $data['teacher_id'] = auth()->id();
+        $data['teacher_id'] = Auth::id();
 
         return Assignment::create($data);
     }
-
     // Cập nhật bài tập
 
     public function update(Assignment $assignment, array $data, ?array $files = null): Assignment
