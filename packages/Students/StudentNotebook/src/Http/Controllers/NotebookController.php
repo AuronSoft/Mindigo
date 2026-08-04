@@ -4,6 +4,7 @@ namespace Mindigo\StudentNotebook\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\StudentNotebook\Http\Requests\NoteRequest;
 use Mindigo\StudentNotebook\Models\Note;
 use Mindigo\StudentNotebook\Services\NotebookService;
@@ -14,7 +15,7 @@ class NotebookController extends Controller
 
     public function index(Request $request)
     {
-        $studentId = auth()->id();
+        $studentId = Auth::id();
 
         $notes = $this->service->listForStudent($studentId);
 
@@ -38,7 +39,7 @@ class NotebookController extends Controller
 
     public function store(NoteRequest $request)
     {
-        $note = $this->service->create(auth()->id(), $request->validated());
+        $note = $this->service->create(Auth::id(), $request->validated());
 
         return redirect()
             ->route('student.notebook.index', ['note' => $note->id])
@@ -67,6 +68,6 @@ class NotebookController extends Controller
 
     private function authorizeOwner(Note $note): void
     {
-        abort_if($note->student_id !== auth()->id(), 403);
+        abort_if($note->student_id !== Auth::id(), 403);
     }
 }
