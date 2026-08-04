@@ -145,6 +145,11 @@ class Course extends Model
         return $this->hasMany(CourseReview::class);
     }
 
+    public function reviewHistory(): HasMany
+    {
+        return $this->hasMany(CourseReviewHistory::class)->latest();
+    }
+
     public function wishlists(): HasMany
     {
         return $this->hasMany(CourseWishlist::class);

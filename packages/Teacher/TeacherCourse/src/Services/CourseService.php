@@ -6,13 +6,17 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
+use Mindigo\Notification\Notifications\CourseReviewDecision;
+use Mindigo\Notification\Notifications\CourseSubmittedForReview;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\CourseCategory;
+use Mindigo\TeacherCourse\Models\CourseReviewHistory;
 
 class CourseService
 {
@@ -84,10 +88,11 @@ class CourseService
         });
     }
 
-    public function transition(Course $course, string $status, User $actor): Course
+    public function transition(Course $course, string $status, User $actor, ?string $note = null, bool $changesRequested = false): Course
     {
-        return DB::transaction(function () use ($course, $status, $actor): Course {
+        return DB::transaction(function () use ($course, $status, $actor, $note, $changesRequested): Course {
             $lockedCourse = Course::query()->lockForUpdate()->findOrFail($course->id);
+            $previousState = $lockedCourse->publication_status;
             $allowedTransitions = [
                 Course::PUBLICATION_DRAFT => [Course::PUBLICATION_PENDING_REVIEW, Course::PUBLICATION_ARCHIVED],
                 Course::PUBLICATION_PENDING_REVIEW => [Course::PUBLICATION_DRAFT, Course::PUBLICATION_PUBLISHED, Course::PUBLICATION_ARCHIVED],
@@ -114,6 +119,49 @@ class CourseService
             }
 
             $lockedCourse->update($attributes);
+
+            $reviewStatus = match (true) {
+                $status === Course::PUBLICATION_PENDING_REVIEW => CourseReviewHistory::STATUS_PENDING,
+                $status === Course::PUBLICATION_PUBLISHED => CourseReviewHistory::STATUS_APPROVED,
+                $changesRequested => CourseReviewHistory::STATUS_CHANGES_REQUESTED,
+                $status === Course::PUBLICATION_DRAFT => CourseReviewHistory::STATUS_WITHDRAWN,
+                default => null,
+            };
+
+            if ($reviewStatus !== null) {
+                CourseReviewHistory::query()->create([
+                    'course_id' => $lockedCourse->id,
+                    'reviewer_id' => $actor->isAdmin() ? $actor->id : null,
+                    'review_status' => $reviewStatus,
+                    'review_note' => $note,
+                    'publication_state_before' => $previousState,
+                    'publication_state_after' => $status,
+                    'reviewed_at' => $actor->isAdmin() ? now() : null,
+                ]);
+            }
+
+            $lockedCourse->loadMissing('teacher:id,name');
+            if ($status === Course::PUBLICATION_PENDING_REVIEW) {
+                $admins = User::query()->admins()->active()->get();
+                DB::afterCommit(fn () => Notification::send($admins, new CourseSubmittedForReview(
+                    $lockedCourse->id,
+                    $lockedCourse->name,
+                    $lockedCourse->teacher?->name ?? $actor->name,
+                    route('admin.course-publication-reviews.show', $lockedCourse),
+                )));
+            } elseif ($status === Course::PUBLICATION_PUBLISHED || $changesRequested) {
+                $decision = $status === Course::PUBLICATION_PUBLISHED
+                    ? CourseReviewHistory::STATUS_APPROVED
+                    : CourseReviewHistory::STATUS_CHANGES_REQUESTED;
+                $teacher = $lockedCourse->teacher;
+                DB::afterCommit(fn () => $teacher?->notify(new CourseReviewDecision(
+                    $lockedCourse->id,
+                    $lockedCourse->name,
+                    $decision,
+                    $note,
+                    route('teacher.courses.show', $lockedCourse),
+                )));
+            }
 
             return $lockedCourse->refresh();
         });

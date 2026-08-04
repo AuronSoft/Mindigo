@@ -13,6 +13,7 @@ use Mindigo\TeacherCourse\Http\Controllers\CourseMonitoringController;
 use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseReportController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseReviewController;
+use Mindigo\TeacherCourse\Http\Controllers\AdminCourseReviewController;
 use Mindigo\TeacherCourse\Http\Controllers\FeaturedCourseController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
 use Mindigo\TeacherCourse\Http\Controllers\PublicCourseController;
@@ -61,6 +62,9 @@ Route::middleware(['web', 'auth', 'role:teacher'])->group(function (): void {
 });
 
 Route::middleware(['web', 'auth', 'role:admin'])->group(function (): void {
+    Route::get('/admin/course-publication-reviews', [AdminCourseReviewController::class, 'index'])->name('admin.course-publication-reviews.index');
+    Route::get('/admin/course-publication-reviews/{course}', [AdminCourseReviewController::class, 'show'])->name('admin.course-publication-reviews.show');
+    Route::patch('/admin/course-publication-reviews/{course}', [AdminCourseReviewController::class, 'update'])->name('admin.course-publication-reviews.update');
     Route::resource('/admin/course-categories', CourseCategoryController::class)
         ->except(['show'])
         ->names('admin.course-categories');
