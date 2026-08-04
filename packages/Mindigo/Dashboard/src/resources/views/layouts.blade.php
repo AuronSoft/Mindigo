@@ -325,6 +325,9 @@
                         @if(Route::has('admin.course-categories.index') && ($currentUser?->hasPermissionTo('course-categories.view') ?? false))
                             <a href="{{ route('admin.course-categories.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('admin.course-categories.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.course_categories')"><x-heroicon-o-tag class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.course_categories')</span></a>
                         @endif
+                        @if(Route::has('admin.course-publication-reviews.index'))
+                            <a href="{{ route('admin.course-publication-reviews.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('admin.course-publication-reviews.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.course_reviews')"><x-heroicon-o-clipboard-document-check class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.course_reviews')</span></a>
+                        @endif
                         <a href="#documents" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.documents')"><x-heroicon-o-document class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.documents')</span></a>
                         <a href="#ai-review" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.ai_review')"><x-heroicon-o-sparkles class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.ai_review')</span></a>
                     </div>
@@ -489,7 +492,7 @@
         </button>
     </aside>
 
-    <main class="min-w-0 {{ request()->routeIs('dashboard', 'teacher.*', 'student.*', 'reports.*', 'learning-tools.*', 'course-platform.*', 'courses.*', 'admin.course-categories.*') ? 'p-0' : 'p-6 max-md:p-4' }}">
+    <main class="min-w-0 {{ request()->routeIs('dashboard', 'teacher.*', 'student.*', 'reports.*', 'learning-tools.*', 'course-platform.*', 'courses.*', 'admin.course-categories.*', 'admin.course-publication-reviews.*') ? 'p-0' : 'p-6 max-md:p-4' }}">
         @yield('content')
     </main>
 </div>

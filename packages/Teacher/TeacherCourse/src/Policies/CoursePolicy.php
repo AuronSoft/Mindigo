@@ -48,6 +48,11 @@ class CoursePolicy
         return $user->isAdmin() && $course->publication_status === Course::PUBLICATION_PENDING_REVIEW;
     }
 
+    public function review(User $user, Course $course): bool
+    {
+        return $user->isAdmin() && $course->publication_status === Course::PUBLICATION_PENDING_REVIEW;
+    }
+
     public function archive(User $user, Course $course): bool
     {
         return $this->view($user, $course) && $course->publication_status !== Course::PUBLICATION_ARCHIVED;
@@ -55,6 +60,8 @@ class CoursePolicy
 
     public function withdrawReview(User $user, Course $course): bool
     {
-        return $this->view($user, $course) && $course->publication_status === Course::PUBLICATION_PENDING_REVIEW;
+        return $user->isTeacher()
+            && (int) $course->teacher_id === (int) $user->getAuthIdentifier()
+            && $course->publication_status === Course::PUBLICATION_PENDING_REVIEW;
     }
 }
