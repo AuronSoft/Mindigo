@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use Mindigo\Auth\Models\User;
 
 class Question extends Model
@@ -86,9 +87,10 @@ class Question extends Model
         return $this->belongsTo(QuestionFolder::class, 'folder_id');
     }
 
-    public function scopePracticeReady($query)
+    public function scopePracticeReady(Builder $query): Builder
     {
-        return $query->where('status', 'approved')->where('practice_status', self::PRACTICE_READY);
+        return $query->where('status', 'approved')
+                    ->where('practice_status', self::PRACTICE_READY);
     }
 
     public function editHistories(): HasMany

@@ -4,12 +4,15 @@ namespace Mindigo\Notification\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Mindigo\Auth\Models\User; 
 
 class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user();
+        /** @var User $user */
+        $user = Auth::user();
 
         $filter = $request->input('filter'); // null | 'unread'
 
@@ -25,10 +28,12 @@ class NotificationController extends Controller
     }
 
     // Đánh dấu đã đọc 1 thông báo (rồi điều hướng tới url đính kèm nếu có)
-
     public function read(Request $request, string $id)
     {
-        $notification = auth()->user()->notifications()->findOrFail($id);
+        /** @var User $user */
+        $user = Auth::user();
+
+        $notification = $user->notifications()->findOrFail($id);
         $notification->markAsRead();
 
         $url = $notification->data['url'] ?? null;
@@ -41,10 +46,12 @@ class NotificationController extends Controller
     }
 
     // Đánh dấu tất cả đã đọc
-
     public function readAll()
     {
-        auth()->user()->unreadNotifications->markAsRead();
+        /** @var User $user */
+        $user = Auth::user();
+
+        $user->unreadNotifications->markAsRead();
 
         return redirect()->route('notifications.index')
             ->with('success', __('notification::app.marked_all_read'));

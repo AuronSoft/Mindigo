@@ -3,8 +3,10 @@
 namespace Mindigo\Auth\Http\Controllers;
 
 use App\Support\RoleRedirector;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Http\Requests\LoginRequest;
 use Mindigo\Auth\Services\LoginService;
 
@@ -27,9 +29,14 @@ class LoginController extends Controller
         $this->service->attempt($request);
         $this->service->persistSession($request);
 
-        $user = auth()->user();
+        /** @var Authenticatable $user */
+        $user = Auth::user();
 
-        if ($user?->role === 'admin') {
+        if (! $user) {
+            abort(401, 'Unauthenticated after login attempt.');
+        }
+
+        if ($user->role === 'admin') {
             return redirect()->intended('/dashboard')->with('login_success', true);
         }
 

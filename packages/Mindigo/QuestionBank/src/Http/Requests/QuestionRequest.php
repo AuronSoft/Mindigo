@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\SubjectManagement\Models\SubjectTopic;
+use Illuminate\Validation\Validator;
 
 class QuestionRequest extends FormRequest
 {
@@ -42,9 +43,9 @@ class QuestionRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator): void {
+        $validator->after(function (Validator $validator): void {
             $subjects = $this->activeSubjectsWithTopics();
 
             if (empty($subjects)) {

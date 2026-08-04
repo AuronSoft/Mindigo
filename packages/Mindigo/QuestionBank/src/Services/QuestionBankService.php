@@ -5,10 +5,12 @@ namespace Mindigo\QuestionBank\Services;
 use Illuminate\Validation\ValidationException;
 use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionEditHistory;
 use Mindigo\QuestionBank\Models\QuestionFolder;
 use Mindigo\SubjectManagement\Models\Subject;
+use Illuminate\Http\UploadedFile;
 
 class QuestionBankService
 {
@@ -97,7 +99,7 @@ class QuestionBankService
         return $folder;
     }
 
-    public function import($file, User $user, string $status, ?int $defaultFolderId): int
+    public function import(UploadedFile $file, User $user, string $status, ?int $defaultFolderId): int
     {
         $rows = $this->imports->rowsFromFile($file);
 
@@ -335,7 +337,6 @@ class QuestionBankService
     }
 
     // Thêm method vào QuestionBankService:
-
     private function recordHistory(string $action, array $oldValues, array $newValues, Question $question, ?string $note = null): void
     {
         $changes = [];
@@ -358,7 +359,7 @@ class QuestionBankService
 
         QuestionEditHistory::create([
             'question_id' => $question->id,
-            'edited_by' => auth()->id(),
+            'edited_by' => Auth::id(),
             'action' => $action,
             'changes' => $changes ?: null,
             'note' => $note,

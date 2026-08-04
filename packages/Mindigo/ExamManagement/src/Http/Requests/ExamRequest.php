@@ -4,6 +4,7 @@ namespace Mindigo\ExamManagement\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 
 class ExamRequest extends FormRequest
@@ -47,7 +48,7 @@ class ExamRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function () use ($validator): void {
             if ($validator->errors()->isNotEmpty()) {
