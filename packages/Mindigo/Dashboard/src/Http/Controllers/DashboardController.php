@@ -10,9 +10,12 @@ use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\QuestionBank\Models\Question;
+use Mindigo\TeacherCourse\Services\AdminCourseReviewService;
 
 class DashboardController extends Controller
 {
+    public function __construct(private readonly AdminCourseReviewService $courseReviews) {}
+
     public function index()
     {
         $stats = [
@@ -140,6 +143,8 @@ class DashboardController extends Controller
             User::students()->latest()->first(),
         ])->filter();
 
+        $courseReviewDashboard = $this->courseReviews->dashboard();
+
         return view('Mindigo-dashboard::dashboard', compact(
             'stats',
             'totalExams', 'recentExams',
@@ -154,7 +159,7 @@ class DashboardController extends Controller
             'rankingLabels', 'rankingData',
             'questionStats',
             'userMetrics', 'totalUsers',
-            'dashboardUser', 'headerUsers'
+            'dashboardUser', 'headerUsers', 'courseReviewDashboard'
         ));
     }
 }

@@ -4,8 +4,8 @@ namespace Mindigo\ExamManagement\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Validator;
 
 class ExamRequest extends FormRequest
 {

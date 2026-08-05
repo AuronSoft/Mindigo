@@ -3,10 +3,10 @@
 namespace Mindigo\TeacherExam\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
-use Illuminate\Validation\Validator;
 
 class GradeExamAttemptRequest extends FormRequest
 {

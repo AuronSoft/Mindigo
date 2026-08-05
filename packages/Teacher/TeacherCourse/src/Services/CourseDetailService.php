@@ -4,6 +4,7 @@ namespace Mindigo\TeacherCourse\Services;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\Auth\Models\User;
@@ -115,7 +116,7 @@ class CourseDetailService
     ): StreamedResponse {
         $disk ??= str_starts_with($path, 'course-content/') ? 'local' : 'public';
 
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+        /** @var FilesystemAdapter $storage */
         $storage = Storage::disk($disk);
 
         abort_unless($storage->exists($path), 404);

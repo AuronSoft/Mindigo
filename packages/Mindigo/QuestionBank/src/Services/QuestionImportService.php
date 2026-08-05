@@ -2,12 +2,12 @@
 
 namespace Mindigo\QuestionBank\Services;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionFolder;
 use Mindigo\SubjectManagement\Models\Subject;
-use Illuminate\Http\UploadedFile;
 
 class QuestionImportService
 {

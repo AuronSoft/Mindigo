@@ -5,10 +5,10 @@ namespace Mindigo\QuestionBank\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Validator;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\SubjectManagement\Models\SubjectTopic;
-use Illuminate\Validation\Validator;
 
 class QuestionRequest extends FormRequest
 {

@@ -2,15 +2,15 @@
 
 namespace Mindigo\QuestionBank\Services;
 
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionEditHistory;
 use Mindigo\QuestionBank\Models\QuestionFolder;
 use Mindigo\SubjectManagement\Models\Subject;
-use Illuminate\Http\UploadedFile;
 
 class QuestionBankService
 {

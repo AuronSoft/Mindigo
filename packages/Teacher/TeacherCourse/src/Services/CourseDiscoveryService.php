@@ -2,8 +2,8 @@
 
 namespace Mindigo\TeacherCourse\Services;
 
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Mindigo\Auth\Models\User;
