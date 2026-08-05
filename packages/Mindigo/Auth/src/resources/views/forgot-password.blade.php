@@ -54,7 +54,7 @@
                     <h1 class="text-3xl font-black text-gray-900 mb-2">@lang('Mindigo-auth::app.steps.email.title')</h1>
                     <p class="text-gray-500 text-sm mb-8">@lang('Mindigo-auth::app.steps.email.description')</p>
 
-                    <div id="alert-email" class="hidden mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 text-sm font-bold px-4 py-3 rounded-xl">
+                    <div id="alert-email" class="mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 text-sm font-bold px-4 py-3 rounded-xl" style="display:none">
                         <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         <span id="alert-email-msg"></span>
                     </div>
@@ -91,7 +91,7 @@
                         <strong id="otp-email-display" class="text-green-600"></strong>
                     </p>
 
-                    <div id="alert-otp" class="hidden mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 text-sm font-bold px-4 py-3 rounded-xl">
+                    <div id="alert-otp" class="mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 text-sm font-bold px-4 py-3 rounded-xl" style="display:none">
                         <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         <span id="alert-otp-msg"></span>
                     </div>
@@ -129,7 +129,7 @@
                     <h1 class="text-3xl font-black text-gray-900 mb-2">@lang('Mindigo-auth::app.steps.reset.title')</h1>
                     <p class="text-gray-500 text-sm mb-8">@lang('Mindigo-auth::app.steps.reset.description')</p>
 
-                    <div id="alert-reset" class="hidden mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 text-sm font-bold px-4 py-3 rounded-xl">
+                    <div id="alert-reset" class="mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 text-sm font-bold px-4 py-3 rounded-xl" style="display:none">
                         <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         <span id="alert-reset-msg"></span>
                     </div>
