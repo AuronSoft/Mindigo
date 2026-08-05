@@ -29,7 +29,7 @@
             </div>
 
             {{-- RIGHT: Desktop mockups --}}
-            <div class="flex-1 relative flex items-end justify-center min-h-[460px]">
+            <div class="flex-1 relative flex items-end justify-center min-h-115">
 
                 {{-- Decorative --}}
                 <div class="absolute top-4 left-1/3 w-4 h-4 bg-green-400 rounded-full opacity-50 pointer-events-none" style="animation:floatStar 3s ease-in-out infinite"></div>
@@ -38,7 +38,7 @@
                 <div class="absolute bottom-16 left-0 w-3 h-3 bg-green-300 rotate-45 opacity-60 pointer-events-none" style="animation:floatStar 4s .4s ease-in-out infinite"></div>
 
                 {{-- Browser mockup 1 (back - Phòng thi ảo) --}}
-                <div class="absolute top-0 right-0 w-[420px] bg-white rounded-2xl shadow-2xl border border-gray-100 z-0 rotate-1">
+                <div class="absolute top-0 right-0 w-105 bg-white rounded-2xl shadow-2xl border border-gray-100 z-0 rotate-1">
                     <div class="bg-gray-50 border-b border-gray-100 px-4 py-2.5 flex items-center gap-2 rounded-t-2xl">
                         <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                         <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
@@ -112,7 +112,7 @@
                 </div>
 
                 {{-- Browser mockup 2 (front - Quản lý kỳ thi table) --}}
-                <div class="relative z-10 w-[400px] mt-36 -ml-10 bg-white rounded-2xl shadow-2xl border border-gray-100 -rotate-1">
+                <div class="relative z-10 w-100 mt-36 -ml-10 bg-white rounded-2xl shadow-2xl border border-gray-100 -rotate-1">
                     <div class="bg-gray-50 border-b border-gray-100 px-4 py-2.5 flex items-center gap-2 rounded-t-2xl">
                         <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                         <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>

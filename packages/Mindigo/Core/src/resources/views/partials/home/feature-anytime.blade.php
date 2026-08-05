@@ -4,11 +4,11 @@
         <div class="flex flex-col lg:flex-row items-center gap-20">
 
             {{-- LEFT: Desktop + Phone mockups --}}
-            <div class="flex-1 relative flex items-center justify-center min-h-[480px]">
+            <div class="flex-1 relative flex items-center justify-center min-h-120">
 
                 {{-- Dashed orbit circle --}}
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div class="w-[380px] h-[380px] rounded-full border-2 border-dashed border-green-200 opacity-60"></div>
+                    <div class="w-95 h-95 rounded-full border-2 border-dashed border-green-200 opacity-60"></div>
                 </div>
 
                 {{-- Clock decoration --}}
@@ -32,7 +32,7 @@
                 <div class="absolute bottom-6 right-10 text-green-400 text-2xl pointer-events-none" style="animation:floatStar 4s ease-in-out infinite">✦</div>
 
                 {{-- Desktop browser mockup --}}
-                <div class="relative z-10 w-[400px]">
+                <div class="relative z-10 w-100">
                     <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
                         <div class="bg-gray-50 border-b border-gray-100 px-4 py-2.5 flex items-center gap-2">
                             <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
@@ -166,7 +166,7 @@
 
                 {{-- Phone mockup (overlapping) --}}
                 <div class="absolute bottom-0 right-4 z-20" style="transform: rotate(4deg); width: 120px;">
-                    <div class="relative rounded-[2rem] shadow-2xl" style="background: linear-gradient(160deg, #d1fae5, #6ee7b7, #34d399); padding: 2px;">
+                    <div class="relative rounded-4xl shadow-2xl" style="background: linear-gradient(160deg, #d1fae5, #6ee7b7, #34d399); padding: 2px;">
                         <div class="absolute top-10 h-5 rounded-l-full" style="left:-3px; width:3px; background:#86efac;"></div>
                         <div class="absolute top-18 h-7 rounded-l-full" style="left:-3px; width:3px; background:#86efac;"></div>
                         <div class="absolute top-14 h-8 rounded-r-full" style="right:-3px; width:3px; background:#86efac;"></div>
