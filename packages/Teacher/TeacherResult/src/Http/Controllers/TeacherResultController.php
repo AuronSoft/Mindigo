@@ -3,13 +3,13 @@
 namespace Mindigo\TeacherResult\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherResult\Services\TeacherResultService;
-use Illuminate\Support\Collection;
 
 class TeacherResultController extends Controller
 {

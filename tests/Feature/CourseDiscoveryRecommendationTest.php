@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherCourse\Models\Course;
@@ -10,7 +11,6 @@ use Mindigo\TeacherCourse\Models\CourseEnrollment;
 use Mindigo\TeacherCourse\Models\CourseView;
 use Mindigo\TeacherCourse\Services\CourseDiscoveryService;
 use Mindigo\TeacherCourse\Services\CourseRecommendationService;
-use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class CourseDiscoveryRecommendationTest extends TestCase

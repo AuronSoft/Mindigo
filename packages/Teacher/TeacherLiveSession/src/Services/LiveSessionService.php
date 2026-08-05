@@ -2,9 +2,9 @@
 
 namespace Mindigo\TeacherLiveSession\Services;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
-use Illuminate\Support\Facades\Auth;
 
 class LiveSessionService
 {

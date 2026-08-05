@@ -2,13 +2,13 @@
 
 namespace Mindigo\TeacherQuestion\Services;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Mindigo\Auth\Models\User;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionFolder;
 use Mindigo\QuestionBank\Services\QuestionBankService;
 use Mindigo\TeacherQuestion\Http\Requests\TeacherQuestionRequest;
-use Illuminate\Http\UploadedFile;
 
 class TeacherQuestionService
 {

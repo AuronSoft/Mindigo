@@ -3,8 +3,8 @@
 namespace Mindigo\StudentExam\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Mindigo\ExamManagement\Models\ExamAttempt;
 use Illuminate\Validation\Validator;
+use Mindigo\ExamManagement\Models\ExamAttempt;
 
 class AutosaveExamAnswerRequest extends FormRequest
 {

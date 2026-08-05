@@ -3,12 +3,12 @@
 namespace Mindigo\TeacherAssignment\Services;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\Notification\Notifications\AssignmentGraded;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
-use Illuminate\Support\Facades\Auth;
 
 class AssignmentService
 {

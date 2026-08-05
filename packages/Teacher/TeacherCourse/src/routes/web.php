@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\TeacherCourse\Http\Controllers\AdminCourseReviewController;
 use Mindigo\TeacherCourse\Http\Controllers\ChapterController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseAnalyticsController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseBuilderController;
@@ -13,7 +14,6 @@ use Mindigo\TeacherCourse\Http\Controllers\CourseMonitoringController;
 use Mindigo\TeacherCourse\Http\Controllers\CoursePublicationController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseReportController;
 use Mindigo\TeacherCourse\Http\Controllers\CourseReviewController;
-use Mindigo\TeacherCourse\Http\Controllers\AdminCourseReviewController;
 use Mindigo\TeacherCourse\Http\Controllers\FeaturedCourseController;
 use Mindigo\TeacherCourse\Http\Controllers\LessonController;
 use Mindigo\TeacherCourse\Http\Controllers\PublicCourseController;
