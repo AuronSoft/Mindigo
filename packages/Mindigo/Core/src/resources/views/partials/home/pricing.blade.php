@@ -53,12 +53,12 @@
                     ] as $feature)
                     <div class="flex items-center gap-3">
                         @if($feature['ok'])
-                        <div class="w-5 h-5 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                        <div class="w-5 h-5 rounded-full bg-green-50 flex items-center justify-center shrink-0">
                             <svg class="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                         </div>
                         <span class="text-sm text-gray-700">{{ $feature['text'] }}</span>
                         @else
-                        <div class="w-5 h-5 rounded-full bg-gray-50 flex items-center justify-center flex-shrink-0">
+                        <div class="w-5 h-5 rounded-full bg-gray-50 flex items-center justify-center shrink-0">
                             <svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
                         </div>
                         <span class="text-sm text-gray-400">{{ $feature['text'] }}</span>
@@ -110,7 +110,7 @@
                         __('core::app.pricing.features.priority_support'),
                     ] as $feature)
                     <div class="flex items-center gap-3">
-                        <div class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                        <div class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                             <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                         </div>
                         <span class="text-sm text-white">{{ $feature }}</span>
@@ -148,7 +148,7 @@
                         __('core::app.pricing.features.priority_support'),
                     ] as $feature)
                     <div class="flex items-center gap-3">
-                        <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                        <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
                             <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                         </div>
                         <span class="text-sm text-gray-700">{{ $feature }}</span>
@@ -241,7 +241,7 @@
                 ['icon' => 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z',                                                                                   'label' => __('core::app.pricing.trust.support_247'),    'sub' => __('core::app.pricing.trust.support_sub')],
             ] as $badge)
             <div class="bg-white border border-gray-100 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-                <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center shrink-0">
                     <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $badge['icon'] }}"/></svg>
                 </div>
                 <div>
@@ -261,7 +261,7 @@
                 <div x-data="{ open: false }" class="py-4 cursor-pointer" @click="open = !open">
                     <div class="flex justify-between items-center">
                         <span class="text-sm font-black text-gray-800">{{ $faq['q'] }}</span>
-                        <svg class="w-4 h-4 text-green-500 transition-transform flex-shrink-0 ml-4" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                        <svg class="w-4 h-4 text-green-500 transition-transform shrink-0 ml-4" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                     <div x-show="open" x-transition class="text-xs text-gray-500 leading-relaxed mt-3">{{ $faq['a'] }}</div>
                 </div>

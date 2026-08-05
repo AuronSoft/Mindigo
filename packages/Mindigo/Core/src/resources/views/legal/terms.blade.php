@@ -14,8 +14,8 @@
                 class="h-full w-full object-cover"
             >
         </div>
-        <div class="absolute inset-0 bg-gradient-to-r from-emerald-950 via-emerald-900/95 to-emerald-700/80"></div>
-        <div class="absolute -right-24 bottom-[-38%] h-96 w-[52rem] rounded-[100%] bg-white/18 rotate-[-7deg]"></div>
+        <div class="absolute inset-0 bg-linear-to-r from-emerald-950 via-emerald-900/95 to-emerald-700/80"></div>
+        <div class="absolute -right-24 bottom-[-38%] h-96 w-208 rounded-full bg-white/18 rotate-[-7deg]"></div>
 
         <div class="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
             <a href="{{ route('home', [], false) }}" class="flex items-center gap-2">

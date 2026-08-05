@@ -125,7 +125,7 @@
                 </div>
 
                 {{-- Phone 2 (Chi tiết đề thi) --}}
-                <div class="relative z-20 ml-[-15px] mt-[-30px]" style="transform: rotate(4deg); width: 195px;">
+                <div class="relative z-20 -ml-3.75 -mt-7.5" style="transform: rotate(4deg); width: 195px;">
                     <div class="relative rounded-[2.6rem] shadow-2xl" style="background: linear-gradient(160deg, #d1fae5 0%, #6ee7b7 50%, #34d399 100%); padding: 3px;">
                         <div class="absolute top-14 h-6 rounded-l-full" style="left:-4px; width:4px; background:#86efac;"></div>
                         <div class="absolute top-24 h-9 rounded-l-full" style="left:-4px; width:4px; background:#86efac;"></div>
