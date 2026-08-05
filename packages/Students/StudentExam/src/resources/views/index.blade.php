@@ -71,7 +71,7 @@
             <h2 id="all-exams-heading" class="mb-4 text-lg font-black text-slate-950">@lang('student-exam::app.all_exams')</h2>
             <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
                 <div class="overflow-x-auto">
-                    <table class="w-full min-w-[920px] border-collapse text-left">
+                    <table class="w-full min-w-230 border-collapse text-left">
                         <thead><tr class="border-b border-slate-200 text-xs font-bold text-slate-500"><th class="px-5 py-4">@lang('student-exam::app.column_name')</th><th class="px-5 py-4">@lang('student-exam::app.column_status')</th><th class="px-5 py-4">@lang('student-exam::app.column_duration')</th><th class="px-5 py-4">@lang('student-exam::app.column_schedule')</th><th class="px-5 py-4">@lang('student-exam::app.column_attempts')</th><th class="px-5 py-4 text-right">@lang('student-exam::app.column_action')</th></tr></thead>
                         <tbody class="divide-y divide-slate-100">
                             @foreach($examGroups as $examGroup)
