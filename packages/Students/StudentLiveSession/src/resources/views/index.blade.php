@@ -37,7 +37,7 @@
                         </span>
                     @endif
                 </button>
-                <span class="hidden sm:grid h-11 w-11 place-items-center rounded-2xl bg-rose-50 text-rose-500">
+                <span class="max-sm:hidden sm:grid h-11 w-11 place-items-center rounded-2xl bg-rose-50 text-rose-500">
                     <x-heroicon-o-video-camera class="h-6 w-6" />
                 </span>
             </div>
@@ -64,7 +64,7 @@
             @endif
 
             @if($sessions->isEmpty())
-                <div class="flex min-h-[430px] flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-slate-200 bg-white px-6 py-16">
+                <div class="flex min-h-107.5 flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-slate-200 bg-white px-6 py-16">
                     <span class="grid h-20 w-20 place-items-center rounded-full bg-slate-50 text-slate-300">
                         <x-heroicon-o-video-camera class="h-10 w-10" />
                     </span>

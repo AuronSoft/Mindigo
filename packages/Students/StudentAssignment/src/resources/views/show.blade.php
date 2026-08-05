@@ -95,12 +95,12 @@
                         <div class="space-y-2">
                             <p class="text-sm font-black text-slate-800">{{ __('student-assignment::app.submission_method_label') }}</p>
                             <div class="grid grid-cols-2 gap-2">
-                                <label class="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2.5 text-xs font-black text-slate-600 has-[:checked]:border-green-500 has-[:checked]:bg-green-50 has-[:checked]:text-green-700">
+                                <label class="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2.5 text-xs font-black text-slate-600 has-checked:border-green-500 has-checked:bg-green-50 has-checked:text-green-700">
                                     <input type="radio" name="submission_method" value="file" class="sr-only" @checked(old('submission_method', 'file') === 'file')>
                                     <x-heroicon-o-paper-clip class="h-4 w-4" />
                                     {{ __('student-assignment::app.submission_type.file') }}
                                 </label>
-                                <label class="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2.5 text-xs font-black text-slate-600 has-[:checked]:border-green-500 has-[:checked]:bg-green-50 has-[:checked]:text-green-700">
+                                <label class="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2.5 text-xs font-black text-slate-600 has-checked:border-green-500 has-checked:bg-green-50 has-checked:text-green-700">
                                     <input type="radio" name="submission_method" value="text" class="sr-only" @checked(old('submission_method') === 'text')>
                                     <x-heroicon-o-pencil class="h-4 w-4" />
                                     {{ __('student-assignment::app.submission_type.text') }}

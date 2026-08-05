@@ -13,7 +13,7 @@
 
 @section('content')
     <section class="min-h-screen bg-[#f7faf7]">
-        <header class="flex min-h-[4.25rem] items-center justify-between gap-4 bg-[#f7faf7] px-5 py-3 max-md:px-4">
+        <header class="flex min-h-17 items-center justify-between gap-4 bg-[#f7faf7] px-5 py-3 max-md:px-4">
             <div class="flex items-center gap-3">
                 <a href="{{ route('reports.index') }}" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:bg-green-50 hover:text-green-700">
                     <x-heroicon-o-arrow-left class="h-4 w-4" />
@@ -49,7 +49,7 @@
                     <p class="text-sm font-black text-slate-950">Tất cả đề thi</p>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full min-w-[700px] text-left">
+                    <table class="w-full min-w-175 text-left">
                         <thead class="bg-slate-50 text-[11px] font-black uppercase text-slate-400">
                             <tr>
                                 <th class="px-4 py-3">#</th>

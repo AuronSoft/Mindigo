@@ -72,7 +72,7 @@
                                class="js-assignment-files block w-full text-sm font-bold text-slate-700 file:mr-4 file:rounded-full file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-xs file:font-black file:text-slate-700 hover:file:bg-slate-200"
                                accept=".pdf,.docx,.doc,.zip,.rar,.xlsx,.xls,.pptx,.ppt,.jpg,.jpeg,.png"
                                data-preview="selected-assignment-files">
-                        <div id="selected-assignment-files" class="mt-3 hidden grid gap-2 sm:grid-cols-2"></div>
+                        <div id="selected-assignment-files" class="mt-3 hidden gap-2 sm:grid-cols-2"></div>
                     </div>
                     
                     @error('files')<p class="text-xs font-semibold text-red-500 mt-1">{{ $message }}</p>@enderror

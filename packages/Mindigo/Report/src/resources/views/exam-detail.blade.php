@@ -27,7 +27,7 @@
 
 @section('content')
     <section class="min-h-screen bg-[#f7faf7]">
-        <header class="flex min-h-[4.25rem] items-center gap-3 bg-[#f7faf7] px-5 py-3 max-md:px-4">
+        <header class="flex min-h-17 items-center gap-3 bg-[#f7faf7] px-5 py-3 max-md:px-4">
             <a href="{{ route('reports.exams') }}" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-600 no-underline transition hover:bg-green-50 hover:text-green-700">
                 <x-heroicon-o-arrow-left class="h-4 w-4" />
             </a>

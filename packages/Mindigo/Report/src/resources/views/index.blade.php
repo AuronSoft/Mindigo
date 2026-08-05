@@ -39,7 +39,7 @@
 
 @section('content')
     <section class="min-h-screen bg-[#f7faf7]">
-        <header class="flex min-h-[4.25rem] items-center justify-between gap-4 bg-[#f7faf7] px-5 py-3 max-md:px-4">
+        <header class="flex min-h-17 items-center justify-between gap-4 bg-[#f7faf7] px-5 py-3 max-md:px-4">
             <div>
                 <p class="text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-report::app.title')</p>
                 <h1 class="mt-0.5 text-xl font-black text-slate-950">@lang('Mindigo-report::app.overview')</h1>
@@ -142,7 +142,7 @@
                     <a href="{{ route('reports.students') }}" class="text-xs font-black text-green-700 no-underline hover:underline">@lang('Mindigo-report::app.view_all')</a>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full min-w-[600px] text-left">
+                    <table class="w-full min-w-150 text-left">
                         <thead class="text-[11px] font-black uppercase text-slate-400">
                             <tr>
                                 <th class="pb-3 pr-4">#</th>

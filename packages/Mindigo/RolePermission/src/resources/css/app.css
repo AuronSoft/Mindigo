@@ -65,7 +65,7 @@
     }
 
     .role-table {
-        @apply w-full min-w-[760px] border-collapse text-left;
+        @apply w-full min-w-190 border-collapse text-left;
     }
 
     .role-table th {

@@ -115,7 +115,7 @@
         </div>
 
         {{-- Tab Contents --}}
-        <div class="bg-white rounded-b-3xl border border-slate-200 border-t-0 p-6 shadow-sm min-h-[400px]">
+        <div class="bg-white rounded-b-3xl border border-slate-200 border-t-0 p-6 shadow-sm min-h-100">
 
             {{-- Tab 1: Students & Assistants --}}
             <div id="tab-content-students" data-mindigo-tab-panel="students" class="tab-content {{ $currentTab === 'students' ? '' : 'hidden' }}">
@@ -273,7 +273,7 @@
                         @if($attendanceHistory->isEmpty())
                             <p class="text-xs font-bold text-slate-400">@lang('teacher-classroom::app.no_attendance_history')</p>
                         @else
-                            <div class="overflow-x-auto rounded-2xl border border-slate-200 max-h-[300px] overflow-y-auto">
+                            <div class="overflow-x-auto rounded-2xl border border-slate-200 max-h-75 overflow-y-auto">
                                 <table class="w-full text-left">
                                     <thead class="bg-slate-50 text-[10px] font-black uppercase tracking-wide text-slate-400 sticky top-0">
                                         <tr>
@@ -339,7 +339,7 @@
                     <div class="relative border-l border-slate-200 ml-4 py-2 pl-6 space-y-8">
                         @foreach($schedules as $sched)
                             <div class="relative">
-                                <span class="absolute -left-[31px] top-1.5 grid h-4 w-4 place-items-center rounded-full border border-slate-250 bg-white ring-4 ring-slate-100">
+                                <span class="absolute -left-7.75 top-1.5 grid h-4 w-4 place-items-center rounded-full border border-slate-250 bg-white ring-4 ring-slate-100">
                                     <span class="h-2 w-2 rounded-full bg-green-600"></span>
                                 </span>
                                 <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition">

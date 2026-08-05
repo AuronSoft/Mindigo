@@ -69,7 +69,7 @@
             ] as $s)
                 <button type="button"
                         data-submission-filter="{{ $s['key'] }}"
-                        class="submission-filter-btn group flex min-h-[88px] items-center gap-3 rounded-2xl border bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-green-200 hover:bg-green-50 hover:shadow-md {{ $s['key'] === 'all' ? 'border-green-200 ring-2 ring-green-50' : 'border-slate-200' }}">
+                        class="submission-filter-btn group flex min-h-22 items-center gap-3 rounded-2xl border bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-green-200 hover:bg-green-50 hover:shadow-md {{ $s['key'] === 'all' ? 'border-green-200 ring-2 ring-green-50' : 'border-slate-200' }}">
                     <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl {{ $s['bg'] }} {{ $s['text'] }}">
                         <x-dynamic-component :component="$s['icon']" class="h-5 w-5" />
                     </span>
