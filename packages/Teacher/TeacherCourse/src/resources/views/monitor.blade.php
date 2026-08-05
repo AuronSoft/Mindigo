@@ -49,7 +49,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[850px] text-left text-sm">
+                <table class="w-full min-w-212.5 text-left text-sm">
                     <thead class="border-b border-slate-200 bg-slate-50 text-[11px] font-black uppercase tracking-wider text-slate-500"><tr><th class="px-5 py-3">@lang('teacher-course::publishing.student')</th><th class="px-5 py-3">@lang('teacher-course::publishing.classroom')</th><th class="px-5 py-3">@lang('teacher-course::publishing.lessons')</th><th class="px-5 py-3">@lang('teacher-course::publishing.progress')</th><th class="px-5 py-3">@lang('teacher-course::publishing.status')</th><th class="px-5 py-3">@lang('teacher-course::publishing.last_activity')</th></tr></thead>
                     <tbody class="divide-y divide-slate-100">
                         @forelse($enrollments as $enrollment)

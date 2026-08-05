@@ -177,7 +177,7 @@
                     <a href="{{ route('teacher.discussions.index', ['thread' => $thread->id]) }}"
                        data-discussion-room
                        data-search="{{ $searchText }}"
-                       class="group mb-1 flex min-h-[4.75rem] items-center gap-3 rounded-2xl px-3 py-2.5 no-underline transition {{ $isActive ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50' }}">
+                       class="group mb-1 flex min-h-19 items-center gap-3 rounded-2xl px-3 py-2.5 no-underline transition {{ $isActive ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50' }}">
                         <div class="relative grid h-12 w-12 shrink-0 place-items-center rounded-full {{ $isActive ? 'bg-green-600 text-white' : 'bg-slate-100 text-slate-600 group-hover:bg-green-100 group-hover:text-green-700' }}">
                             <span class="text-sm font-black">{{ $initial }}</span>
                             <span class="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-green-400"></span>
@@ -270,7 +270,7 @@
 
                                     <div class="space-y-2 rounded-2xl px-4 py-3 {{ $mine ? 'rounded-br-md bg-green-600 text-white' : 'rounded-bl-md bg-slate-100 text-slate-800' }}">
                                         @if($message->body !== '')
-                                            <p class="whitespace-pre-line break-words text-sm font-semibold leading-6">{{ $message->body }}</p>
+                                            <p class="whitespace-pre-line wrap-break-word text-sm font-semibold leading-6">{{ $message->body }}</p>
                                         @endif
 
                                         @if($message->attachments->isNotEmpty())

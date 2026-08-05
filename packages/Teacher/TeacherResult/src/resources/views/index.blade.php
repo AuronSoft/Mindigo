@@ -83,7 +83,7 @@
 
         {{-- Left sidebar: classrooms --}}
         <aside class="hidden border-r border-slate-200 bg-white xl:block">
-            <div class="sticky top-[57px] max-h-[calc(100vh-57px)] overflow-y-auto p-4">
+            <div class="sticky top-14.25 max-h-[calc(100vh-57px)] overflow-y-auto p-4">
                 <p class="mb-2 px-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
                     @lang('teacher-classroom::app.title')
                 </p>

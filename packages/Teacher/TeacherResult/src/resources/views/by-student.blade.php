@@ -75,7 +75,7 @@
                     <p class="text-sm font-bold text-slate-400">@lang('teacher-result::app.no_history')</p>
                 </div>
             @else
-                <div class="max-h-[28rem] overflow-y-auto">
+                <div class="max-h-112 overflow-y-auto">
                     <table class="w-full text-left">
                         <thead class="sticky top-0 bg-slate-50 text-[11px] font-black uppercase tracking-wide text-slate-400">
                             <tr>
