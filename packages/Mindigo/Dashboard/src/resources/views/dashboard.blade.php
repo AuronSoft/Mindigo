@@ -68,7 +68,7 @@
 @section('content')
 
     <section class="min-h-screen bg-[#f7faf7]">
-        <header class="flex min-h-[4.25rem] flex-wrap items-center justify-between gap-4 bg-[#f7faf7] px-5 py-3 backdrop-blur max-md:px-4">
+        <header class="flex min-h-17 flex-wrap items-center justify-between gap-4 bg-[#f7faf7] px-5 py-3 backdrop-blur max-md:px-4">
             <div class="relative min-w-[16rem] max-w-xl flex-1" id="global-search-wrap">
                 <div class="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 transition focus-within:border-green-300 focus-within:bg-white focus-within:shadow-sm">
                     <x-heroicon-o-magnifying-glass class="h-5 w-5 shrink-0 text-slate-400" id="global-search-icon" />
@@ -179,7 +179,7 @@
                         </div>
                     </article>
                 </section>
-                <section class="min-h-[18.85rem] rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm" id="overview">
+                <section class="min-h-75 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" id="overview">
                     <div class="flex flex-wrap items-center justify-between gap-4">
                         <div class="flex flex-wrap items-center gap-2">
                             @if(Route::has('users.create'))
@@ -278,7 +278,7 @@
 
                 <section class="grid items-stretch gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
                     <div class="grid items-stretch gap-4 lg:grid-cols-2">
-                        <div class="min-h-[21rem] rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm" data-dashboard-tool-panel="source-list">
+                        <div class="min-h-84 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-dashboard-tool-panel="source-list">
                             <div class="mb-4 flex items-center justify-between gap-3">
                                 <div class="relative" data-dashboard-dropdown>
                                     <button type="button" class="inline-flex h-9 items-center gap-2 rounded-full bg-slate-50 px-3 text-slate-600 ring-1 ring-slate-200 transition hover:bg-green-50 hover:text-green-700" data-dashboard-dropdown-trigger aria-expanded="false">
@@ -328,7 +328,7 @@
                             </div>
                         </div>
 
-                        <div class="min-h-[21rem] rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm" data-dashboard-tool-panel="source-chart">
+                        <div class="min-h-84 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-dashboard-tool-panel="source-chart">
                             <div class="mb-4 flex items-center justify-between gap-3">
                                 <div class="relative" data-dashboard-dropdown>
                                     <button type="button" class="inline-flex h-9 items-center gap-2 rounded-full bg-slate-50 px-3 text-slate-600 ring-1 ring-slate-200 transition hover:bg-green-50 hover:text-green-700" data-dashboard-dropdown-trigger aria-expanded="false">
@@ -383,7 +383,7 @@
                         </div>
                     </div>
 
-                    <div class="min-h-[21rem] rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm" id="ranking">
+                    <div class="min-h-84 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" id="ranking">
                         <div class="mb-4 flex items-center justify-between gap-3">
                             <div>
                                 <p class="text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.ranking')</p>
@@ -446,7 +446,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm" id="exams">
+                    <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" id="exams">
                         <div class="mb-4 flex items-center justify-between gap-3">
                             <div>
                                 <p class="text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.operations')</p>
@@ -455,7 +455,7 @@
                             <a href="{{ Route::has('reports.exams') ? route('reports.exams') : '#reports' }}" class="rounded-full bg-slate-950 px-4 py-2 text-xs font-black text-white no-underline">@lang('Mindigo-dashboard::app.view_report')</a>
                         </div>
                         <div class="overflow-hidden rounded-2xl border border-slate-200">
-                            <table class="w-full min-w-[620px] text-left">
+                            <table class="w-full min-w-155 text-left">
                                 <thead class="bg-slate-50 text-[11px] font-black uppercase text-slate-400">
                                     <tr>
                                         <th class="px-4 py-3">@lang('Mindigo-dashboard::app.exam_name')</th>
@@ -496,7 +496,7 @@
             </main>
 
             <aside class="space-y-4">
-                <section class="min-h-[18.85rem] rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
+                <section class="min-h-75 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-center justify-between gap-3">
                         <div>
                             <p class="text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.top_sales')</p>
@@ -523,7 +523,7 @@
                     </div>
                 </section>
 
-                <section class="min-h-[21rem] rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm" id="reports">
+                <section class="min-h-84 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" id="reports">
                     <div class="flex items-center justify-between gap-3">
                         <div>
                             <p class="text-xs font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.reports')</p>

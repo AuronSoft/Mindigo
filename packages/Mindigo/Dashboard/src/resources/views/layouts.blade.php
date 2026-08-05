@@ -59,7 +59,7 @@
 
         <div id="sidebar-search-shell" class="flex h-11 items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3" data-sidebar-compact-center>
             <span class="grid h-7 w-7 shrink-0 place-items-center text-slate-500">
-                <svg viewBox="0 0 24 24" class="h-[18px] w-[18px] fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <svg viewBox="0 0 24 24" class="h-4.5 w-4.5 fill-none stroke-current stroke-2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <circle cx="10.75" cy="10.75" r="7.25"/><path d="m16.25 16.25 4.25 4.25"/>
                 </svg>
             </span>
@@ -148,7 +148,7 @@
                                 <span class="block truncate text-[11px] font-bold text-slate-400">{{ $group['desc'] }}</span>
                             </span>
                         </button>
-                        <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                        <div class="sidebar-submenu hidden gap-1 py-1 pl-13" data-sidebar-submenu>
                             @foreach($group['items'] as $nav)
                                 @php $stuActive = request()->routeIs($nav['match']); @endphp
                                 @if(Route::has($nav['route']))
@@ -227,7 +227,7 @@
                                 <span class="block truncate text-[11px] font-bold text-slate-400">{{ $group['desc'] }}</span>
                             </span>
                         </button>
-                        <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                        <div class="sidebar-submenu hidden gap-1 py-1 pl-13" data-sidebar-submenu>
                             @foreach($group['items'] as $nav)
                                 @php
                                     $teacherRoute = Route::has($nav['route'])
@@ -259,7 +259,7 @@
                             <span class="block truncate text-[11px] font-bold text-slate-400">@lang('Mindigo-dashboard::app.group_overview_desc')</span>
                         </span>
                     </button>
-                    <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                    <div class="sidebar-submenu hidden gap-1 py-1 pl-13" data-sidebar-submenu>
                         @php
                             $overviewBase = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
                             $overviewInactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
@@ -318,7 +318,7 @@
                             <span class="block truncate text-[11px] font-bold text-slate-400">@lang('Mindigo-dashboard::app.group_content_desc')</span>
                         </span>
                     </button>
-                    <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                    <div class="sidebar-submenu hidden gap-1 py-1 pl-13" data-sidebar-submenu>
                         @if(Route::has('subjects.index') && ($currentUser?->hasPermissionTo('subjects.view') ?? false))
                             <a href="{{ route('subjects.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('subjects.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.subjects')"><x-heroicon-o-book-open class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.subjects')</span></a>
                         @endif
@@ -343,7 +343,7 @@
                             <span class="block truncate text-[11px] font-bold text-slate-400">@lang('Mindigo-dashboard::app.group_operations_desc')</span>
                         </span>
                     </button>
-                    <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                    <div class="sidebar-submenu hidden gap-1 py-1 pl-13" data-sidebar-submenu>
                         <a href="#sessions" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exam_sessions')"><x-heroicon-o-clock class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.exam_sessions')</span></a>
                         @if(Route::has('reports.index'))
                         <a href="{{ route('reports.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700 {{ request()->routeIs('reports.*') ? 'bg-green-50 text-green-700' : '' }}" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.reports')"><x-heroicon-o-chart-bar class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.reports')</span></a>
@@ -366,7 +366,7 @@
                             <span class="block truncate text-[11px] font-bold text-slate-400">@lang('Mindigo-dashboard::app.settings_desc')</span>
                         </span>
                     </button>
-                    <div class="sidebar-submenu hidden gap-1 py-1 pl-[52px]" data-sidebar-submenu>
+                    <div class="sidebar-submenu hidden gap-1 py-1 pl-13" data-sidebar-submenu>
                         @if(Route::has('system-settings.index'))
                             <a href="{{ route('system-settings.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('system-settings.*') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.system_settings')"><x-heroicon-o-cog-6-tooth class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.system_settings')</span></a>
                         @endif
@@ -509,7 +509,7 @@
     @endforeach
 @endif
 
-<div class="fixed z-[80] hidden rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-extrabold text-white" id="sidebar-tooltip"></div>
+<div class="fixed z-80 hidden rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-extrabold text-white" id="sidebar-tooltip"></div>
 @yield('scripts')
 </body>
 </html>
