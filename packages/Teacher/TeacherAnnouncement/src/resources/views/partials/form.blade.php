@@ -38,7 +38,7 @@
             @endphp
             <div class="space-y-1.5">
                 @foreach($types as $t)
-                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 transition hover:bg-slate-50 has-[:checked]:bg-slate-50">
+                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 transition hover:bg-slate-50 has-checked:bg-slate-50">
                         <input type="radio" name="type" value="{{ $t }}" @checked($selected === $t) class="accent-green-600">
                         <span class="h-2 w-2 rounded-full {{ $typeConfig[$t]['dot'] }}"></span>
                         <span class="text-sm font-bold text-slate-700">{{ $typeConfig[$t]['label'] }}</span>
@@ -52,7 +52,7 @@
             <p class="mb-2 text-xs font-semibold text-slate-400">@lang('teacher-announcement::app.field_classrooms_desc')</p>
             <div class="space-y-1.5">
                 @foreach($classrooms as $cls)
-                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 transition hover:bg-slate-50 has-[:checked]:bg-green-50">
+                    <label class="flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 transition hover:bg-slate-50 has-checked:bg-green-50">
                         <input type="checkbox" name="classroom_ids[]" value="{{ $cls->id }}"
                                @checked(in_array($cls->id, old('classroom_ids', $ann?->classrooms->pluck('id')->toArray() ?? [])))
                                class="accent-green-600">

@@ -26,7 +26,9 @@ document.querySelectorAll('.js-assignment-files').forEach((input) => {
         }
 
         preview.innerHTML = '';
-        preview.classList.toggle('hidden', selectedFiles.length === 0);
+        const hasFiles = selectedFiles.length > 0;
+        preview.classList.toggle('hidden', !hasFiles);
+        preview.classList.toggle('grid', hasFiles);
 
         selectedFiles.forEach((file, index) => {
             const item = document.createElement('div');
