@@ -92,7 +92,7 @@
 @endphp
 
 <div class="min-h-screen bg-[#f6f9f7] p-5 max-md:p-3">
-    <div class="mx-auto grid max-w-[1560px] gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
+    <div class="mx-auto grid max-w-390 gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <section class="min-w-0 space-y-5">
             <div class="flex items-center justify-between gap-3">
                 <div>
@@ -117,10 +117,10 @@
 
             <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
                 <article class="relative rounded-2xl border border-green-100 bg-white p-6 shadow-sm">
-                    <div class="absolute inset-y-0 right-0 w-56 bg-gradient-to-l from-green-50 to-transparent"></div>
+                    <div class="absolute inset-y-0 right-0 w-56 bg-linear-to-l from-green-50 to-transparent"></div>
                     <div class="relative z-10 flex min-h-44 items-center gap-6">
                         <div class="hidden h-48 w-44 shrink-0 items-end justify-center overflow-visible sm:flex">
-                            <img src="{{ $teacherHeroImage }}" alt="{{ $teacher->name }}" class="max-h-[13.5rem] w-auto object-contain object-bottom">
+                            <img src="{{ $teacherHeroImage }}" alt="{{ $teacher->name }}" class="max-h-54 w-auto object-contain object-bottom">
                         </div>
                         <div class="min-w-0">
                             <p class="text-sm font-extrabold text-green-700">@lang('teacher-dashboard::app.hero_greeting', ['name' => $teacher->name])</p>

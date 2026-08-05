@@ -53,7 +53,7 @@
                 </div>
             @else
                 <div class="overflow-x-auto">
-                    <table class="w-full min-w-[860px] border-collapse text-left">
+                    <table class="w-full min-w-215 border-collapse text-left">
                         <thead class="bg-slate-50 text-[11px] font-black uppercase tracking-wider text-slate-400">
                             <tr>
                                 <th class="px-5 py-3">@lang('teacher-course::app.course')</th>

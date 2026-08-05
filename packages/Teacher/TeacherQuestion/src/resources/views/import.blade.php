@@ -432,7 +432,7 @@
         <label class="mb-1.5 block text-xs font-black text-slate-600">Độ khó mặc định</label>
         <div class="space-y-2 pt-1">
             @foreach(['easy' => __('teacher-question::app.easy'), 'medium' => __('teacher-question::app.medium'), 'hard' => __('teacher-question::app.hard')] as $val => $label)
-                <label class="flex cursor-pointer items-center gap-2.5 rounded-xl border border-slate-200 px-3 py-2.5 transition hover:bg-slate-50 has-[:checked]:border-green-400 has-[:checked]:bg-green-50">
+                <label class="flex cursor-pointer items-center gap-2.5 rounded-xl border border-slate-200 px-3 py-2.5 transition hover:bg-slate-50 has-checked:border-green-400 has-checked:bg-green-50">
                     <input type="radio" name="default_difficulty" value="{{ $val }}"
                            @checked($val === 'medium') class="accent-green-600">
                     <span class="text-sm font-bold text-slate-700">{{ $label }}</span>
