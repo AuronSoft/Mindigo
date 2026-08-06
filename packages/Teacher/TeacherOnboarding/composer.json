@@ -1,0 +1,22 @@
+{
+    "name": "mindigo/teacher-onboarding",
+    "description": "Mindigo Teacher and Tutor Onboarding Package",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\TeacherOnboarding\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\TeacherOnboarding\\Providers\\TeacherOnboardingServiceProvider"
+            ]
+        }
+    }
+}
