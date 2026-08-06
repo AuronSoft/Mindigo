@@ -1,0 +1,57 @@
+<?php
+
+return [
+    'title' => 'Chi tiet phong van',
+    'area' => 'Phong van giao vien',
+    'subtitle' => 'Len lich, cap nhat va danh gia phong van giao vien/gia su.',
+    'schedule_title' => 'Lich phong van',
+    'schedule_desc' => 'Chi ap dung khi ho so dang o trang thai sang loc.',
+    'scheduled_at' => 'Thoi gian phong van',
+    'mode' => 'Hinh thuc',
+    'meeting_url' => 'Link Meet/Zoom/Jitsi',
+    'pre_interview_note' => 'Ghi chu truoc phong van',
+    'schedule' => 'Len lich phong van',
+    'update_schedule' => 'Cap nhat lich',
+    'view_interview' => 'Mo phong van',
+    'scheduled' => 'Da len lich phong van.',
+    'rescheduled' => 'Da cap nhat lich phong van.',
+    'evaluated' => 'Da luu danh gia phong van.',
+    'invalid_schedule_state' => 'Chi ho so dang sang loc moi co the len lich phong van.',
+    'invalid_meeting_url' => 'Link phong van online phai la Google Meet, Zoom hoac Jitsi.',
+    'no_interview' => 'Chua co lich phong van.',
+    'empty_value' => '—',
+    'evaluation' => 'Danh gia',
+    'subject_knowledge_score' => 'Kien thuc chuyen mon',
+    'pedagogy_score' => 'Ky nang su pham',
+    'communication_score' => 'Ky nang giao tiep',
+    'lms_technology_score' => 'LMS/Cong nghe',
+    'overall_comment' => 'Nhan xet tong quan',
+    'result' => 'Ket luan',
+    'save_evaluation' => 'Luu danh gia',
+    'interviewer' => 'Nguoi phong van',
+    'evaluator' => 'Nguoi danh gia',
+    'evaluated_at' => 'Thoi diem danh gia',
+    'modes' => [
+        'online' => 'Online',
+        'offline' => 'Offline',
+    ],
+    'results' => [
+        'passed' => 'Dat',
+        'failed' => 'Khong dat',
+        'need_second_interview' => 'Can phong van lan 2',
+    ],
+    'notifications' => [
+        'scheduled' => [
+            'title' => 'Da len lich phong van',
+            'message' => 'Ho so :code co lich phong van luc :time.',
+        ],
+        'rescheduled' => [
+            'title' => 'Lich phong van da thay doi',
+            'message' => 'Ho so :code doi lich phong van sang :time.',
+        ],
+        'result' => [
+            'title' => 'Da co ket qua phong van',
+            'message' => 'Ket qua phong van cua ho so :code la :result.',
+        ],
+    ],
+];

@@ -1,0 +1,57 @@
+<?php
+
+return [
+    'title' => 'Interview detail',
+    'area' => 'Teacher interview',
+    'subtitle' => 'Schedule, update, and evaluate the teacher/tutor interview.',
+    'schedule_title' => 'Interview schedule',
+    'schedule_desc' => 'Available when the application is in screening.',
+    'scheduled_at' => 'Interview time',
+    'mode' => 'Mode',
+    'meeting_url' => 'Meet/Zoom/Jitsi link',
+    'pre_interview_note' => 'Pre-interview note',
+    'schedule' => 'Schedule interview',
+    'update_schedule' => 'Update schedule',
+    'view_interview' => 'Open interview',
+    'scheduled' => 'Interview has been scheduled.',
+    'rescheduled' => 'Interview schedule has been updated.',
+    'evaluated' => 'Interview evaluation has been saved.',
+    'invalid_schedule_state' => 'Only screening applications can be scheduled for interview.',
+    'invalid_meeting_url' => 'Online interview link must be Google Meet, Zoom, or Jitsi.',
+    'no_interview' => 'No interview has been scheduled.',
+    'empty_value' => '—',
+    'evaluation' => 'Evaluation',
+    'subject_knowledge_score' => 'Subject knowledge',
+    'pedagogy_score' => 'Pedagogy',
+    'communication_score' => 'Communication',
+    'lms_technology_score' => 'LMS/technology',
+    'overall_comment' => 'Overall comment',
+    'result' => 'Conclusion',
+    'save_evaluation' => 'Save evaluation',
+    'interviewer' => 'Interviewer',
+    'evaluator' => 'Evaluator',
+    'evaluated_at' => 'Evaluated at',
+    'modes' => [
+        'online' => 'Online',
+        'offline' => 'Offline',
+    ],
+    'results' => [
+        'passed' => 'Passed',
+        'failed' => 'Failed',
+        'need_second_interview' => 'Need second interview',
+    ],
+    'notifications' => [
+        'scheduled' => [
+            'title' => 'Interview scheduled',
+            'message' => 'Application :code has an interview at :time.',
+        ],
+        'rescheduled' => [
+            'title' => 'Interview schedule updated',
+            'message' => 'Application :code interview time changed to :time.',
+        ],
+        'result' => [
+            'title' => 'Interview result updated',
+            'message' => 'Application :code interview result is :result.',
+        ],
+    ],
+];

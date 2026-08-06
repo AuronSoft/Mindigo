@@ -82,6 +82,29 @@
 
         <aside class="space-y-5">
             <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <h2 class="text-base font-black text-slate-950">@lang('teacher-onboarding::interview.schedule_title')</h2>
+                <p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-onboarding::interview.schedule_desc')</p>
+                @if($application->latestInterview)
+                    <div class="mt-4 rounded-xl bg-slate-50 p-4">
+                        <p class="text-sm font-black text-slate-900">{{ $application->latestInterview->scheduled_at?->format('d/m/Y H:i') }}</p>
+                        <p class="mt-1 text-xs font-semibold text-slate-500">@lang('teacher-onboarding::interview.modes.'.$application->latestInterview->mode) · {{ $application->latestInterview->interviewer?->name }}</p>
+                    </div>
+                    <a href="{{ route('admin.teacher-applications.interviews.show', [$application, $application->latestInterview]) }}" class="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 text-sm font-black text-slate-700 no-underline hover:border-green-200 hover:text-green-700"><x-heroicon-o-video-camera class="h-4 w-4" />@lang('teacher-onboarding::interview.view_interview')</a>
+                @elseif($application->status === \Mindigo\TeacherOnboarding\Models\TeacherApplication::STATUS_SCREENING)
+                    <form method="POST" action="{{ route('admin.teacher-applications.interviews.store', $application) }}" class="mt-4 space-y-4">
+                        @csrf
+                        <label class="block space-y-2"><span class="text-xs font-black uppercase text-slate-500">@lang('teacher-onboarding::interview.scheduled_at')</span><input type="datetime-local" name="scheduled_at" value="{{ old('scheduled_at') }}" class="h-11 w-full rounded-2xl border border-slate-200 px-4 text-sm font-bold"></label>
+                        <label class="block space-y-2"><span class="text-xs font-black uppercase text-slate-500">@lang('teacher-onboarding::interview.mode')</span><select name="mode" class="h-11 w-full rounded-2xl border border-slate-200 px-4 text-sm font-bold"><option value="online">@lang('teacher-onboarding::interview.modes.online')</option><option value="offline">@lang('teacher-onboarding::interview.modes.offline')</option></select></label>
+                        <label class="block space-y-2"><span class="text-xs font-black uppercase text-slate-500">@lang('teacher-onboarding::interview.meeting_url')</span><input type="url" name="meeting_url" value="{{ old('meeting_url') }}" class="h-11 w-full rounded-2xl border border-slate-200 px-4 text-sm font-bold" placeholder="https://meet.google.com/..."></label>
+                        <label class="block space-y-2"><span class="text-xs font-black uppercase text-slate-500">@lang('teacher-onboarding::interview.pre_interview_note')</span><textarea name="pre_interview_note" rows="4" class="w-full rounded-2xl border border-slate-200 p-4 text-sm font-semibold">{{ old('pre_interview_note') }}</textarea></label>
+                        <button class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 text-sm font-black text-white"><x-heroicon-o-calendar-days class="h-4 w-4" />@lang('teacher-onboarding::interview.schedule')</button>
+                    </form>
+                @else
+                    <p class="mt-4 rounded-xl bg-slate-50 p-4 text-sm font-semibold text-slate-500">@lang('teacher-onboarding::interview.no_interview')</p>
+                @endif
+            </article>
+
+            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <h2 class="text-base font-black text-slate-950">@lang('teacher-onboarding::admin.review_action')</h2>
                 @if($nextStatuses)
                     <form method="POST" action="{{ route('admin.teacher-applications.update', $application) }}" class="mt-4 space-y-4">

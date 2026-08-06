@@ -5,6 +5,8 @@ namespace Mindigo\TeacherOnboarding\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Mindigo\Auth\Models\User;
 use Mindigo\SubjectManagement\Models\Subject;
@@ -104,6 +106,16 @@ class TeacherApplication extends Model
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function interviews(): HasMany
+    {
+        return $this->hasMany(TeacherApplicationInterview::class);
+    }
+
+    public function latestInterview(): HasOne
+    {
+        return $this->hasOne(TeacherApplicationInterview::class)->latestOfMany();
     }
 
     public function scopeActiveReview(Builder $query): Builder

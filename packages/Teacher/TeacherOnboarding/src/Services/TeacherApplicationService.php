@@ -118,7 +118,13 @@ class TeacherApplicationService
 
     public function detail(TeacherApplication $application): TeacherApplication
     {
-        return $application->load(['user:id,name,email', 'subject:id,name', 'category:id,name', 'reviewer:id,name']);
+        return $application->load([
+            'user:id,name,email',
+            'subject:id,name',
+            'category:id,name',
+            'reviewer:id,name',
+            'latestInterview.interviewer:id,name',
+        ]);
     }
 
     public function nextStatuses(TeacherApplication $application): array
