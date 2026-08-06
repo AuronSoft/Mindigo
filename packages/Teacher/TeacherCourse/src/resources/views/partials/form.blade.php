@@ -275,6 +275,7 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-course-form-tabs]').forEach((root) => {
         const tabs = root.querySelectorAll('[data-course-form-tab]');
         const panels = root.querySelectorAll('[data-course-form-panel]');
@@ -408,8 +409,30 @@
                 return;
             }
 
+            const cursor = priceInput.selectionStart ?? priceInput.value.length;
+            const digitsBeforeCursor = priceInput.value.slice(0, cursor).replace(/\D/g, '').length;
             const digits = priceDigits();
             priceInput.value = digits ? new Intl.NumberFormat('vi-VN').format(Number(digits)) : '';
+
+            if (document.activeElement !== priceInput) {
+                return;
+            }
+
+            let nextCursor = priceInput.value.length;
+            let seenDigits = 0;
+
+            for (let index = 0; index < priceInput.value.length; index++) {
+                if (/\d/.test(priceInput.value[index])) {
+                    seenDigits++;
+                }
+
+                if (seenDigits >= digitsBeforeCursor) {
+                    nextCursor = index + 1;
+                    break;
+                }
+            }
+
+            priceInput.setSelectionRange(nextCursor, nextCursor);
         };
 
         const formatCurrency = () => {
@@ -504,5 +527,6 @@
         formatPriceInput();
         refreshPreview();
         refreshFooter();
+    });
     });
 </script>

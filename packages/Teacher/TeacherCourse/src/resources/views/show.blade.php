@@ -86,13 +86,43 @@
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div><h2 class="text-sm font-black text-slate-900">@lang('teacher-course::learning.assign_title')</h2><p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-course::learning.assign_description')</p></div>
                 </div>
-                <form method="POST" action="{{ route('teacher.courses.assign', $course) }}" class="mt-4 grid items-end gap-3 lg:grid-cols-6">
+                <form method="POST" action="{{ route('teacher.courses.assign', $course) }}" class="mt-4 grid gap-4 lg:grid-cols-[minmax(18rem,0.9fr)_minmax(0,1.6fr)]">
                     @csrf
-                    <label class="min-w-64 flex-1"><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::learning.classrooms')</span><select name="classroom_ids[]" multiple required class="min-h-24 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-green-400">@foreach($classrooms as $classroom)<option value="{{ $classroom->id }}">{{ $classroom->name }} · {{ trans_choice('teacher-course::learning.student_count', $classroom->students_count, ['count' => $classroom->students_count]) }}</option>@endforeach</select></label>
-                    <label><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::publishing.starts_at')</span><input type="date" name="starts_at" class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"></label>
-                    <label><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::publishing.due_at')</span><input type="date" name="due_at" class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"></label>
-                    <label><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::publishing.visibility')</span><select name="visibility" class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"><option value="visible">@lang('teacher-course::publishing.visible')</option><option value="hidden">@lang('teacher-course::publishing.hidden')</option></select></label>
-                    <div><label class="mb-2 flex items-center gap-2 text-xs font-black text-slate-600"><input type="hidden" name="is_mandatory" value="0"><input type="checkbox" name="is_mandatory" value="1" checked class="h-4 w-4 accent-green-600">@lang('teacher-course::publishing.mandatory')</label><button type="submit" class="inline-flex h-10 items-center gap-2 rounded-lg bg-green-600 px-5 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-paper-airplane class="h-4 w-4" />@lang('teacher-course::learning.assign_action')</button></div>
+                    <label class="block">
+                        <span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::learning.classrooms')</span>
+                        <select name="classroom_ids[]" multiple required class="h-28 w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-green-400">
+                            @foreach($classrooms as $classroom)
+                                <option value="{{ $classroom->id }}">{{ $classroom->name }} · {{ trans_choice('teacher-course::learning.student_count', $classroom->students_count, ['count' => $classroom->students_count]) }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                    <div class="grid items-end gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
+                        <label>
+                            <span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::publishing.starts_at')</span>
+                            <input type="date" name="starts_at" class="h-11 w-full rounded-2xl border border-slate-200 px-4 text-sm font-bold text-slate-700 outline-none focus:border-green-400">
+                        </label>
+                        <label>
+                            <span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::publishing.due_at')</span>
+                            <input type="date" name="due_at" class="h-11 w-full rounded-2xl border border-slate-200 px-4 text-sm font-bold text-slate-700 outline-none focus:border-green-400">
+                        </label>
+                        <label>
+                            <span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::publishing.visibility')</span>
+                            <select name="visibility" class="h-11 w-full rounded-2xl border border-slate-200 px-4 text-sm font-bold text-slate-700 outline-none focus:border-green-400">
+                                <option value="visible">@lang('teacher-course::publishing.visible')</option>
+                                <option value="hidden">@lang('teacher-course::publishing.hidden')</option>
+                            </select>
+                        </label>
+                        <div class="flex flex-col gap-2 md:col-span-2 xl:col-span-1">
+                            <label class="inline-flex h-11 items-center gap-2 rounded-2xl border border-green-100 bg-green-50 px-4 text-xs font-black text-green-700">
+                                <input type="hidden" name="is_mandatory" value="0">
+                                <input type="checkbox" name="is_mandatory" value="1" checked class="h-4 w-4 rounded border-green-300 accent-green-600">
+                                @lang('teacher-course::publishing.mandatory')
+                            </label>
+                            <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-700">
+                                <x-heroicon-o-paper-airplane class="h-4 w-4" />@lang('teacher-course::learning.assign_action')
+                            </button>
+                        </div>
+                    </div>
                 </form>
                 @if($classrooms->isEmpty())<p class="mt-3 text-xs font-semibold text-slate-400">@lang('teacher-course::learning.no_classrooms')</p>@endif
             </section>
