@@ -12,6 +12,13 @@ class TeacherApplicationInterviewRequest extends FormRequest
     public function authorize(): bool
     {
         $application = $this->route('teacher_application');
+        $interview = $this->route('interview');
+
+        if ($interview instanceof TeacherApplicationInterview
+            && $application instanceof TeacherApplication
+            && (int) $interview->teacher_application_id !== (int) $application->id) {
+            return false;
+        }
 
         return $application instanceof TeacherApplication
             && ($this->user()?->can('update', $application) ?? false);

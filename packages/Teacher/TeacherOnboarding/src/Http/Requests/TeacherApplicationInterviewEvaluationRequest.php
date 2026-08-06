@@ -4,6 +4,7 @@ namespace Mindigo\TeacherOnboarding\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Mindigo\TeacherOnboarding\Models\TeacherApplication;
 use Mindigo\TeacherOnboarding\Models\TeacherApplicationInterview;
 
 class TeacherApplicationInterviewEvaluationRequest extends FormRequest
@@ -11,6 +12,13 @@ class TeacherApplicationInterviewEvaluationRequest extends FormRequest
     public function authorize(): bool
     {
         $interview = $this->route('interview');
+        $application = $this->route('teacher_application');
+
+        if ($interview instanceof TeacherApplicationInterview
+            && $application instanceof TeacherApplication
+            && (int) $interview->teacher_application_id !== (int) $application->id) {
+            return false;
+        }
 
         return $interview instanceof TeacherApplicationInterview
             && ($this->user()?->can('update', $interview->application) ?? false);

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Mindigo\Notification\Notifications\TeacherApplicationDecision;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherCourse\Models\CourseCategory;
@@ -61,7 +62,7 @@ class TeacherApplicationAdminReviewTest extends TestCase
             ->assertSee('cv');
 
         $this->actingAs($admin)
-            ->get(route('admin.teacher-applications.documents.show', [$application, 'cv']))
+            ->get(URL::temporarySignedRoute('admin.teacher-applications.documents.show', now()->addMinutes(5), [$application, 'cv']))
             ->assertOk();
     }
 

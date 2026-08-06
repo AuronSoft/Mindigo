@@ -4,6 +4,7 @@ namespace Mindigo\TeacherOnboarding\Services;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\Notification\Notifications\TeacherApplicationInterviewNotification;
 use Mindigo\TeacherOnboarding\Models\TeacherApplication;
@@ -11,6 +12,8 @@ use Mindigo\TeacherOnboarding\Models\TeacherApplicationInterview;
 
 class TeacherApplicationInterviewService
 {
+    public function __construct(private readonly AuditLogService $audit) {}
+
     public function create(TeacherApplication $application, User $admin, array $data): TeacherApplicationInterview
     {
         $this->ensureCanSchedule($application);
@@ -31,6 +34,18 @@ class TeacherApplicationInterviewService
                 'reviewed_at' => now(),
             ])->save();
 
+            $this->audit->record(
+                'teacher_application_interview_scheduled',
+                'teacher-onboarding',
+                newValues: [
+                    'scheduled_at' => $interview->scheduled_at,
+                    'mode' => $interview->mode,
+                    'interviewer_id' => $interview->interviewer_id,
+                ],
+                auditable: $application,
+                user: $admin,
+            );
+
             DB::afterCommit(fn () => $this->notifyApplicant($application, 'scheduled', $interview));
 
             return $interview->refresh();
@@ -44,11 +59,21 @@ class TeacherApplicationInterviewService
                 ->whereKey($interview->getKey())
                 ->lockForUpdate()
                 ->firstOrFail();
+            $oldValues = $interview->only(['scheduled_at', 'mode', 'meeting_url', 'pre_interview_note', 'interviewer_id']);
 
             $interview->forceFill([
                 ...$data,
                 'interviewer_id' => $admin->id,
             ])->save();
+
+            $this->audit->record(
+                'teacher_application_interview_rescheduled',
+                'teacher-onboarding',
+                oldValues: $oldValues,
+                newValues: $interview->getChanges(),
+                auditable: $interview->application,
+                user: $admin,
+            );
 
             DB::afterCommit(fn () => $this->notifyApplicant($interview->application, 'rescheduled', $interview));
 
@@ -61,8 +86,10 @@ class TeacherApplicationInterviewService
         return DB::transaction(function () use ($interview, $admin, $data): TeacherApplicationInterview {
             $interview = TeacherApplicationInterview::query()
                 ->whereKey($interview->getKey())
+                ->with('application')
                 ->lockForUpdate()
                 ->firstOrFail();
+            $oldApplicationValues = $interview->application->only(['status', 'reviewed_by', 'reviewed_at', 'status_note']);
 
             $interview->forceFill([
                 ...$data,
@@ -80,6 +107,19 @@ class TeacherApplicationInterviewService
                 'reviewed_at' => now(),
                 'status_note' => $data['overall_comment'] ?? null,
             ])->save();
+
+            $this->audit->record(
+                'teacher_application_interview_evaluated',
+                'teacher-onboarding',
+                oldValues: $oldApplicationValues,
+                newValues: [
+                    'application_status' => $interview->application->status,
+                    'result' => $interview->result,
+                    'evaluated_by' => $interview->evaluated_by,
+                ],
+                auditable: $interview->application,
+                user: $admin,
+            );
 
             DB::afterCommit(fn () => $this->notifyApplicant($interview->application, 'result', $interview));
 

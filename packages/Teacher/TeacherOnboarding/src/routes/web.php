@@ -20,7 +20,7 @@ Route::middleware(['web', 'auth'])
         Route::get('/', [AdminTeacherApplicationController::class, 'index'])->name('index');
         Route::get('/{teacher_application}', [AdminTeacherApplicationController::class, 'show'])->name('show');
         Route::patch('/{teacher_application}', [AdminTeacherApplicationController::class, 'update'])->name('update');
-        Route::get('/{teacher_application}/documents/{document}', [AdminTeacherApplicationController::class, 'document'])->name('documents.show');
+        Route::get('/{teacher_application}/documents/{document}', [AdminTeacherApplicationController::class, 'document'])->middleware('signed')->name('documents.show');
         Route::patch('/{teacher_application}/provisioning', [TeacherApplicationProvisioningController::class, 'update'])->name('provisioning.update');
         Route::post('/{teacher_application}/interviews', [TeacherApplicationInterviewController::class, 'store'])->name('interviews.store');
         Route::get('/{teacher_application}/interviews/{interview}', [TeacherApplicationInterviewController::class, 'show'])->name('interviews.show');

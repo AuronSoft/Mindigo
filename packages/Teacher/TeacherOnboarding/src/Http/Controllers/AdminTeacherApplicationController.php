@@ -59,6 +59,10 @@ class AdminTeacherApplicationController extends Controller
         /** @var FilesystemAdapter $disk */
         $disk = Storage::disk($metadata['disk']);
 
-        return $disk->download($metadata['path'], $metadata['name']);
+        return $disk->response($metadata['path'], $metadata['name'], [
+            'Content-Disposition' => 'attachment; filename="'.addslashes($metadata['name']).'"',
+            'Cache-Control' => 'no-store, private',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\Notification\Notifications\TeacherApplicationDecision;
 use Mindigo\Notification\Notifications\TeacherApplicationSubmitted;
@@ -20,6 +21,8 @@ use Mindigo\TeacherOnboarding\Models\TeacherApplication;
 
 class TeacherApplicationService
 {
+    public function __construct(private readonly AuditLogService $audit) {}
+
     public const TRANSITIONS = [
         TeacherApplication::STATUS_SUBMITTED => [
             TeacherApplication::STATUS_SCREENING,
@@ -66,6 +69,22 @@ class TeacherApplicationService
                 'verification_documents' => $documents,
                 'submitted_at' => now(),
             ]);
+
+            $this->audit->record(
+                'teacher_application_submitted',
+                'teacher-onboarding',
+                newValues: $application->only([
+                    'application_code',
+                    'status',
+                    'application_type',
+                    'full_name',
+                    'email',
+                    'specialization',
+                ]),
+                metadata: ['document_types' => array_keys($documents)],
+                auditable: $application,
+                user: $user,
+            );
 
             DB::afterCommit(function () use ($application): void {
                 $admins = User::query()->admins()->active()->get();
@@ -145,6 +164,7 @@ class TeacherApplicationService
                 ->firstOrFail();
 
             $this->ensureTransitionAllowed($application, $targetStatus);
+            $oldValues = $application->only(['status', 'reviewed_by', 'reviewed_at', 'internal_note', 'status_note']);
 
             $application->forceFill([
                 'status' => $targetStatus,
@@ -153,6 +173,19 @@ class TeacherApplicationService
                 'internal_note' => $data['internal_note'] ?? $application->internal_note,
                 'status_note' => $data['status_note'] ?? null,
             ])->save();
+
+            $this->audit->record(
+                'teacher_application_reviewed',
+                'teacher-onboarding',
+                oldValues: $oldValues,
+                newValues: [
+                    'status' => $application->status,
+                    'reviewed_by' => $application->reviewed_by,
+                    'status_note' => $application->status_note,
+                ],
+                auditable: $application,
+                user: $admin,
+            );
 
             if (in_array($targetStatus, [TeacherApplication::STATUS_NEED_MORE_INFO, TeacherApplication::STATUS_REJECTED], true)) {
                 DB::afterCommit(fn () => $this->notifyApplicant($application, $targetStatus, $data['status_note'] ?? null));
