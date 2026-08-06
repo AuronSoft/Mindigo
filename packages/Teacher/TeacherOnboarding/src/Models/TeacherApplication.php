@@ -32,6 +32,23 @@ class TeacherApplication extends Model
 
     public const STATUS_SUSPENDED = 'suspended';
 
+    public const STATUS_REVOKED = 'revoked';
+
+    public const PROVISION_NOT_PROVISIONED = 'not_provisioned';
+
+    public const PROVISION_ACTIVE = 'active';
+
+    public const PROVISION_SUSPENDED = 'suspended';
+
+    public const PROVISION_REVOKED = 'revoked';
+
+    public const PROVISION_STATUSES = [
+        self::PROVISION_NOT_PROVISIONED,
+        self::PROVISION_ACTIVE,
+        self::PROVISION_SUSPENDED,
+        self::PROVISION_REVOKED,
+    ];
+
     public const ACTIVE_STATUSES = [
         self::STATUS_SUBMITTED,
         self::STATUS_SCREENING,
@@ -48,6 +65,13 @@ class TeacherApplication extends Model
         'user_id',
         'application_code',
         'status',
+        'teacher_provision_status',
+        'provisioned_user_role',
+        'provisioned_by',
+        'provisioned_at',
+        'teacher_suspended_at',
+        'teacher_revoked_at',
+        'provisioning_note',
         'application_type',
         'full_name',
         'email',
@@ -85,6 +109,9 @@ class TeacherApplication extends Model
             'experience_years' => 'integer',
             'submitted_at' => 'datetime',
             'reviewed_at' => 'datetime',
+            'provisioned_at' => 'datetime',
+            'teacher_suspended_at' => 'datetime',
+            'teacher_revoked_at' => 'datetime',
         ];
     }
 
@@ -106,6 +133,11 @@ class TeacherApplication extends Model
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function provisioner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'provisioned_by');
     }
 
     public function interviews(): HasMany

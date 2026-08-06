@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('teacher_application_interviews')) {
+            return;
+        }
+
         Schema::create('teacher_application_interviews', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('teacher_application_id')->constrained('teacher_applications')->cascadeOnDelete();
@@ -26,7 +30,6 @@ return new class extends Migration
             $table->foreignId('evaluated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
-            $table->index(['teacher_application_id', 'scheduled_at']);
         });
     }
 

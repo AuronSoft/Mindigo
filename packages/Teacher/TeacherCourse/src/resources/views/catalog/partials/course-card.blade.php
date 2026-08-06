@@ -37,9 +37,15 @@
         <h2 class="mt-2 line-clamp-2 text-lg font-black leading-6 text-slate-950">{{ $course->name }}</h2>
         <p class="mt-2 line-clamp-2 text-xs font-semibold leading-5 text-slate-500">{{ $course->description ?: __('teacher-course::catalog.no_description') }}</p>
 
+        @php $canShowTeacherProfile = $course->teacher?->teacherProfile?->is_public && $course->teacher?->approvedTeacherApplication; @endphp
         <p class="mt-2 flex items-center gap-2 text-xs font-bold text-slate-500">
             <span class="grid h-7 w-7 place-items-center rounded-full bg-green-50 text-[10px] font-black text-green-700">{{ str($course->teacher->name)->substr(0, 1)->upper() }}</span>
-            <span class="truncate">{{ $course->teacher->name }}</span>
+            @if($canShowTeacherProfile)
+                <a href="{{ route('teachers.show', $course->teacher) }}" class="truncate text-slate-600 no-underline hover:text-green-700">{{ $course->teacher->name }}</a>
+                <span class="rounded-full bg-green-50 px-2 py-0.5 text-[9px] font-black uppercase text-green-700">@lang('teacher-course::reviews.verified')</span>
+            @else
+                <span class="truncate">{{ $course->teacher->name }}</span>
+            @endif
         </p>
 
         <div class="mt-4 rounded-xl bg-green-50 px-3 py-2 text-center text-base font-black text-green-700">

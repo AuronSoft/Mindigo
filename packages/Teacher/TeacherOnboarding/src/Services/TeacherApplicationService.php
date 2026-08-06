@@ -123,6 +123,7 @@ class TeacherApplicationService
             'subject:id,name',
             'category:id,name',
             'reviewer:id,name',
+            'provisioner:id,name',
             'latestInterview.interviewer:id,name',
         ]);
     }

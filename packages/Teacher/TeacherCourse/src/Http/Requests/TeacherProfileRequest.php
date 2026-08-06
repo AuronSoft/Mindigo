@@ -21,6 +21,15 @@ class TeacherProfileRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['headline' => ['nullable', 'string', 'max:180'], 'biography' => ['nullable', 'string', 'max:5000'], 'specialization' => ['nullable', 'string', 'max:255'], 'experience_years' => ['required', 'integer', 'min:0', 'max:80'], 'qualifications' => ['nullable', 'string', 'max:3000'], 'is_public' => ['required', 'boolean']];
+        return [
+            'headline' => ['nullable', 'string', 'max:180'],
+            'biography' => ['nullable', 'string', 'max:5000'],
+            'specialization' => ['nullable', 'string', 'max:255'],
+            'experience_years' => ['required', 'integer', 'min:0', 'max:80'],
+            'qualifications' => ['nullable', 'string', 'max:3000'],
+            'social_links' => ['nullable', 'array'],
+            'social_links.*' => ['nullable', 'url', 'max:255'],
+            'is_public' => ['required', 'boolean'],
+        ];
     }
 }

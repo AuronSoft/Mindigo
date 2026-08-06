@@ -14,6 +14,7 @@ use Mindigo\Profile\Models\NotificationPreference;
 use Mindigo\RolePermission\Services\RolePermissionService;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\TeacherProfile;
+use Mindigo\TeacherOnboarding\Models\TeacherApplication;
 
 class User extends Authenticatable
 {
@@ -205,6 +206,14 @@ class User extends Authenticatable
     public function teacherProfile(): HasOne
     {
         return $this->hasOne(TeacherProfile::class);
+    }
+
+    public function approvedTeacherApplication(): HasOne
+    {
+        return $this->hasOne(TeacherApplication::class)
+            ->where('status', TeacherApplication::STATUS_APPROVED)
+            ->where('teacher_provision_status', TeacherApplication::PROVISION_ACTIVE)
+            ->latest('teacher_applications.id');
     }
 
     public function taughtCourses(): HasMany

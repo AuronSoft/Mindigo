@@ -119,8 +119,12 @@
                 <section class="rounded-xl border border-slate-200 bg-white p-5">
                     <p class="text-[10px] font-black uppercase tracking-wider text-green-700">@lang('teacher-course::catalog.instructor')</p>
                     <div class="mt-3 flex items-center gap-3"><span class="grid h-11 w-11 place-items-center overflow-hidden rounded-full bg-green-50 font-black text-green-700">@if($course->teacher->avatar)<img src="{{ asset('storage/'.$course->teacher->avatar) }}" alt="" class="h-full w-full object-cover">@else{{ str($course->teacher->name)->substr(0, 1)->upper() }}@endif</span><div class="min-w-0"><h2 class="truncate font-black text-slate-900">{{ $course->teacher->name }}</h2><p class="truncate text-xs font-semibold text-slate-400">{{ $course->teacher->teacherProfile?->headline ?? __('teacher-course::catalog.instructor_default') }}</p></div></div>
-                    @if($course->teacher->teacherProfile?->is_public && $course->teacher->teacherProfile->biography)<p class="mt-3 text-sm font-semibold leading-5 text-slate-500">{{ $course->teacher->teacherProfile->biography }}</p>@endif
-                    @if($course->teacher->teacherProfile?->is_public)<a href="{{ route('teachers.show', $course->teacher) }}" class="mt-4 inline-flex text-xs font-black text-green-700 no-underline">@lang('teacher-course::reviews.view_profile') →</a>@endif
+                    @php $canShowTeacherProfile = $course->teacher->teacherProfile?->is_public && $course->teacher->approvedTeacherApplication; @endphp
+                    @if($canShowTeacherProfile)
+                        <span class="mt-3 inline-flex rounded-full bg-green-50 px-2.5 py-1 text-[10px] font-black uppercase text-green-700">@lang('teacher-course::reviews.verified')</span>
+                    @endif
+                    @if($canShowTeacherProfile && $course->teacher->teacherProfile->biography)<p class="mt-3 text-sm font-semibold leading-5 text-slate-500">{{ $course->teacher->teacherProfile->biography }}</p>@endif
+                    @if($canShowTeacherProfile)<a href="{{ route('teachers.show', $course->teacher) }}" class="mt-4 inline-flex text-xs font-black text-green-700 no-underline">@lang('teacher-course::reviews.view_profile') →</a>@endif
                 </section>
                 <section class="rounded-xl border border-slate-200 bg-white p-5">
                     <h2 class="text-sm font-black text-slate-950">@lang('teacher-course::catalog.course_information')</h2>

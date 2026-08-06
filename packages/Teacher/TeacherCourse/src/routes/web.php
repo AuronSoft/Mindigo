@@ -23,6 +23,7 @@ use Mindigo\TeacherCourse\Http\Controllers\TeacherProfileController;
 Route::middleware('web')->group(function (): void {
     Route::get('/courses', [PublicCourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/search/suggestions', [CourseDiscoveryController::class, 'suggestions'])->name('courses.search.suggestions');
+    Route::get('/teachers', [TeacherProfileController::class, 'index'])->name('teachers.index');
     Route::get('/teachers/{teacher}', [TeacherProfileController::class, 'show'])->name('teachers.show');
     Route::get('/courses/{course}', [PublicCourseController::class, 'show'])
         ->name('courses.show');
