@@ -231,6 +231,19 @@ class CourseService
             }
         }
 
+        $data['access_type'] ??= Course::ACCESS_TYPES[0];
+        $data['currency'] ??= 'VND';
+        $data['price'] = ($data['access_type'] ?? Course::ACCESS_TYPES[0]) === 'paid'
+            ? (float) ($data['price'] ?? 0)
+            : 0;
+
+        if (array_key_exists('schedule_days', $data)) {
+            $data['schedule_days'] = collect($data['schedule_days'] ?? [])
+                ->intersect(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'])
+                ->values()
+                ->all() ?: null;
+        }
+
         return $data;
     }
 

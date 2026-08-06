@@ -30,7 +30,7 @@
         <div class="mt-4 grid grid-cols-3 gap-2 border-y border-slate-100 py-3 text-center">
             <span><strong class="block text-xs font-black text-slate-800">{{ $course->durationLabel() }}</strong><small class="text-[10px] font-bold text-slate-400">@lang('teacher-course::catalog.duration')</small></span>
             <span><strong class="block text-xs font-black text-slate-800">{{ $course->lessons_count }}</strong><small class="text-[10px] font-bold text-slate-400">@lang('teacher-course::catalog.lessons')</small></span>
-            <span><strong class="block text-xs font-black text-amber-600">{{ $course->rating_count ? number_format($course->rating_average, 1) : '—' }}</strong><small class="text-[10px] font-bold text-slate-400">@lang('teacher-course::catalog.rating')</small></span>
+            <span><strong class="block text-xs font-black text-green-700">{{ number_format((int) $course->enrollment_count) }}</strong><small class="text-[10px] font-bold text-slate-400">@lang('teacher-course::catalog.students')</small></span>
         </div>
         <div class="mt-auto flex items-center justify-between gap-3 pt-4">
             <strong class="text-sm font-black text-slate-900">{{ $course->access_type === 'free' ? __('teacher-course::catalog.free') : number_format((float) $course->price).' '.$course->currency }}</strong>
