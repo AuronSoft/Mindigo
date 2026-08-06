@@ -119,6 +119,12 @@ class CourseDomainFoundationTest extends TestCase
             'learning_outcomes' => "Outcome one\nOutcome two",
             'requirements' => "Requirement one\n",
             'target_learners' => 'Grade 12 students',
+            'access_type' => 'paid',
+            'price' => 750000,
+            'currency' => 'VND',
+            'starts_at' => '2026-09-15',
+            'schedule_days' => ['mon', 'wed', 'fri'],
+            'study_time' => '19:30 - 21:00',
         ])->assertRedirect();
 
         $course = Course::query()->where('name', 'Foundation course')->firstOrFail();
@@ -126,6 +132,12 @@ class CourseDomainFoundationTest extends TestCase
         $this->assertSame(Course::PUBLICATION_DRAFT, $course->publication_status);
         $this->assertSame(['Outcome one', 'Outcome two'], $course->learning_outcomes);
         $this->assertSame(['Requirement one'], $course->requirements);
+        $this->assertSame('paid', $course->access_type);
+        $this->assertSame('750000.00', $course->price);
+        $this->assertSame('VND', $course->currency);
+        $this->assertSame('2026-09-15', $course->starts_at->format('Y-m-d'));
+        $this->assertSame(['mon', 'wed', 'fri'], $course->schedule_days);
+        $this->assertSame('19:30 - 21:00', $course->study_time);
     }
 
     private function courseFor(User $teacher, string $name = 'Foundation course'): Course

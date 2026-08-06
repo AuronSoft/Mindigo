@@ -22,5 +22,6 @@ return [
     'preview_mode' => 'Preview mode', 'preview' => 'Preview', 'preview_lesson' => 'Allow lesson preview',
     'preview_lesson_help' => 'Authenticated learners can open this lesson before enrollment is available.',
     'chapters' => 'Chapters', 'course_information' => 'Course information', 'language' => 'Language',
+    'starts_at' => 'Start date', 'schedule_days' => 'Study schedule', 'study_time' => 'Study time',
     'attachments' => 'Lesson resources', 'attachment' => 'Attachment',
 ];

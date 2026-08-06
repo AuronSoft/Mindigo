@@ -64,6 +64,52 @@
     </div>
 </div>
 
+<div class="grid gap-3 lg:grid-cols-[1fr_1fr_1fr_1.2fr]">
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.access_type_field')</label>
+        <select name="access_type" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700">
+            @foreach(\Mindigo\TeacherCourse\Models\Course::ACCESS_TYPES as $accessType)
+                <option value="{{ $accessType }}" @selected(old('access_type', $course->access_type ?? 'free') === $accessType)>@lang('teacher-course::app.access_types.'.$accessType)</option>
+            @endforeach
+        </select>
+        @error('access_type')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+    </div>
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.price_field')</label>
+        <div class="grid grid-cols-[minmax(0,1fr)_5rem] gap-2">
+            <input type="number" name="price" min="0" step="1000" value="{{ old('price', $course->price ?? 0) }}" class="h-11 min-w-0 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700">
+            <select name="currency" class="h-11 min-w-0 rounded-xl border border-slate-200 bg-white px-2 text-sm font-bold text-slate-700">
+                <option value="VND" @selected(old('currency', $course->currency ?? 'VND') === 'VND')>VND</option>
+            </select>
+        </div>
+        @error('price')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+    </div>
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.starts_at_field')</label>
+        <input type="date" name="starts_at" value="{{ old('starts_at', isset($course) && $course->starts_at ? $course->starts_at->format('Y-m-d') : '') }}" class="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700">
+        @error('starts_at')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+    </div>
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.study_time_field')</label>
+        <input type="text" name="study_time" value="{{ old('study_time', $course->study_time ?? '') }}" placeholder="@lang('teacher-course::app.study_time_placeholder')" class="h-11 w-full rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700">
+        @error('study_time')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+    </div>
+</div>
+
+@php $selectedScheduleDays = old('schedule_days', $course->schedule_days ?? []); @endphp
+<div>
+    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.schedule_days_field')</label>
+    <div class="flex flex-wrap gap-2">
+        @foreach(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as $day)
+            <label class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-600 transition has-checked:border-green-300 has-checked:bg-green-50 has-checked:text-green-700">
+                <input type="checkbox" name="schedule_days[]" value="{{ $day }}" @checked(in_array($day, $selectedScheduleDays ?? [], true)) class="h-3.5 w-3.5 accent-green-600">
+                @lang('teacher-course::app.schedule_days.'.$day)
+            </label>
+        @endforeach
+    </div>
+    @error('schedule_days')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+</div>
+
 {{-- Trạng thái --}}
 <div>
     <label class="mb-1.5 block text-xs font-black text-slate-600">Trạng thái <span class="text-red-500">*</span></label>

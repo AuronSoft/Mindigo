@@ -22,5 +22,6 @@ return [
     'preview_mode' => 'Chế độ xem trước', 'preview' => 'Học thử', 'preview_lesson' => 'Cho phép học thử bài này',
     'preview_lesson_help' => 'Người học đã đăng nhập có thể mở bài học này trước khi chức năng tham gia khóa học được triển khai.',
     'chapters' => 'Chương', 'course_information' => 'Thông tin khóa học', 'language' => 'Ngôn ngữ',
+    'starts_at' => 'Ngày khai giảng', 'schedule_days' => 'Lịch học', 'study_time' => 'Giờ học',
     'attachments' => 'Tài liệu bài học', 'attachment' => 'Tài liệu đính kèm',
 ];

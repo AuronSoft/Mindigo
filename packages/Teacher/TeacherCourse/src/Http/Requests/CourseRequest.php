@@ -10,6 +10,10 @@ class CourseRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
+        if ($this->input('access_type') === 'free') {
+            $this->merge(['price' => 0]);
+        }
+
         if ($this->filled('duration_value') && $this->filled('duration_unit')) {
             $minutes = config('course.duration_minutes.'.$this->input('duration_unit'));
             if (is_numeric($minutes)) {
@@ -42,6 +46,13 @@ class CourseRequest extends FormRequest
             'estimated_duration_minutes' => ['nullable', 'integer', 'min:1', 'max:525600'],
             'duration_value' => ['nullable', 'required_with:duration_unit', 'numeric', 'gt:0', 'max:525600'],
             'duration_unit' => ['nullable', 'required_with:duration_value', Rule::in(Course::DURATION_UNITS)],
+            'access_type' => ['sometimes', Rule::in(Course::ACCESS_TYPES)],
+            'price' => ['nullable', 'required_if:access_type,paid', 'numeric', 'min:0', 'max:999999999'],
+            'currency' => ['sometimes', 'string', Rule::in(['VND'])],
+            'starts_at' => ['nullable', 'date'],
+            'schedule_days' => ['nullable', 'array'],
+            'schedule_days.*' => ['string', Rule::in(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'])],
+            'study_time' => ['nullable', 'string', 'max:120'],
             'learning_outcomes' => ['nullable', 'string', 'max:10000'],
             'requirements' => ['nullable', 'string', 'max:10000'],
             'target_learners' => ['nullable', 'string', 'max:10000'],

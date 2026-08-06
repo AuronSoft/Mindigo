@@ -17,6 +17,7 @@ class PublicCourseCatalogTest extends TestCase
     {
         $teacher = $this->createUser(['role' => 'teacher']);
         $published = $this->courseFor($teacher, 'Published course');
+        $published->update(['enrollment_count' => 28]);
         $this->courseFor($teacher, 'Draft course', ['publication_status' => Course::PUBLICATION_DRAFT]);
         $this->courseFor($teacher, 'Pending course', ['publication_status' => Course::PUBLICATION_PENDING_REVIEW]);
         $this->courseFor($teacher, 'Unlisted course', ['publication_status' => Course::PUBLICATION_UNLISTED]);
@@ -26,6 +27,7 @@ class PublicCourseCatalogTest extends TestCase
         $this->get(route('courses.index'))
             ->assertOk()
             ->assertSee($published->name)
+            ->assertSee('28')
             ->assertDontSee('Draft course')
             ->assertDontSee('Pending course')
             ->assertDontSee('Unlisted course')
