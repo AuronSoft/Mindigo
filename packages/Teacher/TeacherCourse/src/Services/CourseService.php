@@ -244,6 +244,8 @@ class CourseService
                 ->all() ?: null;
         }
 
+        unset($data['study_time_start'], $data['study_time_end']);
+
         return $data;
     }
 
