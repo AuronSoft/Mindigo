@@ -4,8 +4,8 @@ namespace Mindigo\TeacherOnboarding\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Mindigo\TeacherOnboarding\Http\Requests\TeacherApplicationRequest;
 use Mindigo\TeacherOnboarding\Services\TeacherApplicationService;
 

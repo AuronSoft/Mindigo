@@ -40,6 +40,7 @@ return [
     'subjects' => 'Subjects',
     'course_categories' => 'Course categories',
     'course_reviews' => 'Course reviews',
+    'teacher_applications' => 'Teacher applications',
     'documents' => 'Documents',
     'ai_review' => 'AI question review',
     'exam_sessions' => 'Exam sessions',

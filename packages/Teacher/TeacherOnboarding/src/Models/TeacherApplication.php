@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Mindigo\Auth\Models\User;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\TeacherCourse\Models\CourseCategory;
 
 class TeacherApplication extends Model
 {
@@ -67,6 +68,10 @@ class TeacherApplication extends Model
         'teaching_method',
         'intro_video_url',
         'submitted_at',
+        'reviewed_by',
+        'reviewed_at',
+        'internal_note',
+        'status_note',
     ];
 
     protected function casts(): array
@@ -77,6 +82,7 @@ class TeacherApplication extends Model
             'verification_documents' => 'array',
             'experience_years' => 'integer',
             'submitted_at' => 'datetime',
+            'reviewed_at' => 'datetime',
         ];
     }
 
@@ -93,6 +99,11 @@ class TeacherApplication extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(CourseCategory::class, 'category_id');
+    }
+
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
     }
 
     public function scopeActiveReview(Builder $query): Builder

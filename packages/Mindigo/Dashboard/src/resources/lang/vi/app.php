@@ -40,6 +40,7 @@ return [
     'subjects' => 'Môn học',
     'course_categories' => 'Danh mục khóa học',
     'course_reviews' => 'Duyệt khóa học',
+    'teacher_applications' => 'Ho so giao vien/gia su',
     'documents' => 'Tài liệu',
     'ai_review' => 'Duyệt câu hỏi AI',
     'exam_sessions' => 'Ca thi',
