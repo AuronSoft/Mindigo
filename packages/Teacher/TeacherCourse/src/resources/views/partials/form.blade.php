@@ -24,7 +24,16 @@
     $previewLessonCount = $editing ? ($course->lessons_count ?? $course->lessons()->count()) : 0;
     $previewEnrollmentCount = $editing ? ($course->enrollment_count ?? $course->enrollments()->count()) : 0;
     $previewTeacherName = $course->teacher->name ?? auth()->user()?->name ?? __('teacher-course::catalog.instructor_default');
-    $previewDuration = old('duration_value', $course->duration_value ?? $course->estimated_duration_minutes ?? '');
+    $formatDecimalInput = static function (mixed $value): string {
+        if ($value === null || $value === '') {
+            return '';
+        }
+
+        return rtrim(rtrim(number_format((float) $value, 2, '.', ''), '0'), '.');
+    };
+    $durationInputValue = old('duration_value', $formatDecimalInput($course->duration_value ?? $course->estimated_duration_minutes ?? ''));
+    $priceInputValue = old('price', $formatDecimalInput($course->price ?? 0));
+    $previewDuration = $durationInputValue;
     $previewDurationUnit = old('duration_unit', $course->duration_unit ?? 'hour');
 @endphp
 
@@ -109,7 +118,7 @@
             <div>
                 <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.duration_field')</label>
                 <div class="grid grid-cols-[minmax(0,1fr)_7.5rem] gap-2">
-                    <input type="number" step="0.25" name="duration_value" min="0.25" max="525600" value="{{ old('duration_value', $course->duration_value ?? $course->estimated_duration_minutes ?? '') }}" class="h-11 min-w-0 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700">
+                    <input type="number" step="0.25" name="duration_value" min="0.25" max="525600" value="{{ $durationInputValue }}" class="h-11 min-w-0 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700">
                     <select name="duration_unit" class="h-11 min-w-0 rounded-xl border border-slate-200 bg-white px-2 text-sm font-bold text-slate-700">
                         @foreach(\Mindigo\TeacherCourse\Models\Course::DURATION_UNITS as $unit)
                             <option value="{{ $unit }}" @selected(old('duration_unit', $course->duration_unit ?? 'hour') === $unit)>@lang('teacher-course::app.duration_units.'.$unit)</option>
@@ -131,7 +140,7 @@
             <div>
                 <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.price_field')</label>
                 <div class="grid grid-cols-[minmax(0,1fr)_5rem] gap-2">
-                    <input type="number" name="price" min="0" step="1000" value="{{ old('price', $course->price ?? 0) }}" class="h-11 min-w-0 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700">
+                    <input type="text" name="price" data-course-price-input inputmode="numeric" value="{{ number_format((float) preg_replace('/\D/', '', (string) $priceInputValue), 0, ',', '.') }}" class="h-11 min-w-0 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700">
                     <select name="currency" class="h-11 min-w-0 rounded-xl border border-slate-200 bg-white px-2 text-sm font-bold text-slate-700">
                         <option value="VND" @selected(old('currency', $course->currency ?? 'VND') === 'VND')>VND</option>
                     </select>
@@ -297,7 +306,8 @@
         } : null;
         const accessLabels = @json(__('teacher-course::app.access_types'));
         const durationUnits = @json(__('teacher-course::catalog.duration_units'));
-        const emptyValue = 'â€”';
+        const emptyValue = '—';
+        const priceInput = form?.querySelector('[data-course-price-input]');
 
         const refreshFooter = () => {
             if (! isCreateWizard || ! nextButton || ! submitButton) {
@@ -391,9 +401,20 @@
             return picker?.querySelector('[data-course-master-label]')?.textContent?.trim() || fallback;
         };
 
+        const priceDigits = () => (priceInput?.value || '').replace(/\D/g, '');
+
+        const formatPriceInput = () => {
+            if (! priceInput) {
+                return;
+            }
+
+            const digits = priceDigits();
+            priceInput.value = digits ? new Intl.NumberFormat('vi-VN').format(Number(digits)) : '';
+        };
+
         const formatCurrency = () => {
             const accessType = form?.querySelector('[name="access_type"]')?.value || 'free';
-            const amount = Number(form?.querySelector('[name="price"]')?.value || 0);
+            const amount = Number(priceDigits() || 0);
             const currency = form?.querySelector('[name="currency"]')?.value || 'VND';
 
             if (accessType === 'free') {
@@ -411,7 +432,9 @@
                 return emptyValue;
             }
 
-            return (durationUnits[unit] || ':count').replace(':count', value);
+            const normalizedValue = String(Number(value)).replace(/\.0$/, '');
+
+            return (durationUnits[unit] || ':count').replace(':count', normalizedValue);
         };
 
         const refreshStudyTime = () => {
@@ -455,6 +478,17 @@
             field.addEventListener('change', refreshPreview);
         });
 
+        priceInput?.addEventListener('input', () => {
+            formatPriceInput();
+            refreshPreview();
+        });
+
+        form?.addEventListener('submit', () => {
+            if (priceInput) {
+                priceInput.value = priceDigits();
+            }
+        });
+
         form?.querySelector('[name="cover_image"]')?.addEventListener('change', (event) => {
             const [file] = event.target.files || [];
 
@@ -467,6 +501,7 @@
             preview.placeholder.hidden = true;
         });
 
+        formatPriceInput();
         refreshPreview();
         refreshFooter();
     });

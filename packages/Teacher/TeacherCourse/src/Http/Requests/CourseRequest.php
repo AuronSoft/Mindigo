@@ -21,6 +21,8 @@ class CourseRequest extends FormRequest
 
         if ($this->input('access_type') === 'free') {
             $this->merge(['price' => 0]);
+        } elseif ($this->filled('price')) {
+            $this->merge(['price' => preg_replace('/\D/', '', (string) $this->input('price'))]);
         }
 
         if ($this->filled('duration_value') && $this->filled('duration_unit')) {
