@@ -34,7 +34,7 @@
                     </svg>
                 </button>
 
-                <div class="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-260 max-w-[calc(100vw-2rem)] opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 transition-all duration-200 z-50">
+                <div class="absolute top-full left-1/2 z-50 w-screen max-w-5xl -translate-x-1/2 translate-y-2 pt-3 opacity-0 invisible transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                     <div class="bg-white border border-gray-100 rounded-3xl shadow-[0_24px_70px_rgba(15,23,42,0.18)] overflow-hidden">
                         <div class="px-8 pt-7 pb-5 flex items-start justify-between gap-8 border-b border-gray-100">
                             <div>

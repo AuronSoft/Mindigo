@@ -25,7 +25,6 @@ Route::middleware('web')->group(function (): void {
     Route::get('/courses/search/suggestions', [CourseDiscoveryController::class, 'suggestions'])->name('courses.search.suggestions');
     Route::get('/teachers/{teacher}', [TeacherProfileController::class, 'show'])->name('teachers.show');
     Route::get('/courses/{course}', [PublicCourseController::class, 'show'])
-        ->middleware('auth')
         ->name('courses.show');
     Route::post('/courses/{course}/enroll', [CourseEnrollmentController::class, 'store'])
         ->middleware(['auth', 'role:student'])

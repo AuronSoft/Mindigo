@@ -9,9 +9,12 @@
 @section('content')
 @php
     $isTeacherPreview = auth()->user()?->isTeacher() && (int) $course->teacher_id === (int) auth()->id();
-    $backUrl = $isTeacherPreview
-        ? route('teacher.courses.show', $course)
-        : route('courses.index');
+    $isAdminReviewPreview = auth()->user()?->isAdmin() && $course->publication_status === \Mindigo\TeacherCourse\Models\Course::PUBLICATION_PENDING_REVIEW;
+    $backUrl = match (true) {
+        $isTeacherPreview => route('teacher.courses.show', $course),
+        $isAdminReviewPreview => route('admin.course-publication-reviews.show', $course),
+        default => route('courses.index'),
+    };
 @endphp
 <div class="min-h-screen bg-slate-50">
     <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-6">
@@ -78,7 +81,7 @@
                                 <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-black text-slate-800"><span>{{ $chapter->name }}</span><span class="flex items-center gap-2 text-xs text-slate-400">{{ trans_choice('teacher-course::catalog.lesson_count', $chapter->lessons->count(), ['count' => $chapter->lessons->count()]) }}<x-heroicon-o-chevron-down class="h-4 w-4 transition group-open:rotate-180" /></span></summary>
                                 <ol class="mt-3 space-y-1 border-t border-slate-100 pt-3">
                                     @foreach($chapter->lessons as $lesson)
-                                        @php $canOpen = auth()->user()->can('view', $lesson); @endphp
+                                        @php $canOpen = auth()->user()?->can('view', $lesson) ?? false; @endphp
                                         <li>
                                             @if($canOpen)
                                                 <a href="{{ route('courses.lessons.show', [$course->slug, $lesson->id]) }}" class="flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-semibold text-slate-600 no-underline hover:bg-green-50 hover:text-green-700"><x-heroicon-o-play-circle class="h-4 w-4 shrink-0 text-green-600" /><span class="min-w-0 flex-1 truncate">{{ $lesson->name }}</span>@if($lesson->is_preview)<span class="text-[10px] font-black uppercase text-green-700">@lang('teacher-course::catalog.preview')</span>@endif</a>
@@ -103,7 +106,7 @@
             </div>
 
             <aside class="space-y-5 xl:sticky xl:top-5 xl:self-start">
-                @if(auth()->user()->isStudent())
+                @if(auth()->user()?->isStudent())
                     @php $currentEnrollment = $course->enrollments->first(); @endphp
                     <section class="rounded-xl border border-green-200 bg-green-50 p-5">
                         @if($currentEnrollment && in_array($currentEnrollment->status, \Mindigo\TeacherCourse\Models\CourseEnrollment::ACTIVE_STATUSES, true))

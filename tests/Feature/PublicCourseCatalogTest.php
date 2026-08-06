@@ -99,19 +99,13 @@ class PublicCourseCatalogTest extends TestCase
         $this->assertSorted('enrolled', $newest, $popular);
     }
 
-    public function test_course_detail_requires_login_and_returns_to_the_same_course_after_login(): void
+    public function test_guest_can_open_published_course_detail(): void
     {
-        $student = $this->createUser(['role' => 'student', 'password' => 'password']);
         $course = $this->courseFor($this->createUser(['role' => 'teacher']), 'Login protected course');
-        $detailUrl = route('courses.show', $course->slug);
 
-        $this->get($detailUrl)->assertRedirect(route('login'));
-        $this->assertSame($detailUrl, session('url.intended'));
-
-        $this->post(route('login.store'), ['email' => $student->email, 'password' => 'password'])
-            ->assertRedirect($detailUrl);
-
-        $this->get($detailUrl)->assertOk()->assertSee($course->name);
+        $this->get(route('courses.show', $course->slug))
+            ->assertOk()
+            ->assertSee($course->name);
     }
 
     public function test_unpublished_course_detail_is_not_visible_to_authenticated_users(): void

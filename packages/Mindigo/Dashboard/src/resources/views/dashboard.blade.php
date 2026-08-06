@@ -159,26 +159,6 @@
 
         <div class="grid -mt-3 items-start gap-4 px-5 pb-5 pt-0 2xl:grid-cols-[minmax(0,1fr)_23rem] max-md:-mt-2 max-md:px-4 max-md:pb-4">
             <main class="min-w-0 space-y-4">
-                <section class="grid gap-4 lg:grid-cols-[12rem_12rem_minmax(0,1fr)]" aria-labelledby="course-review-queue-title">
-                    <article class="rounded-2xl border border-amber-200 bg-white p-4 shadow-sm">
-                        <p class="text-[10px] font-black uppercase tracking-wider text-amber-700">@lang('teacher-course::admin-review.pending_dashboard')</p>
-                        <strong class="mt-2 block text-3xl font-black text-slate-950">{{ number_format($courseReviewDashboard['pending']) }}</strong>
-                    </article>
-                    <article class="rounded-2xl border border-green-200 bg-white p-4 shadow-sm">
-                        <p class="text-[10px] font-black uppercase tracking-wider text-green-700">@lang('teacher-course::admin-review.approved_today')</p>
-                        <strong class="mt-2 block text-3xl font-black text-slate-950">{{ number_format($courseReviewDashboard['approved_today']) }}</strong>
-                    </article>
-                    <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <div class="flex items-center justify-between gap-3"><h2 id="course-review-queue-title" class="text-sm font-black text-slate-900">@lang('teacher-course::admin-review.review_queue')</h2><a href="{{ route('admin.course-publication-reviews.index') }}" class="text-xs font-black text-green-700 no-underline">@lang('teacher-course::admin-review.view_queue')</a></div>
-                        <div class="mt-3 flex flex-wrap gap-2">
-                            @forelse($courseReviewDashboard['queue'] as $queuedCourse)
-                                <a href="{{ route('admin.course-publication-reviews.show', $queuedCourse) }}" class="inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 no-underline ring-1 ring-slate-200 hover:bg-green-50 hover:text-green-700"><span class="h-2 w-2 rounded-full bg-amber-400"></span>{{ \Illuminate\Support\Str::limit($queuedCourse->name, 28) }}</a>
-                            @empty
-                                <span class="text-xs font-semibold text-slate-400">@lang('teacher-course::admin-review.empty')</span>
-                            @endforelse
-                        </div>
-                    </article>
-                </section>
                 <section class="min-h-75 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" id="overview">
                     <div class="flex flex-wrap items-center justify-between gap-4">
                         <div class="flex flex-wrap items-center gap-2">
@@ -544,6 +524,46 @@
                             </div>
                         @endforeach
                     </div>
+                </section>
+
+                <section class="min-h-84 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" aria-labelledby="course-review-queue-title">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <p class="text-xs font-black uppercase tracking-wider text-amber-500">@lang('teacher-course::admin-review.pending_dashboard')</p>
+                            <h3 id="course-review-queue-title" class="mt-1 text-lg font-black text-slate-950">@lang('teacher-course::admin-review.review_queue')</h3>
+                        </div>
+                        <span class="grid h-9 min-w-9 place-items-center rounded-full bg-amber-50 px-2 text-sm font-black text-amber-700 ring-1 ring-amber-100">{{ number_format($courseReviewDashboard['pending']) }}</span>
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-2 gap-2">
+                        <div class="rounded-2xl bg-amber-50 p-3 ring-1 ring-amber-100">
+                            <p class="text-[10px] font-black uppercase tracking-wider text-amber-600">@lang('teacher-course::admin-review.pending_dashboard')</p>
+                            <strong class="mt-1 block text-xl font-black text-slate-950">{{ number_format($courseReviewDashboard['pending']) }}</strong>
+                        </div>
+                        <div class="rounded-2xl bg-green-50 p-3 ring-1 ring-green-100">
+                            <p class="text-[10px] font-black uppercase tracking-wider text-green-600">@lang('teacher-course::admin-review.approved_today')</p>
+                            <strong class="mt-1 block text-xl font-black text-slate-950">{{ number_format($courseReviewDashboard['approved_today']) }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 space-y-2">
+                        @forelse($courseReviewDashboard['queue'] as $queuedCourse)
+                            <a href="{{ route('admin.course-publication-reviews.show', $queuedCourse) }}" class="flex min-w-0 items-center gap-3 rounded-2xl bg-slate-50 p-3 text-sm font-black text-slate-800 no-underline transition hover:bg-green-50 hover:text-green-700">
+                                <span class="h-10 w-1.5 shrink-0 rounded-full bg-amber-400"></span>
+                                <span class="min-w-0 flex-1 truncate">{{ $queuedCourse->name }}</span>
+                                <x-heroicon-o-chevron-right class="h-4 w-4 shrink-0 text-slate-400" />
+                            </a>
+                        @empty
+                            <div class="flex min-h-40 flex-col items-center justify-center gap-3 rounded-2xl bg-slate-50">
+                                <x-heroicon-o-clipboard-document-check class="h-10 w-10 text-slate-200" />
+                                <p class="text-sm font-bold text-slate-400">@lang('teacher-course::admin-review.empty')</p>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    <a href="{{ route('admin.course-publication-reviews.index') }}" class="mt-4 inline-flex h-10 w-full items-center justify-center rounded-2xl bg-green-600 px-4 text-xs font-black text-white no-underline transition hover:bg-green-500">
+                        @lang('teacher-course::admin-review.view_queue')
+                    </a>
                 </section>
             </aside>
         </div>
