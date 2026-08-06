@@ -39,6 +39,7 @@
         "mindigo/teacher-question": "*",
         "mindigo/teacher-result": "*",
         "mindigo/teacher-course": "*",
+        "mindigo/teacher-onboarding": "*",
         "mindigo/teacher-live-session": "*",
         "mindigo/student-dashboard": "*",
         "mindigo/student-classroom": "*",
@@ -96,6 +97,7 @@
             "Mindigo\\TeacherQuestion\\": "packages/Teacher/TeacherQuestion/src/",
             "Mindigo\\TeacherResult\\": "packages/Teacher/TeacherResult/src/",
             "Mindigo\\TeacherCourse\\": "packages/Teacher/TeacherCourse/src/",
+            "Mindigo\\TeacherOnboarding\\": "packages/Teacher/TeacherOnboarding/src/",
             "Mindigo\\TeacherLiveSession\\": "packages/Teacher/TeacherLiveSession/src/",
             "Mindigo\\StudentDashboard\\": "packages/Students/StudentDashboard/src/",
             "Mindigo\\StudentClassroom\\": "packages/Students/StudentClassroom/src/",
@@ -220,6 +222,10 @@
         {
             "type": "path",
             "url": "packages/Teacher/TeacherCourse"
+        },
+        {
+            "type": "path",
+            "url": "packages/Teacher/TeacherOnboarding"
         },
         {
             "type": "path",
