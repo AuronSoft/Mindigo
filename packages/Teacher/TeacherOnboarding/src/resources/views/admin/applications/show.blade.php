@@ -105,6 +105,56 @@
             </article>
 
             <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <h2 class="text-base font-black text-slate-950">@lang('teacher-onboarding::provisioning.title')</h2>
+                        <p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-onboarding::provisioning.description')</p>
+                    </div>
+                    <span class="shrink-0 rounded-full bg-green-50 px-3 py-1 text-xs font-black text-green-700">
+                        @lang('teacher-onboarding::provisioning.statuses.'.($application->teacher_provision_status ?? \Mindigo\TeacherOnboarding\Models\TeacherApplication::PROVISION_NOT_PROVISIONED))
+                    </span>
+                </div>
+
+                <dl class="mt-4 space-y-3">
+                    <div class="rounded-xl bg-slate-50 p-3">
+                        <dt class="text-[10px] font-black uppercase text-slate-400">@lang('teacher-onboarding::provisioning.provisioned_by')</dt>
+                        <dd class="mt-1 text-sm font-bold text-slate-800">{{ $application->provisioner?->name ?? __('teacher-onboarding::interview.empty_value') }}</dd>
+                    </div>
+                    <div class="rounded-xl bg-slate-50 p-3">
+                        <dt class="text-[10px] font-black uppercase text-slate-400">@lang('teacher-onboarding::provisioning.provisioned_at')</dt>
+                        <dd class="mt-1 text-sm font-bold text-slate-800">{{ $application->provisioned_at?->format('d/m/Y H:i') ?? __('teacher-onboarding::interview.empty_value') }}</dd>
+                    </div>
+                    @if($application->provisioning_note)
+                        <div class="rounded-xl bg-slate-50 p-3">
+                            <dt class="text-[10px] font-black uppercase text-slate-400">@lang('teacher-onboarding::provisioning.note')</dt>
+                            <dd class="mt-1 whitespace-pre-line text-sm font-semibold leading-6 text-slate-700">{{ $application->provisioning_note }}</dd>
+                        </div>
+                    @endif
+                </dl>
+
+                <form method="POST" action="{{ route('admin.teacher-applications.provisioning.update', $application) }}" class="mt-4 space-y-3">
+                    @csrf
+                    @method('PATCH')
+                    <label class="block space-y-2">
+                        <span class="text-xs font-black uppercase text-slate-500">@lang('teacher-onboarding::provisioning.action')</span>
+                        <select name="action" class="h-11 w-full rounded-2xl border border-slate-200 px-4 text-sm font-bold">
+                            <option value="approve">@lang('teacher-onboarding::provisioning.actions.approve')</option>
+                            <option value="suspend">@lang('teacher-onboarding::provisioning.actions.suspend')</option>
+                            <option value="revoke">@lang('teacher-onboarding::provisioning.actions.revoke')</option>
+                        </select>
+                    </label>
+                    <label class="block space-y-2">
+                        <span class="text-xs font-black uppercase text-slate-500">@lang('teacher-onboarding::provisioning.note')</span>
+                        <textarea name="note" rows="4" class="w-full rounded-2xl border border-slate-200 p-4 text-sm font-semibold" placeholder="@lang('teacher-onboarding::provisioning.note_placeholder')">{{ old('note') }}</textarea>
+                    </label>
+                    <button class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 text-sm font-black text-white">
+                        <x-heroicon-o-academic-cap class="h-4 w-4" />
+                        @lang('teacher-onboarding::provisioning.save')
+                    </button>
+                </form>
+            </article>
+
+            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <h2 class="text-base font-black text-slate-950">@lang('teacher-onboarding::admin.review_action')</h2>
                 @if($nextStatuses)
                     <form method="POST" action="{{ route('admin.teacher-applications.update', $application) }}" class="mt-4 space-y-4">

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherOnboarding\Http\Controllers\AdminTeacherApplicationController;
 use Mindigo\TeacherOnboarding\Http\Controllers\TeacherApplicationController;
 use Mindigo\TeacherOnboarding\Http\Controllers\TeacherApplicationInterviewController;
+use Mindigo\TeacherOnboarding\Http\Controllers\TeacherApplicationProvisioningController;
 
 Route::middleware('web')->group(function (): void {
     Route::get('/become-teacher', [TeacherApplicationController::class, 'create'])->name('teacher-applications.create');
@@ -20,6 +21,7 @@ Route::middleware(['web', 'auth'])
         Route::get('/{teacher_application}', [AdminTeacherApplicationController::class, 'show'])->name('show');
         Route::patch('/{teacher_application}', [AdminTeacherApplicationController::class, 'update'])->name('update');
         Route::get('/{teacher_application}/documents/{document}', [AdminTeacherApplicationController::class, 'document'])->name('documents.show');
+        Route::patch('/{teacher_application}/provisioning', [TeacherApplicationProvisioningController::class, 'update'])->name('provisioning.update');
         Route::post('/{teacher_application}/interviews', [TeacherApplicationInterviewController::class, 'store'])->name('interviews.store');
         Route::get('/{teacher_application}/interviews/{interview}', [TeacherApplicationInterviewController::class, 'show'])->name('interviews.show');
         Route::patch('/{teacher_application}/interviews/{interview}', [TeacherApplicationInterviewController::class, 'update'])->name('interviews.update');

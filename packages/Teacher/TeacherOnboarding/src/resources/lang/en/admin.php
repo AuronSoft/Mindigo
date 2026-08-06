@@ -53,5 +53,6 @@ return [
         'approved' => 'Approved',
         'rejected' => 'Rejected',
         'suspended' => 'Suspended',
+        'revoked' => 'Revoked',
     ],
 ];

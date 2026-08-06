@@ -53,5 +53,6 @@ return [
         'approved' => 'Da duyet',
         'rejected' => 'Tu choi',
         'suspended' => 'Tam dung',
+        'revoked' => 'Da thu hoi',
     ],
 ];
