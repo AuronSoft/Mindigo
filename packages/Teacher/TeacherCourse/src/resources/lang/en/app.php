@@ -33,6 +33,8 @@ return [
     'requirements_placeholder' => 'Enter one requirement per line.',
     'target_learners_field' => 'Target learners',
     'target_learners_placeholder' => 'Enter one target learner group per line.',
+    'form_navigation' => 'Course form sections',
+    'form_tabs' => ['overview' => 'Overview', 'schedule' => 'Schedule & pricing', 'content' => 'Learning content', 'media' => 'Cover & description'],
     'publication_status_field' => 'Publication status',
     'all_publication_statuses' => 'All publication statuses',
     'publication_statuses' => ['draft' => 'Draft', 'pending_review' => 'Pending review', 'published' => 'Published', 'unlisted' => 'Unlisted', 'archived' => 'Archived'],

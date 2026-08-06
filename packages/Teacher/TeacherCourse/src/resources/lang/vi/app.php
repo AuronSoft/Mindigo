@@ -33,6 +33,8 @@ return [
     'requirements_placeholder' => 'Nhập mỗi yêu cầu trên một dòng.',
     'target_learners_field' => 'Đối tượng học viên',
     'target_learners_placeholder' => 'Nhập mỗi nhóm học viên trên một dòng.',
+    'form_navigation' => 'Các phần thông tin khóa học',
+    'form_tabs' => ['overview' => 'Tổng quan', 'schedule' => 'Lịch & giá', 'content' => 'Nội dung học tập', 'media' => 'Ảnh & mô tả'],
     'publication_status_field' => 'Trạng thái xuất bản',
     'all_publication_statuses' => 'Tất cả trạng thái xuất bản',
     'publication_statuses' => ['draft' => 'Bản nháp', 'pending_review' => 'Chờ duyệt', 'published' => 'Đã xuất bản', 'unlisted' => 'Không niêm yết', 'archived' => 'Đã lưu trữ'],
