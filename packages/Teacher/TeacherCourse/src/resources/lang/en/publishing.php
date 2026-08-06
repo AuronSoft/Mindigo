@@ -22,6 +22,7 @@ return [
     'starts_at' => 'Start date',
     'due_at' => 'Due date',
     'mandatory' => 'Mandatory',
+    'must_complete' => 'Required completion',
     'optional' => 'Optional',
     'visibility' => 'Student visibility',
     'visible' => 'Visible',

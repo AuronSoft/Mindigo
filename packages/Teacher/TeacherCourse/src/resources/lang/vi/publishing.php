@@ -22,6 +22,7 @@ return [
     'starts_at' => 'Ngày bắt đầu',
     'due_at' => 'Hạn hoàn thành',
     'mandatory' => 'Bắt buộc',
+    'must_complete' => 'Yêu cầu hoàn thành',
     'optional' => 'Tự chọn',
     'visibility' => 'Hiển thị với học sinh',
     'visible' => 'Hiển thị',
