@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherOnboarding\Http\Controllers;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
@@ -55,7 +56,7 @@ class AdminTeacherApplicationController extends Controller
 
         $metadata = $this->applications->document($teacherApplication, $document);
 
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        /** @var FilesystemAdapter $disk */
         $disk = Storage::disk($metadata['disk']);
 
         return $disk->download($metadata['path'], $metadata['name']);
