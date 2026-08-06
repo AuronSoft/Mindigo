@@ -3,12 +3,15 @@
 namespace Mindigo\TeacherCourse\Services;
 
 use Illuminate\Support\Facades\DB;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherCourse\Models\CourseReview;
 use Mindigo\TeacherCourse\Models\TeacherProfile;
 
 class TeacherProfileService
 {
+    public function __construct(private readonly AuditLogService $audit) {}
+
     public function directory(array $filters): array
     {
         $teachers = $this->publicTeacherQuery()
@@ -56,7 +59,17 @@ class TeacherProfileService
         return DB::transaction(function () use ($profile, $data): TeacherProfile {
             $data['qualifications'] = collect(preg_split('/\r\n|\r|\n/', $data['qualifications'] ?? ''))->map(fn (string $item) => trim($item))->filter()->values()->all() ?: null;
             $data['social_links'] = collect($data['social_links'] ?? [])->map(fn (?string $url) => filled($url) ? trim((string) $url) : null)->filter()->all() ?: null;
+            $oldValues = $profile->getAttributes();
             $profile->update($data);
+
+            $this->audit->record(
+                'teacher_public_profile_updated',
+                'teacher-onboarding',
+                oldValues: $oldValues,
+                newValues: $profile->getChanges(),
+                auditable: $profile,
+                user: $profile->user,
+            );
 
             return $profile->refresh();
         });

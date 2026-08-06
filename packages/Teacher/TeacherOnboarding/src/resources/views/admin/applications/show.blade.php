@@ -67,7 +67,7 @@
                         <p class="text-xs font-black uppercase tracking-wider text-slate-500">@lang('teacher-onboarding::application.documents')</p>
                         <div class="mt-3 space-y-2">
                             @forelse(($application->verification_documents ?? []) as $type => $document)
-                                <a href="{{ route('admin.teacher-applications.documents.show', [$application, $type]) }}" class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:border-green-200 hover:text-green-700">
+                            <a href="{{ URL::temporarySignedRoute('admin.teacher-applications.documents.show', now()->addMinutes(15), [$application, $type]) }}" class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 no-underline hover:border-green-200 hover:text-green-700">
                                     <span class="min-w-0 truncate">{{ __('teacher-onboarding::application.'.$type.'_document') }}</span>
                                     <x-heroicon-o-arrow-down-tray class="h-4 w-4 shrink-0" />
                                 </a>
