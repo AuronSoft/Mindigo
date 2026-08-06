@@ -14,6 +14,11 @@ class TeacherProfileController extends Controller
 {
     public function __construct(private readonly TeacherProfileService $profiles) {}
 
+    public function index(Request $request): View
+    {
+        return view('teacher-course::teachers.index', $this->profiles->directory($request->only(['search', 'specialization'])));
+    }
+
     public function show(int $teacher): View
     {
         return view('teacher-course::teachers.show', $this->profiles->publicProfile($teacher));

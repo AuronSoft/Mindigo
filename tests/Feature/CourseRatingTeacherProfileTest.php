@@ -7,6 +7,7 @@ use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\CourseEnrollment;
 use Mindigo\TeacherCourse\Models\CourseReview;
 use Mindigo\TeacherCourse\Models\TeacherProfile;
+use Mindigo\TeacherOnboarding\Models\TeacherApplication;
 use Tests\TestCase;
 
 class CourseRatingTeacherProfileTest extends TestCase
@@ -107,6 +108,7 @@ class CourseRatingTeacherProfileTest extends TestCase
     public function test_public_teacher_profile_only_shows_public_profile_and_published_courses(): void
     {
         $teacher = $this->createUser(['role' => 'teacher']);
+        $this->approveTeacher($teacher->id);
         $profile = TeacherProfile::query()->create(['user_id' => $teacher->id, 'headline' => 'Mathematics educator', 'biography' => 'Ten years of teaching', 'specialization' => 'Algebra', 'experience_years' => 10, 'is_public' => true]);
         $published = $this->course($teacher->id);
         $draft = $this->course($teacher->id, Course::PUBLICATION_DRAFT);
@@ -139,5 +141,24 @@ class CourseRatingTeacherProfileTest extends TestCase
     private function enrollment(Course $course, int $studentId, int $percentage, string $status = CourseEnrollment::STATUS_IN_PROGRESS): CourseEnrollment
     {
         return CourseEnrollment::query()->create(['course_id' => $course->id, 'student_id' => $studentId, 'status' => $status, 'source' => 'self', 'completion_percentage' => $percentage, 'enrolled_at' => now()]);
+    }
+
+    private function approveTeacher(int $teacherId): void
+    {
+        TeacherApplication::query()->create([
+            'user_id' => $teacherId,
+            'application_code' => 'APP-'.str()->upper(str()->random(8)),
+            'status' => TeacherApplication::STATUS_APPROVED,
+            'teacher_provision_status' => TeacherApplication::PROVISION_ACTIVE,
+            'application_type' => 'teacher',
+            'full_name' => 'Approved Teacher',
+            'email' => 'teacher'.str()->random(8).'@mindigo.test',
+            'phone' => '0900000000',
+            'specialization' => 'Mathematics',
+            'teaching_mode' => 'online',
+            'experience_years' => 5,
+            'submitted_at' => now(),
+            'provisioned_at' => now(),
+        ]);
     }
 }

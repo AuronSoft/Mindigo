@@ -11,6 +11,11 @@
     @foreach([['headline','text'],['specialization','text'],['experience_years','number']] as [$name,$type])<label class="block"><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::reviews.'.$name)</span><input type="{{ $type }}" name="{{ $name }}" value="{{ old($name, $profile->{$name}) }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"></label>@endforeach
     <label class="block"><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::reviews.biography')</span><textarea name="biography" rows="5" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">{{ old('biography', $profile->biography) }}</textarea></label>
     <label class="block"><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::reviews.qualifications')</span><textarea name="qualifications" rows="4" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">{{ old('qualifications', implode("\n", $profile->qualifications ?? [])) }}</textarea></label>
+    <div class="grid gap-3 sm:grid-cols-3">
+        @foreach(['website', 'facebook', 'linkedin'] as $network)
+            <label class="block"><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::reviews.social_'.$network)</span><input type="url" name="social_links[{{ $network }}]" value="{{ old('social_links.'.$network, data_get($profile->social_links, $network)) }}" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"></label>
+        @endforeach
+    </div>
     <label class="flex items-center gap-2 text-sm font-black text-slate-700"><input type="hidden" name="is_public" value="0"><input type="checkbox" name="is_public" value="1" @checked(old('is_public', $profile->is_public)) class="h-4 w-4 accent-green-600">@lang('teacher-course::reviews.public')</label>
     <div class="flex justify-end"><button class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-black text-white">@lang('teacher-course::reviews.save_profile')</button></div>
 </form></div></main>

@@ -24,6 +24,7 @@ class CourseDetailService
             ->with([
                 'teacher:id,name,avatar,bio',
                 'teacher.teacherProfile:id,user_id,headline,biography,specialization,experience_years,qualifications,is_public',
+                'teacher.approvedTeacherApplication:id,user_id',
                 'subject:id,name,slug',
                 'category:id,name,slug',
                 'chapters:id,course_id,name,sort_order',

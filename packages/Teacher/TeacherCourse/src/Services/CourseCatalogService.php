@@ -27,6 +27,7 @@ class CourseCatalogService
             ->with([
                 'teacher:id,name,avatar',
                 'teacher.teacherProfile:id,user_id,headline,is_public',
+                'teacher.approvedTeacherApplication:id,user_id',
                 'subject:id,name,slug',
                 'category:id,name,slug',
             ])
