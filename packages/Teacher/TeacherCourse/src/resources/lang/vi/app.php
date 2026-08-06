@@ -120,6 +120,7 @@ return [
     'chapter_name_ph' => 'VD: Chương 1 — Giới thiệu tổng quan',
     'edit_chapter_modal_title' => 'Chỉnh sửa tên chương',
     'save_changes' => 'Lưu thay đổi',
+    'continue' => 'Tiếp tục',
 
     // Course Form
     'course_name_field' => 'Tên khóa học',

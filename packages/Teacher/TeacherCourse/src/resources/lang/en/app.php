@@ -120,6 +120,7 @@ return [
     'chapter_name_ph' => 'e.g. Chapter 1 — Introduction & Overview',
     'edit_chapter_modal_title' => 'Edit Chapter Name',
     'save_changes' => 'Save Changes',
+    'continue' => 'Continue',
 
     // Course Form
     'course_name_field' => 'Course Name',

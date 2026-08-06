@@ -36,7 +36,14 @@
                        class="inline-flex h-10 items-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-black text-slate-600 no-underline transition hover:bg-slate-50">
                         @lang('teacher-course::app.cancel')
                     </a>
+                    <button type="button"
+                            data-course-form-next
+                            class="inline-flex h-10 items-center gap-2 rounded-lg bg-green-600 px-6 text-sm font-black text-white transition hover:bg-green-500">
+                        @lang('teacher-course::app.continue') <x-heroicon-o-arrow-right class="h-4 w-4" />
+                    </button>
                     <button type="submit"
+                            data-course-form-submit
+                            hidden
                             class="inline-flex h-10 items-center gap-2 rounded-lg bg-green-600 px-6 text-sm font-black text-white transition hover:bg-green-500">
                         <x-heroicon-o-check class="h-4 w-4" /> @lang('teacher-course::app.create_course')
                     </button>

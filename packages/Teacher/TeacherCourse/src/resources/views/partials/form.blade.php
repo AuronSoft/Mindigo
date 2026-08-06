@@ -9,19 +9,20 @@
     ];
 @endphp
 
-<div x-data="{ tab: 'overview' }" class="min-h-0 flex-1 space-y-4">
+<div data-course-form-tabs data-course-create-wizard="{{ $editing ? '0' : '1' }}" class="min-h-0 flex-1 space-y-4">
     <nav class="flex gap-2 overflow-x-auto rounded-2xl border border-slate-200 bg-slate-50 p-1" aria-label="@lang('teacher-course::app.form_navigation')">
         @foreach($tabs as $tabKey => $tabLabel)
             <button type="button"
-                    @click="tab = '{{ $tabKey }}'"
-                    :class="tab === '{{ $tabKey }}' ? 'bg-white text-green-700 shadow-sm' : 'text-slate-500 hover:text-slate-800'"
-                    class="shrink-0 rounded-xl px-4 py-2 text-xs font-black transition">
+                    data-course-form-tab="{{ $tabKey }}"
+                    data-course-form-tab-index="{{ $loop->index }}"
+                    @if(! $editing && ! $loop->first) disabled @endif
+                    class="shrink-0 rounded-xl px-4 py-2 text-xs font-black transition {{ $loop->first ? 'bg-white text-green-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }} {{ ! $editing && ! $loop->first ? 'cursor-not-allowed opacity-50' : '' }}">
                 {{ $tabLabel }}
             </button>
         @endforeach
     </nav>
 
-    <section x-show="tab === 'overview'" class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
+    <section data-course-form-panel="overview" class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
         <div>
             <label class="mb-1.5 block text-xs font-black text-slate-600">
                 @lang('teacher-course::app.course_name_field') <span class="text-red-500">*</span>
@@ -84,7 +85,7 @@
         </div>
     </section>
 
-    <section x-show="tab === 'schedule'" x-cloak class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
+    <section data-course-form-panel="schedule" hidden class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
         <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <div>
                 <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.duration_field')</label>
@@ -146,7 +147,7 @@
         </div>
     </section>
 
-    <section x-show="tab === 'content'" x-cloak class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
+    <section data-course-form-panel="content" hidden class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
         <div class="grid gap-3 lg:grid-cols-3">
             @foreach(['learning_outcomes', 'requirements', 'target_learners'] as $metadataField)
                 <div>
@@ -158,7 +159,7 @@
         </div>
     </section>
 
-    <section x-show="tab === 'media'" x-cloak class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
+    <section data-course-form-panel="media" hidden class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
         <div>
             <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.cover_image_field')</label>
             @if($editing && $course->cover_image)
@@ -181,3 +182,74 @@
         </div>
     </section>
 </div>
+
+<script>
+    document.querySelectorAll('[data-course-form-tabs]').forEach((root) => {
+        const tabs = root.querySelectorAll('[data-course-form-tab]');
+        const panels = root.querySelectorAll('[data-course-form-panel]');
+        const form = root.closest('form');
+        const isCreateWizard = root.dataset.courseCreateWizard === '1';
+        const nextButton = form?.querySelector('[data-course-form-next]');
+        const submitButton = form?.querySelector('[data-course-form-submit]');
+        let currentIndex = 0;
+        let unlockedIndex = isCreateWizard ? 0 : tabs.length - 1;
+        const activeClass = ['bg-white', 'text-green-700', 'shadow-sm'];
+        const inactiveClass = ['text-slate-500', 'hover:text-slate-800'];
+
+        const refreshFooter = () => {
+            if (! isCreateWizard || ! nextButton || ! submitButton) {
+                return;
+            }
+
+            const isLast = currentIndex === tabs.length - 1;
+            nextButton.hidden = isLast;
+            submitButton.hidden = ! isLast;
+        };
+
+        const activateTab = (tab, index) => {
+            if (isCreateWizard && index > unlockedIndex) {
+                return;
+            }
+
+            currentIndex = index;
+            const target = tab.dataset.courseFormTab;
+
+            tabs.forEach((item) => {
+                    const active = item === tab;
+                    item.classList.toggle(activeClass[0], active);
+                    item.classList.toggle(activeClass[1], active);
+                    item.classList.toggle(activeClass[2], active);
+                    item.classList.toggle(inactiveClass[0], ! active);
+                    item.classList.toggle(inactiveClass[1], ! active);
+            });
+
+            panels.forEach((panel) => {
+                    panel.hidden = panel.dataset.courseFormPanel !== target;
+            });
+
+            refreshFooter();
+        };
+
+        const unlockThrough = (index) => {
+            unlockedIndex = Math.max(unlockedIndex, index);
+            tabs.forEach((tab, tabIndex) => {
+                const locked = isCreateWizard && tabIndex > unlockedIndex;
+                tab.disabled = locked;
+                tab.classList.toggle('cursor-not-allowed', locked);
+                tab.classList.toggle('opacity-50', locked);
+            });
+        };
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => activateTab(tab, index));
+        });
+
+        nextButton?.addEventListener('click', () => {
+            const nextIndex = Math.min(currentIndex + 1, tabs.length - 1);
+            unlockThrough(nextIndex);
+            activateTab(tabs[nextIndex], nextIndex);
+        });
+
+        refreshFooter();
+    });
+</script>
