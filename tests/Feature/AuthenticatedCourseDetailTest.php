@@ -13,17 +13,14 @@ class AuthenticatedCourseDetailTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_guest_returns_to_the_original_course_after_login(): void
+    public function test_guest_can_preview_the_original_course_before_login(): void
     {
-        $student = $this->createUser(['role' => 'student', 'password' => 'password']);
         $course = $this->course();
         $url = route('courses.show', $course->slug);
 
-        $this->get($url)->assertRedirect(route('login'));
-        $this->assertSame($url, session('url.intended'));
-
-        $this->post(route('login.store'), ['email' => $student->email, 'password' => 'password'])
-            ->assertRedirect($url);
+        $this->get($url)
+            ->assertOk()
+            ->assertSee($course->name);
     }
 
     public function test_student_can_view_complete_published_course_information(): void

@@ -17,7 +17,7 @@ class CourseDetailService
 {
     public function __construct(private readonly CourseDiscoveryService $discovery) {}
 
-    public function detail(Authenticatable $user, string $slug): Course
+    public function detail(?Authenticatable $user, string $slug): Course
     {
         $course = Course::query()
             ->where('slug', $slug)
@@ -33,13 +33,13 @@ class CourseDetailService
             ->withCount(['chapters', 'lessons'])
             ->firstOrFail();
 
-        abort_unless(Gate::forUser($user)->allows('viewDetail', $course), 404);
+        abort_unless($user ? Gate::forUser($user)->allows('viewDetail', $course) : $course->isPublished(), 404);
 
         $course->chapters->each(
             fn ($chapter) => $chapter->setRelation('course', $course)
         );
 
-        if (method_exists($user, 'isStudent') && $user->isStudent()) {
+        if ($user && method_exists($user, 'isStudent') && $user->isStudent()) {
             $course->load(['enrollments' => fn ($query) => $query->where('student_id', $user->getAuthIdentifier())->with('review')]);
         }
 
