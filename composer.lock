@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f4a5fe5678101bd54db9fb9c22942c3",
+    "content-hash": "1d42e21700e1d7515037aff2fea66028",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -2471,7 +2471,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2501,7 +2501,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2567,7 +2567,7 @@
         },
         {
             "name": "mindigo/classroom-management",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ClassroomManagement",
@@ -2597,7 +2597,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2627,7 +2627,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2657,7 +2657,7 @@
         },
         {
             "name": "mindigo/exam-management",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ExamManagement",
@@ -2687,7 +2687,7 @@
         },
         {
             "name": "mindigo/learning-tools",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/LearningTools",
@@ -2717,7 +2717,7 @@
         },
         {
             "name": "mindigo/notification",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Notification",
@@ -2747,7 +2747,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -2777,7 +2777,7 @@
         },
         {
             "name": "mindigo/question-bank",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/QuestionBank",
@@ -2807,7 +2807,7 @@
         },
         {
             "name": "mindigo/report",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Report",
@@ -2837,7 +2837,7 @@
         },
         {
             "name": "mindigo/role-permission",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -2867,7 +2867,7 @@
         },
         {
             "name": "mindigo/student-assignment",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentAssignment",
@@ -2897,7 +2897,7 @@
         },
         {
             "name": "mindigo/student-classroom",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentClassroom",
@@ -2927,7 +2927,7 @@
         },
         {
             "name": "mindigo/student-dashboard",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentDashboard",
@@ -2957,7 +2957,7 @@
         },
         {
             "name": "mindigo/student-discussion",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentDiscussion",
@@ -2987,7 +2987,7 @@
         },
         {
             "name": "mindigo/student-exam",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentExam",
@@ -3017,7 +3017,7 @@
         },
         {
             "name": "mindigo/student-history",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentHistory",
@@ -3047,7 +3047,7 @@
         },
         {
             "name": "mindigo/student-leaderboard",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentLeaderboard",
@@ -3077,7 +3077,7 @@
         },
         {
             "name": "mindigo/student-live-session",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentLiveSession",
@@ -3107,7 +3107,7 @@
         },
         {
             "name": "mindigo/student-notebook",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentNotebook",
@@ -3137,15 +3137,18 @@
         },
         {
             "name": "mindigo/student-practice",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentPractice",
-                "reference": "bf58680af21f09ea2f3e0c0240f9a8475115ec50"
+                "reference": "c57b6576d9cac517db002e56260aa5c1d96e0c14"
             },
             "require": {
                 "illuminate/support": "^12.0",
+                "mindigo/classroom-management": "*",
+                "mindigo/exam-management": "*",
                 "mindigo/question-bank": "*",
+                "mindigo/subject-management": "*",
                 "php": "^8.2"
             },
             "type": "library",
@@ -3168,7 +3171,7 @@
         },
         {
             "name": "mindigo/student-progress",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentProgress",
@@ -3198,7 +3201,7 @@
         },
         {
             "name": "mindigo/student-schedule",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentSchedule",
@@ -3228,7 +3231,7 @@
         },
         {
             "name": "mindigo/subject-management",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SubjectManagement",
@@ -3258,7 +3261,7 @@
         },
         {
             "name": "mindigo/support-management",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SupportManagement",
@@ -3288,7 +3291,7 @@
         },
         {
             "name": "mindigo/system-setting",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",
@@ -3318,7 +3321,7 @@
         },
         {
             "name": "mindigo/teacher-announcement",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAnnouncement",
@@ -3348,7 +3351,7 @@
         },
         {
             "name": "mindigo/teacher-assignment",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAssignment",
@@ -3378,7 +3381,7 @@
         },
         {
             "name": "mindigo/teacher-classroom",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherClassroom",
@@ -3408,7 +3411,7 @@
         },
         {
             "name": "mindigo/teacher-course",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherCourse",
@@ -3438,7 +3441,7 @@
         },
         {
             "name": "mindigo/teacher-dashboard",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDashboard",
@@ -3468,7 +3471,7 @@
         },
         {
             "name": "mindigo/teacher-discussion",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDiscussion",
@@ -3498,7 +3501,7 @@
         },
         {
             "name": "mindigo/teacher-exam",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherExam",
@@ -3528,7 +3531,7 @@
         },
         {
             "name": "mindigo/teacher-live-session",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherLiveSession",
@@ -3557,8 +3560,38 @@
             }
         },
         {
+            "name": "mindigo/teacher-onboarding",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Teacher/TeacherOnboarding",
+                "reference": "26167acacffe7b5942a91b8a6d6d2c7d66340fb0"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\TeacherOnboarding\\Providers\\TeacherOnboardingServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\TeacherOnboarding\\": "src/"
+                }
+            },
+            "description": "Mindigo Teacher and Tutor Onboarding Package",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mindigo/teacher-question",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherQuestion",
@@ -3588,7 +3621,7 @@
         },
         {
             "name": "mindigo/teacher-result",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherResult",
@@ -3618,7 +3651,7 @@
         },
         {
             "name": "mindigo/user-management",
-            "version": "dev-feature/learning-tools-phase-0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/UserManagement",
