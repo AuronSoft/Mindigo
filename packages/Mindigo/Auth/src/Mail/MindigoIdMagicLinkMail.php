@@ -12,11 +12,14 @@ class MindigoIdMagicLinkMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public readonly string $link) {}
+    public function __construct(public readonly string $link)
+    {
+        $this->locale(app()->getLocale());
+    }
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Liên kết đăng nhập MindigoID');
+        return new Envelope(subject: __('Mindigo-auth::app.mail.magic_link_subject'));
     }
 
     public function content(): Content

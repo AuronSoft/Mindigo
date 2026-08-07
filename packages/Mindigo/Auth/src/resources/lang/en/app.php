@@ -42,6 +42,12 @@ return [
         'incognito_notice' => 'If this is not your device, sign in using',
         'incognito_highlight' => 'private browsing mode',
         'incognito_suffix' => 'to protect your account.',
+
+        'magic_link_invalid' => 'This link is invalid or has expired.',
+        'account_not_found' => 'Account not found.',
+        'otp_invalid_expired' => 'Invalid or expired OTP code.',
+        'account_suspended' => 'Your account has been suspended. Please contact the administrator.',
+        'no_permission' => 'You do not have permission to access this area.',
     ],
 
     'sso' => [
@@ -146,6 +152,7 @@ return [
             'password_min' => 'Password must be at least 8 characters.',
             'password_not_match' => 'Password confirmation does not match.',
 
+            'session_expired' => 'Your session has expired. Please try again.',
             'reset_success' => 'Password reset successfully. Redirecting to login...',
         ],
 
@@ -169,5 +176,31 @@ return [
             'confirm_text' => 'Logout',
             'cancel_text' => 'Cancel',
         ],
+    ],
+
+    'validation' => [
+        'email' => [
+            'required' => 'Please enter your email address.',
+            'email' => 'Please enter a valid email address.',
+            'exists' => 'No account found with this email.',
+        ],
+        'password' => [
+            'required' => 'Please enter your password.',
+            'min' => 'Password must be at least :min characters.',
+            'confirmed' => 'Password confirmation does not match.',
+        ],
+        'otp' => [
+            'required' => 'Please enter the OTP code.',
+            'size' => 'OTP code must be :size digits.',
+        ],
+        'type' => [
+            'in' => 'Invalid verification type.',
+        ],
+    ],
+
+    'mail' => [
+        'magic_link_subject' => 'Your MindigoID Sign-in Link',
+        'otp_login_subject' => 'MindigoID Login OTP — MindigoHRM',
+        'otp_forgot_password_subject' => 'Password Reset OTP — MindigoHRM',
     ],
 ];

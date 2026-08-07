@@ -45,14 +45,14 @@ class MindigoIdController extends Controller
 
         if (! $record) {
             return redirect()->route('login')
-                ->withErrors(['Mindigo_id' => 'Liên kết không hợp lệ hoặc đã hết hạn.']);
+                ->withErrors(['Mindigo_id' => __('Mindigo-auth::app.auth.magic_link_invalid')]);
         }
 
         $user = $this->service->findUser($record->email);
 
         if (! $user) {
             return redirect()->route('login')
-                ->withErrors(['Mindigo_id' => 'Tài khoản không tồn tại.']);
+                ->withErrors(['Mindigo_id' => __('Mindigo-auth::app.auth.account_not_found')]);
         }
 
         $record->update(['used' => true]);
@@ -72,14 +72,16 @@ class MindigoIdController extends Controller
 
         if (! $record) {
             return response()->json([
-                'message' => 'Mã OTP không hợp lệ hoặc đã hết hạn.',
+                'message' => __('Mindigo-auth::app.auth.otp_invalid_expired'),
             ], 422);
         }
 
         $user = $this->service->findUser($email);
 
         if (! $user) {
-            return response()->json(['message' => 'Tài khoản không tồn tại.'], 422);
+            return response()->json([
+                'message' => __('Mindigo-auth::app.auth.account_not_found'),
+            ], 422);
         }
 
         $record->update(['used' => true]);

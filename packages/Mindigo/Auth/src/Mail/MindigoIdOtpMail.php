@@ -16,13 +16,15 @@ class MindigoIdOtpMail extends Mailable
         public readonly string $otp,
         public readonly string $email = '',
         public readonly string $type = 'login' // 'login' | 'forgot_password'
-    ) {}
+    ) {
+        $this->locale(app()->getLocale());
+    }
 
     public function envelope(): Envelope
     {
         $subject = $this->type === 'forgot_password'
-            ? 'Mã OTP đặt lại mật khẩu — MindigoHRM'
-            : 'Mã OTP đăng nhập MindigoID — MindigoHRM';
+            ? __('Mindigo-auth::app.mail.otp_forgot_password_subject')
+            : __('Mindigo-auth::app.mail.otp_login_subject');
 
         return new Envelope(subject: $subject);
     }

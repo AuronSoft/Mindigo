@@ -21,9 +21,9 @@ class SendOtpRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Email không hợp lệ.',
-            'email.exists' => 'Không tìm thấy tài khoản với email này.',
+            'email.required' => __('Mindigo-auth::app.validation.email.required'),
+            'email.email' => __('Mindigo-auth::app.validation.email.email'),
+            'email.exists' => __('Mindigo-auth::app.validation.email.exists'),
         ];
     }
 }

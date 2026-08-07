@@ -23,7 +23,9 @@ class ForgotPasswordController extends Controller
     {
         $this->service->sendOtp($request->validated());
 
-        return response()->json(['message' => 'Đã gửi mã OTP đến email của bạn.']);
+        return response()->json([
+            'message' => __('Mindigo-auth::app.steps.email.otp_sent'),
+        ]);
     }
 
     public function verifyOtp(VerifyOtpRequest $request)
@@ -32,11 +34,13 @@ class ForgotPasswordController extends Controller
 
         if (! $result) {
             return response()->json([
-                'message' => 'Mã OTP không hợp lệ hoặc đã hết hạn.',
+                'message' => __('Mindigo-auth::app.steps.otp.otp_invalid'),
             ], 422);
         }
 
-        return response()->json(['message' => 'Xác thực thành công.']);
+        return response()->json([
+            'message' => __('Mindigo-auth::app.steps.otp.otp_success'),
+        ]);
     }
 
     public function reset(ResetPasswordRequest $request)
@@ -45,10 +49,12 @@ class ForgotPasswordController extends Controller
 
         if (! $result) {
             return response()->json([
-                'message' => 'Phiên xác thực đã hết hạn. Vui lòng thử lại.',
+                'message' => __('Mindigo-auth::app.steps.reset.session_expired'),
             ], 422);
         }
 
-        return response()->json(['message' => 'Đặt lại mật khẩu thành công.']);
+        return response()->json([
+            'message' => __('Mindigo-auth::app.steps.reset.reset_success'),
+        ]);
     }
 }

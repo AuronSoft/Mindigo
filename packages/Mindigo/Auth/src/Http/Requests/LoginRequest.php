@@ -22,10 +22,10 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Email không hợp lệ.',
-            'password.required' => 'Vui lòng nhập mật khẩu.',
-            'password.min' => 'Mật khẩu tối thiểu 6 ký tự.',
+            'email.required' => __('Mindigo-auth::app.validation.email.required'),
+            'email.email' => __('Mindigo-auth::app.validation.email.email'),
+            'password.required' => __('Mindigo-auth::app.validation.password.required'),
+            'password.min' => __('Mindigo-auth::app.validation.password.min'),
         ];
     }
 }
