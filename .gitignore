@@ -27,3 +27,5 @@ database.sqlite
 dump.rdb
 __pycache__/
 *.pyc
+
+dump.rdb

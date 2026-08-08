@@ -69,6 +69,7 @@ return [
     'navbar' => [
         'features' => 'Features',
         'explore' => 'Explore Exams',
+        'become_teacher' => 'Teach with Mindigo',
         'exam_prep' => 'High School Exam Prep',
         'classroom' => 'Classroom Management',
         'pricing' => 'Pricing',
@@ -362,6 +363,7 @@ return [
         'legal_3' => 'Technical support terms',
         'legal_4' => 'AI Assistant usage policy',
         'legal_5' => 'Refund policy',
+        'legal_6' => 'Tutor policy',
         'copyright' => 'Powered by Auralis Education Auralis',
         'built_with' => 'Built with ❤️ in Vietnam',
     ],

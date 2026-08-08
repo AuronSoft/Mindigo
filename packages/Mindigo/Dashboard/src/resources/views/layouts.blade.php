@@ -73,7 +73,7 @@
             >
         </div>
 
-        <div class="min-h-0 overflow-y-auto overflow-x-hidden scrollbar-hide">
+        <div class="mindigo-scrollbar-hidden min-h-0 overflow-y-auto overflow-x-hidden">
             <nav class="flex flex-col gap-2">
 
             @if($currentUser?->role === 'student')
@@ -413,7 +413,7 @@
                     @endif
                 </div>
 
-                <div class="max-h-80 overflow-y-auto scrollbar-hide">
+                <div class="mindigo-scrollbar-hidden max-h-80 overflow-y-auto">
                     @forelse(($globalRecentNotifications ?? collect()) as $note)
                         @php
                             $d = $note->data;

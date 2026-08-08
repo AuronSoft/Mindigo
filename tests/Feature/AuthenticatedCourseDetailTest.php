@@ -57,13 +57,17 @@ class AuthenticatedCourseDetailTest extends TestCase
         $this->actingAs($owner)->get(route('courses.show', $course->slug))
             ->assertOk()
             ->assertSee(__('teacher-course::catalog.preview_mode'))
-            ->assertSee(route('teacher.courses.show', $course), false)
-            ->assertSee('sticky top-0', false)
-            ->assertSee('rel="stylesheet"', false);
+            ->assertSee(route('courses.index'), false)
+            ->assertSee('mindigo', false);
+
+        $this->actingAs($owner)->get(route('courses.show', ['course' => $course->slug, 'from' => 'teacher']))
+            ->assertOk()
+            ->assertSee(route('teacher.courses.show', $course), false);
 
         $this->actingAs($admin)->get(route('courses.show', $course->slug))
             ->assertOk()
-            ->assertSee($course->name);
+            ->assertSee($course->name)
+            ->assertSee(route('courses.index'), false);
     }
 
     public function test_student_and_non_owner_teacher_cannot_open_unpublished_course(): void

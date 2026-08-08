@@ -1,15 +1,16 @@
-@extends('Mindigo-dashboard::layouts')
+@extends('core::layouts.home')
 
 @section('title', $course->name.' - Mindigo LMS')
 @section('meta_description', $course->description ?: __('teacher-course::catalog.no_description'))
-@section('styles')
-    @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js'])
-@endsection
 
 @section('content')
 @php
-    $isTeacherPreview = auth()->user()?->isTeacher() && (int) $course->teacher_id === (int) auth()->id();
-    $isAdminReviewPreview = auth()->user()?->isAdmin() && $course->publication_status === \Mindigo\TeacherCourse\Models\Course::PUBLICATION_PENDING_REVIEW;
+    $isTeacherPreview = request('from') === 'teacher'
+        && auth()->user()?->isTeacher()
+        && (int) $course->teacher_id === (int) auth()->id();
+    $isAdminReviewPreview = request('from') === 'admin_review'
+        && auth()->user()?->isAdmin()
+        && $course->publication_status === \Mindigo\TeacherCourse\Models\Course::PUBLICATION_PENDING_REVIEW;
     $backUrl = match (true) {
         $isTeacherPreview => route('teacher.courses.show', $course),
         $isAdminReviewPreview => route('admin.course-publication-reviews.show', $course),
@@ -17,6 +18,8 @@
     };
 @endphp
 <div class="min-h-screen bg-slate-50">
+    @include('core::partials.home.navbar')
+
     <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-6">
         <div class="flex flex-wrap items-center justify-between gap-4">
             <div class="min-w-0">

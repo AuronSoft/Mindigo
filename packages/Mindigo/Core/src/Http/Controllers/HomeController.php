@@ -53,6 +53,13 @@ class HomeController extends Controller
         ]);
     }
 
+    public function tutorPolicy()
+    {
+        return view('core::legal.tutor-policy', [
+            'title' => __('core::tutor_policy.hero.title').' | Mindigo',
+        ]);
+    }
+
     public function examTips(Request $request)
     {
         $categories = collect(__('core::exam_tips.categories'));

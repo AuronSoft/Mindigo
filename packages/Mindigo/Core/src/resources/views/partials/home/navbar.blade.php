@@ -106,8 +106,10 @@
                 </div>
             </div>
             <a href="{{ route('courses.index') }}" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.explore')</a>
+            @if(Route::has('teacher-applications.create'))
+                <a href="{{ route('teacher-applications.create', [], false) }}" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.become_teacher')</a>
+            @endif
             <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.exam_prep')</a>
-            <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.classroom')</a>
             <a href="#" id="btn-pricing" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.pricing')</a>
             <a href="#" id="btn-news" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.news')</a>
             <a href="#" id="btn-contact" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.contact')</a>
