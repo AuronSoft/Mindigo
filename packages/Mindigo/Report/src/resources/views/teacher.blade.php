@@ -111,9 +111,9 @@
     <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-6 py-3 backdrop-blur max-md:px-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
-                <p class="text-[11px] font-black uppercase tracking-wider text-green-600">@lang('Mindigo-report::app.teacher_report_scope')</p>
+                <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('Mindigo-report::app.teacher_report_scope')</p>
                 <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('Mindigo-report::app.teacher_reports')</h1>
-                <p class="text-xs font-bold text-slate-400">@lang('Mindigo-report::app.teacher_reports_desc')</p>
+                <p class="mt-1 text-xs font-semibold text-slate-400">@lang('Mindigo-report::app.teacher_reports_desc')</p>
             </div>
 
             <form method="GET" class="flex flex-wrap items-center gap-2">

@@ -20,24 +20,27 @@
 @endphp
 <div class="flex min-h-screen flex-col bg-slate-50">
 
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 px-6 py-3 backdrop-blur">
-        <div>
-            <h1 class="text-base font-black text-slate-950">@lang('teacher-announcement::app.title')</h1>
-            <p class="text-xs font-bold text-slate-400">@lang('teacher-announcement::app.subtitle')</p>
-        </div>
-        <div class="flex items-center gap-2">
-            {{-- Type filter --}}
-            <select data-mindigo-select-url
-                    class="h-9 rounded-full border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 outline-none">
-                <option value="{{ route('teacher.announcements.index') }}" @selected(!($filters['type']??''))>@lang('teacher-announcement::app.all_types')</option>
-                @foreach(Mindigo\TeacherAnnouncement\Models\Announcement::TYPES as $t)
-                    <option value="{{ route('teacher.announcements.index', ['type'=>$t]) }}" @selected(($filters['type']??'')===$t)>@lang('teacher-announcement::app.type_'.$t)</option>
-                @endforeach
-            </select>
-            <a href="{{ route('teacher.announcements.create') }}"
-               class="inline-flex h-9 items-center gap-1.5 rounded-full bg-green-600 px-4 text-sm font-black text-white no-underline shadow-sm transition hover:bg-green-500">
-                <x-heroicon-o-plus class="h-4 w-4" />@lang('teacher-announcement::app.create')
-            </a>
+    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-6 py-4 backdrop-blur">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('teacher-announcement::app.teaching_announcement')</p>
+                <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-announcement::app.title')</h1>
+                <p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-announcement::app.subtitle')</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                {{-- Type filter --}}
+                <select data-mindigo-select-url
+                        class="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-600 outline-none">
+                    <option value="{{ route('teacher.announcements.index') }}" @selected(!($filters['type']??''))>@lang('teacher-announcement::app.all_types')</option>
+                    @foreach(Mindigo\TeacherAnnouncement\Models\Announcement::TYPES as $t)
+                        <option value="{{ route('teacher.announcements.index', ['type'=>$t]) }}" @selected(($filters['type']??'')===$t)>@lang('teacher-announcement::app.type_'.$t)</option>
+                    @endforeach
+                </select>
+                <a href="{{ route('teacher.announcements.create') }}"
+                   class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-sm font-black text-white no-underline shadow-sm transition hover:bg-green-500">
+                    <x-heroicon-o-plus class="h-4 w-4" />@lang('teacher-announcement::app.create')
+                </a>
+            </div>
         </div>
     </header>
 
