@@ -95,6 +95,32 @@
                     infoPanel.classList.toggle('hidden');
                 });
             }
+
+            const openModal = function (id) {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('hidden');
+            };
+            const closeModal = function (id) {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            };
+
+            document.querySelectorAll('[data-discussion-new-group]').forEach(function (btn) {
+                btn.addEventListener('click', function () { openModal('discussion-group-modal'); });
+            });
+            document.querySelectorAll('[data-discussion-new-direct]').forEach(function (btn) {
+                btn.addEventListener('click', function () { openModal('discussion-direct-modal'); });
+            });
+            document.querySelectorAll('[data-discussion-modal-close]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    closeModal(btn.dataset.discussionModalClose);
+                });
+            });
+            document.querySelectorAll('[data-discussion-modal]').forEach(function (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal) modal.classList.add('hidden');
+                });
+            });
         });
     </script>
 
@@ -245,6 +271,17 @@
                     <button type="button" data-discussion-tab data-discussion-tab="groups" class="flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-xs font-black text-slate-600">
                         <x-heroicon-o-tag class="h-4 w-4" />
                         @lang('teacher-discussion::app.groups')
+                    </button>
+                </div>
+
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                    <button type="button" data-discussion-new-group class="flex h-11 items-center justify-center gap-2 rounded-xl bg-green-600 text-xs font-black text-white shadow-sm shadow-green-600/20 transition hover:bg-green-500">
+                        <x-heroicon-o-user-group class="h-4 w-4" />
+                        @lang('teacher-discussion::app.new_group')
+                    </button>
+                    <button type="button" data-discussion-new-direct class="flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-xs font-black text-slate-600 transition hover:bg-slate-50">
+                        <x-heroicon-o-chat-bubble-left-right class="h-4 w-4" />
+                        @lang('teacher-discussion::app.new_direct')
                     </button>
                 </div>
             </div>
@@ -543,6 +580,103 @@
                 </div>
             </aside>
         @endif
+    </div>
+</div>
+
+{{-- ============ MODAL TẠO NHÓM ============ --}}
+<div id="discussion-group-modal" data-discussion-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4">
+    <div class="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
+        <form method="POST" action="{{ route($routes['groups']) }}">
+            @csrf
+            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+                <h3 class="text-base font-black text-slate-950">@lang('teacher-discussion::app.new_group')</h3>
+                <button type="button" data-discussion-modal-close="discussion-group-modal" class="grid h-9 w-9 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-50 hover:text-slate-600">
+                    <x-heroicon-o-x-mark class="h-5 w-5" />
+                </button>
+            </div>
+
+            <div class="space-y-4 px-6 py-5">
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-discussion::app.group_name')</label>
+                    <input type="text" name="name" required maxlength="80" placeholder="@lang('teacher-discussion::app.group_name_placeholder')" class="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100">
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-discussion::app.group_description')</label>
+                    <input type="text" name="description" maxlength="255" placeholder="@lang('teacher-discussion::app.group_description_placeholder')" class="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100">
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-discussion::app.group_theme')</label>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach(['green', 'blue', 'amber', 'red', 'violet', 'slate'] as $color)
+                            <label class="cursor-pointer">
+                                <input type="radio" name="theme_color" value="{{ $color }}" class="peer sr-only" {{ $color === 'green' ? 'checked' : '' }}>
+                                <span class="grid h-9 w-9 place-items-center rounded-full bg-{{ $color }}-100 text-{{ $color }}-700 ring-2 ring-transparent transition peer-checked:ring-{{ $color }}-500"></span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-discussion::app.select_members')</label>
+                    <div class="max-h-48 space-y-1 overflow-y-auto rounded-xl border border-slate-100 p-2">
+                        @forelse($candidateUsers as $candidate)
+                            <label class="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition hover:bg-slate-50">
+                                <input type="checkbox" name="member_ids[]" value="{{ $candidate->id }}" class="h-4 w-4 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-black text-slate-600">{{ mb_strtoupper(mb_substr($candidate->name, 0, 1)) }}</span>
+                                <span class="min-w-0">
+                                    <span class="block truncate text-sm font-black text-slate-800">{{ $candidate->name }}</span>
+                                    <span class="block truncate text-[11px] font-bold text-slate-400">{{ $candidate->email }}</span>
+                                </span>
+                            </label>
+                        @empty
+                            <p class="rounded-lg bg-slate-50 p-3 text-center text-xs font-bold text-slate-400">@lang('teacher-discussion::app.no_candidates')</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 border-t border-slate-100 px-6 py-4">
+                <button type="button" data-discussion-modal-close="discussion-group-modal" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black text-slate-600 transition hover:bg-slate-50">@lang('teacher-discussion::app.cancel')</button>
+                <button type="submit" class="rounded-xl bg-green-600 px-4 py-2.5 text-xs font-black text-white shadow-sm transition hover:bg-green-500">@lang('teacher-discussion::app.create_group_btn')</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ============ MODAL CHAT 1-1 ============ --}}
+<div id="discussion-direct-modal" data-discussion-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4">
+    <div class="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl">
+        <form method="POST" action="{{ route($routes['direct']) }}">
+            @csrf
+            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+                <h3 class="text-base font-black text-slate-950">@lang('teacher-discussion::app.new_direct')</h3>
+                <button type="button" data-discussion-modal-close="discussion-direct-modal" class="grid h-9 w-9 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-50 hover:text-slate-600">
+                    <x-heroicon-o-x-mark class="h-5 w-5" />
+                </button>
+            </div>
+
+            <div class="px-6 py-5">
+                <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-discussion::app.select_contact')</label>
+                <div class="max-h-72 space-y-1 overflow-y-auto rounded-xl border border-slate-100 p-2">
+                    @forelse($candidateUsers as $candidate)
+                        <label class="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition hover:bg-slate-50">
+                            <input type="radio" name="user_id" value="{{ $candidate->id }}" class="h-4 w-4 border-slate-300 text-green-600 focus:ring-green-500">
+                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-black text-slate-600">{{ mb_strtoupper(mb_substr($candidate->name, 0, 1)) }}</span>
+                            <span class="min-w-0">
+                                <span class="block truncate text-sm font-black text-slate-800">{{ $candidate->name }}</span>
+                                <span class="block truncate text-[11px] font-bold text-slate-400">{{ $candidate->email }}</span>
+                            </span>
+                        </label>
+                    @empty
+                        <p class="rounded-lg bg-slate-50 p-3 text-center text-xs font-bold text-slate-400">@lang('teacher-discussion::app.no_candidates')</p>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 border-t border-slate-100 px-6 py-4">
+                <button type="button" data-discussion-modal-close="discussion-direct-modal" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black text-slate-600 transition hover:bg-slate-50">@lang('teacher-discussion::app.cancel')</button>
+                <button type="submit" class="rounded-xl bg-green-600 px-4 py-2.5 text-xs font-black text-white shadow-sm transition hover:bg-green-500">@lang('teacher-discussion::app.start_chat_btn')</button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
