@@ -30,14 +30,17 @@ class TeacherDiscussionController extends Controller
         $messages = $selectedThread ? $this->service->messages($selectedThread) : collect();
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
         $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();
+        $candidateUsers = $this->service->candidateUsers($teacher);
 
         $routes = [
             'index' => 'teacher.discussions.index',
             'store' => 'teacher.discussions.messages.store',
             'attachment' => 'teacher.discussions.attachments.show',
+            'groups' => 'teacher.discussions.groups.store',
+            'direct' => 'teacher.discussions.direct.store',
         ];
 
-        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'routes'));
+        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'candidateUsers', 'routes'));
     }
 
     public function store(StoreDiscussionMessageRequest $request, DiscussionThread $thread): RedirectResponse
@@ -100,6 +103,27 @@ class TeacherDiscussionController extends Controller
         return redirect()
             ->route('teacher.discussions.index', ['thread' => $thread->id])
             ->with('success', __('teacher-discussion::app.group_created'));
+    }
+
+    /**
+     * Bắt đầu hội thoại 1-1 với một người dùng khác.
+     */
+    public function findOrCreateDirect(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+        ]);
+
+        /** @var User $user */
+        $user = Auth::user();
+        $other = User::findOrFail($request->integer('user_id'));
+
+        abort_if((int) $other->getAuthIdentifier() === (int) $user->getAuthIdentifier(), 422);
+
+        $thread = $this->service->findOrCreateDirect($user, $other);
+
+        return redirect()
+            ->route('teacher.discussions.index', ['thread' => $thread->id]);
     }
 
     /**

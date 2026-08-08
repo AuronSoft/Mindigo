@@ -31,6 +31,7 @@ return [
     'message_placeholder' => 'Nhập tin nhắn...',
     'send' => 'Gửi',
     'sent' => 'Đã gửi tin nhắn.',
+    'group_created' => 'Đã tạo nhóm mới.',
     'attach_files' => 'Đính kèm tệp',
     'voice_input' => 'Nhập bằng giọng nói',
 

@@ -31,6 +31,7 @@ return [
     'message_placeholder' => 'Type a message...',
     'send' => 'Send',
     'sent' => 'Message sent.',
+    'group_created' => 'Group created.',
     'attach_files' => 'Attach files',
     'voice_input' => 'Voice input',
 

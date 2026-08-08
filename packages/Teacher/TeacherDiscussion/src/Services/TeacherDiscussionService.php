@@ -300,4 +300,43 @@ class TeacherDiscussionService
             ->get()
             ->sum(fn (DiscussionThread $thread) => $thread->unreadCountFor((int) $user->getAuthIdentifier()));
     }
+
+    /**
+     * Danh sách người dùng có thể mời vào hội thoại (tuỳ theo vai trò).
+     */
+    public function candidateUsers(User $user): Collection
+    {
+        $me = (int) $user->getAuthIdentifier();
+
+        $query = User::query()
+            ->whereKeyNot($me)
+            ->where('is_active', true)
+            ->select('id', 'name', 'email', 'role', 'avatar');
+
+        // Admin thấy tất cả; teacher thấy học sinh; student thấy giáo viên + học sinh cùng lớp.
+        if ($user->isAdmin()) {
+            return $query->orderBy('name')->get();
+        }
+
+        if ($user->isTeacher()) {
+            return $query->where('role', 'student')->orderBy('name')->get();
+        }
+
+        $peerIds = Classroom::query()
+            ->whereHas('students', fn ($query) => $query
+                ->where('student_id', $me)
+                ->where('classroom_students.status', 'active'))
+            ->get()
+            ->flatMap(fn (Classroom $classroom) => $classroom->students()
+                ->where('classroom_students.status', 'active')
+                ->whereKeyNot($me)
+                ->pluck('id'));
+
+        return $query
+            ->where(function (Builder $query) use ($peerIds) {
+                $query->where('role', 'teacher')->orWhereIn('id', $peerIds);
+            })
+            ->orderBy('name')
+            ->get();
+    }
 }
