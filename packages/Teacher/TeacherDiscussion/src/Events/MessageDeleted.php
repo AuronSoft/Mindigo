@@ -24,6 +24,11 @@ class MessageDeleted implements ShouldBroadcast
         return 'message.deleted';
     }
 
+    public function broadcastQueue(): string
+    {
+        return 'broadcasts';
+    }
+
     public function broadcastWith(): array
     {
         return [

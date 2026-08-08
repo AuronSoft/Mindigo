@@ -334,19 +334,31 @@
                     const body = textarea.value.trim();
                     if (!body || !updateUrl) return finish();
                     const url = updateUrl.replace('__MESSAGE_ID__', btn.dataset.msgId);
+                    save.disabled = true;
                     fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '', 'X-HTTP-METHOD-OVERRIDE': 'PATCH', 'Accept': 'application/json' },
                         body: JSON.stringify({ body: body }),
                     }).then(function (res) {
-                        if (!res.ok) { finish(); return; }
-                        const p = document.createElement('p');
-                        p.className = 'whitespace-pre-line wrap-break-word text-sm font-semibold leading-6';
-                        p.textContent = body;
-                        bodyWrap.innerHTML = '';
-                        bodyWrap.appendChild(p);
-                        row.dataset.messageText = body.toLowerCase();
-                    }).catch(finish);
+                        return res.json().then(function (data) {
+                            if (!res.ok) throw new Error((data && data.message) || 'Error');
+                            const p = document.createElement('p');
+                            p.className = 'whitespace-pre-line wrap-break-word text-sm font-semibold leading-6';
+                            p.textContent = data.body || body;
+                            bodyWrap.innerHTML = '';
+                            bodyWrap.appendChild(p);
+                            row.dataset.messageText = (data.body || body).toLowerCase();
+                        });
+                    }).catch(function (e) {
+                        finish();
+                        if (typeof window.MindigoToast === 'function') {
+                            window.MindigoToast(e && e.message ? e.message : '@lang('teacher-discussion::app.error_occurred')', 'error', 4000);
+                        } else {
+                            window.alert(e && e.message ? e.message : '@lang('teacher-discussion::app.error_occurred')');
+                        }
+                    }).finally(function () {
+                        save.disabled = false;
+                    });
                 });
             });
         });
@@ -355,8 +367,50 @@
         document.querySelectorAll('[data-discussion-delete]').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
-                if (!window.confirm('@lang('teacher-discussion::app.delete_message_confirmation')')) return;
-                btn.closest('[data-discussion-delete-form]')?.submit();
+                const deleteForm = btn.closest('[data-discussion-delete-form]');
+                const mode = deleteForm ? deleteForm.dataset.deleteMode : 'recall';
+                const isSelf = mode === 'self';
+                const options = {
+                    title: '@lang('teacher-discussion::app.delete_message')',
+                    message: isSelf
+                        ? '@lang('teacher-discussion::app.delete_for_me_confirmation')'
+                        : '@lang('teacher-discussion::app.delete_message_confirmation')',
+                    confirmText: '@lang('teacher-discussion::app.delete')',
+                    cancelText: '@lang('teacher-discussion::app.cancel')',
+                    type: 'error',
+                };
+                if (typeof window.MindigoConfirm !== 'function') {
+                    if (!window.confirm(options.message)) return;
+                    proceedDelete();
+                    return;
+                }
+                window.MindigoConfirm(options).then(function (confirmed) {
+                    if (!confirmed) return;
+                    proceedDelete();
+                });
+                function proceedDelete() {
+                    const row = btn.closest('[data-discussion-message-row]');
+                    const url = deleteForm ? deleteForm.action : null;
+                    if (!url) { deleteForm?.submit(); return; }
+                    fetch(url, {
+                        method: 'DELETE',
+                        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '', 'Accept': 'application/json' },
+                    }).then(function (res) {
+                        return res.json().then(function (data) {
+                            if (!res.ok) throw new Error((data && data.message) || 'Error');
+                            if (row) row.remove();
+                            if (typeof window.MindigoToast === 'function') {
+                                window.MindigoToast(isSelf ? '@lang('teacher-discussion::app.message_deleted_for_me')' : '@lang('teacher-discussion::app.message_withdrawn')', 'success', 2200);
+                            }
+                        });
+                    }).catch(function (err) {
+                        if (typeof window.MindigoToast === 'function') {
+                            window.MindigoToast(err && err.message ? err.message : '@lang('teacher-discussion::app.error_occurred')', 'error', 4000);
+                        } else {
+                            deleteForm?.submit();
+                        }
+                    });
+                }
             });
         });
 
@@ -367,13 +421,23 @@
             if (!container) return;
             container.innerHTML = '';
             if (reactions && reactions.length) {
+                container.classList.remove('hidden');
+                container.classList.add('flex');
                 reactions.forEach(function (r) {
                     const chip = document.createElement('button');
                     chip.type = 'button';
+                    chip.setAttribute('data-discussion-react', '');
+                    chip.setAttribute('data-emoji', r.emoji);
                     chip.className = 'flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-700 shadow-sm transition hover:border-green-300';
                     chip.innerHTML = '<span>' + r.emoji + '</span><span>' + r.count + '</span>';
+                    chip.addEventListener('click', function () {
+                        submitReaction(row.dataset.msgId, r.emoji);
+                    });
                     container.appendChild(chip);
                 });
+            } else {
+                container.classList.add('hidden');
+                container.classList.remove('flex');
             }
         };
         const submitReaction = function (messageId, emoji) {
@@ -383,10 +447,18 @@
             body.append('emoji', emoji);
             fetch(url, {
                 method: 'POST',
-                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' },
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '', 'Accept': 'application/json' },
                 body: body,
+            }).then(function (res) {
+                return res.json().then(function (data) {
+                    if (!res.ok) throw new Error((data && data.message) || 'Error');
+                    const row = pane.querySelector('[data-msg-id="' + (data.message_id || messageId) + '"]');
+                    if (row) renderReactions(row, data.reactions || []);
+                });
             }).catch(function () {});
         };
+        window.submitDiscussionReaction = submitReaction;
+        window.renderDiscussionReactions = renderReactions;
         document.querySelectorAll('[data-discussion-react]').forEach(function (chip) {
             chip.addEventListener('click', function () {
                 submitReaction(chip.closest('[data-discussion-message-row]')?.dataset.msgId, chip.dataset.emoji);
@@ -731,12 +803,16 @@
                 .listen('.message.reacted', function (event) {
                     const row = pane.querySelector('[data-msg-id="' + event.message_id + '"]');
                     if (!row) return;
+                    if (typeof window.renderDiscussionReactions === 'function') {
+                        window.renderDiscussionReactions(row, event.reactions || []);
+                        return;
+                    }
                     const container = row.querySelector('[data-reactions-display]');
                     if (!container) return;
-                    container.classList.remove('hidden');
-                    container.classList.add('flex');
                     container.innerHTML = '';
                     if (event.reactions && event.reactions.length) {
+                        container.classList.remove('hidden');
+                        container.classList.add('flex');
                         event.reactions.forEach(function (r) {
                             const chip = document.createElement('button');
                             chip.type = 'button';
@@ -744,6 +820,9 @@
                             chip.innerHTML = '<span>' + r.emoji + '</span><span>' + r.count + '</span>';
                             container.appendChild(chip);
                         });
+                    } else {
+                        container.classList.add('hidden');
+                        container.classList.remove('flex');
                     }
                 })
                 .listen('.message.typing', function (event) {

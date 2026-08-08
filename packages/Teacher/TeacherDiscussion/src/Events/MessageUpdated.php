@@ -25,6 +25,11 @@ class MessageUpdated implements ShouldBroadcast
         return 'message.updated';
     }
 
+    public function broadcastQueue(): string
+    {
+        return 'broadcasts';
+    }
+
     public function broadcastWith(): array
     {
         return [

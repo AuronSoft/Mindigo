@@ -34,7 +34,7 @@ class DiscussionController extends Controller
             $this->service->markAsRead($selectedThread, $student);
         }
         $threads = $this->service->threadsFor($student);
-        $messages = $selectedThread ? $this->service->messages($selectedThread) : collect();
+        $messages = $selectedThread ? $this->service->messages($selectedThread, null, 60, (int) $student->getAuthIdentifier()) : collect();
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
         $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();
         $pinnedMessages = $selectedThread ? $this->service->pinnedMessages($selectedThread) : collect();
@@ -44,7 +44,7 @@ class DiscussionController extends Controller
         $canManage = $selectedThread ? $this->service->canManageThread($selectedThread, $student) : false;
         $isOwner = $selectedThread ? $this->service->participantRole($selectedThread, (int) $student->getAuthIdentifier()) === DiscussionParticipant::ROLE_OWNER : false;
         $ownerUserIds = $selectedThread ? $this->service->ownerUserIds($selectedThread) : collect();
-        $hasOlderMessages = $selectedThread && $messages->isNotEmpty() ? $this->service->hasOlderMessages($selectedThread, $messages->first()?->id) : false;
+        $hasOlderMessages = $selectedThread && $messages->isNotEmpty() ? $this->service->hasOlderMessages($selectedThread, $messages->first()?->id, (int) $student->getAuthIdentifier()) : false;
 
         $routes = [
             'index' => 'student.discussions.index',
@@ -204,7 +204,7 @@ class DiscussionController extends Controller
         return back()->with('success', __('teacher-discussion::app.member_removed'));
     }
 
-    public function updateMessage(Request $request, DiscussionThread $thread, DiscussionMessage $message): RedirectResponse
+    public function updateMessage(Request $request, DiscussionThread $thread, DiscussionMessage $message)
     {
         $this->authorizeThread($thread);
 
@@ -214,21 +214,33 @@ class DiscussionController extends Controller
 
         $this->service->updateMessage($thread, $message, $request->user(), $request->input('body'));
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'id' => $message->id,
+                'body' => $message->body,
+                'edited_at' => $message->edited_at?->toIso8601String(),
+            ]);
+        }
+
         return back()->with('success', __('teacher-discussion::app.message_updated'));
     }
 
-    public function deleteMessage(DiscussionThread $thread, DiscussionMessage $message): RedirectResponse
+    public function deleteMessage(Request $request, DiscussionThread $thread, DiscussionMessage $message)
     {
         $this->authorizeThread($thread);
 
         /** @var User $user */
         $user = Auth::user();
-        $this->service->deleteMessage($thread, $message, $user);
+        $mode = $this->service->deleteMessage($thread, $message, $user);
+
+        if ($request->wantsJson()) {
+            return response()->json(['id' => $message->id, 'deleted' => true, 'mode' => $mode]);
+        }
 
         return back()->with('success', __('teacher-discussion::app.message_deleted'));
     }
 
-    public function reactToMessage(Request $request, DiscussionThread $thread, DiscussionMessage $message): RedirectResponse
+    public function reactToMessage(Request $request, DiscussionThread $thread, DiscussionMessage $message)
     {
         $this->authorizeThread($thread);
 
@@ -237,6 +249,19 @@ class DiscussionController extends Controller
         ]);
 
         $this->service->reactToMessage($thread, $message, $request->user(), $request->input('emoji'));
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message_id' => $message->id,
+                'reactions' => $message->reactions()->with('user:id,name')->get()->groupBy('emoji')
+                    ->map(fn ($items, $emoji) => [
+                        'emoji' => $emoji,
+                        'count' => $items->count(),
+                    ])
+                    ->values()
+                    ->all(),
+            ]);
+        }
 
         return back();
     }
@@ -261,7 +286,8 @@ class DiscussionController extends Controller
             return response()->json(['messages' => [], 'has_more' => false]);
         }
 
-        $messages = $this->service->olderMessages($thread, $beforeId);
+        $viewerId = (int) Auth::user()->getAuthIdentifier();
+        $messages = $this->service->olderMessages($thread, $beforeId, 40, $viewerId);
         $oldestId = $messages->first()?->id;
 
         return response()->json([
@@ -287,7 +313,7 @@ class DiscussionController extends Controller
                 ] : null,
                 'reactions' => $message->reactionSummary(),
             ])->values()->all(),
-            'has_more' => $this->service->hasOlderMessages($thread, $oldestId),
+            'has_more' => $this->service->hasOlderMessages($thread, $oldestId, $viewerId),
         ]);
     }
 

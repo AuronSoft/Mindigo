@@ -14,6 +14,7 @@ use Mindigo\TeacherDiscussion\Events\MessageTyping;
 use Mindigo\TeacherDiscussion\Events\MessageUpdated;
 use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
 use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
+use Mindigo\TeacherDiscussion\Models\DiscussionMessageDeletion;
 use Mindigo\TeacherDiscussion\Models\DiscussionParticipant;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 
@@ -164,11 +165,12 @@ class TeacherDiscussionService
             ->pluck('user_id');
     }
 
-    public function messages(DiscussionThread $thread, ?int $beforeId = null, int $limit = 60): Collection
+    public function messages(DiscussionThread $thread, ?int $beforeId = null, int $limit = 60, ?int $viewerId = null): Collection
     {
         return $thread->messages()
             ->with($this->messageRelations())
             ->when($beforeId, fn (Builder $query) => $query->where('id', '<', $beforeId))
+            ->when($viewerId, fn (Builder $query) => $query->notDeletedFor($viewerId))
             ->latest('created_at')
             ->limit($limit)
             ->get()
@@ -179,23 +181,27 @@ class TeacherDiscussionService
     /**
      * Cho biết còn tin nhắn cũ hơn một tin cụ thể không.
      */
-    public function hasOlderMessages(DiscussionThread $thread, ?int $afterId = null): bool
+    public function hasOlderMessages(DiscussionThread $thread, ?int $afterId = null, ?int $viewerId = null): bool
     {
         if (! $afterId) {
             return false;
         }
 
-        return $thread->messages()->where('id', '<', $afterId)->exists();
+        return $thread->messages()
+            ->where('id', '<', $afterId)
+            ->when($viewerId, fn (Builder $query) => $query->notDeletedFor($viewerId))
+            ->exists();
     }
 
     /**
      * Load các tin nhắn cũ hơn một tin cụ thể (dùng cho nút "xem tin cũ hơn").
      */
-    public function olderMessages(DiscussionThread $thread, int $beforeId, int $limit = 40): Collection
+    public function olderMessages(DiscussionThread $thread, int $beforeId, int $limit = 40, ?int $viewerId = null): Collection
     {
         return $thread->messages()
             ->with($this->messageRelations())
             ->where('id', '<', $beforeId)
+            ->when($viewerId, fn (Builder $query) => $query->notDeletedFor($viewerId))
             ->latest('created_at')
             ->limit($limit)
             ->get()
@@ -212,6 +218,7 @@ class TeacherDiscussionService
             'repliesTo:id,sender_id,body',
             'repliesTo.sender:id,name',
             'reactions.user:id,name,email,role,avatar',
+            'reads:message_id,user_id,read_at',
         ];
     }
 
@@ -489,12 +496,15 @@ class TeacherDiscussionService
     }
 
     /**
-     * Cập nhật nội dung tin nhắn (chỉ người gửi).
+     * Cập nhật nội dung tin nhắn (chỉ người gửi, chỉ khi chưa ai khác đọc).
      */
     public function updateMessage(DiscussionThread $thread, DiscussionMessage $message, User $user, string $body): DiscussionMessage
     {
         abort_unless((int) $message->thread_id === (int) $thread->id, 404);
         abort_unless((int) $message->sender_id === (int) $user->getAuthIdentifier(), 403);
+
+        // Không cho sửa khi đã có người khác đọc tin nhắn.
+        abort_if($message->isReadByOthers(), 403, __('teacher-discussion::app.message_locked'));
 
         $message->forceFill([
             'body' => trim($body),
@@ -507,9 +517,14 @@ class TeacherDiscussionService
     }
 
     /**
-     * Xoá mềm tin nhắn (chỉ người gửi hoặc người quản lý hội thoại).
+     * Xoá tin nhắn theo 2 cơ chế:
+     * - Nếu chưa ai khác đọc (thu hồi)   -> xoá cho tất cả mọi người.
+     * - Nếu đã có người khác đọc          -> chỉ xoá phía người gửi (những người còn lại vẫn thấy).
+     * Người quản lý/admin luôn xoá cho tất cả.
+     *
+     * @return string 'recall' (mọi người) hoặc 'self' (chỉ người gửi)
      */
-    public function deleteMessage(DiscussionThread $thread, DiscussionMessage $message, User $user): bool
+    public function deleteMessage(DiscussionThread $thread, DiscussionMessage $message, User $user): string
     {
         abort_unless((int) $message->thread_id === (int) $thread->id, 404);
 
@@ -518,9 +533,23 @@ class TeacherDiscussionService
 
         abort_unless($isSender || $canManage, 403);
 
-        broadcast(new MessageDeleted($thread->id, $message->id));
+        // Quản lý xoá tin của người khác, hoặc người gửi chưa ai đọc -> thu hồi cho tất cả.
+        if (! $isSender || ! $message->isReadByOthers()) {
+            broadcast(new MessageDeleted($thread->id, $message->id));
 
-        return (bool) $message->delete();
+            $message->delete();
+
+            return 'recall';
+        }
+
+        // Đã có người khác đọc -> chỉ xoá phía người gửi.
+        DiscussionMessageDeletion::query()
+            ->updateOrCreate(
+                ['message_id' => $message->id, 'user_id' => $user->getAuthIdentifier()],
+                ['deleted_at' => now()]
+            );
+
+        return 'self';
     }
 
     /**
@@ -579,12 +608,38 @@ class TeacherDiscussionService
 
     /**
      * Đánh dấu hội thoại đã đọc tới hiện tại.
+     * Ghi nhận read receipt từng tin nhắn (bulk insert) để hỗ trợ cơ chế thu hồi/sửa theo "đã xem".
      */
     public function markAsRead(DiscussionThread $thread, User $user): void
     {
+        $userId = $user->getAuthIdentifier();
+
         $thread->participants()
-            ->where('user_id', $user->getAuthIdentifier())
+            ->where('user_id', $userId)
             ->update(['last_read_at' => now()]);
+
+        $this->recordReads($thread, $userId);
+    }
+
+    /**
+     * Bulk ghi read receipt cho tất cả tin nhắn của thread mà user chưa đọc
+     * (tối ưu: 1 câu INSERT chọn từ DB, tránh vòng lặp N+1 và quá tải queue).
+     */
+    public function recordReads(DiscussionThread $thread, int $userId): void
+    {
+        $sub = DB::table('teacher_discussion_messages')
+            ->select('id', DB::raw((string) $userId), DB::raw('NOW()'))
+            ->where('thread_id', $thread->id)
+            ->where('sender_id', '!=', $userId)
+            ->whereNull('deleted_at')
+            ->whereNotIn('id', function ($query) use ($userId): void {
+                $query->select('message_id')
+                    ->from('teacher_discussion_message_reads')
+                    ->where('user_id', $userId);
+            });
+
+        DB::table('teacher_discussion_message_reads')
+            ->insertUsing(['message_id', 'user_id', 'read_at'], $sub);
     }
 
     public function markAllAsRead(User $user): void
@@ -592,6 +647,21 @@ class TeacherDiscussionService
         DiscussionParticipant::query()
             ->where('user_id', $user->getAuthIdentifier())
             ->update(['last_read_at' => now()]);
+
+        $userId = $user->getAuthIdentifier();
+
+        $sub = DB::table('teacher_discussion_messages')
+            ->select('id', DB::raw((string) $userId), DB::raw('NOW()'))
+            ->where('sender_id', '!=', $userId)
+            ->whereNull('deleted_at')
+            ->whereNotIn('id', function ($query) use ($userId): void {
+                $query->select('message_id')
+                    ->from('teacher_discussion_message_reads')
+                    ->where('user_id', $userId);
+            });
+
+        DB::table('teacher_discussion_message_reads')
+            ->insertUsing(['message_id', 'user_id', 'read_at'], $sub);
     }
 
     public function unreadCountFor(User $user): int

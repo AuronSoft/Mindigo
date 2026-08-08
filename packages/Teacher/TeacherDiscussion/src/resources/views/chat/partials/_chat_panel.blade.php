@@ -143,10 +143,12 @@
                                     <x-heroicon-o-face-smile class="h-3.5 w-3.5" />
                                 </button>
                                 @if($mine)
-                                    <button type="button" data-discussion-edit data-msg-id="{{ $message->id }}" data-msg-body="{{ $message->body }}" title="@lang('teacher-discussion::app.edit_message')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-green-700">
-                                        <x-heroicon-o-pencil class="h-3.5 w-3.5" />
-                                    </button>
-                                    <form method="POST" action="{{ route($routes['messageDestroy'], [$selectedThread, $message]) }}" data-discussion-delete-form>
+                                    @if(! $message->isReadByOthers())
+                                        <button type="button" data-discussion-edit data-msg-id="{{ $message->id }}" data-msg-body="{{ $message->body }}" title="@lang('teacher-discussion::app.edit_message')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-green-700">
+                                            <x-heroicon-o-pencil class="h-3.5 w-3.5" />
+                                        </button>
+                                    @endif
+                                    <form method="POST" action="{{ route($routes['messageDestroy'], [$selectedThread, $message]) }}" data-discussion-delete-form data-delete-mode="{{ $message->isReadByOthers() ? 'self' : 'recall' }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="button" data-discussion-delete title="@lang('teacher-discussion::app.delete_message')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-red-600">

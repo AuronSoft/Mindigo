@@ -29,6 +29,11 @@ class MessageReacted implements ShouldBroadcast
         return 'message.reacted';
     }
 
+    public function broadcastQueue(): string
+    {
+        return 'broadcasts';
+    }
+
     public function broadcastWith(): array
     {
         return [
