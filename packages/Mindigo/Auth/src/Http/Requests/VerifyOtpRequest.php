@@ -22,8 +22,8 @@ class VerifyOtpRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'otp.required' => 'Vui lòng nhập mã OTP.',
-            'otp.size' => 'Mã OTP gồm 6 chữ số.',
+            'otp.required' => __('Mindigo-auth::app.validation.otp.required'),
+            'otp.size' => __('Mindigo-auth::app.validation.otp.size'),
         ];
     }
 }

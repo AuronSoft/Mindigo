@@ -3,6 +3,7 @@
 return [
     'title' => 'Ngân hàng câu hỏi ',
     'subtitle' => 'Soạn và quản lý ngân hàng câu hỏi cá nhân.',
+    'teaching_question' => 'Nội dung giảng dạy',
     'create' => 'Thêm câu hỏi',
     'edit' => 'Chỉnh sửa',
     'back' => 'Quay lại',

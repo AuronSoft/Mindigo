@@ -18,3 +18,25 @@
         @apply bg-green-50 text-green-700;
     }
 }
+
+@layer utilities {
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+@media screen {
+    .sidebar .min-h-0,
+    #dashboard-notification-menu .max-h-80 {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .sidebar .min-h-0::-webkit-scrollbar,
+    #dashboard-notification-menu .max-h-80::-webkit-scrollbar {
+        display: none;
+    }
+}

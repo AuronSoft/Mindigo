@@ -3,6 +3,7 @@
 return [
     'title' => 'Học trực tuyến',
     'subtitle' => 'Quản lý các buổi học trực tuyến của bạn',
+    'teaching_live' => 'Nội dung giảng dạy',
     'create' => 'Tạo buổi học',
     'edit' => 'Sửa buổi học',
     'cancel' => 'Huỷ',

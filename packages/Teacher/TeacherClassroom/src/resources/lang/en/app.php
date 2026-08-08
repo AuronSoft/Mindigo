@@ -3,6 +3,7 @@
 return [
     'title' => 'My Classrooms',
     'subtitle' => 'Manage your classrooms, student rosters and assigned subjects.',
+    'teaching_classroom' => 'Teaching content',
     'create' => 'Create classroom',
     'edit' => 'Edit classroom',
     'back' => 'Back',

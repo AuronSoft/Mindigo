@@ -3,6 +3,7 @@
 return [
     'title' => 'Announcements',
     'subtitle' => 'Send announcements to your classroom students.',
+    'teaching_announcement' => 'Teaching content',
     'create' => 'New announcement',
     'edit' => 'Edit',
     'back' => 'Back',

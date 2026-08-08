@@ -3,6 +3,7 @@
 return [
     'title' => 'My Questions',
     'subtitle' => 'Write and manage your personal question bank.',
+    'teaching_question' => 'Teaching content',
     'create' => 'Add question',
     'edit' => 'Edit',
     'back' => 'Back',

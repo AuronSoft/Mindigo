@@ -43,6 +43,12 @@ return [
         'incognito_highlight' => 'chế độ ẩn danh',
         'incognito_suffix' => 'để bảo vệ tài khoản.',
 
+        'magic_link_invalid' => 'Liên kết không hợp lệ hoặc đã hết hạn.',
+        'account_not_found' => 'Tài khoản không tồn tại.',
+        'otp_invalid_expired' => 'Mã OTP không hợp lệ hoặc đã hết hạn.',
+        'account_suspended' => 'Tài khoản của bạn đã bị đình chỉ. Vui lòng liên hệ quản trị viên.',
+        'no_permission' => 'Bạn không có quyền truy cập khu vực này.',
+
     ],
 
     'sso' => [
@@ -147,6 +153,7 @@ return [
             'password_min' => 'Mật khẩu tối thiểu 8 ký tự.',
             'password_not_match' => 'Mật khẩu xác nhận không khớp.',
 
+            'session_expired' => 'Phiên xác thực đã hết hạn. Vui lòng thử lại.',
             'reset_success' => 'Đặt lại mật khẩu thành công. Đang chuyển tới trang đăng nhập...',
         ],
 
@@ -168,22 +175,33 @@ return [
             'title' => 'Đăng xuất',
             'message' => 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
             'confirm_text' => 'Đăng xuất',
-            'cancel_text' => 'Huỷ',
-        ],
-    ],
-
-    'toast' => [
-        'login_success' => 'Đăng nhập thành công! Chào mừng bạn.',
-        'logout_success' => 'Đăng xuất thành công.',
-        'logging_out' => 'Đang đăng xuất...',
-    ],
-
-    'confirm' => [
-        'logout' => [
-            'title' => 'Đăng xuất',
-            'message' => 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
-            'confirm_text' => 'Đăng xuất',
             'cancel_text' => 'Hủy',
         ],
+    ],
+
+    'validation' => [
+        'email' => [
+            'required' => 'Vui lòng nhập email.',
+            'email' => 'Email không hợp lệ.',
+            'exists' => 'Không tìm thấy tài khoản với email này.',
+        ],
+        'password' => [
+            'required' => 'Vui lòng nhập mật khẩu.',
+            'min' => 'Mật khẩu tối thiểu :min ký tự.',
+            'confirmed' => 'Mật khẩu xác nhận không khớp.',
+        ],
+        'otp' => [
+            'required' => 'Vui lòng nhập mã OTP.',
+            'size' => 'Mã OTP gồm :size chữ số.',
+        ],
+        'type' => [
+            'in' => 'Loại xác thực không hợp lệ.',
+        ],
+    ],
+
+    'mail' => [
+        'magic_link_subject' => 'Liên kết đăng nhập MindigoID',
+        'otp_login_subject' => 'Mã OTP đăng nhập MindigoID — MindigoHRM',
+        'otp_forgot_password_subject' => 'Mã OTP đặt lại mật khẩu — MindigoHRM',
     ],
 ];

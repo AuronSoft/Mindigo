@@ -3,6 +3,7 @@
 return [
     'title' => 'Thông báo',
     'subtitle' => 'Gửi thông báo đến học sinh các lớp của bạn.',
+    'teaching_announcement' => 'Nội dung giảng dạy',
     'create' => 'Tạo thông báo',
     'edit' => 'Chỉnh sửa',
     'back' => 'Quay lại',

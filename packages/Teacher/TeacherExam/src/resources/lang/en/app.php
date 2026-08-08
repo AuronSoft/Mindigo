@@ -22,6 +22,7 @@ return [
     'invalid_classrooms' => 'You can only assign exams to classrooms you teach.',
     'title' => 'My Exams',
     'subtitle' => 'Create and manage your exams, track student results.',
+    'teaching_exam' => 'Teaching content',
     'create' => 'Create exam',
     'edit' => 'Edit exam',
     'back' => 'Back',

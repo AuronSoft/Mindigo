@@ -15,16 +15,17 @@
 <div class="flex min-h-screen flex-col bg-slate-50">
 
     {{-- Header --}}
-    <header class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-slate-200 bg-white/90 px-6 py-4 backdrop-blur">
-        <div>
-            <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">@lang('teacher-classroom::app.title')</p>
-            <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-classroom::app.subtitle')</h1>
+    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-6 py-4 backdrop-blur">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('teacher-classroom::app.teaching_classroom')</p>
+                <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('teacher-classroom::app.title')</h1>
+                <p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-classroom::app.subtitle')</p>
+            </div>
+            <div class="flex flex-wrap gap-2"><a href="{{ route('teacher.classrooms.create') }}" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-sm font-black text-white no-underline shadow-sm transition hover:bg-green-500">
+                <x-heroicon-o-plus class="h-4 w-4" />@lang('teacher-classroom::app.create')
+            </a></div>
         </div>
-        <a href="{{ route('teacher.classrooms.create') }}"
-           class="inline-flex h-10 items-center gap-2 rounded-full bg-green-600 px-5 text-sm font-black text-white no-underline shadow-sm shadow-green-200 transition hover:bg-green-500">
-            <x-heroicon-o-plus class="h-4 w-4" />
-            @lang('teacher-classroom::app.create')
-        </a>
     </header>
 
     <div class="flex flex-1 flex-col gap-5 p-6">

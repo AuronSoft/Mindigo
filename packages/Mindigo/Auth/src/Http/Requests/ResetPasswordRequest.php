@@ -22,9 +22,9 @@ class ResetPasswordRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.exists' => 'Không tìm thấy tài khoản với email này.',
-            'password.min' => 'Mật khẩu tối thiểu 8 ký tự.',
-            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+            'email.exists' => __('Mindigo-auth::app.validation.email.exists'),
+            'password.min' => __('Mindigo-auth::app.validation.password.min'),
+            'password.confirmed' => __('Mindigo-auth::app.validation.password.confirmed'),
         ];
     }
 }

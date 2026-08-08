@@ -32,7 +32,7 @@ class CheckRole
             RoleRedirector::clearUnsafeIntendedFor($user);
 
             return RoleRedirector::redirectFor($user)
-                ->with('warning', 'Bạn không có quyền truy cập khu vực này.');
+                ->with('warning', __('Mindigo-auth::app.auth.no_permission'));
         }
 
         return $next($request);

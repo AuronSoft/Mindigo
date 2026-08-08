@@ -22,9 +22,9 @@ class MindigoIdRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Email không hợp lệ.',
-            'type.in' => 'Loại xác thực không hợp lệ.',
+            'email.required' => __('Mindigo-auth::app.validation.email.required'),
+            'email.email' => __('Mindigo-auth::app.validation.email.email'),
+            'type.in' => __('Mindigo-auth::app.validation.type.in'),
         ];
     }
 }

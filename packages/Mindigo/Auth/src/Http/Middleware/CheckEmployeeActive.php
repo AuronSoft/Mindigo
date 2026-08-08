@@ -17,7 +17,7 @@ class CheckEmployeeActive
 
             return redirect()
                 ->route('login')
-                ->withErrors(['email' => 'Tài khoản của bạn đã bị đình chỉ. Vui lòng liên hệ quản trị viên.']);
+                ->withErrors(['email' => __('Mindigo-auth::app.auth.account_suspended')]);
         }
 
         return $next($request);
