@@ -28,8 +28,11 @@ class DiscussionController extends Controller
         $student = Auth::user();
         $this->service->ensureClassThreads($student);
 
-        $threads = $this->service->threadsFor($student);
         $selectedThread = $this->service->selectedThreadFor($student, $request->integer('thread') ?: null);
+        if ($selectedThread) {
+            $this->service->markAsRead($selectedThread, $student);
+        }
+        $threads = $this->service->threadsFor($student);
         $messages = $selectedThread ? $this->service->messages($selectedThread) : collect();
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
         $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();

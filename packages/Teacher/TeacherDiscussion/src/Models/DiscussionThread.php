@@ -81,9 +81,13 @@ class DiscussionThread extends Model
 
     public function unreadCountFor(int $userId): int
     {
+        if (isset($this->attributes['unread_messages_count'])) {
+            return (int) $this->attributes['unread_messages_count'];
+        }
+
         $lastRead = $this->lastReadFor($userId);
 
-        return $this->messages_count ?? $this->messages()
+        return $this->messages()
             ->when($lastRead, fn ($query) => $query->where('created_at', '>', $lastRead))
             ->where('sender_id', '!=', $userId)
             ->count();
