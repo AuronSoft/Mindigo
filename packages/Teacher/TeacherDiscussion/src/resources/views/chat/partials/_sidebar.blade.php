@@ -47,9 +47,9 @@
             </div>
 
             <div data-discussion-more-menu class="absolute right-3 top-10 z-30 hidden w-56 overflow-hidden rounded-xl border border-slate-200 bg-white py-2 shadow-xl">
-                <button type="button" data-discussion-mark-all-read-open class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-bold text-slate-700 transition hover:bg-slate-50">
-                    <x-heroicon-o-envelope-open class="h-5 w-5 text-slate-500" />
-                    @lang('teacher-discussion::app.mark_all_read')
+                <button type="button" data-discussion-mark-all-read-open class="flex w-full items-center gap-3 whitespace-nowrap px-4 py-2.5 text-left text-sm font-bold text-slate-700 transition hover:bg-slate-50">
+                    <x-heroicon-o-envelope-open class="h-5 w-5 shrink-0 text-slate-500" />
+                    <span class="shrink-0">@lang('teacher-discussion::app.mark_all_read')</span>
                 </button>
             </div>
         </div>

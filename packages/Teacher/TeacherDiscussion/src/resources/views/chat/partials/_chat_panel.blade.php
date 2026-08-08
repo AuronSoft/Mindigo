@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <div class="min-h-0 flex-1 overflow-y-auto bg-slate-50 px-5 py-5" data-discussion-messages data-thread-id="{{ $selectedThread->id }}">
+        <div class="min-h-0 flex-1 overflow-y-auto bg-slate-50 px-5 py-5" data-discussion-messages data-thread-id="{{ $selectedThread->id }}" data-attachment-url="{{ route($routes['attachment'], ['attachment' => '__ATTACHMENT_ID__']) }}">
             <div class="mx-auto flex max-w-3xl flex-col space-y-4">
                 @forelse($messages as $message)
                     @php

@@ -55,7 +55,6 @@
 
     $imageAttachments = $attachments->filter(fn ($a) => $a->isImage())->values();
     $fileAttachments = $attachments->reject(fn ($a) => $a->isImage())->values();
-    $pinnedMessages = $messages->where('is_pinned', true)->sortByDesc('pinned_at')->values();
 @endphp
 
 <div class="h-screen overflow-hidden bg-slate-50">

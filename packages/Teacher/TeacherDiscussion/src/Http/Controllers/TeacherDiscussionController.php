@@ -36,8 +36,11 @@ class TeacherDiscussionController extends Controller
         $messages = $selectedThread ? $this->service->messages($selectedThread) : collect();
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
         $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();
+        $pinnedMessages = $selectedThread ? $this->service->pinnedMessages($selectedThread) : collect();
         $currentPreference = $selectedThread ? $this->service->preferenceFor($selectedThread, $teacher) : null;
         $candidateUsers = $this->service->candidateUsers($teacher);
+        $canManage = $selectedThread ? $this->service->canManageThread($selectedThread, $teacher) : false;
+        $ownerUserIds = $selectedThread ? $this->service->ownerUserIds($selectedThread) : collect();
 
         $routes = [
             'index' => 'teacher.discussions.index',
@@ -48,9 +51,11 @@ class TeacherDiscussionController extends Controller
             'preferences' => 'teacher.discussions.preferences.update',
             'messagePin' => 'teacher.discussions.messages.pin',
             'markAllRead' => 'teacher.discussions.mark-all-read',
+            'membersStore' => 'teacher.discussions.members.store',
+            'membersDestroy' => 'teacher.discussions.members.destroy',
         ];
 
-        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'currentPreference', 'candidateUsers', 'routes'));
+        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'pinnedMessages', 'currentPreference', 'candidateUsers', 'canManage', 'ownerUserIds', 'routes'));
     }
 
     public function store(StoreDiscussionMessageRequest $request, DiscussionThread $thread): RedirectResponse
@@ -142,6 +147,7 @@ class TeacherDiscussionController extends Controller
     public function addMember(Request $request, DiscussionThread $thread): RedirectResponse
     {
         $this->authorizeThread($thread);
+        $this->authorizeManage($thread);
 
         $request->validate([
             'member_ids' => ['required', 'array', 'min:1'],
@@ -159,6 +165,7 @@ class TeacherDiscussionController extends Controller
     public function removeMember(DiscussionThread $thread, int $user): RedirectResponse
     {
         $this->authorizeThread($thread);
+        $this->authorizeManage($thread);
 
         $this->service->removeParticipant($thread, $user);
 
@@ -213,5 +220,13 @@ class TeacherDiscussionController extends Controller
         $user = Auth::user();
 
         abort_unless($user instanceof User && $this->service->canAccess($thread, $user), 403);
+    }
+
+    private function authorizeManage(DiscussionThread $thread): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        abort_unless($user instanceof User && $this->service->canManageThread($thread, $user), 403);
     }
 }
