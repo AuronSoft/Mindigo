@@ -146,8 +146,8 @@
     </header>
 
     @auth
-        <div x-show="shareOpen" x-cloak class="fixed inset-0 z-70 flex items-center justify-center bg-slate-950/55 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="exam-tip-share-title">
-            <div class="w-full max-w-xl overflow-hidden rounded-2xl bg-white shadow-2xl" @click.outside="shareOpen = false">
+        <div x-show="shareOpen" x-cloak class="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-slate-950/55 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="exam-tip-share-title">
+            <div class="my-auto w-full max-w-xl overflow-hidden rounded-2xl bg-white shadow-2xl" @click.outside="shareOpen = false">
                 <div class="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
                     <div>
                         <p class="text-xs font-black uppercase tracking-[0.2em] text-green-600">@lang('core::exam_tips.share_modal.eyebrow')</p>
@@ -158,7 +158,7 @@
                     </button>
                 </div>
 
-                <form method="POST" action="{{ route('exam-tips.store', [], false) }}" class="space-y-4 px-5 py-5">
+                <form method="POST" action="{{ route('exam-tips.store', [], false) }}" class="max-h-[calc(100vh-9rem)] space-y-4 overflow-y-auto px-5 py-5">
                     @csrf
                     <label class="block">
                         <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">@lang('core::exam_tips.share_modal.post_title')</span>
@@ -369,16 +369,18 @@
                 </div>
             </div>
 
-            <aside class="space-y-6">
-                <div class="rounded-2xl bg-linear-to-br from-green-500 to-green-700 p-5 text-white">
-                    <h3 class="mb-1 text-lg font-black">@lang('core::exam_tips.sidebar.cta_title')</h3>
-                    <p class="mb-4 text-sm font-semibold leading-6 text-white/75">@lang('core::exam_tips.sidebar.cta_text')</p>
+            <aside class="space-y-6 pb-8">
+                <div class="overflow-hidden rounded-2xl border border-green-100 bg-white p-5 shadow-sm">
+                    <div class="mb-4 rounded-2xl bg-green-50 px-4 py-3">
+                        <h3 class="mb-1 text-lg font-black text-green-800">@lang('core::exam_tips.sidebar.cta_title')</h3>
+                        <p class="text-sm font-semibold leading-6 text-green-700/80">@lang('core::exam_tips.sidebar.cta_text')</p>
+                    </div>
                     @auth
-                        <button type="button" data-exam-tip-share-action @click="shareOpen = true; shared = false" class="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-black text-green-700 no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-50 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                        <button type="button" data-exam-tip-share-action @click="shareOpen = true; shared = false" class="flex w-full items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-3 text-sm font-black text-white no-underline shadow-sm transition hover:bg-green-600">
                             @lang('core::exam_tips.sidebar.cta_button')
                         </button>
                     @else
-                        <a href="{{ $examTipLoginReturnUrl }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-black text-green-700 no-underline shadow-[0_4px_0_#15803d] transition-all hover:translate-y-0.5 hover:bg-green-50 hover:shadow-[0_2px_0_#15803d] active:translate-y-1 active:shadow-none">
+                        <a href="{{ $examTipLoginReturnUrl }}" data-exam-tip-share-login title="@lang('core::exam_tips.actions.login_to_share')" class="flex w-full items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-3 text-sm font-black text-white no-underline shadow-sm transition hover:bg-green-600">
                             @lang('core::exam_tips.sidebar.cta_button')
                         </a>
                     @endauth

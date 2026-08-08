@@ -177,6 +177,16 @@ class HomepageTest extends TestCase
     }
 
     /**
+     * Footer tutor policy points to tutor policy route
+     */
+    public function test_footer_tutor_policy_points_to_tutor_policy_route(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('href="/tutor-policy"', false);
+    }
+
+    /**
      * Terms page accessible
      */
     public function test_terms_page_is_accessible(): void
@@ -294,6 +304,28 @@ class HomepageTest extends TestCase
             ->assertSee('Refund Policy', false)
             ->assertSee('Refund-eligible Cases', false)
             ->assertSee('Table of Contents', false);
+    }
+
+    /**
+     * Tutor policy page accessible
+     */
+    public function test_tutor_policy_page_is_accessible(): void
+    {
+        $this->get('/tutor-policy')
+            ->assertOk()
+            ->assertSee('Chính sách Gia sư', false)
+            ->assertSee('support@mindigo.vn', false);
+    }
+
+    /**
+     * Tutor policy page follows selected locale
+     */
+    public function test_tutor_policy_page_follows_selected_locale(): void
+    {
+        $this->withSession(['locale' => 'en'])->get('/tutor-policy')
+            ->assertOk()
+            ->assertSee('Tutor &amp; Teacher Policy', false)
+            ->assertSee('Policy contents', false);
     }
 
     /**

@@ -1,7 +1,7 @@
 @extends('core::layouts.home')
 
 @php
-    $policy = __('core::refund_policy');
+    $policy ??= __('core::refund_policy');
 @endphp
 
 @section('content')

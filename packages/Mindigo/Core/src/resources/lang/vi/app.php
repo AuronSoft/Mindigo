@@ -69,6 +69,7 @@ return [
     'navbar' => [
         'features' => 'Tính năng',
         'explore' => 'Khám phá khóa học',
+        'become_teacher' => 'Ứng tuyển gia sư',
         'exam_prep' => 'Luyện thi THPT',
         'classroom' => 'Quản lý lớp học',
         'pricing' => 'Bảng giá',
@@ -362,6 +363,7 @@ return [
         'legal_3' => 'Điều khoản hỗ trợ kỹ thuật',
         'legal_4' => 'Chính sách sử dụng "Trợ lý AI"',
         'legal_5' => 'Chính sách hoàn tiền',
+        'legal_6' => 'Chính sách gia sư',
         'copyright' => 'Powered by Auralis Education Auralis',
         'built_with' => 'Được xây dựng với ❤️ tại Việt Nam',
     ],

@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('courses.show', $course->slug) }}" target="_blank" class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline hover:bg-slate-50"><x-heroicon-o-eye class="h-4 w-4" />@lang('teacher-course::publishing.preview')</a>
+            <a href="{{ route('courses.show', ['course' => $course->slug, 'from' => 'teacher']) }}" target="_blank" class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline hover:bg-slate-50"><x-heroicon-o-eye class="h-4 w-4" />@lang('teacher-course::publishing.preview')</a>
             <a href="{{ route('teacher.courses.monitor', $course) }}" class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline hover:bg-slate-50"><x-heroicon-o-chart-bar class="h-4 w-4" />@lang('teacher-course::publishing.monitor')</a>
             <form method="POST" action="{{ route('teacher.courses.duplicate', $course) }}">@csrf<button class="inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 hover:bg-slate-50"><x-heroicon-o-document-duplicate class="h-4 w-4" />@lang('teacher-course::publishing.duplicate')</button></form>
             <a href="{{ route('teacher.courses.edit', $course) }}"
