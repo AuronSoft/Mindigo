@@ -61,9 +61,29 @@ class DiscussionThread extends Model
         return $this->hasMany(DiscussionParticipant::class, 'thread_id');
     }
 
-    public function activeParticipants(): HasMany
+    public function participantFor(int $userId): ?DiscussionParticipant
     {
-        return $this->hasMany(DiscussionParticipant::class, 'thread_id');
+        return $this->participants->firstWhere('user_id', $userId);
+    }
+
+    public function isParticipant(int $userId): bool
+    {
+        return $this->participants->contains('user_id', $userId);
+    }
+
+    public function lastReadFor(int $userId): ?\Illuminate\Support\Carbon
+    {
+        return $this->participantFor($userId)?->last_read_at;
+    }
+
+    public function unreadCountFor(int $userId): int
+    {
+        $lastRead = $this->lastReadFor($userId);
+
+        return $this->messages_count ?? $this->messages()
+            ->when($lastRead, fn ($query) => $query->where('created_at', '>', $lastRead))
+            ->where('sender_id', '!=', $userId)
+            ->count();
     }
 
     public function messages(): HasMany

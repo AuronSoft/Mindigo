@@ -33,4 +33,7 @@ return [
     'no_members' => 'Chưa có thành viên',
     'shared_files' => 'Ảnh, file và tài liệu',
     'no_shared_files' => 'Ảnh, file và tài liệu đã chia sẻ sẽ hiển thị tại đây khi bật gửi tệp.',
+    'group_created' => 'Đã tạo nhóm mới.',
+    'member_added' => 'Đã thêm thành viên.',
+    'member_removed' => 'Đã xoá thành viên.',
 ];

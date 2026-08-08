@@ -33,4 +33,7 @@ return [
     'no_members' => 'No members yet',
     'shared_files' => 'Photos, files and documents',
     'no_shared_files' => 'Shared photos, files and documents will appear here when attachments are enabled.',
+    'group_created' => 'Group created.',
+    'member_added' => 'Member added.',
+    'member_removed' => 'Member removed.',
 ];
