@@ -57,4 +57,11 @@ return [
     'cancel' => 'Huỷ',
     'create_group_btn' => 'Tạo nhóm',
     'start_chat_btn' => 'Bắt đầu chat',
+    'new_group_desc' => 'Tạo nhóm và mời thành viên',
+    'new_direct_desc' => 'Bắt đầu trò chuyện riêng tư',
+    'search_members' => 'Tìm thành viên...',
+    'search_contacts' => 'Tìm liên hệ...',
+    'selected' => 'đã chọn',
+    'role_teacher' => 'Giáo viên',
+    'role_admin' => 'Quản trị viên',
 ];

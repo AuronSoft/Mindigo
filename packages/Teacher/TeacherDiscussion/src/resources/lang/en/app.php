@@ -57,4 +57,11 @@ return [
     'cancel' => 'Cancel',
     'create_group_btn' => 'Create group',
     'start_chat_btn' => 'Start chat',
+    'new_group_desc' => 'Create a group and invite members',
+    'new_direct_desc' => 'Start a private conversation',
+    'search_members' => 'Search members...',
+    'search_contacts' => 'Search contacts...',
+    'selected' => 'selected',
+    'role_teacher' => 'Teacher',
+    'role_admin' => 'Admin',
 ];
