@@ -55,14 +55,6 @@
 
     $imageAttachments = $attachments->filter(fn ($a) => $a->isImage())->values();
     $fileAttachments = $attachments->reject(fn ($a) => $a->isImage())->values();
-    $links = collect();
-    foreach ($messages as $message) {
-        preg_match_all('/https?:\/\/[^\s<]+/i', (string) $message->body, $matches);
-        foreach ($matches[0] ?? [] as $url) {
-            $links->push(['url' => $url, 'label' => parse_url($url, PHP_URL_HOST) ?: $url, 'sender' => $message->sender?->name, 'date' => $message->created_at]);
-        }
-    }
-    $links = $links->unique('url')->take(6)->values();
     $pinnedMessages = $messages->where('is_pinned', true)->sortByDesc('pinned_at')->values();
 @endphp
 
