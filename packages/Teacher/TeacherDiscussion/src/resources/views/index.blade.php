@@ -108,6 +108,75 @@
             }
         });
     </script>
+
+    @if($selectedThread)
+        <script>
+            (function () {
+                if (!window.Echo) return;
+                const pane = document.querySelector('[data-discussion-messages]');
+                const form = document.querySelector('[data-discussion-form]');
+                const threadId = pane ? pane.dataset.threadId : null;
+                const currentUserId = form ? form.dataset.currentUser : null;
+                if (!threadId) return;
+
+                const initial = Number(pane.dataset.threadId);
+
+                const buildBubble = function (data) {
+                    const mine = String(data.sender_id) === String(currentUserId);
+                    const senderName = (data.sender && data.sender.name) || '';
+                    const time = data.created_at ? new Date(data.created_at) : new Date();
+                    const timeLabel = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const initial = senderName.charAt(0).toUpperCase();
+
+                    const row = document.createElement('div');
+                    row.className = 'flex gap-3 ' + (mine ? 'justify-end' : 'justify-start');
+                    const inner = document.createElement('div');
+                    inner.className = 'max-w-[min(35rem,78%)]';
+
+                    const meta = document.createElement('div');
+                    meta.className = 'mb-1 flex items-center gap-2 px-1 ' + (mine ? 'justify-end' : '');
+                    if (!mine) {
+                        const nm = document.createElement('span');
+                        nm.className = 'text-xs font-black text-slate-700';
+                        nm.textContent = senderName;
+                        meta.appendChild(nm);
+                    }
+                    const tm = document.createElement('span');
+                    tm.className = 'text-[11px] font-bold text-slate-400';
+                    tm.textContent = timeLabel;
+                    meta.appendChild(tm);
+
+                    const bubble = document.createElement('div');
+                    bubble.className = 'space-y-2 rounded-2xl px-4 py-3 ' + (mine ? 'rounded-br-md bg-green-600 text-white' : 'rounded-bl-md bg-slate-100 text-slate-800');
+                    const p = document.createElement('p');
+                    p.className = 'whitespace-pre-line wrap-break-word text-sm font-semibold leading-6';
+                    p.textContent = data.body || '';
+                    bubble.appendChild(p);
+
+                    inner.appendChild(meta);
+                    inner.appendChild(bubble);
+                    row.appendChild(inner);
+                    return row;
+                };
+
+                const appendMessage = function (data) {
+                    if (!pane) return;
+                    const list = pane.querySelector('.mx-auto');
+                    if (!list) return;
+                    if (list.querySelector('[data-msg-id="' + data.id + '"]')) return;
+                    const row = buildBubble(data);
+                    row.setAttribute('data-msg-id', data.id);
+                    list.appendChild(row);
+                    pane.scrollTop = pane.scrollHeight;
+                };
+
+                window.Echo.private('discussion.' + threadId)
+                    .listen('.message.sent', function (event) {
+                        appendMessage(event.message);
+                    });
+            })();
+        </script>
+    @endif
 @endsection
 
 @section('content')
@@ -244,7 +313,7 @@
                     </div>
                 </header>
 
-                <div class="min-h-0 flex-1 overflow-y-auto bg-white px-6 py-5" data-discussion-messages>
+                <div class="min-h-0 flex-1 overflow-y-auto bg-white px-6 py-5" data-discussion-messages data-thread-id="{{ $selectedThread->id }}">
                     <div class="mx-auto flex max-w-3xl flex-col gap-4">
                         @forelse($messages as $message)
                             @php
@@ -309,7 +378,7 @@
                     </div>
                 </div>
 
-                <form method="POST" action="{{ route('teacher.discussions.messages.store', $selectedThread) }}" enctype="multipart/form-data" class="shrink-0 border-t border-slate-100 bg-white px-5 py-3">
+                <form method="POST" action="{{ route('teacher.discussions.messages.store', $selectedThread) }}" enctype="multipart/form-data" data-discussion-form data-current-user="{{ auth()->id() }}" class="shrink-0 border-t border-slate-100 bg-white px-5 py-3">
                     @csrf
                     <input type="file" name="attachments[]" class="hidden" data-discussion-files multiple accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
                     <div class="mx-auto max-w-3xl">

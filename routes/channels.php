@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +18,10 @@ Broadcast::channel('private-user.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-// Kênh hội thoại (thread). Authorization sẽ hoàn thiện ở Phase 1/3 khi
-// bảng teacher_discussion_participants được tạo. Giữ chỗ để không lỗi boot.
+// Kênh hội thoại (thread). Chỉ thành viên trong bảng participants mới được lắng nghe.
 Broadcast::channel('private-discussion.{threadId}', function ($user, $threadId) {
-    return true;
+    return DiscussionThread::query()
+        ->whereKey($threadId)
+        ->whereHas('participants', fn ($query) => $query->where('user_id', $user->id))
+        ->exists();
 });

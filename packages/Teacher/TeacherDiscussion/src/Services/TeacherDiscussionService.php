@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherDiscussion\Events\MessageSent;
 use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
 use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
 use Mindigo\TeacherDiscussion\Models\DiscussionParticipant;
@@ -163,6 +164,8 @@ class TeacherDiscussionService
         }
 
         $thread->forceFill(['last_message_at' => $message->created_at])->save();
+
+        broadcast(new MessageSent($message->load('sender')));
 
         return $message;
     }
