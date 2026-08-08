@@ -7,6 +7,7 @@ use Mindigo\Auth\Models\User;
 use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
 use Mindigo\TeacherDiscussion\Models\DiscussionParticipant;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
+use Mindigo\TeacherDiscussion\Services\TeacherDiscussionService;
 use Tests\TestCase;
 
 class DiscussionConversationPreferencesTest extends TestCase
@@ -86,6 +87,51 @@ class DiscussionConversationPreferencesTest extends TestCase
         $this->actingAs($student)
             ->post(route('student.discussions.mark-all-read'))
             ->assertRedirect();
+
+        $this->assertNotNull(
+            $thread->participants()->where('user_id', $student->id)->value('last_read_at')
+        );
+    }
+
+    public function test_unread_count_only_includes_new_messages_from_other_participants(): void
+    {
+        [$student, $thread] = $this->conversation();
+        $teacher = $thread->teacher;
+        $membership = $thread->participants()->where('user_id', $student->id)->firstOrFail();
+        $membership->update(['last_read_at' => now()->subMinute()]);
+
+        DiscussionMessage::query()->create([
+            'thread_id' => $thread->id,
+            'sender_id' => $teacher->id,
+            'body' => 'Tin nhắn mới từ giáo viên',
+        ]);
+        DiscussionMessage::query()->create([
+            'thread_id' => $thread->id,
+            'sender_id' => $student->id,
+            'body' => 'Tin nhắn của chính học sinh',
+        ]);
+
+        $listedThread = app(TeacherDiscussionService::class)
+            ->threadsFor($student)
+            ->firstWhere('id', $thread->id);
+
+        $this->assertNotNull($listedThread);
+        $this->assertSame(1, $listedThread->unreadCountFor($student->id));
+    }
+
+    public function test_opening_conversation_marks_it_as_read(): void
+    {
+        [$student, $thread] = $this->conversation();
+        $thread->participants()->where('user_id', $student->id)->update(['last_read_at' => null]);
+        DiscussionMessage::query()->create([
+            'thread_id' => $thread->id,
+            'sender_id' => $thread->teacher_id,
+            'body' => 'Tin nhắn chưa đọc',
+        ]);
+
+        $this->actingAs($student)
+            ->get(route('student.discussions.index', ['thread' => $thread]))
+            ->assertOk();
 
         $this->assertNotNull(
             $thread->participants()->where('user_id', $student->id)->value('last_read_at')

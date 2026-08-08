@@ -39,13 +39,21 @@ class TeacherDiscussionService
             ->addSelect([
                 'viewer_is_muted' => 'current_membership.is_muted',
                 'viewer_is_pinned' => 'current_membership.is_pinned',
+                'unread_messages_count' => DiscussionMessage::query()
+                    ->selectRaw('count(*)')
+                    ->whereColumn('teacher_discussion_messages.thread_id', 'teacher_discussion_threads.id')
+                    ->whereNull('teacher_discussion_messages.deleted_at')
+                    ->where('teacher_discussion_messages.sender_id', '!=', $user->getAuthIdentifier())
+                    ->where(function (Builder $query): void {
+                        $query->whereNull('current_membership.last_read_at')
+                            ->orWhereColumn('teacher_discussion_messages.created_at', '>', 'current_membership.last_read_at');
+                    }),
             ])
             ->with([
                 'classroom' => fn ($query) => $query->select('id', 'name', 'code')->withCount('students'),
                 'latestMessage',
                 'participants.user:id,name,email,role,avatar',
             ])
-            ->withCount('messages')
             ->orderByDesc('current_membership.is_pinned')
             ->orderByDesc('current_membership.pinned_at')
             ->orderByDesc('teacher_discussion_threads.last_message_at')

@@ -28,8 +28,11 @@ class TeacherDiscussionController extends Controller
         $teacher = Auth::user();
         $this->service->ensureClassThreads($teacher);
 
-        $threads = $this->service->threadsFor($teacher);
         $selectedThread = $this->service->selectedThreadFor($teacher, request()->integer('thread'));
+        if ($selectedThread) {
+            $this->service->markAsRead($selectedThread, $teacher);
+        }
+        $threads = $this->service->threadsFor($teacher);
         $messages = $selectedThread ? $this->service->messages($selectedThread) : collect();
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
         $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();
