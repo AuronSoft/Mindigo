@@ -23,4 +23,5 @@ return [
     // Category labels
     'cat_announcement' => 'Thông báo lớp',
     'cat_assignment_graded' => 'Bài tập đã chấm',
+    'cat_discussion' => 'Trao đổi',
 ];
