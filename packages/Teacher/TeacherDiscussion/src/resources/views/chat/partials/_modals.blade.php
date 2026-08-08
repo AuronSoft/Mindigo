@@ -148,7 +148,7 @@
                         <input type="text" data-discussion-filter-input="#discussion-add-members" placeholder="@lang('teacher-discussion::app.search_members')" class="min-w-0 flex-1 border-0 bg-transparent text-sm font-semibold text-slate-700 outline-none placeholder:text-slate-400">
                     </div>
                     <div id="discussion-add-members" class="max-h-40 space-y-1 overflow-y-auto rounded-xl border border-slate-100 p-2">
-                        @forelse($candidateUsers->reject(fn ($candidate) => $members->contains('id', $candidate->id)) as $candidate)
+                        @forelse($addMemberCandidates->reject(fn ($candidate) => $members->contains('id', $candidate->id)) as $candidate)
                             <label data-discussion-option data-search="{{ mb_strtolower($candidate->name.' '.$candidate->email) }}" class="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition hover:bg-slate-50">
                                 <input type="checkbox" name="member_ids[]" value="{{ $candidate->id }}" data-discussion-member-check class="h-4 w-4 rounded border-slate-300 text-green-600 focus:ring-green-500">
                                 <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-black text-slate-600">{{ mb_strtoupper(mb_substr($candidate->name, 0, 1)) }}</span>

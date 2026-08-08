@@ -78,11 +78,18 @@
             <div class="space-y-2">
                 @forelse($members->take(5) as $member)
                     @php $memberInitial = mb_strtoupper(mb_substr($member->name ?? $member->email, 0, 1)); @endphp
+                    @php $memberLastRead = $selectedThread->lastReadFor((int) $member->id); @endphp
                     <div class="flex items-center gap-3">
                         <div class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-black text-slate-600">{{ $memberInitial }}</div>
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-black text-slate-800">{{ $member->name }}</p>
-                            <p class="truncate text-[11px] font-bold text-slate-400">{{ $member->email }}</p>
+                            <p class="truncate text-[11px] font-bold {{ $memberLastRead ? 'text-green-600' : 'text-slate-400' }}">
+                                @if($memberLastRead)
+                                    @lang('teacher-discussion::app.seen') {{ $memberLastRead->diffForHumans(short: true) }}
+                                @else
+                                    {{ $member->email }}
+                                @endif
+                            </p>
                         </div>
                     </div>
                 @empty

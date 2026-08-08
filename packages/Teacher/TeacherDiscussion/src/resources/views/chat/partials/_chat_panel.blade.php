@@ -12,7 +12,7 @@
                     </div>
                     <div class="min-w-0">
                         <h2 class="truncate text-base font-black text-slate-950">{{ $selectedName }}</h2>
-                        <p class="truncate text-xs font-semibold text-slate-500">{{ $currentPreference?->is_muted ? __('teacher-discussion::app.notifications_muted') : $selectedSub }}</p>
+                        <p class="truncate text-xs font-semibold text-slate-500" data-discussion-typing-status>{{ $currentPreference?->is_muted ? __('teacher-discussion::app.notifications_muted') : $selectedSub }}</p>
                     </div>
                 </div>
 
@@ -49,7 +49,7 @@
                         $senderName = $message->sender?->name ?? __('teacher-discussion::app.unknown_sender');
                         $senderInitial = mb_strtoupper(mb_substr($senderName, 0, 1));
                     @endphp
-                    <div id="discussion-message-{{ $message->id }}" data-discussion-message-row data-message-text="{{ mb_strtolower((string) $message->body) }}" class="group/message flex items-end gap-2.5 {{ $mine ? 'justify-end' : 'justify-start' }}">
+                    <div id="discussion-message-{{ $message->id }}" data-discussion-message-row data-message-text="{{ mb_strtolower((string) $message->body) }}" data-msg-id="{{ $message->id }}" data-msg-sender="{{ $message->sender_id }}" data-msg-own="{{ $mine ? '1' : '0' }}" class="group/message flex items-end gap-2.5 {{ $mine ? 'justify-end' : 'justify-start' }}">
                         @unless($mine)
                             <div class="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-black text-slate-600">
                                 {{ $senderInitial }}
@@ -63,6 +63,9 @@
                                     <span class="text-xs font-black text-slate-700">{{ $senderName }}</span>
                                 @endunless
                                 <span class="text-[11px] font-bold text-slate-400">{{ $message->created_at?->format('D H:i') }}</span>
+                                @if($mine && $message->edited_at)
+                                    <span class="text-[11px] font-bold text-slate-400">· @lang('teacher-discussion::app.edited')</span>
+                                @endif
                             </div>
 
                             <div class="space-y-2 rounded-xl border px-3.5 py-2.5 shadow-sm {{ $mine ? 'rounded-br-sm border-green-600 bg-green-600 text-white' : 'rounded-bl-sm border-slate-200 bg-white text-slate-800' }}">
@@ -72,9 +75,17 @@
                                         @lang('teacher-discussion::app.pinned')
                                     </div>
                                 @endif
-                                @if($message->body !== '')
-                                    <p class="whitespace-pre-line wrap-break-word text-sm font-semibold leading-6">{{ $message->body }}</p>
+                                @if($message->repliesTo)
+                                    <div class="rounded-lg border-l-2 {{ $mine ? 'border-green-300 bg-white/10' : 'border-slate-200 bg-slate-50' }} px-2.5 py-1.5">
+                                        <span class="block truncate text-[10px] font-black {{ $mine ? 'text-green-100' : 'text-slate-500' }}">{{ $message->repliesTo->sender?->name }}</span>
+                                        <span class="line-clamp-1 text-[11px] font-semibold {{ $mine ? 'text-green-100/80' : 'text-slate-500' }}">{{ $message->repliesTo->body ?: __('teacher-discussion::app.attachment_message') }}</span>
+                                    </div>
                                 @endif
+                                <div data-message-body>
+                                    @if($message->body !== '')
+                                        <p class="whitespace-pre-line wrap-break-word text-sm font-semibold leading-6">{{ $message->body }}</p>
+                                    @endif
+                                </div>
 
                                 @if($message->attachments->isNotEmpty())
                                     <div class="grid gap-2 {{ $message->attachments->filter(fn ($a) => $a->isImage())->count() > 1 ? 'grid-cols-2' : '' }}">
@@ -98,14 +109,64 @@
                                     </div>
                                 @endif
                             </div>
-                            <form method="POST" action="{{ route($routes['messagePin'], [$selectedThread, $message]) }}" class="absolute top-7 {{ $mine ? '-left-9' : '-right-9' }} opacity-0 transition group-hover/message:opacity-100 focus-within:opacity-100">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="is_pinned" value="{{ $message->is_pinned ? 0 : 1 }}">
-                                <button title="{{ $message->is_pinned ? __('teacher-discussion::app.unpin_message') : __('teacher-discussion::app.pin_message') }}" class="grid h-8 w-8 place-items-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:text-green-700">
-                                    <x-heroicon-o-bookmark class="h-4 w-4" />
+
+                            @if($message->reactions->isNotEmpty())
+                                <div data-reactions-display class="mt-1 flex flex-wrap gap-1 {{ $mine ? 'justify-end' : '' }}">
+                                    @foreach($message->reactionSummary() as $summary)
+                                        <button type="button" data-discussion-react data-emoji="{{ $summary['emoji'] }}" class="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-700 shadow-sm transition hover:border-green-300">
+                                            <span>{{ $summary['emoji'] }}</span>
+                                            <span>{{ $summary['count'] }}</span>
+                                        </button>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div data-reactions-display class="mt-1 hidden"></div>
+                            @endif
+
+                            @if($mine && $message->created_at)
+                                @php $messageRead = $members->filter(fn ($m) => (int) $m->id !== $currentUserId && $selectedThread->lastReadFor((int) $m->id) && $selectedThread->lastReadFor((int) $m->id)->gte($message->created_at)); @endphp
+                                @if($messageRead->isNotEmpty())
+                                    <div class="mt-0.5 flex justify-end px-1 text-[10px] font-black text-green-600">@lang('teacher-discussion::app.seen')</div>
+                                @endif
+                            @endif
+
+                            <div class="absolute top-7 flex items-center gap-1 {{ $mine ? '-left-9' : '-right-9' }} rounded-full border border-slate-200 bg-white p-0.5 opacity-0 shadow-sm transition group-hover/message:opacity-100 focus-within:opacity-100">
+                                <button type="button" data-discussion-reply data-msg-id="{{ $message->id }}" data-msg-sender="{{ $senderName }}" data-msg-preview="{{ Str::limit((string) $message->body, 60) }}" title="@lang('teacher-discussion::app.reply')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-green-700">
+                                    <x-heroicon-o-arrow-uturn-left class="h-3.5 w-3.5" />
                                 </button>
-                            </form>
+                                <button type="button" data-discussion-react-picker title="@lang('teacher-discussion::app.reacted')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-green-700">
+                                    <x-heroicon-o-face-smile class="h-3.5 w-3.5" />
+                                </button>
+                                @if($mine)
+                                    <button type="button" data-discussion-edit data-msg-id="{{ $message->id }}" data-msg-body="{{ $message->body }}" title="@lang('teacher-discussion::app.edit_message')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-green-700">
+                                        <x-heroicon-o-pencil class="h-3.5 w-3.5" />
+                                    </button>
+                                    <form method="POST" action="{{ route($routes['messageDestroy'], [$selectedThread, $message]) }}" data-discussion-delete-form>
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" data-discussion-delete title="@lang('teacher-discussion::app.delete_message')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-red-600">
+                                            <x-heroicon-o-trash class="h-3.5 w-3.5" />
+                                        </button>
+                                    </form>
+                                @endif
+                                <form method="POST" action="{{ route($routes['messagePin'], [$selectedThread, $message]) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="is_pinned" value="{{ $message->is_pinned ? 0 : 1 }}">
+                                    <button title="{{ $message->is_pinned ? __('teacher-discussion::app.unpin_message') : __('teacher-discussion::app.pin_message') }}" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-green-700">
+                                        <x-heroicon-o-bookmark class="h-3.5 w-3.5" />
+                                    </button>
+                                </form>
+                            </div>
+                            <div data-discussion-reactions class="absolute right-0 top-7 z-10 hidden items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 shadow-md">
+                                @foreach(['👍','❤️','😂','😮','😢','🙏'] as $emoji)
+                                    <form method="POST" action="{{ route($routes['messageReact'], [$selectedThread, $message]) }}">
+                                        @csrf
+                                        <input type="hidden" name="emoji" value="{{ $emoji }}">
+                                        <button type="submit" class="grid h-7 w-7 place-items-center rounded-full text-sm transition hover:bg-slate-100" title="{{ $emoji }}">{{ $emoji }}</button>
+                                    </form>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 @empty
@@ -120,10 +181,20 @@
             </div>
         </div>
 
-        <form method="POST" action="{{ route($routes['store'], $selectedThread) }}" enctype="multipart/form-data" data-discussion-form data-current-user="{{ auth()->id() }}" class="shrink-0 border-t border-slate-200 bg-white px-5 py-3">
+        <form method="POST" action="{{ route($routes['store'], $selectedThread) }}" enctype="multipart/form-data" data-discussion-form data-current-user="{{ auth()->id() }}" data-update-url="{{ route($routes['messageUpdate'], [$selectedThread, '__MESSAGE_ID__']) }}" data-react-url="{{ route($routes['messageReact'], [$selectedThread, '__MESSAGE_ID__']) }}" class="shrink-0 border-t border-slate-200 bg-white px-5 py-3">
             @csrf
             <input type="file" name="attachments[]" class="hidden" data-discussion-files multiple accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
+            <input type="hidden" name="reply_to_id" value="" data-discussion-reply-id>
             <div class="mx-auto max-w-3xl">
+                <div class="mb-2 hidden items-center justify-between rounded-xl border border-green-200 bg-green-50 px-3 py-2" data-discussion-reply-bar>
+                    <span class="min-w-0">
+                        <span class="block text-[10px] font-black text-green-700">@lang('teacher-discussion::app.replying_to') <span data-discussion-reply-sender class="text-slate-700"></span></span>
+                        <span class="block truncate text-[11px] font-semibold text-slate-500" data-discussion-reply-preview></span>
+                    </span>
+                    <button type="button" data-discussion-reply-cancel class="grid h-6 w-6 shrink-0 place-items-center rounded-full text-slate-400 transition hover:bg-green-100 hover:text-green-700" title="@lang('teacher-discussion::app.cancel_reply')">
+                        <x-heroicon-o-x-mark class="h-4 w-4" />
+                    </button>
+                </div>
                 <div class="mb-2 hidden flex-wrap gap-2" data-discussion-file-preview></div>
                 <div class="flex items-end gap-2 rounded-xl border border-slate-200 bg-white p-1.5 focus-within:border-green-400 focus-within:ring-2 focus-within:ring-green-100">
                     <textarea name="body" rows="1" maxlength="2000" placeholder="@lang('teacher-discussion::app.message_placeholder')" data-discussion-input class="block max-h-32 min-h-10 flex-1 resize-none border-0 bg-transparent px-3 py-2.5 text-sm font-semibold leading-5 text-slate-800 outline-none placeholder:text-slate-400">{{ old('body') }}</textarea>

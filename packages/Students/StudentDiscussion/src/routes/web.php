@@ -12,6 +12,10 @@ Route::middleware(['web', 'auth', 'role:student|admin'])->prefix('student')->nam
         Route::post('/mark-all-read', [DiscussionController::class, 'markAllAsRead'])->name('mark-all-read');
         Route::patch('/{thread}/preferences', [DiscussionController::class, 'updatePreferences'])->name('preferences.update');
         Route::patch('/{thread}/messages/{message}/pin', [DiscussionController::class, 'updateMessagePin'])->name('messages.pin');
+        Route::patch('/{thread}/messages/{message}', [DiscussionController::class, 'updateMessage'])->name('messages.update');
+        Route::delete('/{thread}/messages/{message}', [DiscussionController::class, 'deleteMessage'])->name('messages.destroy');
+        Route::post('/{thread}/messages/{message}/react', [DiscussionController::class, 'reactToMessage'])->name('messages.react');
+        Route::post('/{thread}/typing', [DiscussionController::class, 'typing'])->name('typing');
         Route::post('/{thread}/members', [DiscussionController::class, 'addMember'])->name('members.store');
         Route::delete('/{thread}/members/{user}', [DiscussionController::class, 'removeMember'])->name('members.destroy');
         Route::get('/attachments/{attachment}', [DiscussionController::class, 'attachment'])->name('attachments.show');

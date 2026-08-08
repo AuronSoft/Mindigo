@@ -15,6 +15,10 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::post('/mark-all-read', [TeacherDiscussionController::class, 'markAllAsRead'])->name('mark-all-read');
         Route::patch('/{thread}/preferences', [TeacherDiscussionController::class, 'updatePreferences'])->name('preferences.update');
         Route::patch('/{thread}/messages/{message}/pin', [TeacherDiscussionController::class, 'updateMessagePin'])->name('messages.pin');
+        Route::patch('/{thread}/messages/{message}', [TeacherDiscussionController::class, 'updateMessage'])->name('messages.update');
+        Route::delete('/{thread}/messages/{message}', [TeacherDiscussionController::class, 'deleteMessage'])->name('messages.destroy');
+        Route::post('/{thread}/messages/{message}/react', [TeacherDiscussionController::class, 'reactToMessage'])->name('messages.react');
+        Route::post('/{thread}/typing', [TeacherDiscussionController::class, 'typing'])->name('typing');
         Route::post('/{thread}/members', [TeacherDiscussionController::class, 'addMember'])->name('members.store');
         Route::delete('/{thread}/members/{user}', [TeacherDiscussionController::class, 'removeMember'])->name('members.destroy');
         Route::get('/attachments/{attachment}', [TeacherDiscussionController::class, 'attachment'])->name('attachments.show');
