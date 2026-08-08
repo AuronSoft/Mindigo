@@ -26,3 +26,5 @@ node_modules
 database.sqlite
 __pycache__/
 *.pyc
+
+dump.rdb
