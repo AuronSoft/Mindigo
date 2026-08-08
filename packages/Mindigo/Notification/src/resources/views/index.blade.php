@@ -75,6 +75,7 @@
                         $icon = match($d['icon'] ?? '') {
                             'megaphone'       => 'heroicon-o-megaphone',
                             'clipboard-check' => 'heroicon-o-clipboard-document-check',
+                            'chat-bubble-left' => 'heroicon-o-chat-bubble-left-right',
                             default           => 'heroicon-o-bell',
                         };
                     @endphp
