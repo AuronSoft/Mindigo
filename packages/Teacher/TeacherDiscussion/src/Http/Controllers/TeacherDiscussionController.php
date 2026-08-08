@@ -3,6 +3,7 @@
 namespace Mindigo\TeacherDiscussion\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -22,10 +23,10 @@ class TeacherDiscussionController extends Controller
 
         /** @var User $teacher */
         $teacher = Auth::user();
-        $this->service->ensureThreadsForClassrooms($teacher);
+        $this->service->ensureClassThreads($teacher);
 
-        $threads = $this->service->threads($teacher);
-        $selectedThread = $this->service->selectedThread($teacher, request()->integer('thread'));
+        $threads = $this->service->threadsFor($teacher);
+        $selectedThread = $this->service->selectedThreadFor($teacher, request()->integer('thread'));
         $messages = $selectedThread ? $this->service->messages($selectedThread) : collect();
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
         $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();
@@ -67,14 +68,82 @@ class TeacherDiscussionController extends Controller
         ]);
     }
 
+    /**
+     * Tạo nhóm tuỳ chỉnh.
+     */
+    public function createGroup(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:80'],
+            'member_ids' => ['nullable', 'array'],
+            'member_ids.*' => ['integer', 'exists:users,id'],
+            'description' => ['nullable', 'string', 'max:255'],
+            'theme_color' => ['nullable', 'string', 'max:20'],
+        ]);
+
+        /** @var User $user */
+        $user = Auth::user();
+        $thread = $this->service->createGroup(
+            $user,
+            $request->string('name')->toString(),
+            $request->input('member_ids', []),
+            $request->input('description'),
+            $request->input('theme_color')
+        );
+
+        return redirect()
+            ->route('teacher.discussions.index', ['thread' => $thread->id])
+            ->with('success', __('teacher-discussion::app.group_created'));
+    }
+
+    /**
+     * Thêm thành viên vào hội thoại.
+     */
+    public function addMember(Request $request, DiscussionThread $thread): RedirectResponse
+    {
+        $this->authorizeThread($thread);
+
+        $request->validate([
+            'member_ids' => ['required', 'array', 'min:1'],
+            'member_ids.*' => ['integer', 'exists:users,id'],
+        ]);
+
+        $this->service->addParticipants($thread, $request->input('member_ids'));
+
+        return back()->with('success', __('teacher-discussion::app.member_added'));
+    }
+
+    /**
+     * Xoá thành viên khỏi hội thoại.
+     */
+    public function removeMember(DiscussionThread $thread, int $user): RedirectResponse
+    {
+        $this->authorizeThread($thread);
+
+        $this->service->removeParticipant($thread, $user);
+
+        return back()->with('success', __('teacher-discussion::app.member_removed'));
+    }
+
+    /**
+     * Đánh dấu hội thoại đã đọc.
+     */
+    public function markAsRead(DiscussionThread $thread)
+    {
+        $this->authorizeThread($thread);
+
+        /** @var User $user */
+        $user = Auth::user();
+        $this->service->markAsRead($thread, $user);
+
+        return response()->noContent();
+    }
+
     private function authorizeThread(DiscussionThread $thread): void
     {
         /** @var User $user */
         $user = Auth::user();
 
-        abort_unless(
-            $user instanceof User && ($user->isAdmin() || $thread->teacher_id === (int) $user->getAuthIdentifier()),
-            403
-        );
+        abort_unless($user instanceof User && $this->service->canAccess($thread, $user), 403);
     }
 }

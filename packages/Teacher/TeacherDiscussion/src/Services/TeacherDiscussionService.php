@@ -2,11 +2,14 @@
 
 namespace Mindigo\TeacherDiscussion\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
 use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
+use Mindigo\TeacherDiscussion\Models\DiscussionParticipant;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 
 class TeacherDiscussionService
@@ -21,13 +24,17 @@ class TeacherDiscussionService
             ->get();
     }
 
-    public function threads(User $teacher): Collection
+    /**
+     * Danh sách hội thoại mà người dùng là thành viên (bất kỳ vai trò nào).
+     */
+    public function threadsFor(User $user): Collection
     {
         return DiscussionThread::query()
-            ->where('teacher_id', $teacher->getAuthIdentifier())
+            ->whereHas('participants', fn (Builder $query) => $query->where('user_id', $user->getAuthIdentifier()))
             ->with([
                 'classroom' => fn ($query) => $query->select('id', 'name', 'code')->withCount('students'),
                 'latestMessage',
+                'participants.user:id,name,email,role,avatar',
             ])
             ->withCount('messages')
             ->orderByDesc('last_message_at')
@@ -35,20 +42,55 @@ class TeacherDiscussionService
             ->get();
     }
 
-    public function ensureThreadsForClassrooms(User $teacher): void
+    public function threads(User $teacher): Collection
+    {
+        return $this->threadsFor($teacher);
+    }
+
+    /**
+     * Tự tạo thread cho mỗi lớp học của giáo viên + đăng ký owner participant.
+     */
+    public function ensureClassThreads(User $teacher): void
     {
         $this->classrooms($teacher)->each(function (Classroom $classroom) use ($teacher): void {
-            DiscussionThread::firstOrCreate([
-                'teacher_id' => $teacher->getAuthIdentifier(),
-                'classroom_id' => $classroom->id,
-            ]);
+            $thread = DiscussionThread::firstOrCreate(
+                ['teacher_id' => $teacher->getAuthIdentifier(), 'classroom_id' => $classroom->id],
+                [
+                    'type' => DiscussionThread::TYPE_CLASS,
+                    'created_by' => $teacher->getAuthIdentifier(),
+                    'last_message_at' => now(),
+                ]
+            );
+
+            $this->syncClassParticipants($thread, $classroom);
         });
     }
 
-    public function selectedThread(User $teacher, ?int $threadId = null): ?DiscussionThread
+    public function ensureThreadsForClassrooms(User $teacher): void
+    {
+        $this->ensureClassThreads($teacher);
+    }
+
+    /**
+     * Đồng bộ participants từ học sinh active của lớp (owner = giáo viên).
+     */
+    public function syncClassParticipants(DiscussionThread $thread, Classroom $classroom): void
+    {
+        $teacherId = $classroom->teacher_id;
+        $this->syncParticipant($thread, $teacherId, DiscussionParticipant::ROLE_OWNER);
+
+        $classroom->students()
+            ->where('classroom_students.status', 'active')
+            ->pluck('users.id')
+            ->each(function (int $studentId) use ($thread): void {
+                $this->syncParticipant($thread, $studentId, DiscussionParticipant::ROLE_MEMBER);
+            });
+    }
+
+    public function selectedThreadFor(User $user, ?int $threadId = null): ?DiscussionThread
     {
         $query = DiscussionThread::query()
-            ->where('teacher_id', $teacher->getAuthIdentifier())
+            ->whereHas('participants', fn (Builder $query) => $query->where('user_id', $user->getAuthIdentifier()))
             ->with(['classroom' => fn ($query) => $query->select('id', 'name', 'code')->withCount('students')]);
 
         if ($threadId) {
@@ -58,10 +100,25 @@ class TeacherDiscussionService
         return $query->orderByDesc('last_message_at')->orderBy('id')->first();
     }
 
+    public function selectedThread(User $teacher, ?int $threadId = null): ?DiscussionThread
+    {
+        return $this->selectedThreadFor($teacher, $threadId);
+    }
+
+    public function canAccess(DiscussionThread $thread, User $user): bool
+    {
+        return $user->isAdmin() || $this->isParticipant($thread, (int) $user->getAuthIdentifier());
+    }
+
+    public function isParticipant(DiscussionThread $thread, int $userId): bool
+    {
+        return $thread->participants()->where('user_id', $userId)->exists();
+    }
+
     public function messages(DiscussionThread $thread): Collection
     {
         return $thread->messages()
-            ->with(['sender:id,name,email,role', 'attachments'])
+            ->with(['sender:id,name,email,role,avatar', 'attachments'])
             ->oldest('created_at')
             ->limit(120)
             ->get();
@@ -78,14 +135,12 @@ class TeacherDiscussionService
 
     public function members(DiscussionThread $thread): Collection
     {
-        if (! $thread->classroom) {
-            return collect();
-        }
-
-        return $thread->classroom->students()
-            ->select('users.id', 'users.name', 'users.email', 'users.role')
-            ->orderBy('users.name')
-            ->get();
+        return $thread->participants()
+            ->with('user:id,name,email,role,avatar')
+            ->get()
+            ->map->user
+            ->filter()
+            ->values();
     }
 
     public function send(DiscussionThread $thread, User $sender, ?string $body, array $files = []): DiscussionMessage
@@ -110,5 +165,136 @@ class TeacherDiscussionService
         $thread->forceFill(['last_message_at' => $message->created_at])->save();
 
         return $message;
+    }
+
+    /**
+     * Tìm hoặc tạo hội thoại 1-1 giữa hai người dùng.
+     */
+    public function findOrCreateDirect(User $owner, User $other): DiscussionThread
+    {
+        $otherId = (int) $other->getAuthIdentifier();
+        $ownerId = (int) $owner->getAuthIdentifier();
+
+        $existing = DiscussionThread::query()
+            ->where('type', DiscussionThread::TYPE_DIRECT)
+            ->whereHas('participants', fn (Builder $query) => $query->whereIn('user_id', [$ownerId, $otherId]), '=', 2)
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        return DB::transaction(function () use ($owner, $ownerId, $other): DiscussionThread {
+            $teacherId = $owner->isTeacher() ? $ownerId : ($other->isTeacher() ? $other->getAuthIdentifier() : $ownerId);
+
+            $thread = DiscussionThread::create([
+                'teacher_id' => $teacherId,
+                'type' => DiscussionThread::TYPE_DIRECT,
+                'name' => null,
+                'created_by' => $ownerId,
+                'last_message_at' => now(),
+            ]);
+
+            $this->syncParticipant($thread, $ownerId, DiscussionParticipant::ROLE_OWNER);
+            $this->syncParticipant($thread, (int) $other->getAuthIdentifier(), DiscussionParticipant::ROLE_MEMBER);
+
+            return $thread;
+        });
+    }
+
+    /**
+     * Tạo nhóm tuỳ chỉnh với danh sách thành viên.
+     */
+    public function createGroup(User $creator, string $name, array $memberIds, ?string $description = null, ?string $themeColor = null): DiscussionThread
+    {
+        $creatorId = (int) $creator->getAuthIdentifier();
+
+        $thread = DB::transaction(function () use ($creatorId, $creator, $name, $memberIds, $description, $themeColor): DiscussionThread {
+            $thread = DiscussionThread::create([
+                'teacher_id' => $creator->isTeacher() ? $creatorId : null,
+                'type' => DiscussionThread::TYPE_GROUP,
+                'name' => $name,
+                'description' => $description,
+                'theme_color' => $themeColor,
+                'created_by' => $creatorId,
+                'last_message_at' => now(),
+            ]);
+
+            $this->syncParticipant($thread, $creatorId, DiscussionParticipant::ROLE_OWNER);
+
+            foreach (array_unique($memberIds) as $memberId) {
+                $this->syncParticipant($thread, (int) $memberId, DiscussionParticipant::ROLE_MEMBER);
+            }
+
+            return $thread;
+        });
+
+        return $thread->load('participants');
+    }
+
+    public function syncParticipant(DiscussionThread $thread, int $userId, string $role = DiscussionParticipant::ROLE_MEMBER): void
+    {
+        $thread->participants()->updateOrCreate(
+            ['user_id' => $userId],
+            ['role' => $role, 'joined_at' => now()]
+        );
+    }
+
+    public function addParticipants(DiscussionThread $thread, array $userIds, string $role = DiscussionParticipant::ROLE_MEMBER): int
+    {
+        $added = 0;
+
+        foreach (array_unique($userIds) as $userId) {
+            $this->syncParticipant($thread, (int) $userId, $role);
+            $added++;
+        }
+
+        return $added;
+    }
+
+    public function removeParticipant(DiscussionThread $thread, int $userId): bool
+    {
+        $participant = $thread->participants()->where('user_id', $userId)->first();
+
+        if (! $participant || $participant->isOwner()) {
+            return false;
+        }
+
+        return (bool) $participant->delete();
+    }
+
+    public function updateRole(DiscussionThread $thread, int $userId, string $role): bool
+    {
+        if (! in_array($role, DiscussionParticipant::ROLES, true)) {
+            return false;
+        }
+
+        $participant = $thread->participants()->where('user_id', $userId)->first();
+
+        if (! $participant) {
+            return false;
+        }
+
+        $participant->forceFill(['role' => $role])->save();
+
+        return true;
+    }
+
+    /**
+     * Đánh dấu hội thoại đã đọc tới hiện tại.
+     */
+    public function markAsRead(DiscussionThread $thread, User $user): void
+    {
+        $thread->participants()
+            ->where('user_id', $user->getAuthIdentifier())
+            ->update(['last_read_at' => now()]);
+    }
+
+    public function unreadCountFor(User $user): int
+    {
+        return DiscussionThread::query()
+            ->whereHas('participants', fn (Builder $query) => $query->where('user_id', $user->getAuthIdentifier()))
+            ->get()
+            ->sum(fn (DiscussionThread $thread) => $thread->unreadCountFor((int) $user->getAuthIdentifier()));
     }
 }
