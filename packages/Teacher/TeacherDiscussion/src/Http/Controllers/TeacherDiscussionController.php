@@ -31,7 +31,13 @@ class TeacherDiscussionController extends Controller
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
         $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();
 
-        return view('teacher-discussion::index', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments'));
+        $routes = [
+            'index' => 'teacher.discussions.index',
+            'store' => 'teacher.discussions.messages.store',
+            'attachment' => 'teacher.discussions.attachments.show',
+        ];
+
+        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'routes'));
     }
 
     public function store(StoreDiscussionMessageRequest $request, DiscussionThread $thread): RedirectResponse
