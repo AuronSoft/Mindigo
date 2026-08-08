@@ -10,6 +10,7 @@ return [
     'assignment' => [
         'title' => 'My Assignments',
         'subtitle' => 'Manage homework and assign to students',
+        'teaching_assignment' => 'Teaching content',
         'create' => 'Create Assignment',
         'edit' => 'Edit Assignment',
         'field_title' => 'Title',

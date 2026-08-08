@@ -3,6 +3,7 @@
 return [
     'title' => 'Live Sessions',
     'subtitle' => 'Manage your online class sessions',
+    'teaching_live' => 'Teaching content',
     'create' => 'New session',
     'edit' => 'Edit session',
     'cancel' => 'Cancel',

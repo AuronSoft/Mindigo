@@ -3,6 +3,7 @@
 return [
     'title' => 'Lớp học của tôi',
     'subtitle' => 'Quản lý lớp học, danh sách học sinh và môn học phụ trách.',
+    'teaching_classroom' => 'Nội dung giảng dạy',
     'create' => 'Tạo lớp học',
     'edit' => 'Chỉnh sửa lớp',
     'back' => 'Quay lại',

@@ -71,12 +71,13 @@
     <div class="flex flex-1 flex-col">
 
         {{-- Header --}}
-        <header class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 px-5 py-3 backdrop-blur">
+        <header class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-slate-200 bg-white/95 px-5 py-3 backdrop-blur">
             <div class="flex items-center gap-3">
                 {{-- Mobile filter toggle could go here --}}
                 <div>
+                    <p class="text-[11px] font-black uppercase tracking-widest text-green-700">@lang('teacher-question::app.teaching_question')</p>
                     <h1 class="text-base font-black text-slate-950">@lang('teacher-question::app.title')</h1>
-                    <p class="text-xs font-bold text-slate-400">{{ number_format($stats['total']) }} @lang('teacher-question::app.stat_total') · {{ $stats['approved'] }} @lang('teacher-question::app.stat_approved')</p>
+                    <p class="text-xs font-semibold text-slate-400">@lang('teacher-question::app.subtitle')</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">

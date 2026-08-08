@@ -10,6 +10,7 @@ return [
     'assignment' => [
         'title' => 'Bài tập của tôi',
         'subtitle' => 'Quản lý bài tập & giao bài về nhà',
+        'teaching_assignment' => 'Nội dung giảng dạy',
         'create' => 'Tạo bài tập mới',
         'edit' => 'Chỉnh sửa bài tập',
         'field_title' => 'Tiêu đề bài tập',
