@@ -266,6 +266,181 @@
                 }
             });
         });
+
+        // ==== Phase 3: Reply ====
+        const replyBar = document.querySelector('[data-discussion-reply-bar]');
+        const replyId = document.querySelector('[data-discussion-reply-id]');
+        const replySender = document.querySelector('[data-discussion-reply-sender]');
+        const replyPreview = document.querySelector('[data-discussion-reply-preview]');
+        const setReply = function (sender, preview, id) {
+            if (replySender) replySender.textContent = sender || '';
+            if (replyPreview) replyPreview.textContent = preview || '';
+            if (replyId) replyId.value = id || '';
+            if (replyBar) replyBar.classList.remove('hidden');
+            replyBar?.classList.add('flex');
+        };
+        const clearReply = function () {
+            if (replyId) replyId.value = '';
+            if (replyBar) {
+                replyBar.classList.add('hidden');
+                replyBar.classList.remove('flex');
+            }
+        };
+        document.querySelectorAll('[data-discussion-reply]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                setReply(btn.dataset.msgSender, btn.dataset.msgPreview, btn.dataset.msgId);
+                input?.focus();
+            });
+        });
+        document.querySelector('[data-discussion-reply-cancel]')?.addEventListener('click', clearReply);
+
+        // ==== Phase 3: Edit ====
+        const updateUrl = form ? form.dataset.updateUrl : null;
+        document.querySelectorAll('[data-discussion-edit]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const row = btn.closest('[data-discussion-message-row]');
+                if (!row) return;
+                const bodyWrap = row.querySelector('[data-message-body]');
+                if (!bodyWrap) return;
+                if (bodyWrap.querySelector('textarea')) return;
+                const original = bodyWrap.textContent || '';
+                const textarea = document.createElement('textarea');
+                textarea.className = 'block w-full resize-none rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-green-400';
+                textarea.rows = 3;
+                textarea.maxLength = 2000;
+                textarea.value = original;
+                const actions = document.createElement('div');
+                actions.className = 'mt-2 flex items-center justify-end gap-2';
+                const save = document.createElement('button');
+                save.type = 'button';
+                save.textContent = '@lang('teacher-discussion::app.save')';
+                save.className = 'rounded-lg bg-green-600 px-3 py-1 text-xs font-black text-white hover:bg-green-500';
+                const cancel = document.createElement('button');
+                cancel.type = 'button';
+                cancel.textContent = '@lang('teacher-discussion::app.cancel_edit')';
+                cancel.className = 'rounded-lg bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 hover:bg-slate-200';
+                actions.appendChild(cancel);
+                actions.appendChild(save);
+                bodyWrap.innerHTML = '';
+                bodyWrap.appendChild(textarea);
+                bodyWrap.appendChild(actions);
+                textarea.focus();
+                const finish = function () { bodyWrap.innerHTML = original; };
+                cancel.addEventListener('click', finish);
+                save.addEventListener('click', function () {
+                    const body = textarea.value.trim();
+                    if (!body || !updateUrl) return finish();
+                    const url = updateUrl.replace('__MESSAGE_ID__', btn.dataset.msgId);
+                    fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '', 'X-HTTP-METHOD-OVERRIDE': 'PATCH', 'Accept': 'application/json' },
+                        body: JSON.stringify({ body: body }),
+                    }).then(function (res) {
+                        if (!res.ok) { finish(); return; }
+                        const p = document.createElement('p');
+                        p.className = 'whitespace-pre-line wrap-break-word text-sm font-semibold leading-6';
+                        p.textContent = body;
+                        bodyWrap.innerHTML = '';
+                        bodyWrap.appendChild(p);
+                        row.dataset.messageText = body.toLowerCase();
+                    }).catch(finish);
+                });
+            });
+        });
+
+        // ==== Phase 3: Delete ====
+        document.querySelectorAll('[data-discussion-delete]').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (!window.confirm('@lang('teacher-discussion::app.delete_message_confirmation')')) return;
+                btn.closest('[data-discussion-delete-form]')?.submit();
+            });
+        });
+
+        // ==== Phase 3: Reactions picker ====
+        const reactUrl = form ? form.dataset.reactUrl : null;
+        const renderReactions = function (row, reactions) {
+            const container = row.querySelector('[data-reactions-display]');
+            if (!container) return;
+            container.innerHTML = '';
+            if (reactions && reactions.length) {
+                reactions.forEach(function (r) {
+                    const chip = document.createElement('button');
+                    chip.type = 'button';
+                    chip.className = 'flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-700 shadow-sm transition hover:border-green-300';
+                    chip.innerHTML = '<span>' + r.emoji + '</span><span>' + r.count + '</span>';
+                    container.appendChild(chip);
+                });
+            }
+        };
+        const submitReaction = function (messageId, emoji) {
+            if (!reactUrl) return;
+            const url = reactUrl.replace('__MESSAGE_ID__', messageId);
+            const body = new URLSearchParams();
+            body.append('emoji', emoji);
+            fetch(url, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' },
+                body: body,
+            }).catch(function () {});
+        };
+        document.querySelectorAll('[data-discussion-react]').forEach(function (chip) {
+            chip.addEventListener('click', function () {
+                submitReaction(chip.closest('[data-discussion-message-row]')?.dataset.msgId, chip.dataset.emoji);
+            });
+        });
+        document.querySelectorAll('[data-discussion-reactions] form').forEach(function (f) {
+            f.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const emoji = f.querySelector('input[name="emoji"]').value;
+                const row = f.closest('[data-discussion-message-row]');
+                submitReaction(row?.dataset.msgId, emoji);
+                const menu = f.closest('[data-discussion-reactions]');
+                if (menu) { menu.classList.add('hidden'); menu.classList.remove('flex'); }
+            });
+        });
+        document.querySelectorAll('[data-discussion-react-picker]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const menu = btn.closest('[data-discussion-message-row]')?.querySelector('[data-discussion-reactions]');
+                if (!menu) return;
+                const isOpen = menu.classList.contains('flex');
+                document.querySelectorAll('[data-discussion-reactions]').forEach(function (m) {
+                    m.classList.add('hidden');
+                    m.classList.remove('flex');
+                });
+                if (!isOpen) {
+                    menu.classList.remove('hidden');
+                    menu.classList.add('flex');
+                }
+            });
+        });
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('[data-discussion-react-picker], [data-discussion-reactions]')) {
+                document.querySelectorAll('[data-discussion-reactions]').forEach(function (m) {
+                    m.classList.add('hidden');
+                    m.classList.remove('flex');
+                });
+            }
+        });
+
+        // ==== Phase 3: Typing ====
+        const typingUrl = form ? form.action.replace(/\/messages$/, '/typing') : null;
+        let typingTimer = null;
+        let lastTypingSent = 0;
+        if (input && typingUrl && window.Echo) {
+            input.addEventListener('input', function () {
+                const now = Date.now();
+                if (now - lastTypingSent > 1500) {
+                    lastTypingSent = now;
+                    fetch(typingUrl, {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' },
+                    }).catch(function () {});
+                }
+                if (typingTimer) clearTimeout(typingTimer);
+                typingTimer = setTimeout(function () { lastTypingSent = 0; }, 2000);
+            });
+        }
     });
 </script>
 
@@ -360,10 +535,101 @@
                 pane.scrollTop = pane.scrollHeight;
             };
 
+            const typingStatus = document.querySelector('[data-discussion-typing-status]');
+            const typingFallback = typingStatus ? typingStatus.textContent : '';
+            let typingTimeout = null;
+
             window.Echo.private('discussion.' + threadId)
                 .listen('.message.sent', function (event) {
                     appendMessage(event.message);
+                })
+                .listen('.message.updated', function (event) {
+                    const row = pane.querySelector('[data-msg-id="' + event.id + '"]');
+                    if (!row) return;
+                    const bodyWrap = row.querySelector('[data-message-body]');
+                    if (bodyWrap) {
+                        const p = document.createElement('p');
+                        p.className = 'whitespace-pre-line wrap-break-word text-sm font-semibold leading-6';
+                        p.textContent = event.body || '';
+                        bodyWrap.innerHTML = '';
+                        bodyWrap.appendChild(p);
+                        row.dataset.messageText = (event.body || '').toLowerCase();
+                    }
+                })
+                .listen('.message.deleted', function (event) {
+                    const row = pane.querySelector('[data-msg-id="' + event.message_id + '"]');
+                    if (row) row.remove();
+                })
+                .listen('.message.reacted', function (event) {
+                    const row = pane.querySelector('[data-msg-id="' + event.message_id + '"]');
+                    if (!row) return;
+                    const container = row.querySelector('[data-reactions-display]');
+                    if (!container) return;
+                    container.classList.remove('hidden');
+                    container.classList.add('flex');
+                    container.innerHTML = '';
+                    if (event.reactions && event.reactions.length) {
+                        event.reactions.forEach(function (r) {
+                            const chip = document.createElement('button');
+                            chip.type = 'button';
+                            chip.className = 'flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-700 shadow-sm transition hover:border-green-300';
+                            chip.innerHTML = '<span>' + r.emoji + '</span><span>' + r.count + '</span>';
+                            container.appendChild(chip);
+                        });
+                    }
+                })
+                .listen('.message.typing', function (event) {
+                    if (!typingStatus) return;
+                    if (String(event.user_id) === String(currentUserId)) return;
+                    typingStatus.textContent = event.name + ' @lang('teacher-discussion::app.is_typing')';
+                    typingStatus.classList.add('text-green-600');
+                    if (typingTimeout) clearTimeout(typingTimeout);
+                    typingTimeout = setTimeout(function () {
+                        typingStatus.textContent = typingFallback;
+                        typingStatus.classList.remove('text-green-600');
+                    }, 2500);
                 });
+
+            // ==== Phase 3: Realtime room list update (item 6) ====
+            const roomList = document.querySelector('[data-discussion-room-list]');
+            const otherThreadIds = roomList ? roomList.getAttribute('data-discussion-thread-ids') : '';
+            const roomsByThread = {};
+            document.querySelectorAll('[data-discussion-room]').forEach(function (room) {
+                roomsByThread[room.dataset.roomThreadId] = room;
+            });
+            const updateRoomOnMessage = function (threadId, data) {
+                const room = roomsByThread[threadId];
+                if (!room || !roomList) return;
+                const senderIsMe = String(data.sender_id) === String(currentUserId);
+                const previewEl = room.querySelector('.mt-1 p');
+                if (previewEl) previewEl.textContent = data.body || '@lang('teacher-discussion::app.no_messages_short')';
+                if (!senderIsMe) {
+                    const badge = room.querySelector('.bg-green-600');
+                    const count = badge ? parseInt(badge.textContent, 10) || 0 : 0;
+                    const newCount = count + 1;
+                    if (badge) {
+                        badge.textContent = newCount > 99 ? '99+' : newCount;
+                    } else {
+                        const newBadge = document.createElement('span');
+                        newBadge.className = 'grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[10px] font-black text-white';
+                        newBadge.textContent = '1';
+                        const row = room.querySelector('.mt-1');
+                        if (row) row.appendChild(newBadge);
+                    }
+                    room.dataset.unread = 'true';
+                }
+                roomList.insertBefore(room, roomList.firstChild);
+            };
+            if (otherThreadIds && window.Echo) {
+                otherThreadIds.split(',').forEach(function (id) {
+                    if (!id || String(id) === String(threadId)) return;
+                    window.Echo.private('discussion.' + id)
+                        .listen('.message.sent', function (event) {
+                            const m = event.message || {};
+                            updateRoomOnMessage(id, m);
+                        });
+                });
+            }
         })();
     </script>
 @endif

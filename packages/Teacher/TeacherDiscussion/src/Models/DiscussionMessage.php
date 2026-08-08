@@ -17,7 +17,9 @@ class DiscussionMessage extends Model
     protected $fillable = [
         'thread_id',
         'sender_id',
+        'reply_to_id',
         'body',
+        'edited_at',
         'read_at',
         'is_pinned',
         'pinned_at',
@@ -28,6 +30,7 @@ class DiscussionMessage extends Model
     {
         return [
             'read_at' => 'datetime',
+            'edited_at' => 'datetime',
             'is_pinned' => 'boolean',
             'pinned_at' => 'datetime',
         ];
@@ -41,6 +44,33 @@ class DiscussionMessage extends Model
     public function sender(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sender_id');
+    }
+
+    public function repliesTo(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'reply_to_id');
+    }
+
+    public function replies(): HasMany
+    {
+        return $this->hasMany(self::class, 'reply_to_id');
+    }
+
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(DiscussionMessageReaction::class, 'message_id');
+    }
+
+    public function reactionSummary(): array
+    {
+        return $this->reactions
+            ->groupBy('emoji')
+            ->map(fn ($items, $emoji) => [
+                'emoji' => $emoji,
+                'count' => $items->count(),
+            ])
+            ->values()
+            ->all();
     }
 
     public function pinnedBy(): BelongsTo

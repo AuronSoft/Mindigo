@@ -39,6 +39,7 @@ class TeacherDiscussionController extends Controller
         $pinnedMessages = $selectedThread ? $this->service->pinnedMessages($selectedThread) : collect();
         $currentPreference = $selectedThread ? $this->service->preferenceFor($selectedThread, $teacher) : null;
         $candidateUsers = $this->service->candidateUsers($teacher);
+        $addMemberCandidates = $selectedThread ? $this->service->candidateUsersFor($teacher, $selectedThread) : collect();
         $canManage = $selectedThread ? $this->service->canManageThread($selectedThread, $teacher) : false;
         $ownerUserIds = $selectedThread ? $this->service->ownerUserIds($selectedThread) : collect();
 
@@ -50,12 +51,16 @@ class TeacherDiscussionController extends Controller
             'direct' => 'teacher.discussions.direct.store',
             'preferences' => 'teacher.discussions.preferences.update',
             'messagePin' => 'teacher.discussions.messages.pin',
+            'messageUpdate' => 'teacher.discussions.messages.update',
+            'messageDestroy' => 'teacher.discussions.messages.destroy',
+            'messageReact' => 'teacher.discussions.messages.react',
+            'typing' => 'teacher.discussions.typing',
             'markAllRead' => 'teacher.discussions.mark-all-read',
             'membersStore' => 'teacher.discussions.members.store',
             'membersDestroy' => 'teacher.discussions.members.destroy',
         ];
 
-        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'pinnedMessages', 'currentPreference', 'candidateUsers', 'canManage', 'ownerUserIds', 'routes'));
+        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'pinnedMessages', 'currentPreference', 'candidateUsers', 'addMemberCandidates', 'canManage', 'ownerUserIds', 'routes'));
     }
 
     public function store(StoreDiscussionMessageRequest $request, DiscussionThread $thread): RedirectResponse
@@ -64,7 +69,7 @@ class TeacherDiscussionController extends Controller
 
         /** @var User $teacher */
         $teacher = Auth::user();
-        $this->service->send($thread, $teacher, $request->input('body'), $request->file('attachments', []));
+        $this->service->send($thread, $teacher, $request->input('body'), $request->file('attachments', []), $request->integer('reply_to_id') ?: null);
 
         return redirect()
             ->route('teacher.discussions.index', ['thread' => $thread->id])
@@ -154,7 +159,7 @@ class TeacherDiscussionController extends Controller
             'member_ids.*' => ['integer', 'exists:users,id'],
         ]);
 
-        $this->service->addParticipants($thread, $request->input('member_ids'));
+        $this->service->addCandidateParticipants($thread, $request->user(), $request->input('member_ids'));
 
         return back()->with('success', __('teacher-discussion::app.member_added'));
     }
@@ -212,6 +217,54 @@ class TeacherDiscussionController extends Controller
         $this->service->updateMessagePin($thread, $message, $request->user(), $request->boolean('is_pinned'));
 
         return back()->with('success', __('teacher-discussion::app.message_pin_updated'));
+    }
+
+    public function updateMessage(Request $request, DiscussionThread $thread, DiscussionMessage $message): RedirectResponse
+    {
+        $this->authorizeThread($thread);
+
+        $request->validate([
+            'body' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $this->service->updateMessage($thread, $message, $request->user(), $request->input('body'));
+
+        return back()->with('success', __('teacher-discussion::app.message_updated'));
+    }
+
+    public function deleteMessage(DiscussionThread $thread, DiscussionMessage $message): RedirectResponse
+    {
+        $this->authorizeThread($thread);
+
+        /** @var User $user */
+        $user = Auth::user();
+        $this->service->deleteMessage($thread, $message, $user);
+
+        return back()->with('success', __('teacher-discussion::app.message_deleted'));
+    }
+
+    public function reactToMessage(Request $request, DiscussionThread $thread, DiscussionMessage $message): RedirectResponse
+    {
+        $this->authorizeThread($thread);
+
+        $request->validate([
+            'emoji' => ['required', 'string', 'max:32'],
+        ]);
+
+        $this->service->reactToMessage($thread, $message, $request->user(), $request->input('emoji'));
+
+        return back();
+    }
+
+    public function typing(DiscussionThread $thread)
+    {
+        $this->authorizeThread($thread);
+
+        /** @var User $user */
+        $user = Auth::user();
+        $this->service->broadcastTyping($thread, $user);
+
+        return response()->noContent();
     }
 
     private function authorizeThread(DiscussionThread $thread): void

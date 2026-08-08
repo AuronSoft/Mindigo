@@ -7,7 +7,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherDiscussion\Events\MessageDeleted;
+use Mindigo\TeacherDiscussion\Events\MessageReacted;
 use Mindigo\TeacherDiscussion\Events\MessageSent;
+use Mindigo\TeacherDiscussion\Events\MessageTyping;
+use Mindigo\TeacherDiscussion\Events\MessageUpdated;
 use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
 use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
 use Mindigo\TeacherDiscussion\Models\DiscussionParticipant;
@@ -110,7 +114,10 @@ class TeacherDiscussionService
     {
         $query = DiscussionThread::query()
             ->whereHas('participants', fn (Builder $query) => $query->where('user_id', $user->getAuthIdentifier()))
-            ->with(['classroom' => fn ($query) => $query->select('id', 'name', 'code')->withCount('students')]);
+            ->with([
+                'classroom' => fn ($query) => $query->select('id', 'name', 'code')->withCount('students'),
+                'participants.user:id,name,email,role,avatar',
+            ]);
 
         if ($threadId) {
             return $query->whereKey($threadId)->firstOrFail();
@@ -160,7 +167,14 @@ class TeacherDiscussionService
     public function messages(DiscussionThread $thread): Collection
     {
         return $thread->messages()
-            ->with(['sender:id,name,email,role,avatar', 'attachments', 'pinnedBy:id,name'])
+            ->with([
+                'sender:id,name,email,role,avatar',
+                'attachments',
+                'pinnedBy:id,name',
+                'repliesTo:id,sender_id,body',
+                'repliesTo.sender:id,name',
+                'reactions.user:id,name,email,role,avatar',
+            ])
             ->latest('created_at')
             ->limit(120)
             ->get()
@@ -246,10 +260,16 @@ class TeacherDiscussionService
             ->values();
     }
 
-    public function send(DiscussionThread $thread, User $sender, ?string $body, array $files = []): DiscussionMessage
-    {
+    public function send(
+        DiscussionThread $thread,
+        User $sender,
+        ?string $body,
+        array $files = [],
+        ?int $replyToId = null
+    ): DiscussionMessage {
         $message = $thread->messages()->create([
             'sender_id' => $sender->getAuthIdentifier(),
+            'reply_to_id' => $replyToId,
             'body' => trim((string) $body),
         ]);
 
@@ -267,7 +287,7 @@ class TeacherDiscussionService
 
         $thread->forceFill(['last_message_at' => $message->created_at])->save();
 
-        broadcast(new MessageSent($message->load('sender', 'attachments')));
+        broadcast(new MessageSent($message->load('sender', 'attachments', 'repliesTo.sender', 'reactions.user')));
 
         return $message;
     }
@@ -362,6 +382,19 @@ class TeacherDiscussionService
         return $added;
     }
 
+    /**
+     * Thêm thành viên với kiểm tra ứng viên hợp lệ theo hội thoại (chặn mời người ngoài vào group lớp).
+     */
+    public function addCandidateParticipants(DiscussionThread $thread, User $actor, array $userIds): int
+    {
+        $allowed = array_filter(
+            array_unique($userIds),
+            fn ($id) => $this->isCandidateFor($actor, $thread, (int) $id)
+        );
+
+        return $this->addParticipants($thread, $allowed);
+    }
+
     public function removeParticipant(DiscussionThread $thread, int $userId): bool
     {
         $participant = $thread->participants()->where('user_id', $userId)->first();
@@ -388,6 +421,95 @@ class TeacherDiscussionService
         $participant->forceFill(['role' => $role])->save();
 
         return true;
+    }
+
+    /**
+     * Cập nhật nội dung tin nhắn (chỉ người gửi).
+     */
+    public function updateMessage(DiscussionThread $thread, DiscussionMessage $message, User $user, string $body): DiscussionMessage
+    {
+        abort_unless((int) $message->thread_id === (int) $thread->id, 404);
+        abort_unless((int) $message->sender_id === (int) $user->getAuthIdentifier(), 403);
+
+        $message->forceFill([
+            'body' => trim($body),
+            'edited_at' => now(),
+        ])->save();
+
+        broadcast(new MessageUpdated($message->load('sender', 'attachments', 'repliesTo.sender', 'reactions.user')));
+
+        return $message;
+    }
+
+    /**
+     * Xoá mềm tin nhắn (chỉ người gửi hoặc người quản lý hội thoại).
+     */
+    public function deleteMessage(DiscussionThread $thread, DiscussionMessage $message, User $user): bool
+    {
+        abort_unless((int) $message->thread_id === (int) $thread->id, 404);
+
+        $isSender = (int) $message->sender_id === (int) $user->getAuthIdentifier();
+        $canManage = $this->canManageThread($thread, $user);
+
+        abort_unless($isSender || $canManage, 403);
+
+        broadcast(new MessageDeleted($thread->id, $message->id));
+
+        return (bool) $message->delete();
+    }
+
+    /**
+     * Thêm / gỡ phản ứng emoji của người dùng cho một tin nhắn.
+     */
+    public function reactToMessage(DiscussionThread $thread, DiscussionMessage $message, User $user, string $emoji): void
+    {
+        abort_unless((int) $message->thread_id === (int) $thread->id, 404);
+
+        DB::transaction(function () use ($thread, $message, $user, $emoji): void {
+            $existing = $message->reactions()
+                ->where('user_id', $user->getAuthIdentifier())
+                ->where('emoji', $emoji)
+                ->first();
+
+            if ($existing) {
+                $existing->delete();
+            } else {
+                $message->reactions()->create([
+                    'user_id' => $user->getAuthIdentifier(),
+                    'emoji' => $emoji,
+                ]);
+            }
+        });
+
+        broadcast(new MessageReacted(
+            $message->load('reactions.user:id,name,email,role,avatar'),
+            $emoji,
+            (int) $user->getAuthIdentifier()
+        ));
+    }
+
+    /**
+     * Thông báo trạng thái đang nhập cho các thành viên khác trong hội thoại.
+     */
+    public function broadcastTyping(DiscussionThread $thread, User $user): void
+    {
+        broadcast(new MessageTyping($thread, $user));
+    }
+
+    /**
+     * Danh sách thành viên đã đọc tới thời điểm hiện tại của tin nhắn.
+     */
+    public function readReceipts(DiscussionThread $thread, DiscussionMessage $message): Collection
+    {
+        return $thread->participants()
+            ->with('user:id,name,email,role,avatar')
+            ->where('user_id', '!=', $message->sender_id)
+            ->whereNotNull('last_read_at')
+            ->whereColumn('last_read_at', '>=', 'teacher_discussion_messages.created_at')
+            ->get()
+            ->map->user
+            ->filter()
+            ->values();
     }
 
     /**
@@ -452,5 +574,35 @@ class TeacherDiscussionService
             })
             ->orderBy('name')
             ->get();
+    }
+
+    /**
+     * Danh sách người dùng có thể mời thêm vào một hội thoại cụ thể.
+     * Với thread lớp học, chỉ cho phép mời học sinh cùng lớp (active).
+     */
+    public function candidateUsersFor(User $user, DiscussionThread $thread): Collection
+    {
+        if ($thread->type === DiscussionThread::TYPE_CLASS && $thread->classroom) {
+            return User::query()
+                ->join('classroom_students', 'classroom_students.user_id', '=', 'users.id')
+                ->where('classroom_students.classroom_id', $thread->classroom->id)
+                ->where('classroom_students.status', 'active')
+                ->where('users.is_active', true)
+                ->select('users.id', 'users.name', 'users.email', 'users.role', 'users.avatar')
+                ->orderBy('users.name')
+                ->distinct()
+                ->get();
+        }
+
+        return $this->candidateUsers($user);
+    }
+
+    /**
+     * Kiểm tra user id có phải là ứng viên hợp lệ để mời vào hội thoại không.
+     */
+    public function isCandidateFor(User $user, DiscussionThread $thread, int $userId): bool
+    {
+        return $this->candidateUsersFor($user, $thread)
+            ->contains(fn (User $candidate) => (int) $candidate->getAuthIdentifier() === $userId);
     }
 }

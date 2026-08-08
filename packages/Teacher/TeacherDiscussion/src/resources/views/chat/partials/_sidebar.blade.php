@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <div class="min-h-0 flex-1 overflow-y-auto py-1" data-discussion-room-list>
+    <div class="min-h-0 flex-1 overflow-y-auto py-1" data-discussion-room-list data-discussion-thread-ids="{{ $threads->pluck('id')->implode(',') }}">
         @forelse($threads as $thread)
             @php
                 $latest = $thread->latestMessage;
@@ -69,6 +69,7 @@
             @endphp
             <a href="{{ route($routes['index'], ['thread' => $thread->id]) }}"
                data-discussion-room
+               data-room-thread-id="{{ $thread->id }}"
                data-unread="{{ $unread > 0 ? 'true' : 'false' }}"
                data-room-type="{{ $thread->type }}"
                data-room-pinned="{{ $isPinned ? 'true' : 'false' }}"
