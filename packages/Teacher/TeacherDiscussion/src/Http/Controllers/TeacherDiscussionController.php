@@ -13,6 +13,7 @@ use Mindigo\TeacherDiscussion\Http\Requests\UpdateDiscussionPreferenceRequest;
 use Mindigo\TeacherDiscussion\Http\Requests\UpdatePinnedMessageRequest;
 use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
 use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
+use Mindigo\TeacherDiscussion\Models\DiscussionParticipant;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 use Mindigo\TeacherDiscussion\Services\TeacherDiscussionService;
 
@@ -41,7 +42,9 @@ class TeacherDiscussionController extends Controller
         $candidateUsers = $this->service->candidateUsers($teacher);
         $addMemberCandidates = $selectedThread ? $this->service->candidateUsersFor($teacher, $selectedThread) : collect();
         $canManage = $selectedThread ? $this->service->canManageThread($selectedThread, $teacher) : false;
+        $isOwner = $selectedThread ? $this->service->participantRole($selectedThread, (int) $teacher->getAuthIdentifier()) === DiscussionParticipant::ROLE_OWNER : false;
         $ownerUserIds = $selectedThread ? $this->service->ownerUserIds($selectedThread) : collect();
+        $hasOlderMessages = $selectedThread && $messages->isNotEmpty() ? $this->service->hasOlderMessages($selectedThread, $messages->first()?->id) : false;
 
         $routes = [
             'index' => 'teacher.discussions.index',
@@ -54,13 +57,15 @@ class TeacherDiscussionController extends Controller
             'messageUpdate' => 'teacher.discussions.messages.update',
             'messageDestroy' => 'teacher.discussions.messages.destroy',
             'messageReact' => 'teacher.discussions.messages.react',
+            'messageOlder' => 'teacher.discussions.messages.older',
             'typing' => 'teacher.discussions.typing',
             'markAllRead' => 'teacher.discussions.mark-all-read',
             'membersStore' => 'teacher.discussions.members.store',
             'membersDestroy' => 'teacher.discussions.members.destroy',
+            'memberRole' => 'teacher.discussions.members.role',
         ];
 
-        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'pinnedMessages', 'currentPreference', 'candidateUsers', 'addMemberCandidates', 'canManage', 'ownerUserIds', 'routes'));
+        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'pinnedMessages', 'currentPreference', 'candidateUsers', 'addMemberCandidates', 'canManage', 'isOwner', 'ownerUserIds', 'hasOlderMessages', 'routes'));
     }
 
     public function store(StoreDiscussionMessageRequest $request, DiscussionThread $thread): RedirectResponse
@@ -178,6 +183,22 @@ class TeacherDiscussionController extends Controller
     }
 
     /**
+     * Đổi vai trò thành viên (owner/admin/member).
+     */
+    public function updateMemberRole(Request $request, DiscussionThread $thread, int $user): RedirectResponse
+    {
+        $this->authorizeThread($thread);
+
+        $request->validate([
+            'role' => ['required', 'in:owner,admin,member'],
+        ]);
+
+        $this->service->changeRole($thread, $request->user(), $user, $request->input('role'));
+
+        return back()->with('success', __('teacher-discussion::app.role_updated'));
+    }
+
+    /**
      * Đánh dấu hội thoại đã đọc.
      */
     public function markAsRead(DiscussionThread $thread)
@@ -265,6 +286,45 @@ class TeacherDiscussionController extends Controller
         $this->service->broadcastTyping($thread, $user);
 
         return response()->noContent();
+    }
+
+    public function olderMessages(Request $request, DiscussionThread $thread)
+    {
+        $this->authorizeThread($thread);
+
+        $beforeId = $request->integer('before_id');
+        if (! $beforeId) {
+            return response()->json(['messages' => [], 'has_more' => false]);
+        }
+
+        $messages = $this->service->olderMessages($thread, $beforeId);
+        $oldestId = $messages->first()?->id;
+
+        return response()->json([
+            'messages' => $messages->map(fn (DiscussionMessage $message) => [
+                'id' => $message->id,
+                'sender_id' => $message->sender_id,
+                'body' => $message->body,
+                'created_at' => $message->created_at?->toIso8601String(),
+                'is_pinned' => $message->is_pinned,
+                'edited_at' => $message->edited_at?->toIso8601String(),
+                'sender' => ['name' => $message->sender?->name],
+                'attachments' => $message->attachments->map(fn ($a) => [
+                    'id' => $a->id,
+                    'original_name' => $a->original_name,
+                    'mime_type' => $a->mime_type,
+                    'size_label' => $a->sizeLabel(),
+                    'is_image' => $a->isImage(),
+                ])->values()->all(),
+                'replies_to' => $message->repliesTo ? [
+                    'id' => $message->repliesTo->id,
+                    'sender_name' => $message->repliesTo->sender?->name,
+                    'body' => $message->repliesTo->body,
+                ] : null,
+                'reactions' => $message->reactionSummary(),
+            ])->values()->all(),
+            'has_more' => $this->service->hasOlderMessages($thread, $oldestId),
+        ]);
     }
 
     private function authorizeThread(DiscussionThread $thread): void

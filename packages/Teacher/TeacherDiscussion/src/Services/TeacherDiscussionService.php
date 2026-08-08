@@ -164,22 +164,55 @@ class TeacherDiscussionService
             ->pluck('user_id');
     }
 
-    public function messages(DiscussionThread $thread): Collection
+    public function messages(DiscussionThread $thread, ?int $beforeId = null, int $limit = 60): Collection
     {
         return $thread->messages()
-            ->with([
-                'sender:id,name,email,role,avatar',
-                'attachments',
-                'pinnedBy:id,name',
-                'repliesTo:id,sender_id,body',
-                'repliesTo.sender:id,name',
-                'reactions.user:id,name,email,role,avatar',
-            ])
+            ->with($this->messageRelations())
+            ->when($beforeId, fn (Builder $query) => $query->where('id', '<', $beforeId))
             ->latest('created_at')
-            ->limit(120)
+            ->limit($limit)
             ->get()
             ->sortBy('created_at')
             ->values();
+    }
+
+    /**
+     * Cho biết còn tin nhắn cũ hơn một tin cụ thể không.
+     */
+    public function hasOlderMessages(DiscussionThread $thread, ?int $afterId = null): bool
+    {
+        if (! $afterId) {
+            return false;
+        }
+
+        return $thread->messages()->where('id', '<', $afterId)->exists();
+    }
+
+    /**
+     * Load các tin nhắn cũ hơn một tin cụ thể (dùng cho nút "xem tin cũ hơn").
+     */
+    public function olderMessages(DiscussionThread $thread, int $beforeId, int $limit = 40): Collection
+    {
+        return $thread->messages()
+            ->with($this->messageRelations())
+            ->where('id', '<', $beforeId)
+            ->latest('created_at')
+            ->limit($limit)
+            ->get()
+            ->sortBy('created_at')
+            ->values();
+    }
+
+    private function messageRelations(): array
+    {
+        return [
+            'sender:id,name,email,role,avatar',
+            'attachments',
+            'pinnedBy:id,name',
+            'repliesTo:id,sender_id,body',
+            'repliesTo.sender:id,name',
+            'reactions.user:id,name,email,role,avatar',
+        ];
     }
 
     public function preferenceFor(DiscussionThread $thread, User $user): DiscussionParticipant
@@ -421,6 +454,38 @@ class TeacherDiscussionService
         $participant->forceFill(['role' => $role])->save();
 
         return true;
+    }
+
+    /**
+     * Đổi vai trò thành viên (chỉ owner; không hạ role của owner khác;
+     * không bỏ vai trò owner cuối cùng của chính mình).
+     */
+    public function changeRole(DiscussionThread $thread, User $actor, int $userId, string $role): bool
+    {
+        abort_unless($this->canManageThread($thread, $actor), 403);
+
+        if (! in_array($role, DiscussionParticipant::ROLES, true)) {
+            abort(422, 'Invalid role');
+        }
+
+        $participant = $thread->participants()->where('user_id', $userId)->first();
+        abort_unless($participant, 404);
+
+        $isSelf = (int) $userId === (int) $actor->getAuthIdentifier();
+        $isTargetOwner = $participant->isOwner();
+
+        // Không thể hạ vai trò của owner khác.
+        if ($isTargetOwner && ! $isSelf) {
+            abort(403);
+        }
+
+        // Không thể hạ mình khỏi owner khi là owner duy nhất.
+        if ($isSelf && $isTargetOwner && $role !== DiscussionParticipant::ROLE_OWNER) {
+            $ownerCount = $thread->participants()->where('role', DiscussionParticipant::ROLE_OWNER)->count();
+            abort_if($ownerCount <= 1, 422, 'Cannot demote the only owner');
+        }
+
+        return $this->updateRole($thread, $userId, $role);
     }
 
     /**

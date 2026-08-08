@@ -168,14 +168,36 @@
 
         <div class="max-h-[60vh] space-y-1 overflow-y-auto p-4">
             @forelse($members as $member)
-                @php $memberInitial = mb_strtoupper(mb_substr($member->name ?? $member->email, 0, 1)); @endphp
+                @php
+                    $memberInitial = mb_strtoupper(mb_substr($member->name ?? $member->email, 0, 1));
+                    $memberRole = $selectedThread->participants?->firstWhere('user_id', (int) $member->id)?->role ?? 'member';
+                    $isOwnerMember = $ownerUserIds->contains((int) $member->id);
+                @endphp
                 <div class="flex items-center gap-3 rounded-xl px-2 py-2 transition hover:bg-slate-50">
                     <div class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-100 text-sm font-black text-slate-600">{{ $memberInitial }}</div>
                     <div class="min-w-0 flex-1">
-                        <p class="truncate text-sm font-black text-slate-800">{{ $member->name }}</p>
+                        <div class="flex items-center gap-2">
+                            <p class="min-w-0 truncate text-sm font-black text-slate-800">{{ $member->name }}</p>
+                            <span class="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black {{ $memberRole === 'owner' ? 'bg-amber-100 text-amber-700' : ($memberRole === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500') }}">
+                                @lang('teacher-discussion::app.role_'.$memberRole)
+                            </span>
+                        </div>
                         <p class="truncate text-[11px] font-bold text-slate-400">{{ $member->email }}</p>
                     </div>
-                    @if($canManage && !$ownerUserIds->contains((int) $member->id))
+                    @if($isOwner && !$isOwnerMember)
+                        <form method="POST" action="{{ route($routes['memberRole'], [$selectedThread, $member->id]) }}" class="shrink-0">
+                            @csrf
+                            @method('PATCH')
+                            <select name="role" onchange="this.form.submit()" class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-bold text-slate-600 outline-none focus:border-green-400">
+                                @foreach(['owner','admin','member'] as $roleOption)
+                                    <option value="{{ $roleOption }}" {{ $memberRole === $roleOption ? 'selected' : '' }}>@lang('teacher-discussion::app.role_'.$roleOption)</option>
+                                @endforeach
+                            </select>
+                        </form>
+                    @elseif($isOwnerMember)
+                        <span class="shrink-0 px-2 text-[10px] font-black text-amber-600">@lang('teacher-discussion::app.role_owner')</span>
+                    @endif
+                    @if($canManage && !$isOwnerMember)
                         <form method="POST" action="{{ route($routes['membersDestroy'], [$selectedThread, $member->id]) }}">
                             @csrf
                             @method('DELETE')

@@ -5,6 +5,9 @@
             pane.scrollTop = pane.scrollHeight;
         }
 
+        const form = document.querySelector('[data-discussion-form]');
+        const currentUserId = form ? form.dataset.currentUser : null;
+
         const input = document.querySelector('[data-discussion-input]');
         if (input) {
             input.addEventListener('input', function () {
@@ -422,6 +425,171 @@
                 });
             }
         });
+
+        // ==== Phase 4: Emoji picker ====
+        const emojiSet = ['😀','😁','😂','🤣','😊','😍','😘','😎','🤗','🤔','😅','😉','🙂','😜','😇','🥰','🤩','😋','😌','🤓','😴','😢','😭','😤','😡','👍','👎','👏','🙏','💪','🤝','👌','✌️','🤞','❤️','🧡','💛','💚','💙','💜','🖤','💯','🔥','✨','⭐','🌟','🎉','🎊','❤️🔥','🌹','🍀','🍕','🍺','☕','⚽','🏆','🎵','💡','✅','❌','❓','❗','🚀','🌍'];
+        const emojiToggle = document.querySelector('[data-discussion-emoji-toggle]');
+        const emojiPicker = document.querySelector('[data-discussion-emoji-picker]');
+        const emojiList = document.querySelector('[data-discussion-emoji-list]');
+        const emojiSearch = document.querySelector('[data-discussion-emoji-search]');
+        const renderEmojis = function (keyword) {
+            if (!emojiList) return;
+            const filtered = emojiSet.filter(function (e) {
+                return !keyword || e.includes(keyword);
+            });
+            emojiList.innerHTML = '';
+            filtered.forEach(function (emoji) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = emoji;
+                btn.className = 'grid h-8 w-8 place-items-center rounded-lg text-lg transition hover:bg-slate-100';
+                btn.addEventListener('click', function () {
+                    if (input) {
+                        input.value += emoji;
+                        input.focus();
+                        input.dispatchEvent(new Event('input'));
+                    }
+                    if (emojiPicker) { emojiPicker.classList.add('hidden'); }
+                });
+                emojiList.appendChild(btn);
+            });
+        };
+        if (emojiToggle && emojiPicker) {
+            emojiToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isOpen = !emojiPicker.classList.contains('hidden');
+                emojiPicker.classList.toggle('hidden');
+                if (!isOpen) renderEmojis('');
+            });
+            emojiSearch?.addEventListener('input', function () { renderEmojis(this.value.trim().toLowerCase()); });
+            document.addEventListener('click', function (event) {
+                if (!event.target.closest('[data-discussion-emoji-toggle], [data-discussion-emoji-picker]')) {
+                    emojiPicker.classList.add('hidden');
+                }
+            });
+        }
+
+        // ==== Phase 4: Load older messages ====
+        const olderBtn = document.querySelector('[data-discussion-older-btn]');
+        const olderWrap = document.querySelector('[data-discussion-older-wrap]');
+        const buildOlderRow = function (m) {
+            const mine = String(m.sender_id) === String(currentUserId);
+            const senderName = (m.sender && m.sender.name) || '';
+            const time = m.created_at ? new Date(m.created_at) : new Date();
+            const timeLabel = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const row = document.createElement('div');
+            row.className = 'flex items-end gap-2.5 ' + (mine ? 'justify-end' : 'justify-start');
+            if (!mine) {
+                const av = document.createElement('div');
+                av.className = 'grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-black text-slate-600';
+                av.textContent = (senderName.charAt(0) || '?').toUpperCase();
+                row.appendChild(av);
+            }
+            const inner = document.createElement('div');
+            inner.className = 'max-w-[min(35rem,78%)]';
+            const meta = document.createElement('div');
+            meta.className = 'mb-1 flex items-center gap-2 px-1 ' + (mine ? 'justify-end' : '');
+            if (!mine) {
+                const nm = document.createElement('span');
+                nm.className = 'text-xs font-black text-slate-700';
+                nm.textContent = senderName;
+                meta.appendChild(nm);
+            }
+            const tm = document.createElement('span');
+            tm.className = 'text-[11px] font-bold text-slate-400';
+            tm.textContent = timeLabel;
+            meta.appendChild(tm);
+            const bubble = document.createElement('div');
+            bubble.className = 'rounded-2xl px-4 py-3 ' + (mine ? 'rounded-br-md bg-green-600 text-white' : 'rounded-bl-md bg-slate-100 text-slate-800');
+            if (m.replies_to) {
+                const quote = document.createElement('div');
+                quote.className = 'mb-1 rounded-lg border-l-2 ' + (mine ? 'border-green-300 bg-white/10' : 'border-slate-200 bg-white') + ' px-2 py-1';
+                const qn = document.createElement('span');
+                qn.className = 'block truncate text-[10px] font-black ' + (mine ? 'text-green-100' : 'text-slate-500');
+                qn.textContent = m.replies_to.sender_name || '';
+                const qb = document.createElement('span');
+                qb.className = 'line-clamp-1 text-[11px] font-semibold ' + (mine ? 'text-green-100/80' : 'text-slate-500');
+                qb.textContent = m.replies_to.body || '';
+                quote.appendChild(qn);
+                quote.appendChild(qb);
+                bubble.appendChild(quote);
+            }
+            const p = document.createElement('p');
+            p.className = 'whitespace-pre-line wrap-break-word text-sm font-semibold leading-6';
+            p.textContent = m.body || '';
+            bubble.appendChild(p);
+            if (m.attachments && m.attachments.length) {
+                const wrap = document.createElement('div');
+                wrap.className = 'mt-2 grid gap-2';
+                m.attachments.forEach(function (attachment) {
+                    const urlTemplate = pane.getAttribute('data-attachment-url') || '';
+                    const url = urlTemplate.replace('__ATTACHMENT_ID__', attachment.id);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.target = '_blank';
+                    link.className = 'flex items-center gap-3 rounded-2xl no-underline ' + (mine ? 'bg-white/15 text-white' : 'bg-white p-3 text-slate-700');
+                    link.innerHTML = '<span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl ' + (mine ? 'bg-white/20' : 'bg-slate-100') + '">\uD83D\uDCC4</span><span class="min-w-0 flex-1"><span class="block truncate text-xs font-black">' + (attachment.original_name || 'File') + '</span><span class="block text-[11px] font-bold opacity-70">' + (attachment.size_label || '') + '</span></span>';
+                    wrap.appendChild(link);
+                });
+                bubble.appendChild(wrap);
+            }
+            if (m.reactions && m.reactions.length) {
+                const rc = document.createElement('div');
+                rc.className = 'mt-1 flex flex-wrap gap-1 ' + (mine ? 'justify-end' : '');
+                m.reactions.forEach(function (r) {
+                    const chip = document.createElement('span');
+                    chip.className = 'flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-700';
+                    chip.textContent = r.emoji + ' ' + r.count;
+                    rc.appendChild(chip);
+                });
+                bubble.appendChild(rc);
+            }
+            inner.appendChild(meta);
+            inner.appendChild(bubble);
+            row.appendChild(inner);
+            return row;
+        };
+        if (pane && olderBtn) {
+            if (pane.getAttribute('data-has-older') === 'true') {
+                olderBtn.classList.remove('hidden');
+            }
+            let loadingOlder = false;
+            olderBtn.addEventListener('click', function () {
+                if (loadingOlder) return;
+                loadingOlder = true;
+                olderBtn.textContent = '@lang('teacher-discussion::app.loading_messages')';
+                olderBtn.disabled = true;
+                const list = pane.querySelector('.space-y-4');
+                const firstRow = list ? list.querySelector('[data-msg-id]') : null;
+                const beforeId = firstRow ? firstRow.dataset.msgId : null;
+                if (!beforeId) { loadingOlder = false; return; }
+                const olderUrl = pane.getAttribute('data-older-url');
+                const prevScrollHeight = pane.scrollHeight;
+                fetch(olderUrl + '?before_id=' + beforeId, {
+                    headers: { 'Accept': 'application/json' },
+                }).then(function (res) { return res.json(); }).then(function (data) {
+                    const rows = (data.messages || []).map(function (m) {
+                        return buildOlderRow(m);
+                    });
+                    if (list && rows.length) {
+                        list.prepend.apply(list, rows);
+                        pane.scrollTop = pane.scrollHeight - prevScrollHeight;
+                    }
+                    if (data.has_more) {
+                        olderBtn.textContent = '@lang('teacher-discussion::app.view_older_messages')';
+                        olderBtn.disabled = false;
+                    } else {
+                        olderBtn.textContent = '@lang('teacher-discussion::app.no_more_messages')';
+                        olderBtn.disabled = true;
+                    }
+                    loadingOlder = false;
+                }).catch(function () {
+                    olderBtn.textContent = '@lang('teacher-discussion::app.view_older_messages')';
+                    olderBtn.disabled = false;
+                    loadingOlder = false;
+                });
+            });
+        }
 
         // ==== Phase 3: Typing ====
         const typingUrl = form ? form.action.replace(/\/messages$/, '/typing') : null;

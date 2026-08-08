@@ -117,4 +117,11 @@ return [
     'is_typing' => 'is typing...',
     'seen' => 'Seen',
     'delete_message_confirmation' => 'Delete this message? This cannot be undone.',
+    'role_owner' => 'Owner',
+    'role_member' => 'Member',
+    'change_role' => 'Change role',
+    'role_updated' => 'Role updated.',
+    'view_older_messages' => 'View older messages',
+    'no_more_messages' => 'No more messages',
+    'loading_messages' => 'Loading messages...',
 ];

@@ -117,4 +117,11 @@ return [
     'is_typing' => 'đang nhập...',
     'seen' => 'Đã xem',
     'delete_message_confirmation' => 'Xoá tin nhắn này? Hành động này không thể hoàn tác.',
+    'role_owner' => 'Chủ sở hữu',
+    'role_member' => 'Thành viên',
+    'change_role' => 'Đổi vai trò',
+    'role_updated' => 'Đã cập nhật vai trò.',
+    'view_older_messages' => 'Xem tin nhắn cũ hơn',
+    'no_more_messages' => 'Không còn tin nhắn cũ hơn',
+    'loading_messages' => 'Đang tải tin nhắn...',
 ];
