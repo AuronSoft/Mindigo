@@ -84,7 +84,10 @@
                 const matchesSearch = room.dataset.search.includes(keyword);
                 const matchesFilter = activeRoomFilter === 'all'
                     || (activeRoomFilter === 'unread' && room.dataset.unread === 'true')
-                    || (activeRoomFilter === 'groups' && ['group', 'class'].includes(room.dataset.roomType));
+                    || (activeRoomFilter === 'groups' && ['group', 'class'].includes(room.dataset.roomType))
+                    || (activeRoomFilter === 'direct' && room.dataset.roomType === 'direct')
+                    || (activeRoomFilter === 'pinned' && room.dataset.roomPinned === 'true')
+                    || (activeRoomFilter === 'muted' && room.dataset.roomMuted === 'true');
                 const show = matchesSearch && matchesFilter;
                 room.classList.toggle('hidden', !show);
                 if (show) visible++;
@@ -142,6 +145,48 @@
             el.classList.add('hidden');
             el.classList.remove('flex');
         };
+
+        const classificationMenu = document.querySelector('[data-discussion-classification-menu]');
+        const moreMenu = document.querySelector('[data-discussion-more-menu]');
+        document.querySelector('[data-discussion-classification-toggle]')?.addEventListener('click', function (event) {
+            event.stopPropagation();
+            classificationMenu?.classList.toggle('hidden');
+            moreMenu?.classList.add('hidden');
+            this.setAttribute('aria-expanded', classificationMenu && !classificationMenu.classList.contains('hidden') ? 'true' : 'false');
+        });
+        document.querySelector('[data-discussion-more-toggle]')?.addEventListener('click', function (event) {
+            event.stopPropagation();
+            moreMenu?.classList.toggle('hidden');
+            classificationMenu?.classList.add('hidden');
+        });
+        document.querySelectorAll('[data-discussion-classification]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                activeRoomFilter = button.dataset.discussionClassification;
+                document.querySelectorAll('[data-discussion-classification-check]').forEach(function (check) {
+                    check.innerHTML = '';
+                    check.classList.remove('border-green-600', 'bg-green-600');
+                });
+                const check = button.querySelector('[data-discussion-classification-check]');
+                if (check) {
+                    check.classList.add('border-green-600', 'bg-green-600');
+                    check.innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-white"></span>';
+                }
+                classificationMenu?.classList.add('hidden');
+                applyRoomFilters();
+            });
+        });
+        document.querySelector('[data-discussion-mark-all-read-open]')?.addEventListener('click', function () {
+            moreMenu?.classList.add('hidden');
+            openModal('discussion-mark-all-read-modal');
+        });
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('[data-discussion-classification-menu], [data-discussion-classification-toggle]')) {
+                classificationMenu?.classList.add('hidden');
+            }
+            if (!event.target.closest('[data-discussion-more-menu], [data-discussion-more-toggle]')) {
+                moreMenu?.classList.add('hidden');
+            }
+        });
 
         document.querySelectorAll('[data-discussion-new-group]').forEach(function (btn) {
             btn.addEventListener('click', function () { openModal('discussion-group-modal'); });

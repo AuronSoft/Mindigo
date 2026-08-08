@@ -351,6 +351,13 @@ class TeacherDiscussionService
             ->update(['last_read_at' => now()]);
     }
 
+    public function markAllAsRead(User $user): void
+    {
+        DiscussionParticipant::query()
+            ->where('user_id', $user->getAuthIdentifier())
+            ->update(['last_read_at' => now()]);
+    }
+
     public function unreadCountFor(User $user): int
     {
         return DiscussionThread::query()

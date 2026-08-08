@@ -44,6 +44,7 @@ class TeacherDiscussionController extends Controller
             'direct' => 'teacher.discussions.direct.store',
             'preferences' => 'teacher.discussions.preferences.update',
             'messagePin' => 'teacher.discussions.messages.pin',
+            'markAllRead' => 'teacher.discussions.mark-all-read',
         ];
 
         return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'currentPreference', 'candidateUsers', 'routes'));
@@ -173,6 +174,15 @@ class TeacherDiscussionController extends Controller
         $this->service->markAsRead($thread, $user);
 
         return response()->noContent();
+    }
+
+    public function markAllAsRead(): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $this->service->markAllAsRead($user);
+
+        return back()->with('success', __('teacher-discussion::app.all_marked_read'));
     }
 
     public function updatePreferences(UpdateDiscussionPreferenceRequest $request, DiscussionThread $thread): RedirectResponse

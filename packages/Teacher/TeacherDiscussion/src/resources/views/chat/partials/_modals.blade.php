@@ -202,3 +202,23 @@
         </div>
     </div>
 </div>
+<div id="discussion-mark-all-read-modal" data-discussion-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/55 p-4">
+    <div class="w-full max-w-sm overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <form method="POST" action="{{ route($routes['markAllRead']) }}">
+            @csrf
+            <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+                <h3 class="text-base font-black text-slate-950">@lang('teacher-discussion::app.confirm')</h3>
+                <button type="button" data-discussion-modal-close="discussion-mark-all-read-modal" class="grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
+                    <x-heroicon-o-x-mark class="h-5 w-5" />
+                </button>
+            </div>
+            <div class="px-5 py-5">
+                <p class="text-sm font-semibold leading-6 text-slate-600">@lang('teacher-discussion::app.mark_all_read_confirmation')</p>
+            </div>
+            <div class="flex justify-end gap-2 border-t border-slate-100 bg-slate-50 px-5 py-4">
+                <button type="button" data-discussion-modal-close="discussion-mark-all-read-modal" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-black text-slate-600 transition hover:bg-slate-100">@lang('teacher-discussion::app.no')</button>
+                <button type="submit" class="rounded-xl bg-green-600 px-5 py-2.5 text-sm font-black text-white transition hover:bg-green-700">@lang('teacher-discussion::app.confirm_action')</button>
+            </div>
+        </form>
+    </div>
+</div>
