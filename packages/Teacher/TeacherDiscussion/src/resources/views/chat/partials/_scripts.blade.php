@@ -245,6 +245,16 @@
             check.addEventListener('change', updateGroupCount);
         });
 
+        // Đếm số thành viên đã chọn trong modal thêm thành viên
+        const updateAddMemberCount = function () {
+            const countEl = document.getElementById('discussion-add-member-count');
+            const checks = document.querySelectorAll('#discussion-add-members input[name="member_ids[]"]:checked');
+            if (countEl) countEl.textContent = checks.length + ' @lang('teacher-discussion::app.selected')';
+        };
+        document.querySelectorAll('#discussion-add-members input[name="member_ids[]"]').forEach(function (check) {
+            check.addEventListener('change', updateAddMemberCount);
+        });
+
         // Khi đóng modal, reset các ô tích chọn
         document.querySelectorAll('[data-discussion-modal-close]').forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -308,6 +318,30 @@
                 p.className = 'whitespace-pre-line wrap-break-word text-sm font-semibold leading-6';
                 p.textContent = data.body || '';
                 bubble.appendChild(p);
+
+                const attachments = data.attachments || [];
+                if (attachments.length) {
+                    const wrap = document.createElement('div');
+                    wrap.className = 'mt-2 grid gap-2';
+                    attachments.forEach(function (attachment) {
+                        const urlTemplate = pane.getAttribute('data-attachment-url') || '';
+                        const url = urlTemplate.replace('__ATTACHMENT_ID__', attachment.id);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.target = '_blank';
+                        link.className = 'flex items-center gap-3 rounded-2xl no-underline ' + (mine ? 'bg-white/15 text-white' : 'bg-white p-3 text-slate-700');
+                        if (!mine) {
+                            link.style.padding = '0.75rem';
+                        }
+                        if (attachment.is_image) {
+                            link.innerHTML = '<span class="truncate text-xs font-black">' + (attachment.original_name || 'Image') + '</span>';
+                        } else {
+                            link.innerHTML = '<span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl ' + (mine ? 'bg-white/20' : 'bg-slate-100') + '">\uD83D\uDCC4</span><span class="min-w-0 flex-1"><span class="block truncate text-xs font-black">' + (attachment.original_name || 'File') + '</span><span class="block text-[11px] font-bold opacity-70">' + (attachment.size_label || '') + '</span></span>';
+                        }
+                        wrap.appendChild(link);
+                    });
+                    bubble.appendChild(wrap);
+                }
 
                 inner.appendChild(meta);
                 inner.appendChild(bubble);

@@ -7,6 +7,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
 use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
 
 class MessageSent implements ShouldBroadcast
@@ -37,6 +38,13 @@ class MessageSent implements ShouldBroadcast
                 'sender' => [
                     'name' => $this->message->sender?->name,
                 ],
+                'attachments' => $this->message->attachments->map(fn (DiscussionAttachment $attachment): array => [
+                    'id' => $attachment->id,
+                    'original_name' => $attachment->original_name,
+                    'mime_type' => $attachment->mime_type,
+                    'size_label' => $attachment->sizeLabel(),
+                    'is_image' => $attachment->isImage(),
+                ])->values()->all(),
             ],
         ];
     }

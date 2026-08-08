@@ -134,6 +134,29 @@ class TeacherDiscussionService
         return $thread->participants()->where('user_id', $userId)->exists();
     }
 
+    public function participantRole(DiscussionThread $thread, int $userId): ?string
+    {
+        return $thread->participants()->where('user_id', $userId)->value('role');
+    }
+
+    public function canManageThread(DiscussionThread $thread, User $user): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        $role = $this->participantRole($thread, (int) $user->getAuthIdentifier());
+
+        return in_array($role, [DiscussionParticipant::ROLE_OWNER, DiscussionParticipant::ROLE_ADMIN], true);
+    }
+
+    public function ownerUserIds(DiscussionThread $thread): Collection
+    {
+        return $thread->participants()
+            ->where('role', DiscussionParticipant::ROLE_OWNER)
+            ->pluck('user_id');
+    }
+
     public function messages(DiscussionThread $thread): Collection
     {
         return $thread->messages()
@@ -180,6 +203,7 @@ class TeacherDiscussionService
         bool $isPinned
     ): DiscussionMessage {
         abort_unless((int) $message->thread_id === (int) $thread->id, 404);
+        abort_unless($this->canManageThread($thread, $user), 403);
 
         return DB::transaction(function () use ($message, $user, $isPinned): DiscussionMessage {
             $lockedMessage = DiscussionMessage::query()->lockForUpdate()->findOrFail($message->id);
@@ -199,6 +223,16 @@ class TeacherDiscussionService
             ->whereHas('message', fn ($query) => $query->where('thread_id', $thread->id))
             ->latest('created_at')
             ->limit(24)
+            ->get();
+    }
+
+    public function pinnedMessages(DiscussionThread $thread): Collection
+    {
+        return $thread->messages()
+            ->where('is_pinned', true)
+            ->with(['sender:id,name', 'pinnedBy:id,name'])
+            ->latest('pinned_at')
+            ->limit(20)
             ->get();
     }
 
@@ -233,7 +267,7 @@ class TeacherDiscussionService
 
         $thread->forceFill(['last_message_at' => $message->created_at])->save();
 
-        broadcast(new MessageSent($message->load('sender')));
+        broadcast(new MessageSent($message->load('sender', 'attachments')));
 
         return $message;
     }
