@@ -9,7 +9,9 @@ use Mindigo\Auth\Models\User;
 class DiscussionParticipant extends Model
 {
     public const ROLE_OWNER = 'owner';
+
     public const ROLE_ADMIN = 'admin';
+
     public const ROLE_MEMBER = 'member';
 
     public const ROLES = [self::ROLE_OWNER, self::ROLE_ADMIN, self::ROLE_MEMBER];
@@ -22,6 +24,9 @@ class DiscussionParticipant extends Model
         'role',
         'joined_at',
         'last_read_at',
+        'is_muted',
+        'is_pinned',
+        'pinned_at',
     ];
 
     protected function casts(): array
@@ -29,6 +34,9 @@ class DiscussionParticipant extends Model
         return [
             'joined_at' => 'datetime',
             'last_read_at' => 'datetime',
+            'is_muted' => 'boolean',
+            'is_pinned' => 'boolean',
+            'pinned_at' => 'datetime',
         ];
     }
 

@@ -1,6 +1,9 @@
 <aside class="min-h-0 overflow-y-auto border-l border-slate-200 bg-white max-xl:absolute max-xl:bottom-0 max-xl:right-0 max-xl:top-0 max-xl:z-30 max-xl:hidden max-xl:w-80 max-xl:shadow-2xl" data-discussion-info-panel>
-    <div class="border-b border-slate-100 p-5">
+    <div class="flex h-16 items-center justify-between border-b border-slate-200 px-5">
         <h2 class="text-sm font-black text-slate-950">@lang('teacher-discussion::app.group_info')</h2>
+        <button type="button" data-discussion-info-toggle class="grid h-9 w-9 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 xl:hidden">
+            <x-heroicon-o-x-mark class="h-5 w-5" />
+        </button>
     </div>
 
     <div class="p-5 text-center">
@@ -9,10 +12,62 @@
         </div>
         <h3 class="mt-3 text-base font-black text-slate-950">{{ $selectedName }}</h3>
         <p class="mt-1 text-xs font-bold text-slate-400">{{ number_format($members->count()) }} @lang('teacher-discussion::app.members')</p>
+
+        <div class="mt-5 grid grid-cols-3 gap-1">
+            <form method="POST" action="{{ route($routes['preferences'], $selectedThread) }}">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="is_muted" value="{{ $currentPreference?->is_muted ? 0 : 1 }}">
+                <button class="flex w-full flex-col items-center gap-2 rounded-xl px-2 py-3 text-xs font-black text-slate-600 transition hover:bg-slate-50">
+                    <span class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600">
+                        @if($currentPreference?->is_muted)
+                            <x-heroicon-o-bell class="h-4 w-4" />
+                        @else
+                            <x-heroicon-o-bell-slash class="h-4 w-4" />
+                        @endif
+                    </span>
+                    {{ $currentPreference?->is_muted ? __('teacher-discussion::app.enable_notifications') : __('teacher-discussion::app.mute_notifications') }}
+                </button>
+            </form>
+            <form method="POST" action="{{ route($routes['preferences'], $selectedThread) }}">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="is_pinned" value="{{ $currentPreference?->is_pinned ? 0 : 1 }}">
+                <button class="flex w-full flex-col items-center gap-2 rounded-xl px-2 py-3 text-xs font-black text-slate-600 transition hover:bg-slate-50">
+                    <span class="grid h-9 w-9 place-items-center rounded-full {{ $currentPreference?->is_pinned ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600' }}">
+                        <x-heroicon-o-bookmark class="h-4 w-4" />
+                    </span>
+                    {{ $currentPreference?->is_pinned ? __('teacher-discussion::app.unpin_conversation') : __('teacher-discussion::app.pin_conversation') }}
+                </button>
+            </form>
+            <button type="button" data-discussion-view="members" class="flex w-full flex-col items-center gap-2 rounded-xl px-1 py-3 text-xs font-black text-slate-600 transition hover:bg-slate-50">
+                <span class="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600">
+                    <x-heroicon-o-user-group class="h-4 w-4" />
+                </span>
+                @lang('teacher-discussion::app.members')
+            </button>
+        </div>
     </div>
 
-    <div class="space-y-6 px-5 pb-6">
-        <section>
+    <div class="pb-6">
+        <section class="border-t border-slate-100 px-5 py-5">
+            <h3 class="mb-3 flex items-center gap-2 text-sm font-black text-slate-950">
+                <x-heroicon-o-bookmark class="h-4 w-4 text-green-600" />
+                @lang('teacher-discussion::app.pinned_messages')
+            </h3>
+            <div class="space-y-2">
+                @forelse($pinnedMessages->take(3) as $pinnedMessage)
+                    <a href="#discussion-message-{{ $pinnedMessage->id }}" class="block rounded-xl bg-slate-50 px-3 py-2 no-underline transition hover:bg-green-50">
+                        <p class="truncate text-xs font-black text-slate-700">{{ $pinnedMessage->sender?->name }}</p>
+                        <p class="mt-1 line-clamp-2 text-[11px] font-semibold leading-4 text-slate-500">{{ $pinnedMessage->body ?: __('teacher-discussion::app.attachment_message') }}</p>
+                    </a>
+                @empty
+                    <p class="rounded-xl bg-slate-50 p-3 text-center text-xs font-bold text-slate-400">@lang('teacher-discussion::app.no_pinned_messages')</p>
+                @endforelse
+            </div>
+        </section>
+
+        <section class="border-t border-slate-100 px-5 py-5">
             <div class="mb-3 flex items-center justify-between">
                 <h3 class="text-sm font-black text-slate-950">@lang('teacher-discussion::app.members')</h3>
                 <button type="button" data-discussion-view="members" class="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-black text-green-700 transition hover:bg-green-50">
@@ -36,7 +91,7 @@
             </div>
         </section>
 
-        <section>
+        <section class="border-t border-slate-100 px-5 py-5">
             <div class="mb-3 flex items-center justify-between">
                 <h3 class="text-sm font-black text-slate-950">@lang('teacher-discussion::app.shared_files')</h3>
                 <button type="button" data-discussion-view="images" class="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-black text-green-700 transition hover:bg-green-50">
@@ -63,7 +118,7 @@
             @endif
         </section>
 
-        <section>
+        <section class="border-t border-slate-100 px-5 py-5">
             <div class="mb-3 flex items-center justify-between">
                 <h3 class="text-sm font-black text-slate-950">@lang('teacher-discussion::app.files')</h3>
                 <button type="button" data-discussion-view="files" class="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-black text-green-700 transition hover:bg-green-50">

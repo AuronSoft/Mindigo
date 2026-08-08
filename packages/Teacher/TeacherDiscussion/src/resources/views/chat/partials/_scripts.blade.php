@@ -15,15 +15,6 @@
 
         const search = document.querySelector('[data-discussion-search]');
         const rooms = document.querySelectorAll('[data-discussion-room]');
-        if (search) {
-            search.addEventListener('input', function () {
-                const keyword = this.value.trim().toLowerCase();
-                rooms.forEach(function (room) {
-                    room.classList.toggle('hidden', !room.dataset.search.includes(keyword));
-                });
-            });
-        }
-
         const tabs = document.querySelectorAll('[data-discussion-tab]');
         const tabPanes = document.querySelectorAll('[data-discussion-tab-pane]');
         if (tabs.length) {
@@ -76,22 +67,79 @@
             });
         }
 
-        const infoToggle = document.querySelector('[data-discussion-info-toggle]');
         const infoPanel = document.querySelector('[data-discussion-info-panel]');
-        if (infoToggle && infoPanel) {
-            infoToggle.addEventListener('click', function () {
-                infoPanel.classList.toggle('hidden');
+        if (infoPanel) {
+            document.querySelectorAll('[data-discussion-info-toggle]').forEach(function (infoToggle) {
+                infoToggle.addEventListener('click', function () {
+                    infoPanel.classList.toggle('hidden');
+                });
             });
         }
 
+        let activeRoomFilter = 'all';
+        const applyRoomFilters = function () {
+            const keyword = search ? search.value.trim().toLowerCase() : '';
+            let visible = 0;
+            rooms.forEach(function (room) {
+                const matchesSearch = room.dataset.search.includes(keyword);
+                const matchesFilter = activeRoomFilter === 'all'
+                    || (activeRoomFilter === 'unread' && room.dataset.unread === 'true')
+                    || (activeRoomFilter === 'groups' && ['group', 'class'].includes(room.dataset.roomType));
+                const show = matchesSearch && matchesFilter;
+                room.classList.toggle('hidden', !show);
+                if (show) visible++;
+            });
+            const empty = document.querySelector('[data-discussion-filter-empty]');
+            if (empty) empty.classList.toggle('hidden', visible > 0);
+        };
+        if (search) search.addEventListener('input', applyRoomFilters);
+        document.querySelectorAll('[data-discussion-list-filter]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                activeRoomFilter = button.dataset.discussionListFilter;
+                document.querySelectorAll('[data-discussion-list-filter]').forEach(function (item) {
+                    const active = item === button;
+                    item.classList.toggle('border-green-600', active);
+                    item.classList.toggle('text-green-700', active);
+                    item.classList.toggle('border-transparent', !active);
+                    item.classList.toggle('text-slate-500', !active);
+                });
+                applyRoomFilters();
+            });
+        });
+
+        const messageSearch = document.querySelector('[data-discussion-message-search]');
+        const messageSearchInput = document.querySelector('[data-discussion-message-search-input]');
+        document.querySelectorAll('[data-discussion-message-search-toggle]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                if (!messageSearch) return;
+                messageSearch.classList.toggle('hidden');
+                if (!messageSearch.classList.contains('hidden')) messageSearchInput?.focus();
+            });
+        });
+        document.querySelectorAll('[data-discussion-message-search-close]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                messageSearch?.classList.add('hidden');
+                if (messageSearchInput) messageSearchInput.value = '';
+                document.querySelectorAll('[data-discussion-message-row]').forEach(function (row) { row.classList.remove('hidden'); });
+            });
+        });
+        messageSearchInput?.addEventListener('input', function () {
+            const keyword = messageSearchInput.value.trim().toLowerCase();
+            document.querySelectorAll('[data-discussion-message-row]').forEach(function (row) {
+                row.classList.toggle('hidden', keyword !== '' && !row.dataset.messageText.includes(keyword));
+            });
+        });
+
         const openModal = function (id) {
             const el = document.getElementById(id);
-            if (el) el.classList.remove('hidden');
+            if (!el) return;
+            el.classList.remove('hidden');
             el.classList.add('flex');
         };
         const closeModal = function (id) {
             const el = document.getElementById(id);
-            if (el) el.classList.add('hidden');
+            if (!el) return;
+            el.classList.add('hidden');
             el.classList.remove('flex');
         };
 

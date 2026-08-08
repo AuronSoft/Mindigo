@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Mindigo\Auth\Models\User;
 use Mindigo\ClassroomManagement\Models\Classroom;
 
@@ -15,7 +16,9 @@ class DiscussionThread extends Model
     use SoftDeletes;
 
     public const TYPE_CLASS = 'class';
+
     public const TYPE_DIRECT = 'direct';
+
     public const TYPE_GROUP = 'group';
 
     public const TYPES = [self::TYPE_CLASS, self::TYPE_DIRECT, self::TYPE_GROUP];
@@ -71,7 +74,7 @@ class DiscussionThread extends Model
         return $this->participants->contains('user_id', $userId);
     }
 
-    public function lastReadFor(int $userId): ?\Illuminate\Support\Carbon
+    public function lastReadFor(int $userId): ?Carbon
     {
         return $this->participantFor($userId)?->last_read_at;
     }

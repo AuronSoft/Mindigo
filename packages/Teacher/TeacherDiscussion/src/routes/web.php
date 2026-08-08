@@ -12,6 +12,8 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::post('/direct', [TeacherDiscussionController::class, 'findOrCreateDirect'])->name('direct.store');
         Route::post('/{thread}/messages', [TeacherDiscussionController::class, 'store'])->name('messages.store');
         Route::post('/{thread}/mark-read', [TeacherDiscussionController::class, 'markAsRead'])->name('mark-read');
+        Route::patch('/{thread}/preferences', [TeacherDiscussionController::class, 'updatePreferences'])->name('preferences.update');
+        Route::patch('/{thread}/messages/{message}/pin', [TeacherDiscussionController::class, 'updateMessagePin'])->name('messages.pin');
         Route::post('/{thread}/members', [TeacherDiscussionController::class, 'addMember'])->name('members.store');
         Route::delete('/{thread}/members/{user}', [TeacherDiscussionController::class, 'removeMember'])->name('members.destroy');
         Route::get('/attachments/{attachment}', [TeacherDiscussionController::class, 'attachment'])->name('attachments.show');

@@ -63,10 +63,11 @@
         }
     }
     $links = $links->unique('url')->take(6)->values();
+    $pinnedMessages = $messages->where('is_pinned', true)->sortByDesc('pinned_at')->values();
 @endphp
 
-<div class="h-screen overflow-hidden bg-[#f7f8fb]">
-    <div class="grid h-full grid-cols-[20rem_minmax(0,1fr)_19rem] max-2xl:grid-cols-[19rem_minmax(0,1fr)_18rem] max-xl:grid-cols-[18rem_minmax(0,1fr)] max-lg:grid-cols-1">
+<div class="h-screen overflow-hidden bg-slate-50">
+    <div class="grid h-full grid-cols-[21rem_minmax(0,1fr)_21rem] max-2xl:grid-cols-[19rem_minmax(0,1fr)_19rem] max-xl:grid-cols-[18rem_minmax(0,1fr)] max-lg:grid-cols-1">
 
         @include('teacher-discussion::chat.partials._sidebar')
 

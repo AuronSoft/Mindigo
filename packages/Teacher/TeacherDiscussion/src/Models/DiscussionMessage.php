@@ -19,12 +19,17 @@ class DiscussionMessage extends Model
         'sender_id',
         'body',
         'read_at',
+        'is_pinned',
+        'pinned_at',
+        'pinned_by',
     ];
 
     protected function casts(): array
     {
         return [
             'read_at' => 'datetime',
+            'is_pinned' => 'boolean',
+            'pinned_at' => 'datetime',
         ];
     }
 
@@ -36,6 +41,11 @@ class DiscussionMessage extends Model
     public function sender(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sender_id');
+    }
+
+    public function pinnedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'pinned_by');
     }
 
     public function attachments(): HasMany

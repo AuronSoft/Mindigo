@@ -8,6 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        $usesSqlite = Schema::getConnection()->getDriverName() === 'sqlite';
+
+        if ($usesSqlite) {
+            Schema::table('teacher_discussion_threads', function (Blueprint $table): void {
+                $table->dropIndex('teacher_discussion_threads_teacher_id_last_message_at_index');
+            });
+        }
+
         Schema::table('teacher_discussion_threads', function (Blueprint $table) {
             // Thả ràng buộc cũ để cho phép classroom_id nullable (direct/group không cần lớp)
             $table->dropUnique(['teacher_id', 'classroom_id']);
@@ -30,6 +38,10 @@ return new class extends Migration
 
             $table->index(['type', 'last_message_at']);
         });
+
+        // SQLite rebuilds the table again in the following migration when
+        // teacher_id becomes nullable. Recreating the legacy composite index
+        // here would leave that rebuild referencing the column being replaced.
     }
 
     public function down(): void

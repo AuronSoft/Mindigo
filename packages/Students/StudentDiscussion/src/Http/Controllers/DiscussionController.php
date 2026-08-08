@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\Auth\Models\User;
 use Mindigo\StudentDiscussion\Http\Requests\StoreDiscussionMessageRequest;
+use Mindigo\TeacherDiscussion\Http\Requests\UpdateDiscussionPreferenceRequest;
+use Mindigo\TeacherDiscussion\Http\Requests\UpdatePinnedMessageRequest;
 use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
+use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 use Mindigo\TeacherDiscussion\Services\TeacherDiscussionService;
 
@@ -30,6 +33,7 @@ class DiscussionController extends Controller
         $messages = $selectedThread ? $this->service->messages($selectedThread) : collect();
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
         $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();
+        $currentPreference = $selectedThread ? $this->service->preferenceFor($selectedThread, $student) : null;
         $candidateUsers = $this->service->candidateUsers($student);
 
         $routes = [
@@ -38,9 +42,11 @@ class DiscussionController extends Controller
             'attachment' => 'student.discussions.attachments.show',
             'groups' => 'student.discussions.groups.store',
             'direct' => 'student.discussions.direct.store',
+            'preferences' => 'student.discussions.preferences.update',
+            'messagePin' => 'student.discussions.messages.pin',
         ];
 
-        return view('teacher-discussion::chat', compact('student', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'candidateUsers', 'routes'));
+        return view('teacher-discussion::chat', compact('student', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'currentPreference', 'candidateUsers', 'routes'));
     }
 
     public function store(StoreDiscussionMessageRequest $request, DiscussionThread $thread): RedirectResponse
@@ -124,6 +130,25 @@ class DiscussionController extends Controller
             'Content-Type' => $attachment->mime_type ?: 'application/octet-stream',
             'Content-Disposition' => 'inline; filename="'.$filename.'"',
         ]);
+    }
+
+    public function updatePreferences(UpdateDiscussionPreferenceRequest $request, DiscussionThread $thread): RedirectResponse
+    {
+        $this->authorizeThread($thread);
+        $this->service->updatePreferences($thread, $request->user(), $request->validated());
+
+        return back()->with('success', __('teacher-discussion::app.preferences_updated'));
+    }
+
+    public function updateMessagePin(
+        UpdatePinnedMessageRequest $request,
+        DiscussionThread $thread,
+        DiscussionMessage $message
+    ): RedirectResponse {
+        $this->authorizeThread($thread);
+        $this->service->updateMessagePin($thread, $message, $request->user(), $request->boolean('is_pinned'));
+
+        return back()->with('success', __('teacher-discussion::app.message_pin_updated'));
     }
 
     private function authorizeThread(DiscussionThread $thread): void
