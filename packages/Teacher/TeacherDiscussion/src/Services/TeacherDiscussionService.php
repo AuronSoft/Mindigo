@@ -31,15 +31,25 @@ class TeacherDiscussionService
     public function threadsFor(User $user): Collection
     {
         return DiscussionThread::query()
-            ->whereHas('participants', fn (Builder $query) => $query->where('user_id', $user->getAuthIdentifier()))
+            ->join('teacher_discussion_participants as current_membership', function ($join) use ($user): void {
+                $join->on('current_membership.thread_id', '=', 'teacher_discussion_threads.id')
+                    ->where('current_membership.user_id', $user->getAuthIdentifier());
+            })
+            ->select('teacher_discussion_threads.*')
+            ->addSelect([
+                'viewer_is_muted' => 'current_membership.is_muted',
+                'viewer_is_pinned' => 'current_membership.is_pinned',
+            ])
             ->with([
                 'classroom' => fn ($query) => $query->select('id', 'name', 'code')->withCount('students'),
                 'latestMessage',
                 'participants.user:id,name,email,role,avatar',
             ])
             ->withCount('messages')
-            ->orderByDesc('last_message_at')
-            ->orderByDesc('updated_at')
+            ->orderByDesc('current_membership.is_pinned')
+            ->orderByDesc('current_membership.pinned_at')
+            ->orderByDesc('teacher_discussion_threads.last_message_at')
+            ->orderByDesc('teacher_discussion_threads.updated_at')
             ->get();
     }
 
@@ -119,10 +129,58 @@ class TeacherDiscussionService
     public function messages(DiscussionThread $thread): Collection
     {
         return $thread->messages()
-            ->with(['sender:id,name,email,role,avatar', 'attachments'])
+            ->with(['sender:id,name,email,role,avatar', 'attachments', 'pinnedBy:id,name'])
             ->oldest('created_at')
             ->limit(120)
             ->get();
+    }
+
+    public function preferenceFor(DiscussionThread $thread, User $user): DiscussionParticipant
+    {
+        return $thread->participants()->firstOrCreate(
+            ['user_id' => $user->getAuthIdentifier()],
+            ['role' => DiscussionParticipant::ROLE_MEMBER, 'joined_at' => now()]
+        );
+    }
+
+    public function updatePreferences(DiscussionThread $thread, User $user, array $preferences): DiscussionParticipant
+    {
+        return DB::transaction(function () use ($thread, $user, $preferences): DiscussionParticipant {
+            $participant = $this->preferenceFor($thread, $user);
+
+            if (array_key_exists('is_muted', $preferences)) {
+                $participant->is_muted = (bool) $preferences['is_muted'];
+            }
+
+            if (array_key_exists('is_pinned', $preferences)) {
+                $participant->is_pinned = (bool) $preferences['is_pinned'];
+                $participant->pinned_at = $participant->is_pinned ? now() : null;
+            }
+
+            $participant->save();
+
+            return $participant->refresh();
+        });
+    }
+
+    public function updateMessagePin(
+        DiscussionThread $thread,
+        DiscussionMessage $message,
+        User $user,
+        bool $isPinned
+    ): DiscussionMessage {
+        abort_unless((int) $message->thread_id === (int) $thread->id, 404);
+
+        return DB::transaction(function () use ($message, $user, $isPinned): DiscussionMessage {
+            $lockedMessage = DiscussionMessage::query()->lockForUpdate()->findOrFail($message->id);
+            $lockedMessage->forceFill([
+                'is_pinned' => $isPinned,
+                'pinned_at' => $isPinned ? now() : null,
+                'pinned_by' => $isPinned ? $user->getAuthIdentifier() : null,
+            ])->save();
+
+            return $lockedMessage->refresh();
+        });
     }
 
     public function attachments(DiscussionThread $thread): Collection

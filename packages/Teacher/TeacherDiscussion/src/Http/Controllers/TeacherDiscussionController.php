@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherDiscussion\Http\Requests\StoreDiscussionMessageRequest;
+use Mindigo\TeacherDiscussion\Http\Requests\UpdateDiscussionPreferenceRequest;
+use Mindigo\TeacherDiscussion\Http\Requests\UpdatePinnedMessageRequest;
 use Mindigo\TeacherDiscussion\Models\DiscussionAttachment;
+use Mindigo\TeacherDiscussion\Models\DiscussionMessage;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 use Mindigo\TeacherDiscussion\Services\TeacherDiscussionService;
 
@@ -30,6 +33,7 @@ class TeacherDiscussionController extends Controller
         $messages = $selectedThread ? $this->service->messages($selectedThread) : collect();
         $members = $selectedThread ? $this->service->members($selectedThread) : collect();
         $attachments = $selectedThread ? $this->service->attachments($selectedThread) : collect();
+        $currentPreference = $selectedThread ? $this->service->preferenceFor($selectedThread, $teacher) : null;
         $candidateUsers = $this->service->candidateUsers($teacher);
 
         $routes = [
@@ -38,9 +42,11 @@ class TeacherDiscussionController extends Controller
             'attachment' => 'teacher.discussions.attachments.show',
             'groups' => 'teacher.discussions.groups.store',
             'direct' => 'teacher.discussions.direct.store',
+            'preferences' => 'teacher.discussions.preferences.update',
+            'messagePin' => 'teacher.discussions.messages.pin',
         ];
 
-        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'candidateUsers', 'routes'));
+        return view('teacher-discussion::chat', compact('teacher', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'currentPreference', 'candidateUsers', 'routes'));
     }
 
     public function store(StoreDiscussionMessageRequest $request, DiscussionThread $thread): RedirectResponse
@@ -167,6 +173,25 @@ class TeacherDiscussionController extends Controller
         $this->service->markAsRead($thread, $user);
 
         return response()->noContent();
+    }
+
+    public function updatePreferences(UpdateDiscussionPreferenceRequest $request, DiscussionThread $thread): RedirectResponse
+    {
+        $this->authorizeThread($thread);
+        $this->service->updatePreferences($thread, $request->user(), $request->validated());
+
+        return back()->with('success', __('teacher-discussion::app.preferences_updated'));
+    }
+
+    public function updateMessagePin(
+        UpdatePinnedMessageRequest $request,
+        DiscussionThread $thread,
+        DiscussionMessage $message
+    ): RedirectResponse {
+        $this->authorizeThread($thread);
+        $this->service->updateMessagePin($thread, $message, $request->user(), $request->boolean('is_pinned'));
+
+        return back()->with('success', __('teacher-discussion::app.message_pin_updated'));
     }
 
     private function authorizeThread(DiscussionThread $thread): void

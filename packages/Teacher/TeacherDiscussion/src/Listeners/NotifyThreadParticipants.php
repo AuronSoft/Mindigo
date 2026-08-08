@@ -20,6 +20,7 @@ class NotifyThreadParticipants
         $preview = $preview !== '' ? $preview : '📎';
 
         $recipients = $message->thread->participants
+            ->reject(fn ($participant) => $participant->is_muted)
             ->map->user
             ->filter()
             ->reject(fn ($user) => (int) $user->id === (int) $message->sender_id)

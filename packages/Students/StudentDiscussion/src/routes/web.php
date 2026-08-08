@@ -9,6 +9,8 @@ Route::middleware(['web', 'auth', 'role:student|admin'])->prefix('student')->nam
         Route::post('/groups', [DiscussionController::class, 'createGroup'])->name('groups.store');
         Route::post('/direct', [DiscussionController::class, 'findOrCreateDirect'])->name('direct.store');
         Route::post('/{thread}/messages', [DiscussionController::class, 'store'])->name('messages.store');
+        Route::patch('/{thread}/preferences', [DiscussionController::class, 'updatePreferences'])->name('preferences.update');
+        Route::patch('/{thread}/messages/{message}/pin', [DiscussionController::class, 'updateMessagePin'])->name('messages.pin');
         Route::get('/attachments/{attachment}', [DiscussionController::class, 'attachment'])->name('attachments.show');
     });
 });
