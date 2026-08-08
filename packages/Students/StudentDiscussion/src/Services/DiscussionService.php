@@ -33,6 +33,7 @@ class DiscussionService
             ->with([
                 'classroom' => fn ($query) => $query->select('id', 'name', 'code')->withCount('students'),
                 'latestMessage',
+                'participants.user:id,name,email,role,avatar',
             ])
             ->withCount('messages')
             ->orderByDesc('last_message_at')
@@ -50,7 +51,10 @@ class DiscussionService
 
         $query = DiscussionThread::query()
             ->whereIn('classroom_id', $classroomIds)
-            ->with(['classroom' => fn ($query) => $query->select('id', 'name', 'code')->withCount('students')]);
+            ->with([
+                'classroom' => fn ($query) => $query->select('id', 'name', 'code')->withCount('students'),
+                'participants.user:id,name,email,role,avatar',
+            ]);
 
         if ($threadId) {
             return $query->whereKey($threadId)->firstOrFail();

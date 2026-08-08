@@ -36,4 +36,12 @@ return [
     'group_created' => 'Group created.',
     'member_added' => 'Member added.',
     'member_removed' => 'Member removed.',
+    'inbox' => 'Inbox',
+    'groups' => 'Groups',
+    'no_threads' => 'No conversations yet',
+    'no_groups' => 'No groups yet',
+    'direct_chat' => 'Direct chat',
+    'group_info' => 'Conversation info',
+    'view_all' => 'View all',
+    'files' => 'Shared files',
 ];

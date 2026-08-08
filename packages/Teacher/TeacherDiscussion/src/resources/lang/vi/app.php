@@ -36,4 +36,12 @@ return [
     'group_created' => 'Đã tạo nhóm mới.',
     'member_added' => 'Đã thêm thành viên.',
     'member_removed' => 'Đã xoá thành viên.',
+    'inbox' => 'Hộp thư',
+    'groups' => 'Nhóm',
+    'no_threads' => 'Chưa có hội thoại',
+    'no_groups' => 'Chưa có nhóm nào',
+    'direct_chat' => 'Trò chuyện riêng',
+    'group_info' => 'Thông tin hội thoại',
+    'view_all' => 'Xem tất cả',
+    'files' => 'Tệp đính kèm',
 ];
