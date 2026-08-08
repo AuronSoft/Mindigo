@@ -90,6 +90,7 @@ class DiscussionThread extends Model
         return $this->messages()
             ->when($lastRead, fn ($query) => $query->where('created_at', '>', $lastRead))
             ->where('sender_id', '!=', $userId)
+            ->notDeletedFor($userId)
             ->count();
     }
 

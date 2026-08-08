@@ -41,8 +41,13 @@
             </div>
         </div>
 
-        <div class="min-h-0 flex-1 overflow-y-auto bg-slate-50 px-5 py-5" data-discussion-messages data-thread-id="{{ $selectedThread->id }}" data-attachment-url="{{ route($routes['attachment'], ['attachment' => '__ATTACHMENT_ID__']) }}">
+        <div class="min-h-0 flex-1 overflow-y-auto bg-slate-50 px-5 py-5" data-discussion-messages data-thread-id="{{ $selectedThread->id }}" data-attachment-url="{{ route($routes['attachment'], ['attachment' => '__ATTACHMENT_ID__']) }}" data-older-url="{{ route($routes['messageOlder'], $selectedThread) }}" data-has-older="{{ ($hasOlderMessages ?? false) ? 'true' : 'false' }}">
             <div class="mx-auto flex max-w-3xl flex-col space-y-4">
+                <div class="flex justify-center" data-discussion-older-wrap>
+                    <button type="button" data-discussion-older-btn class="hidden rounded-full border border-slate-200 bg-white px-4 py-2 text-[11px] font-black text-slate-600 shadow-sm transition hover:border-green-300 hover:text-green-700">
+                        @lang('teacher-discussion::app.view_older_messages')
+                    </button>
+                </div>
                 @forelse($messages as $message)
                     @php
                         $mine = (int) $message->sender_id === $currentUserId;
@@ -138,10 +143,12 @@
                                     <x-heroicon-o-face-smile class="h-3.5 w-3.5" />
                                 </button>
                                 @if($mine)
-                                    <button type="button" data-discussion-edit data-msg-id="{{ $message->id }}" data-msg-body="{{ $message->body }}" title="@lang('teacher-discussion::app.edit_message')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-green-700">
-                                        <x-heroicon-o-pencil class="h-3.5 w-3.5" />
-                                    </button>
-                                    <form method="POST" action="{{ route($routes['messageDestroy'], [$selectedThread, $message]) }}" data-discussion-delete-form>
+                                    @if(! $message->isReadByOthers())
+                                        <button type="button" data-discussion-edit data-msg-id="{{ $message->id }}" data-msg-body="{{ $message->body }}" title="@lang('teacher-discussion::app.edit_message')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-green-700">
+                                            <x-heroicon-o-pencil class="h-3.5 w-3.5" />
+                                        </button>
+                                    @endif
+                                    <form method="POST" action="{{ route($routes['messageDestroy'], [$selectedThread, $message]) }}" data-discussion-delete-form data-delete-mode="{{ $message->isReadByOthers() ? 'self' : 'recall' }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="button" data-discussion-delete title="@lang('teacher-discussion::app.delete_message')" class="grid h-7 w-7 place-items-center rounded-full text-slate-500 transition hover:text-red-600">
@@ -203,6 +210,15 @@
                     </button>
                     <button type="button" class="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-50 hover:text-green-700" data-discussion-image-trigger title="@lang('teacher-discussion::app.images')">
                         <x-heroicon-o-photo class="h-5 w-5" />
+                    </button>
+                    <button type="button" class="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-50 hover:text-green-700" data-discussion-emoji-toggle title="Emoji">
+                        <x-heroicon-o-face-smile class="h-5 w-5" />
+                        <div data-discussion-emoji-picker class="absolute bottom-12 right-0 z-20 hidden w-72 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl">
+                            <div class="mb-2 grid grid-cols-2 gap-1.5">
+                                <input type="search" data-discussion-emoji-search placeholder="@lang('teacher-discussion::app.search_messages')" class="col-span-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 outline-none focus:border-green-400">
+                            </div>
+                            <div class="flex max-h-56 flex-wrap content-start gap-1 overflow-y-auto" data-discussion-emoji-list></div>
+                        </div>
                     </button>
                     <button class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-green-600 text-white shadow-sm transition hover:bg-green-500">
                         <x-heroicon-o-paper-airplane class="h-5 w-5" />

@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherDiscussion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -59,6 +60,50 @@ class DiscussionMessage extends Model
     public function reactions(): HasMany
     {
         return $this->hasMany(DiscussionMessageReaction::class, 'message_id');
+    }
+
+    public function reads(): HasMany
+    {
+        return $this->hasMany(DiscussionMessageRead::class, 'message_id');
+    }
+
+    public function deletions(): HasMany
+    {
+        return $this->hasMany(DiscussionMessageDeletion::class, 'message_id');
+    }
+
+    /**
+     * Có ít nhất một người khác (không phải người gửi) đã đọc tin nhắn chưa?
+     */
+    public function isReadByOthers(): bool
+    {
+        if ($this->relationLoaded('reads')) {
+            return $this->reads
+                ->reject(fn ($read) => (int) $read->user_id === (int) $this->sender_id)
+                ->isNotEmpty();
+        }
+
+        return $this->reads()
+            ->where('user_id', '!=', $this->sender_id)
+            ->exists();
+    }
+
+    /**
+     * Tin nhắn đã bị xoá chỉ cho một người dùng cụ thể chưa?
+     */
+    public function isDeletedFor(int $userId): bool
+    {
+        return $this->deletions()
+            ->where('user_id', $userId)
+            ->exists();
+    }
+
+    /**
+     * Phạm vi bỏ qua các tin nhắn đã bị xoá cho người dùng đang xem.
+     */
+    public function scopeNotDeletedFor(Builder $query, int $userId): Builder
+    {
+        return $query->whereDoesntHave('deletions', fn (Builder $q) => $q->where('user_id', $userId));
     }
 
     public function reactionSummary(): array

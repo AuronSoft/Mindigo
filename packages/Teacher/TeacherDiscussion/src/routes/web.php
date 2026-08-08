@@ -19,7 +19,9 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::delete('/{thread}/messages/{message}', [TeacherDiscussionController::class, 'deleteMessage'])->name('messages.destroy');
         Route::post('/{thread}/messages/{message}/react', [TeacherDiscussionController::class, 'reactToMessage'])->name('messages.react');
         Route::post('/{thread}/typing', [TeacherDiscussionController::class, 'typing'])->name('typing');
+        Route::get('/{thread}/messages/older', [TeacherDiscussionController::class, 'olderMessages'])->name('messages.older');
         Route::post('/{thread}/members', [TeacherDiscussionController::class, 'addMember'])->name('members.store');
         Route::delete('/{thread}/members/{user}', [TeacherDiscussionController::class, 'removeMember'])->name('members.destroy');
+        Route::patch('/{thread}/members/{user}/role', [TeacherDiscussionController::class, 'updateMemberRole'])->name('members.role');
         Route::get('/attachments/{attachment}', [TeacherDiscussionController::class, 'attachment'])->name('attachments.show');
     });

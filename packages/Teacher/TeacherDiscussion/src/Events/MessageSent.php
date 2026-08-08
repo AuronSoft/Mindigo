@@ -26,6 +26,11 @@ class MessageSent implements ShouldBroadcast
         return 'message.sent';
     }
 
+    public function broadcastQueue(): string
+    {
+        return 'broadcasts';
+    }
+
     public function broadcastWith(): array
     {
         return [
