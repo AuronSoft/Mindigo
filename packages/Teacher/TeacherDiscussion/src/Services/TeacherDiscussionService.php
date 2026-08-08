@@ -138,9 +138,11 @@ class TeacherDiscussionService
     {
         return $thread->messages()
             ->with(['sender:id,name,email,role,avatar', 'attachments', 'pinnedBy:id,name'])
-            ->oldest('created_at')
+            ->latest('created_at')
             ->limit(120)
-            ->get();
+            ->get()
+            ->sortBy('created_at')
+            ->values();
     }
 
     public function preferenceFor(DiscussionThread $thread, User $user): DiscussionParticipant
@@ -243,6 +245,11 @@ class TeacherDiscussionService
     {
         $otherId = (int) $other->getAuthIdentifier();
         $ownerId = (int) $owner->getAuthIdentifier();
+
+        abort_unless(
+            $this->candidateUsers($owner)->contains(fn (User $candidate) => (int) $candidate->getAuthIdentifier() === $otherId),
+            403
+        );
 
         $existing = DiscussionThread::query()
             ->where('type', DiscussionThread::TYPE_DIRECT)
