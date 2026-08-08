@@ -1,4 +1,5 @@
 import '../../../../Core/src/resources/js/mindigo-ui.js';
+import './echo.js';
 
 const dashboardMessages = window.__dashboardMessages || {};
 const dashboardChartLabels = window.__dashboardChartLabels || {};
