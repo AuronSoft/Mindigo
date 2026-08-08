@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckMaintenanceMode;
+use App\Providers\BroadcastServiceProvider;
 use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\ConvertEmptyStringsToNull;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -78,4 +79,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->dontReportDuplicates();
 
     })
+    ->withProviders([
+        BroadcastServiceProvider::class,
+    ])
     ->create();
