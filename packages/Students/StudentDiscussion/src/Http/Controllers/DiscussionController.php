@@ -44,6 +44,7 @@ class DiscussionController extends Controller
             'direct' => 'student.discussions.direct.store',
             'preferences' => 'student.discussions.preferences.update',
             'messagePin' => 'student.discussions.messages.pin',
+            'markAllRead' => 'student.discussions.mark-all-read',
         ];
 
         return view('teacher-discussion::chat', compact('student', 'threads', 'selectedThread', 'messages', 'members', 'attachments', 'currentPreference', 'candidateUsers', 'routes'));
@@ -130,6 +131,15 @@ class DiscussionController extends Controller
             'Content-Type' => $attachment->mime_type ?: 'application/octet-stream',
             'Content-Disposition' => 'inline; filename="'.$filename.'"',
         ]);
+    }
+
+    public function markAllAsRead(): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $this->service->markAllAsRead($user);
+
+        return back()->with('success', __('teacher-discussion::app.all_marked_read'));
     }
 
     public function updatePreferences(UpdateDiscussionPreferenceRequest $request, DiscussionThread $thread): RedirectResponse

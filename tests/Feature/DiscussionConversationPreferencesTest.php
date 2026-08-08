@@ -76,6 +76,22 @@ class DiscussionConversationPreferencesTest extends TestCase
         ]);
     }
 
+    public function test_student_can_mark_all_conversations_as_read(): void
+    {
+        [$student, $thread] = $this->conversation();
+        $thread->participants()
+            ->where('user_id', $student->id)
+            ->update(['last_read_at' => null]);
+
+        $this->actingAs($student)
+            ->post(route('student.discussions.mark-all-read'))
+            ->assertRedirect();
+
+        $this->assertNotNull(
+            $thread->participants()->where('user_id', $student->id)->value('last_read_at')
+        );
+    }
+
     /**
      * @return array{0: User, 1: DiscussionThread}
      */
