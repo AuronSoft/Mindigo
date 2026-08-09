@@ -28,9 +28,9 @@ ps:              ## Xem container đang chạy
 	docker compose ps
 
 logs:            ## Xem log container web (Ctrl+C để thoát)
-	docker compose logs -f app
+	docker compose logs -f web
 
-shell:           ## Vào shell container web
+shell:           ## Vào shell container ứng dụng (PHP-FPM)
 	docker compose exec app bash
 
 db:              ## Vào MySQL trong container db

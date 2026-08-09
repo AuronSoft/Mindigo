@@ -5,128 +5,117 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      branch:
-        description: Branch to deploy
-        required: true
-        default: main
 
 permissions:
   contents: read
+  packages: write
 
 concurrency:
-  group: deploy-${{ github.event.inputs.branch || github.ref_name }}
+  group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_APP: ghcr.io/${{ github.repository_owner }}/mindigo-app
+  IMAGE_WEB: ghcr.io/${{ github.repository_owner }}/mindigo-nginx
+
 jobs:
-  ci-and-notify:
-    name: CI and notify webhook
+  build-and-push:
+    name: Build & push images to GHCR
     runs-on: ubuntu-latest
 
     steps:
-      - name: Prepare deployment variables
-        id: vars
-        run: |
-          BRANCH="${{ github.event.inputs.branch || github.ref_name }}"
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-
       - name: Checkout source
         uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          ref: ${{ steps.vars.outputs.branch }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: Extract metadata (tags) for app
+        id: meta-app
+        uses: docker/metadata-action@v5
         with:
-          php-version: "8.3"
-          extensions: bcmath, exif, gd, mbstring, pdo_sqlite, sqlite3, zip
-          coverage: none
+          images: ${{ env.IMAGE_APP }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=sha-
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Extract metadata (tags) for nginx
+        id: meta-web
+        uses: docker/metadata-action@v5
         with:
-          node-version: "20"
-          cache: npm
+          images: ${{ env.IMAGE_WEB }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=sha-
 
-      - name: Cache Composer packages
-        uses: actions/cache@v4
+      - name: Build & push app image
+        uses: docker/build-push-action@v6
         with:
-          path: ~/.composer/cache/files
-          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
-          restore-keys: composer-${{ runner.os }}-
+          context: .
+          file: Dockerfile.app
+          push: true
+          tags: ${{ steps.meta-app.outputs.tags }}
+          labels: ${{ steps.meta-app.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Install PHP dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Build & push nginx image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.nginx
+          push: true
+          tags: ${{ steps.meta-web.outputs.tags }}
+          labels: ${{ steps.meta-web.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Prepare Laravel environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate --force
+  deploy:
+    name: Deploy to production server
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    environment: production
 
-      - name: Install Node dependencies
-        run: npm ci
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
 
-      - name: Build frontend assets
-        run: npm run build
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || 22 }}
+          script: |
+            set -e
 
-      - name: Run Laravel tests
-        continue-on-error: true
-        run: composer test
+            REPO_DIR="${{ secrets.DEPLOY_DIR }}"
+            APP_IMAGE="ghcr.io/${{ github.repository_owner }}/mindigo-app:latest"
+            WEB_IMAGE="ghcr.io/${{ github.repository_owner }}/mindigo-nginx:latest"
 
-      - name: Build Docker app image
-        run: docker compose build app
+            echo "==> Login GHCR"
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
-      - name: Notify Ubuntu deploy webhook
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
-          DEPLOY_BRANCH: ${{ steps.vars.outputs.branch }}
-          COMMIT_SHA: ${{ github.sha }}
-          REPOSITORY: ${{ github.repository }}
-          WORKFLOW_RUN_ID: ${{ github.run_id }}
-        run: |
-          python3 - <<'PY'
-          import hashlib
-          import hmac
-          import json
-          import os
-          import sys
-          import urllib.error
-          import urllib.request
+            echo "==> Pull latest images"
+            docker pull "$APP_IMAGE"
+            docker pull "$WEB_IMAGE"
 
-          url = os.environ.get("WEBHOOK_URL", "").strip()
-          secret = os.environ.get("WEBHOOK_SECRET", "").strip()
+            cd "$REPO_DIR"
 
-          if not url:
-              raise SystemExit("WEBHOOK_URL secret is missing")
-          if not secret:
-              raise SystemExit("WEBHOOK_SECRET secret is missing")
+            echo "==> Export image vars & deploy via compose"
+            APP_IMAGE="$APP_IMAGE" WEB_IMAGE="$WEB_IMAGE" \
+              docker compose pull
+            APP_IMAGE="$APP_IMAGE" WEB_IMAGE="$WEB_IMAGE" \
+              docker compose up -d --no-deps app web
 
-          payload = {
-              "repository": os.environ["REPOSITORY"],
-              "branch": os.environ["DEPLOY_BRANCH"],
-              "commit": os.environ["COMMIT_SHA"],
-              "workflow_run_id": os.environ["WORKFLOW_RUN_ID"],
-          }
-          body = json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8")
-          signature = hmac.new(secret.encode("utf-8"), body, hashlib.sha256).hexdigest()
+            echo "==> Cleanup old images"
+            docker image prune -f
 
-          request = urllib.request.Request(
-              url,
-              data=body,
-              method="POST",
-              headers={
-                  "Content-Type": "application/json",
-                  "X-Mindigo-Signature": f"sha256={signature}",
-                  "X-Hub-Signature-256": f"sha256={signature}",
-              },
-          )
-
-          try:
-              with urllib.request.urlopen(request, timeout=30) as response:
-                  print(response.read().decode("utf-8", errors="replace"))
-                  print(f"Webhook status: {response.status}")
-          except urllib.error.HTTPError as exc:
-              print(exc.read().decode("utf-8", errors="replace"), file=sys.stderr)
-              raise
-          PY
+            echo "==> Deploy completed"

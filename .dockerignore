@@ -22,4 +22,6 @@ docs
 .vscode
 docker-compose*.yml
 Dockerfile
+Dockerfile.app
+Dockerfile.nginx
 .dockerignore

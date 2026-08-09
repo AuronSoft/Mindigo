@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1.7
+
+# Dockerfile.nginx — Mindigo LMS (Nginx reverse proxy + static)
+# Đọc mã nguồn (public/) từ volume dùng chung "web_public" do container app mount & sync.
+# Proxy request PHP tới service app (php-fpm) qua cổng 9000.
+
+FROM nginx:1.27-alpine AS nginx
+
+# Config server chính.
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80

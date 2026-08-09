@@ -1,0 +1,40 @@
+# CodeRabbit AI — cấu hình cho Mindigo LMS
+# Bật review tự động trên mọi Pull Request. Chạy khi PR hướng tới main/dev.
+
+language: en-US
+
+early_access: false
+
+reviews:
+  profile: assertive
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+      - dev
+  path_filters:
+    - "!**/vendor/**"
+    - "!**/node_modules/**"
+    - "!**/public/build/**"
+    - "!**/storage/logs/**"
+  path_instructions:
+    - path: "**/*.php"
+      instructions: |
+        Tuân thủ PSR-12 và Laravel Pint. Giữ style nhất quán với codebase.
+        Ưu tiên FormRequest cho validation, không nhận input thô trong controller.
+        Kiểm tra quyền sở hữu tài nguyên (không truy cập chéo lớp/người dùng).
+  abort_on_close: true
+
+chat:
+  auto_reply: true
+
+suggestions:
+  avoid_posting_bugs: true
+  security: true
+  ai_summary: true

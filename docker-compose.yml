@@ -1,27 +1,20 @@
 #  Mindigo LMS — docker-compose.yml
-#  Chạy đồng thời 2 container: web (app) + cơ sở dữ liệu (db), nối qua mạng nội bộ.
-#  Lệnh thường dùng:
-#    docker compose up -d --build   # build image và chạy nền
-#    docker compose ps              # xem container đang chạy
-#    docker compose logs -f app     # xem log container app
-#    docker compose down            # dừng & xoá container (giữ volume dữ liệu)
+#  Chạy đồng thời 4 container: app (PHP-FPM) + nginx + cơ sở dữ liệu (db) + phpMyAdmin.
+#  Nginx phục vụ static & proxy PHP tới app qua mạng nội bộ.
 
 services:
 
-  # Container ứng dụng web (PHP + Apache) 
+  # Container ứng dụng (PHP-FPM) — chứa toàn bộ mã nguồn + assets đã build
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.app
     image: ${APP_IMAGE:-mindigo-app}
     container_name: mindigo_app
     restart: unless-stopped
-    ports:
-      - "8080:80"            # Truy cập web tại http://localhost:8080  (host:container)
     environment:
-      APP_ENV: local
-      APP_DEBUG: "true"
-      APP_URL: "http://localhost:8080"
+      APP_ENV: production
+      APP_DEBUG: "false"
       # Kết nối tới container db qua tên service "db" (DNS nội bộ của Docker)
       DB_CONNECTION: mysql
       DB_HOST: db
@@ -29,16 +22,38 @@ services:
       DB_DATABASE: mindigo
       DB_USERNAME: mindigo
       DB_PASSWORD: secret
+      # Sync public sang volume dùng chung cho nginx
+      SHARED_PUBLIC_DIR: /shared/public
     depends_on:
       db:
-        condition: service_healthy   # đợi db sẵn sàng (healthcheck) rồi mới start
+        condition: service_healthy
     volumes:
-      # Lưu bền vững file người dùng upload (bài nộp, đính kèm...) trên disk "public"
+      # Volume chứa file public để nginx đọc (app sync vào lúc khởi động)
+      - web_public:/shared
+      # Lưu bền vững file người dùng upload (bài nộp, ảnh...) trên disk "public"
       - storage_data:/var/www/html/storage/app/public
     networks:
       - mindigo
 
-  # Container cơ sở dữ liệu (MySQL) 
+  # Container web server (Nginx) — reverse proxy + phục vụ static
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    image: ${WEB_IMAGE:-mindigo-nginx}
+    container_name: mindigo_web
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "8080:80"            # Truy cập web tại http://localhost:8080  (host:container)
+    volumes:
+      # Đọc mã nguồn public (đã được app sync) từ volume dùng chung
+      - web_public:/var/www/html/public
+    networks:
+      - mindigo
+
+  # Container cơ sở dữ liệu (MySQL)
   db:
     image: mysql:8.0
     container_name: mindigo_db
@@ -51,7 +66,7 @@ services:
     ports:
       - "3307:3306"          # Map ra host 3307 để không đụng MySQL/Laragon đang chạy 3306
     volumes:
-      - db_data:/var/lib/mysql   # Volume giữ dữ liệu DB bền vững kể cả khi xoá container
+      - db_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootsecret"]
       interval: 10s
@@ -60,17 +75,17 @@ services:
     networks:
       - mindigo
 
-  # phpMyAdmin: xem/quản lý cơ sở dữ liệu qua trình duyệt (tiện demo) 
+  # phpMyAdmin: xem/quản lý cơ sở dữ liệu qua trình duyệt (tiện demo)
   phpmyadmin:
     image: phpmyadmin:5
     container_name: mindigo_pma
     restart: unless-stopped
     environment:
-      PMA_HOST: db            # kết nối tới container db
+      PMA_HOST: db
       PMA_PORT: 3306
       UPLOAD_LIMIT: 64M
     ports:
-      - "8081:80"            # Truy cập tại http://localhost:8081
+      - "8081:80"
     depends_on:
       - db
     networks:
@@ -80,8 +95,9 @@ services:
 volumes:
   db_data:        # dữ liệu MySQL
   storage_data:   # file upload của ứng dụng
+  web_public:     # mã nguồn public cho nginx
 
-# Mạng nội bộ để 2 container "thấy" nhau qua tên service 
+# Mạng nội bộ để các container "thấy" nhau qua tên service
 networks:
   mindigo:
     driver: bridge

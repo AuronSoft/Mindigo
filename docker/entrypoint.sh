@@ -41,11 +41,26 @@ php artisan migrate --force
 # 5) Tạo symlink storage để phục vụ file public
 php artisan storage:link 2>/dev/null || true
 
+# 5b) Đồng bộ public/ sang volume dùng chung "web_public" để nginx phục vụ static.
+#     Volume được mount tại /shared (xem docker-compose). File upload trong
+#     storage/app/public được copy thành thư mục thật (vì nginx không có mã nguồn).
+SHARED_PUBLIC=/shared/public
+if [ -d "$SHARED_PUBLIC" ]; then
+    echo "==> Đồng bộ public/ sang volume nginx..."
+    mkdir -p "$SHARED_PUBLIC"
+    cp -rT /var/www/html/public "$SHARED_PUBLIC"
+    # Đảm bảo storage (file upload) là thư mục thật cho nginx, không phải symlink
+    rm -rf "$SHARED_PUBLIC/storage"
+    mkdir -p "$SHARED_PUBLIC/storage"
+    cp -rT /var/www/html/storage/app/public "$SHARED_PUBLIC/storage"
+    chown -R www-data:www-data "$SHARED_PUBLIC" || true
+fi
+
 # 6) Đảm bảo quyền ghi cho storage (kể cả thư mục volume vừa mount)
 chown -R www-data:www-data storage bootstrap/cache || true
 
 # 7) Dọn & cache lại cấu hình
 php artisan optimize:clear || true
 
-echo "==> Khởi động Apache."
+echo "==> Khởi động PHP-FPM."
 exec "$@"
