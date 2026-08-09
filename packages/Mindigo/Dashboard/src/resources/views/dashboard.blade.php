@@ -22,6 +22,10 @@
             'logout_confirm' => __('Mindigo-dashboard::app.logout_confirm'),
             'logout_cancel' => __('Mindigo-dashboard::app.logout_cancel'),
             'logging_out' => __('Mindigo-dashboard::app.logging_out'),
+            'notif_unread_count' => __('notification::app.unread_count'),
+            'notif_all_read' => __('notification::app.all_read'),
+            'notif_announcement' => __('notification::app.cat_announcement'),
+            'notif_title' => __('notification::app.title'),
         ];
 
         $dashboardChartLabels = [
