@@ -3,6 +3,7 @@
 namespace Mindigo\TeacherClassroom\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\Classroom;
@@ -41,13 +42,24 @@ class TeacherClassroomService
 
     public function stats(User $teacher): array
     {
-        $base = Classroom::query()->where('teacher_id', $teacher->getAuthIdentifier());
+        $row = DB::table('classrooms')
+            ->where('teacher_id', $teacher->getAuthIdentifier())
+            ->whereNull('deleted_at')
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw("COUNT(CASE WHEN status = 'active' THEN 1 END) as active")
+            ->selectRaw("COUNT(CASE WHEN status = 'inactive' THEN 1 END) as inactive")
+            ->selectRaw('COALESCE(SUM((
+                SELECT COUNT(*) FROM classroom_students
+                WHERE classroom_students.classroom_id = classrooms.id
+                  AND classroom_students.status = ?
+            )), 0) as students', ['active'])
+            ->first();
 
         return [
-            'total' => (clone $base)->count(),
-            'active' => (clone $base)->where('status', 'active')->count(),
-            'inactive' => (clone $base)->where('status', 'inactive')->count(),
-            'students' => (clone $base)->withCount('students')->get()->sum('students_count'),
+            'total' => (int) ($row->total ?? 0),
+            'active' => (int) ($row->active ?? 0),
+            'inactive' => (int) ($row->inactive ?? 0),
+            'students' => (int) ($row->students ?? 0),
         ];
     }
 
