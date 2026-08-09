@@ -408,9 +408,26 @@
             <div id="dashboard-notification-menu" class="absolute bottom-full left-0 z-50 mb-2 hidden w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10">
                 <div class="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-3">
                     <span class="text-sm font-black text-slate-900">@lang('notification::app.title')</span>
-                    @if($unreadCount > 0)
-                        <span class="grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[10px] font-black text-white">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
-                    @endif
+                    <span class="flex items-center gap-1.5">
+                        @php $globalUnreadAnnouncement = $globalUnreadAnnouncementNotifications ?? 0; @endphp
+                        @if($globalUnreadAnnouncement > 0)
+                            <span class="grid h-5 min-w-5 place-items-center rounded-full bg-blue-600 px-1.5 text-[10px] font-black text-white">{{ $globalUnreadAnnouncement > 99 ? '99+' : $globalUnreadAnnouncement }}</span>
+                        @endif
+                        @if($unreadCount > 0)
+                            <span class="grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[10px] font-black text-white">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
+                        @endif
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-1 border-b border-slate-100 px-3 py-2">
+                    <a href="{{ route('notifications.index', ['category' => 'announcement']) }}" class="inline-flex h-7 flex-1 items-center justify-center gap-1 rounded-lg px-2 text-[11px] font-black text-blue-700 no-underline transition hover:bg-blue-50">
+                        <x-heroicon-o-megaphone class="h-3.5 w-3.5" />
+                        @lang('notification::app.cat_announcement')
+                    </a>
+                    <a href="{{ route('notifications.index', ['category' => 'system']) }}" class="inline-flex h-7 flex-1 items-center justify-center gap-1 rounded-lg px-2 text-[11px] font-black text-slate-500 no-underline transition hover:bg-slate-50">
+                        <x-heroicon-o-bell class="h-3.5 w-3.5" />
+                        @lang('notification::app.cat_system')
+                    </a>
                 </div>
 
                 <div class="mindigo-scrollbar-hidden max-h-80 overflow-y-auto">
@@ -418,6 +435,7 @@
                         @php
                             $d = $note->data;
                             $isUnread = is_null($note->read_at);
+                            $isAnnouncement = (($d['category'] ?? null) === 'announcement');
                             $icon = match($d['icon'] ?? '') {
                                 'megaphone'       => 'heroicon-o-megaphone',
                                 'clipboard-check' => 'heroicon-o-clipboard-document-check',
@@ -433,12 +451,15 @@
                         @endphp
                         <a href="{{ route('notifications.read', $note->id) }}"
                            class="flex items-start gap-3 px-4 py-3 no-underline transition hover:bg-slate-50 {{ $isUnread ? 'bg-green-50/40' : '' }}">
-                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl {{ $tone }}">
+                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl {{ $isAnnouncement ? 'bg-blue-50 text-blue-600' : $tone }}">
                                 <x-dynamic-component :component="$icon" class="h-4 w-4" />
                             </span>
                             <span class="min-w-0 flex-1">
                                 <span class="flex items-center gap-1.5">
                                     <span class="truncate text-sm font-black text-slate-800">{{ $d['title'] ?? '—' }}</span>
+                                    @if($isAnnouncement)
+                                        <span class="shrink-0 rounded-full bg-blue-100 px-1.5 py-0.5 text-[9px] font-black text-blue-700">@lang('notification::app.cat_announcement')</span>
+                                    @endif
                                     @if($isUnread)<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-green-600"></span>@endif
                                 </span>
                                 @if(!empty($d['message']))

@@ -22,6 +22,7 @@ return [
 
     // Category labels
     'cat_announcement' => 'Class announcement',
+    'cat_system' => 'System',
     'cat_assignment_graded' => 'Assignment graded',
     'cat_discussion' => 'Discussion',
 ];

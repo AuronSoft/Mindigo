@@ -41,18 +41,20 @@
     <div class="flex flex-1 flex-col gap-5 p-6">
 
         {{-- Filter tabs --}}
-        <div class="flex items-center gap-2">
-            <a href="{{ route('notifications.index') }}"
-               class="inline-flex h-9 items-center rounded-full px-4 text-xs font-black no-underline transition {{ ! $filter ? 'bg-green-600 text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50' }}">
-                @lang('notification::app.filter_all')
-            </a>
-            <a href="{{ route('notifications.index', ['filter' => 'unread']) }}"
-               class="inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-xs font-black no-underline transition {{ $filter === 'unread' ? 'bg-green-600 text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50' }}">
-                @lang('notification::app.filter_unread')
-                @if($unreadCount > 0)
-                    <span class="grid h-5 min-w-5 place-items-center rounded-full {{ $filter === 'unread' ? 'bg-white text-green-700' : 'bg-green-600 text-white' }} px-1.5 text-[10px]">{{ $unreadCount }}</span>
-                @endif
-            </a>
+        @php
+            $tab = function (string $label, ?string $cat, ?string $fil, array $extra = []) use ($category, $filter) {
+                $active = ($cat === $category) && ($fil === $filter);
+                $cls = $active ? 'bg-green-600 text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50';
+                $url = route('notifications.index', array_merge(['category' => $cat, 'filter' => $fil], $extra));
+                return '<a href="'.e($url).'" class="inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-xs font-black no-underline transition '.$cls.'">'.$label.'</a>';
+            };
+        @endphp
+        <div class="flex flex-wrap items-center gap-2">
+            {!! $tab(__('notification::app.filter_all'), null, null) !!}
+            {!! $tab(__('notification::app.filter_unread'), $category, 'unread') !!}
+            <span class="mx-1 h-6 w-px bg-slate-200"></span>
+            {!! $tab(__('notification::app.cat_announcement'), 'announcement', $filter) !!}
+            {!! $tab(__('notification::app.cat_system'), 'system', $filter) !!}
         </div>
 
         @if($notifications->isEmpty())
@@ -72,6 +74,7 @@
                         $d = $note->data;
                         $tone = $tones[$d['tone'] ?? 'slate'] ?? $tones['slate'];
                         $isUnread = is_null($note->read_at);
+                        $isAnnouncement = (($d['category'] ?? null) === 'announcement');
                         $icon = match($d['icon'] ?? '') {
                             'megaphone'       => 'heroicon-o-megaphone',
                             'clipboard-check' => 'heroicon-o-clipboard-document-check',
@@ -81,12 +84,15 @@
                     @endphp
                     <a href="{{ route('notifications.read', $note->id) }}"
                        class="flex items-start gap-4 border-b border-slate-100 px-6 py-4 no-underline transition last:border-b-0 hover:bg-slate-50/70 {{ $isUnread ? 'bg-green-50/40' : '' }}">
-                        <span class="grid h-11 w-11 shrink-0 place-items-center rounded-2xl {{ $tone }}">
+                        <span class="grid h-11 w-11 shrink-0 place-items-center rounded-2xl {{ $isAnnouncement ? 'bg-blue-50 text-blue-600' : $tone }}">
                             <x-dynamic-component :component="$icon" class="h-5 w-5" />
                         </span>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
                                 <p class="truncate font-black text-slate-800">{{ $d['title'] ?? '—' }}</p>
+                                @if($isAnnouncement)
+                                    <span class="shrink-0 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-black text-blue-700">@lang('notification::app.cat_announcement')</span>
+                                @endif
                                 @if($isUnread)
                                     <span class="shrink-0 rounded-full bg-green-600 px-2 py-0.5 text-[10px] font-black text-white">@lang('notification::app.unread_badge')</span>
                                 @endif

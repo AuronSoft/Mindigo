@@ -20,16 +20,20 @@ class NotificationServiceProvider extends ServiceProvider
                 return;
             }
 
-            [$count, $recent] = once(function () {
+            [$count, $unreadAnnouncement, $recent] = once(function () {
                 $user = auth()->user();
 
                 return [
                     $user->unreadNotifications()->count(),
+                    $user->unreadNotifications()
+                        ->where('data->category', 'announcement')
+                        ->count(),
                     $user->notifications()->latest()->limit(6)->get(),
                 ];
             });
 
             $view->with('globalUnreadNotifications', $count);
+            $view->with('globalUnreadAnnouncementNotifications', $unreadAnnouncement);
             $view->with('globalRecentNotifications', $recent);
         });
     }

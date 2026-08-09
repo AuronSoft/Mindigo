@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
+use Mindigo\Notification\Support\NotificationCategorization;
 
 class NotificationController extends Controller
 {
@@ -15,16 +16,24 @@ class NotificationController extends Controller
         $user = Auth::user();
 
         $filter = $request->input('filter'); // null | 'unread'
+        $category = $request->input('category'); // null | 'announcement' | 'system'
 
         $query = $user->notifications();
         if ($filter === 'unread') {
             $query->whereNull('read_at');
         }
+        if (in_array($category, [NotificationCategorization::CATEGORY_ANNOUNCEMENT, NotificationCategorization::CATEGORY_SYSTEM], true)) {
+            NotificationCategorization::scopeCategory($query, $category);
+        }
 
         $notifications = $query->paginate(15)->withQueryString();
-        $unreadCount = $user->unreadNotifications()->count();
 
-        return view('notification::index', compact('notifications', 'unreadCount', 'filter'));
+        $unreadCount = $user->unreadNotifications()->count();
+        $unreadAnnouncementCount = $user->unreadNotifications()
+            ->where('data->category', 'announcement')
+            ->count();
+
+        return view('notification::index', compact('notifications', 'unreadCount', 'unreadAnnouncementCount', 'filter', 'category'));
     }
 
     // Đánh dấu đã đọc 1 thông báo (rồi điều hướng tới url đính kèm nếu có)
