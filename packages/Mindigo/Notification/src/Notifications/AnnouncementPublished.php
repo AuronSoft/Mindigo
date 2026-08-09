@@ -6,11 +6,15 @@ use Illuminate\Notifications\Notification;
 
 class AnnouncementPublished extends Notification
 {
+    public const CATEGORY = 'announcement';
+
     public function __construct(
         public string $title,
         public ?string $message = null,
         public ?string $teacher = null,
         public ?string $url = null,
+        public ?int $announcementId = null,
+        public array $classroomIds = [],
     ) {}
 
     public function via(object $notifiable): array
@@ -21,13 +25,15 @@ class AnnouncementPublished extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'category' => 'announcement',
+            'category' => self::CATEGORY,
             'icon' => 'megaphone',
             'tone' => 'blue',
             'title' => $this->title,
             'message' => $this->message,
             'teacher' => $this->teacher,
             'url' => $this->url,
+            'announcement_id' => $this->announcementId,
+            'classroom_ids' => $this->classroomIds,
         ];
     }
 }

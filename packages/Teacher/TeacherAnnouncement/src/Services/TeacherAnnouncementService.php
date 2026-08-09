@@ -120,6 +120,8 @@ class TeacherAnnouncementService
             message: Str::limit(strip_tags($ann->content), 140),
             teacher: $ann->teacher?->name,
             url: Route::has('student.classrooms.index') ? route('student.classrooms.index') : null,
+            announcementId: (int) $ann->id,
+            classroomIds: $classroomIds->map(fn ($id) => (int) $id)->all(),
         ));
     }
 
