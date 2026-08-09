@@ -4,6 +4,7 @@ namespace Mindigo\StudentClassroom\Services;
 
 use Illuminate\Support\Collection;
 use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherAnnouncement\Models\Announcement;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 
@@ -41,6 +42,19 @@ class ClassroomService
             ->where('student_id', $studentId)
             ->wherePivot('status', 'active')
             ->exists();
+    }
+
+    // Lớp đầu tiên (trong các lớp announcement nhắm tới) mà học sinh đang tham gia.
+    // Dùng để điều hướng tới trang chi tiết thông báo đúng lớp của học sinh.
+
+    public function classroomForAnnouncement(Announcement $announcement, int|string $studentId): ?Classroom
+    {
+        return $announcement->classrooms()
+            ->whereHas('students', function ($q) use ($studentId) {
+                $q->where('student_id', $studentId)
+                    ->where('classroom_students.status', 'active');
+            })
+            ->first();
     }
 
     // Chi tiết lớp cho học sinh: GV, môn, lịch sắp tới, thông báo, bài tập, buổi học trực tuyến

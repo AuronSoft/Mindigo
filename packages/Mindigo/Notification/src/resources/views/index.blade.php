@@ -27,7 +27,20 @@
             <h1 class="mt-0.5 text-lg font-black text-slate-950">@lang('notification::app.title')</h1>
             <p class="text-xs font-semibold text-slate-400">@lang('notification::app.subtitle')</p>
         </div>
-        @if($unreadCount > 0)
+        <div class="flex items-center gap-2">
+            @if($unreadAnnouncementCount > 0)
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-black text-blue-700">
+                    <x-heroicon-o-megaphone class="h-4 w-4" />
+                    {{ $unreadAnnouncementCount > 99 ? '99+' : $unreadAnnouncementCount }}
+                    <span class="font-bold text-blue-500">@lang('notification::app.cat_announcement')</span>
+                </span>
+            @endif
+            @if($unreadCount > 0)
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1.5 text-xs font-black text-green-700">
+                    <x-heroicon-o-bell class="h-4 w-4" />
+                    {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                </span>
+            @endif
             <form action="{{ route('notifications.read-all') }}" method="POST">
                 @csrf
                 <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 shadow-sm transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
@@ -35,7 +48,7 @@
                     @lang('notification::app.mark_all_read')
                 </button>
             </form>
-        @endif
+        </div>
     </header>
 
     <div class="flex flex-1 flex-col gap-5 p-6">
