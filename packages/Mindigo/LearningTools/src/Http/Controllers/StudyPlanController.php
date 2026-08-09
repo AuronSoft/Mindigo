@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\LearningTools\Http\Requests\StudyPlanRequest;
 use Mindigo\LearningTools\Http\Requests\StudyPlanTaskRequest;
 use Mindigo\LearningTools\Models\StudyPlan;

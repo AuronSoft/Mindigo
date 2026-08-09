@@ -5,7 +5,7 @@ namespace Mindigo\Report\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\Report\Services\ReportService;
 

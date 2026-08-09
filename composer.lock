@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fcb31c4c006fc099f4bf75195c0719e0",
+    "content-hash": "984144025f775f9553d5fe88eba1dae1",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -2727,7 +2727,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2757,7 +2757,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2822,38 +2822,8 @@
             }
         },
         {
-            "name": "mindigo/classroom-management",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
-            "dist": {
-                "type": "path",
-                "url": "packages/Mindigo/ClassroomManagement",
-                "reference": "ac7d179e56a3aa376c542ecd2a826094c921515f"
-            },
-            "require": {
-                "illuminate/support": "^12.0",
-                "php": "^8.2"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Mindigo\\ClassroomManagement\\Providers\\ClassroomManagementServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Mindigo\\ClassroomManagement\\": "src/"
-                }
-            },
-            "description": "Mindigo classroom management package",
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
             "name": "mindigo/core",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2883,7 +2853,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2913,7 +2883,7 @@
         },
         {
             "name": "mindigo/exam-management",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ExamManagement",
@@ -2943,7 +2913,7 @@
         },
         {
             "name": "mindigo/learning-tools",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/LearningTools",
@@ -2973,7 +2943,7 @@
         },
         {
             "name": "mindigo/notification",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Notification",
@@ -3003,7 +2973,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -3033,7 +3003,7 @@
         },
         {
             "name": "mindigo/question-bank",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/QuestionBank",
@@ -3063,7 +3033,7 @@
         },
         {
             "name": "mindigo/report",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Report",
@@ -3093,7 +3063,7 @@
         },
         {
             "name": "mindigo/role-permission",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -3123,7 +3093,7 @@
         },
         {
             "name": "mindigo/student-assignment",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentAssignment",
@@ -3153,7 +3123,7 @@
         },
         {
             "name": "mindigo/student-classroom",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentClassroom",
@@ -3183,7 +3153,7 @@
         },
         {
             "name": "mindigo/student-dashboard",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentDashboard",
@@ -3213,7 +3183,7 @@
         },
         {
             "name": "mindigo/student-discussion",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentDiscussion",
@@ -3243,7 +3213,7 @@
         },
         {
             "name": "mindigo/student-exam",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentExam",
@@ -3273,7 +3243,7 @@
         },
         {
             "name": "mindigo/student-history",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentHistory",
@@ -3303,7 +3273,7 @@
         },
         {
             "name": "mindigo/student-leaderboard",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentLeaderboard",
@@ -3333,7 +3303,7 @@
         },
         {
             "name": "mindigo/student-live-session",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentLiveSession",
@@ -3363,7 +3333,7 @@
         },
         {
             "name": "mindigo/student-notebook",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentNotebook",
@@ -3393,18 +3363,18 @@
         },
         {
             "name": "mindigo/student-practice",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentPractice",
-                "reference": "c57b6576d9cac517db002e56260aa5c1d96e0c14"
+                "reference": "cda38e4c4a08ee41264d089df383dc038045e5a4"
             },
             "require": {
                 "illuminate/support": "^12.0",
-                "mindigo/classroom-management": "*",
                 "mindigo/exam-management": "*",
                 "mindigo/question-bank": "*",
                 "mindigo/subject-management": "*",
+                "mindigo/teacher-classroom": "*",
                 "php": "^8.2"
             },
             "type": "library",
@@ -3427,7 +3397,7 @@
         },
         {
             "name": "mindigo/student-progress",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentProgress",
@@ -3457,7 +3427,7 @@
         },
         {
             "name": "mindigo/student-schedule",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentSchedule",
@@ -3487,7 +3457,7 @@
         },
         {
             "name": "mindigo/subject-management",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SubjectManagement",
@@ -3517,7 +3487,7 @@
         },
         {
             "name": "mindigo/support-management",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SupportManagement",
@@ -3547,7 +3517,7 @@
         },
         {
             "name": "mindigo/system-setting",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",
@@ -3577,7 +3547,7 @@
         },
         {
             "name": "mindigo/teacher-announcement",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAnnouncement",
@@ -3607,7 +3577,7 @@
         },
         {
             "name": "mindigo/teacher-assignment",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAssignment",
@@ -3637,7 +3607,7 @@
         },
         {
             "name": "mindigo/teacher-classroom",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherClassroom",
@@ -3667,7 +3637,7 @@
         },
         {
             "name": "mindigo/teacher-course",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherCourse",
@@ -3697,7 +3667,7 @@
         },
         {
             "name": "mindigo/teacher-dashboard",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDashboard",
@@ -3727,7 +3697,7 @@
         },
         {
             "name": "mindigo/teacher-discussion",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDiscussion",
@@ -3757,7 +3727,7 @@
         },
         {
             "name": "mindigo/teacher-exam",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherExam",
@@ -3787,7 +3757,7 @@
         },
         {
             "name": "mindigo/teacher-live-session",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherLiveSession",
@@ -3817,7 +3787,7 @@
         },
         {
             "name": "mindigo/teacher-onboarding",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherOnboarding",
@@ -3847,7 +3817,7 @@
         },
         {
             "name": "mindigo/teacher-question",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherQuestion",
@@ -3877,7 +3847,7 @@
         },
         {
             "name": "mindigo/teacher-result",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherResult",
@@ -3907,7 +3877,7 @@
         },
         {
             "name": "mindigo/user-management",
-            "version": "dev-feat/chat-phase0-reverb-realtime",
+            "version": "dev-feature/classroom-cleanup",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/UserManagement",

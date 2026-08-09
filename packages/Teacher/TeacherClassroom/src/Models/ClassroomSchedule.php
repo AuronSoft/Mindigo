@@ -4,7 +4,7 @@ namespace Mindigo\TeacherClassroom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class ClassroomSchedule extends Model
 {

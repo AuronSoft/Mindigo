@@ -5,7 +5,7 @@ namespace Mindigo\StudentDashboard\Services;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherAssignment\Models\Assignment;

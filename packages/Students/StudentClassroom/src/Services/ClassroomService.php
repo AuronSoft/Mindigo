@@ -3,7 +3,7 @@
 namespace Mindigo\StudentClassroom\Services;
 
 use Illuminate\Support\Collection;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherAnnouncement\Models\Announcement;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherLiveSession\Models\LiveSession;

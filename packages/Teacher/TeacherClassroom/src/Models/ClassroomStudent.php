@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindigo\ClassroomManagement\Models;
+namespace Mindigo\TeacherClassroom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

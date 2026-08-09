@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\LearningTools\Models\Flashcard;
 use Mindigo\LearningTools\Models\FlashcardDeck;
 use Mindigo\LearningTools\Models\StudyPlan;

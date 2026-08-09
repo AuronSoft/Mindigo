@@ -5,7 +5,7 @@ namespace Mindigo\StudentAssignment\Services;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Mindigo\ClassroomManagement\Models\ClassroomStudent;
+use Mindigo\TeacherClassroom\Models\ClassroomStudent;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 

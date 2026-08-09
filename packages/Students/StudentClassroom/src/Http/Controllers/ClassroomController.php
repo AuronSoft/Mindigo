@@ -5,7 +5,7 @@ namespace Mindigo\StudentClassroom\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\StudentClassroom\Services\ClassroomService;
 use Mindigo\TeacherAnnouncement\Models\Announcement;
 

@@ -5,7 +5,7 @@ namespace Mindigo\LearningTools\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\LearningTools\Services\LearningAnalyticsService;
 
 class KnowledgeGapController extends Controller

@@ -18,7 +18,6 @@
         "mindigo/audit-log": "*",
         "mindigo/auth": "*",
         "mindigo/blog-management": "dev-main",
-        "mindigo/classroom-management": "*",
         "mindigo/core": "*",
         "mindigo/dashboard": "*",
         "mindigo/exam-management": "*",
@@ -88,7 +87,6 @@
             "Mindigo\\SystemSetting\\": "packages/Mindigo/SystemSetting/src/",
             "Mindigo\\AuditLog\\": "packages/Mindigo/AuditLog/src/",
             "Mindigo\\Report\\": "packages/Mindigo/Report/src/",
-            "Mindigo\\ClassroomManagement\\": "packages/Mindigo/ClassroomManagement/src/",
             "Mindigo\\SubjectManagement\\": "packages/Mindigo/SubjectManagement/src/",
             "Mindigo\\TeacherDashboard\\": "packages/Teacher/TeacherDashboard/src/",
             "Mindigo\\TeacherClassroom\\": "packages/Teacher/TeacherClassroom/src/",
@@ -180,10 +178,6 @@
         {
             "type": "path",
             "url": "packages/Mindigo/Report"
-        },
-        {
-            "type": "path",
-            "url": "packages/Mindigo/ClassroomManagement"
         },
         {
             "type": "path",

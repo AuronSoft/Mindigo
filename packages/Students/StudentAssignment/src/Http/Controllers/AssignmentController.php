@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\StudentAssignment\Http\Requests\SubmitAssignmentRequest;
 use Mindigo\StudentAssignment\Services\AssignmentService;
 use Mindigo\TeacherAssignment\Models\Assignment;

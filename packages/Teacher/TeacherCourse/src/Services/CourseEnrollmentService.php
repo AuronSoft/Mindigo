@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\Notification\Notifications\CourseAssigned;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\CourseClassroomAssignment;
