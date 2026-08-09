@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
-use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\Notification\Notifications\AnnouncementPublished;
 use Mindigo\TeacherAnnouncement\Http\Requests\AnnouncementRequest;
 use Mindigo\TeacherAnnouncement\Models\Announcement;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class TeacherAnnouncementService
 {

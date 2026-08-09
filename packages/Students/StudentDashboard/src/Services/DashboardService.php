@@ -5,11 +5,11 @@ namespace Mindigo\StudentDashboard\Services;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Mindigo\Auth\Models\User;
-use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherCourse\Models\CourseEnrollment;
 
 class DashboardService
