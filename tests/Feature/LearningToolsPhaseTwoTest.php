@@ -4,11 +4,11 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\Auth\Models\User;
-use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\LearningTools\Models\Flashcard;
 use Mindigo\LearningTools\Models\FlashcardDeck;
 use Mindigo\LearningTools\Models\StudyPlan;
 use Mindigo\LearningTools\Models\StudyPlanTask;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Tests\TestCase;
 
 class LearningToolsPhaseTwoTest extends TestCase

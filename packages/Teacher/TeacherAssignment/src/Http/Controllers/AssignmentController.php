@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherAssignment\Http\Requests\AssignmentRequest;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 use Mindigo\TeacherAssignment\Services\AssignmentService;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class AssignmentController extends Controller
 {

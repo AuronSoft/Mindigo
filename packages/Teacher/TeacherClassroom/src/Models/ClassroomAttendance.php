@@ -5,7 +5,6 @@ namespace Mindigo\TeacherClassroom\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Mindigo\Auth\Models\User;
-use Mindigo\TeacherClassroom\Models\Classroom;
 
 class ClassroomAttendance extends Model
 {

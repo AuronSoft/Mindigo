@@ -3,8 +3,8 @@
 namespace Mindigo\TeacherExam\Http\Requests;
 
 use Illuminate\Validation\Validator;
-use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\ExamManagement\Http\Requests\ExamRequest;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class TeacherExamRequest extends ExamRequest
 {

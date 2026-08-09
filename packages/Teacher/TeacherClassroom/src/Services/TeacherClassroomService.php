@@ -5,8 +5,8 @@ namespace Mindigo\TeacherClassroom\Services;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
-use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 

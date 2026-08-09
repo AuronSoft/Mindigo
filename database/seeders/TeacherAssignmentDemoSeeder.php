@@ -3,15 +3,15 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\Auth\Models\User;
-use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
-use Illuminate\Support\Collection;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class TeacherAssignmentDemoSeeder extends Seeder
 {

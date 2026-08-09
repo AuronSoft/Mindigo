@@ -3,10 +3,8 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\SubjectManagement\Models\Subject;
-use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
-use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
 use Tests\TestCase;
 

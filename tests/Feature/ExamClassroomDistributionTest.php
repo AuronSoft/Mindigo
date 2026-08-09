@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\StudentExam\Services\ExamService;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Tests\TestCase;
 
 class ExamClassroomDistributionTest extends TestCase
