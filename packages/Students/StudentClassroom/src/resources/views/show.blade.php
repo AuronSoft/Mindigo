@@ -165,10 +165,33 @@
                     @lang('student-classroom::app.section_announce')
                 </h2>
                 @forelse($announcements as $note)
-                    <div class="border-t border-slate-100 py-3 first:border-t-0">
-                        <p class="font-black text-slate-700">{{ $note->title }}</p>
-                        <p class="text-xs font-semibold text-slate-400">{{ $note->created_at?->format('d/m/Y') }}</p>
-                    </div>
+                    @php
+                        $aType = $note->type ?? 'info';
+                        $aTypeMeta = match ($aType) {
+                            'warning'    => 'bg-amber-100 text-amber-700',
+                            'reminder'   => 'bg-blue-100 text-blue-700',
+                            'assignment' => 'bg-violet-100 text-violet-700',
+                            default      => 'bg-green-100 text-green-700',
+                        };
+                    @endphp
+                    <a href="{{ route('student.classrooms.announcements.show', [$classroom, $note]) }}"
+                       class="group flex items-start gap-2 border-t border-slate-100 py-3 no-underline transition first:border-t-0 hover:bg-slate-50">
+                        <div class="min-w-0 flex-1">
+                            <p class="flex items-center gap-1.5 font-black text-slate-700 group-hover:text-green-700">
+                                @if($note->is_pinned)
+                                    <x-heroicon-o-bookmark class="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                                @endif
+                                <span class="truncate">{{ $note->title }}</span>
+                            </p>
+                            <p class="mt-0.5 flex items-center gap-2 text-xs font-semibold text-slate-400">
+                                <span class="inline-flex items-center rounded-full {{ $aTypeMeta }} px-2 py-0.5 text-[10px] font-black">
+                                    @lang('student-classroom::app.type_' . $aType)
+                                </span>
+                                {{ $note->published_at?->format('d/m/Y H:i') }}
+                            </p>
+                        </div>
+                        <x-heroicon-o-chevron-right class="h-4 w-4 shrink-0 self-center text-slate-300 transition group-hover:text-green-600" />
+                    </a>
                 @empty
                     <p class="py-4 text-center text-sm font-semibold text-slate-400">@lang('student-classroom::app.empty_announce')</p>
                 @endforelse

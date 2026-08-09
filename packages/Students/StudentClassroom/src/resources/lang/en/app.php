@@ -33,6 +33,14 @@ return [
     'empty_assignments' => 'No assignments yet.',
     'empty_live' => 'No live sessions yet.',
 
+    // Announcement detail
+    'posted_by' => 'Posted by:',
+    'pinned' => 'Pinned',
+    'type_info' => 'Info',
+    'type_warning' => 'Warning',
+    'type_reminder' => 'Reminder',
+    'type_assignment' => 'Assignment',
+
     // Assignment
     'due_date' => 'Due',
     'overdue' => 'Overdue',

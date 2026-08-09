@@ -4,6 +4,7 @@ namespace Mindigo\Notification\Support;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Mindigo\Notification\Notifications\AnnouncementPublished;
 
 class NotificationCategorization
@@ -17,7 +18,7 @@ class NotificationCategorization
      *
      * @param  string  $category  'announcement' | 'system'
      */
-    public static function scopeCategory(Builder $query, string $category): Builder
+    public static function scopeCategory(Relation|Builder $query, string $category): Relation|Builder
     {
         if ($category === self::CATEGORY_ANNOUNCEMENT) {
             return $query->where('data->category', AnnouncementPublished::CATEGORY);

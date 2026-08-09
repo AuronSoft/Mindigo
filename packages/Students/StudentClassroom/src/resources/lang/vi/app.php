@@ -33,6 +33,14 @@ return [
     'empty_assignments' => 'Chưa có bài tập nào.',
     'empty_live' => 'Chưa có buổi học trực tuyến.',
 
+    // Announcement detail
+    'posted_by' => 'Giáo viên:',
+    'pinned' => 'Đã ghim',
+    'type_info' => 'Thông tin',
+    'type_warning' => 'Cảnh báo',
+    'type_reminder' => 'Nhắc nhở',
+    'type_assignment' => 'Bài tập',
+
     // Assignment
     'due_date' => 'Hạn nộp',
     'overdue' => 'Quá hạn',

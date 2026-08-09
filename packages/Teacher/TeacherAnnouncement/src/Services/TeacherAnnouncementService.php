@@ -115,11 +115,17 @@ class TeacherAnnouncementService
             return;
         }
 
+        $url = null;
+        $firstClassroomId = $classroomIds->first();
+        if ($firstClassroomId !== null && Route::has('student.classrooms.announcements.show')) {
+            $url = route('student.classrooms.announcements.show', [(int) $firstClassroomId, (int) $ann->id]);
+        }
+
         Notification::send($students, new AnnouncementPublished(
             title: $ann->title,
             message: Str::limit(strip_tags($ann->content), 140),
             teacher: $ann->teacher?->name,
-            url: Route::has('student.classrooms.index') ? route('student.classrooms.index') : null,
+            url: $url,
             announcementId: (int) $ann->id,
             classroomIds: $classroomIds->map(fn ($id) => (int) $id)->all(),
         ));
