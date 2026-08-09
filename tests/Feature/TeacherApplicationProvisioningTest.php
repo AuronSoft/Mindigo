@@ -5,12 +5,12 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Mindigo\AuditLog\Models\AuditLog;
+use Mindigo\Auth\Models\User;
 use Mindigo\Notification\Notifications\TeacherApplicationProvisioningNotification;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherCourse\Models\CourseCategory;
 use Mindigo\TeacherOnboarding\Models\TeacherApplication;
 use Mindigo\TeacherOnboarding\Models\TeacherApplicationInterview;
-use Mindigo\Auth\Models\User;
 use Tests\TestCase;
 
 class TeacherApplicationProvisioningTest extends TestCase

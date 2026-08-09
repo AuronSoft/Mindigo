@@ -559,7 +559,7 @@ class TeacherDiscussionService
     {
         abort_unless((int) $message->thread_id === (int) $thread->id, 404);
 
-        DB::transaction(function () use ($thread, $message, $user, $emoji): void {
+        DB::transaction(function () use ($message, $user, $emoji): void {
             $existing = $message->reactions()
                 ->where('user_id', $user->getAuthIdentifier())
                 ->where('emoji', $emoji)

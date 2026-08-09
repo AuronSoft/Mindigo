@@ -2,12 +2,12 @@
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckMaintenanceMode;
-use App\Providers\BroadcastServiceProvider;
 use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\ConvertEmptyStringsToNull;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TrimStrings;
+use App\Providers\BroadcastServiceProvider;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Foundation\Application;

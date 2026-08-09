@@ -7,13 +7,14 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Mindigo\Auth\Models\User;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 
 class MessageTyping implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public DiscussionThread $thread, public \Mindigo\Auth\Models\User $user) {}
+    public function __construct(public DiscussionThread $thread, public User $user) {}
 
     public function broadcastOn(): array
     {
