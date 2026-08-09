@@ -262,7 +262,7 @@
                         </div>
                         <div class="flex justify-end">
                             <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-2xl bg-green-600 px-6 text-sm font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-150">
-                                <x-heroicon-o-check class="h-4 w-4" /> {{ __('teacher-classroom::app.save_attendance_date', ['date' => date('d/m/Y', strtotime($selectedDate))]) }}
+                                <x-heroicon-o-check class="h-4 w-4" /> {{ __('teacher-classroom::app.save_attendance_date', ['date' => \Illuminate\Support\Carbon::parse($selectedDate)->format('d/m/Y')]) }}
                             </button>
                         </div>
                     </form>
@@ -353,7 +353,7 @@
                                                 </span>
                                                 <span class="flex items-center gap-1">
                                                     <x-heroicon-o-clock class="h-4 w-4 text-slate-400" />
-                                                    {{ date('H:i', strtotime($sched->start_time)) }} - {{ date('H:i', strtotime($sched->end_time)) }}
+                                                    {{ \Illuminate\Support\Str::of($sched->start_time)->substr(0,5) }} - {{ \Illuminate\Support\Str::of($sched->end_time)->substr(0,5) }}
                                                 </span>
                                             </div>
                                             @if($sched->description)

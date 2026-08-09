@@ -129,6 +129,27 @@ class ClassroomManagementTest extends TestCase
         $this->assertSoftDeleted('classrooms', ['id' => $classroom->id]);
     }
 
+    public function test_stats_aggregate_correct_counts(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $studentA = $this->createUser(['role' => 'student']);
+        $studentB = $this->createUser(['role' => 'student']);
+
+        $active = $this->createClassroom(['teacher' => $teacher, 'status' => 'active']);
+        $this->createClassroom(['teacher' => $teacher, 'status' => 'active']);
+        $this->createClassroom(['teacher' => $teacher, 'status' => 'inactive']);
+
+        $active->students()->attach($studentA->id, ['status' => 'active', 'joined_at' => now()]);
+        $active->students()->attach($studentB->id, ['status' => 'active', 'joined_at' => now()]);
+
+        $stats = app(TeacherClassroomService::class)->stats($teacher);
+
+        $this->assertEquals(3, $stats['total']);
+        $this->assertEquals(2, $stats['active']);
+        $this->assertEquals(1, $stats['inactive']);
+        $this->assertEquals(2, $stats['students']);
+    }
+
     public function test_service_syncs_students(): void
     {
         $teacher = $this->createUser(['role' => 'teacher']);
