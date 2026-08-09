@@ -4,11 +4,11 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\LearningTools\Models\PersonalizedPracticeSet;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Tests\TestCase;
 
 class LearningToolsPhaseThreeTest extends TestCase

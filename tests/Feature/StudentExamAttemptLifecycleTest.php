@@ -3,10 +3,10 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamQuestion;
 use Mindigo\StudentExam\Services\ExamService;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Tests\TestCase;
 
 class StudentExamAttemptLifecycleTest extends TestCase

@@ -4,9 +4,9 @@ namespace Mindigo\StudentLeaderboard\Services;
 
 use Illuminate\Support\Collection;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class LeaderboardService
 {

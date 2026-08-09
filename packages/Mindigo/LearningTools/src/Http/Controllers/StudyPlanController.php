@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\LearningTools\Http\Requests\StudyPlanRequest;
 use Mindigo\LearningTools\Http\Requests\StudyPlanTaskRequest;
 use Mindigo\LearningTools\Models\StudyPlan;
 use Mindigo\LearningTools\Models\StudyPlanTask;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class StudyPlanController extends Controller
 {

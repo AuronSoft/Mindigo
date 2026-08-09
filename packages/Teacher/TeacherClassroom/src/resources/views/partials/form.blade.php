@@ -79,6 +79,31 @@
         @enderror
     </div>
 
+    {{-- Subjects --}}
+    <div>
+        <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.subjects')</label>
+        <div class="grid gap-2 sm:grid-cols-2">
+            @forelse($subjects as $subject)
+                <label class="flex cursor-pointer items-center gap-2.5 rounded-2xl border {{ in_array($subject->id, old('subject_ids', $sel?->subjects->pluck('id')->all() ?? [])) ? 'border-green-300 bg-green-50' : 'border-slate-200 bg-white' }} px-4 py-2.5 transition hover:border-green-300">
+                    <input type="checkbox" name="subject_ids[]" value="{{ $subject->id }}"
+                           @checked(in_array($subject->id, old('subject_ids', $sel?->subjects->pluck('id')->all() ?? [])))
+                           class="h-4 w-4 accent-green-600">
+                    <span class="flex items-center gap-2 text-sm font-bold text-slate-700">
+                        <span class="h-2.5 w-2.5 rounded-full" style="background-color: {{ $subject->color ?? '#10b981' }}"></span>
+                        {{ $subject->name }}
+                    </span>
+                </label>
+            @empty
+                <p class="text-sm font-bold text-slate-400">@lang('teacher-classroom::app.no_subjects')</p>
+            @endforelse
+        </div>
+        @error('subject_ids')
+            <p class="mt-1.5 flex items-center gap-1 text-xs font-bold text-red-600">
+                <x-heroicon-o-exclamation-circle class="h-3.5 w-3.5" />{{ $message }}
+            </p>
+        @enderror
+    </div>
+
     {{-- Description --}}
     <div>
         <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.description')</label>

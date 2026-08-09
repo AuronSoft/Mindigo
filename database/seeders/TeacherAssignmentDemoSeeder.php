@@ -3,14 +3,15 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class TeacherAssignmentDemoSeeder extends Seeder
 {
@@ -73,7 +74,7 @@ class TeacherAssignmentDemoSeeder extends Seeder
         $this->seedResultDemo($teacher, $students);
     }
 
-    private function seedAssignmentDemo(User $teacher, Classroom $classroom, $students): void
+    private function seedAssignmentDemo(User $teacher, Classroom $classroom, Collection $students): void
     {
         Assignment::withTrashed()
             ->where('teacher_id', $teacher->id)
@@ -175,7 +176,7 @@ class TeacherAssignmentDemoSeeder extends Seeder
         }
     }
 
-    private function seedResultDemo(User $teacher, $students): void
+    private function seedResultDemo(User $teacher, Collection $students): void
     {
         $examPayloads = [
             [

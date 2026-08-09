@@ -3,7 +3,7 @@
 namespace Mindigo\StudentLiveSession\Services;
 
 use Illuminate\Support\Collection;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 
 class LiveSessionService

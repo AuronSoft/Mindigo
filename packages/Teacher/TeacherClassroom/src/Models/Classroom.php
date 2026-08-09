@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindigo\ClassroomManagement\Models;
+namespace Mindigo\TeacherClassroom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Mindigo\Auth\Models\User;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherAnnouncement\Models\Announcement;
-use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
-use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 
 class Classroom extends Model
 {

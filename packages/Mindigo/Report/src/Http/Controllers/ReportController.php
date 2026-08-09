@@ -5,9 +5,9 @@ namespace Mindigo\Report\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\Report\Services\ReportService;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class ReportController extends Controller
 {

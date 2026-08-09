@@ -5,8 +5,8 @@ namespace Mindigo\TeacherClassroom\Services;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 
@@ -53,22 +53,34 @@ class TeacherClassroomService
 
     public function create(User $teacher, array $data): Classroom
     {
-        return Classroom::query()->create([
+        $subjectIds = $data['subject_ids'] ?? [];
+        unset($data['subject_ids']);
+
+        $classroom = Classroom::query()->create([
             ...$data,
             'created_by' => $teacher->getAuthIdentifier(),
             'teacher_id' => $teacher->getAuthIdentifier(),
             'code' => Str::upper($data['code']),
             'slug' => $this->uniqueSlug($data['name']),
         ]);
+
+        $classroom->subjects()->sync($subjectIds);
+
+        return $classroom;
     }
 
     public function update(Classroom $classroom, array $data): Classroom
     {
+        $subjectIds = $data['subject_ids'] ?? [];
+        unset($data['subject_ids']);
+
         $classroom->fill([
             ...$data,
             'code' => Str::upper($data['code']),
             'slug' => $classroom->name === $data['name'] ? $classroom->slug : $this->uniqueSlug($data['name'], $classroom),
         ])->save();
+
+        $classroom->subjects()->sync($subjectIds);
 
         return $classroom;
     }
@@ -116,7 +128,7 @@ class TeacherClassroomService
     {
         return ClassroomAttendance::query()
             ->where('classroom_id', $classroom->id)
-            ->where('session_date', $date)
+            ->whereDate('session_date', $date)
             ->get()
             ->keyBy('student_id');
     }

@@ -4,7 +4,7 @@ namespace Mindigo\TeacherClassroom\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class TeacherClassroomRequest extends FormRequest
 {
@@ -25,6 +25,8 @@ class TeacherClassroomRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:3000'],
             'status' => ['required', Rule::in(Classroom::STATUSES)],
             'assistant_id' => ['nullable', 'integer', 'exists:users,id'],
+            'subject_ids' => ['nullable', 'array'],
+            'subject_ids.*' => ['integer', 'exists:subjects,id'],
         ];
     }
 

@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
 use Mindigo\ExamManagement\Services\ExamAuditService;
 use Mindigo\ExamManagement\Services\ExamService;
 use Mindigo\Notification\Notifications\ExamAssigned;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherExam\Http\Requests\TeacherExamRequest;
 
 class TeacherExamService

@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\LearningTools\Http\Requests\FlashcardDeckRequest;
 use Mindigo\LearningTools\Http\Requests\FlashcardRequest;
 use Mindigo\LearningTools\Http\Requests\FlashcardReviewRequest;
 use Mindigo\LearningTools\Models\Flashcard;
 use Mindigo\LearningTools\Models\FlashcardDeck;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class FlashcardController extends Controller
 {

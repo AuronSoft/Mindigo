@@ -5,7 +5,7 @@ namespace Mindigo\TeacherLiveSession\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Mindigo\ClassroomManagement\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherLiveSession\Http\Requests\LiveSessionRequest;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Mindigo\TeacherLiveSession\Services\LiveSessionService;

@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mindigo\ClassroomManagement\Models\Classroom;
 use Mindigo\TeacherAnnouncement\Models\Announcement;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Tests\TestCase;
 
 class StudentAnnouncementDetailTest extends TestCase
