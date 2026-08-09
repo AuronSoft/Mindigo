@@ -11,8 +11,6 @@ export default defineConfig({
                 "packages/Mindigo/Auth/src/resources/js/app.js",
                 "packages/Mindigo/Dashboard/src/resources/css/app.css",
                 "packages/Mindigo/Dashboard/src/resources/js/app.js",
-                "packages/Mindigo/ClassroomManagement/src/resources/css/app.css",
-                "packages/Mindigo/ClassroomManagement/src/resources/js/app.js",
                 "packages/Mindigo/ExamManagement/src/resources/css/app.css",
                 "packages/Mindigo/ExamManagement/src/resources/js/app.js",
                 "packages/Mindigo/Profile/src/resources/css/app.css", 
