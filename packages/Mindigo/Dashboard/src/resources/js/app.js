@@ -834,6 +834,108 @@ document.addEventListener('keydown', (event) => {
     closeDashboardDropdowns();
 });
 
+// ── Realtime: Notification badge + dropdown (Phase 3) ──────────────────────
+(() => {
+    const userId = document.body?.dataset.userId;
+    if (!userId || !window.Echo) return;
+
+    const badgeEl = document.querySelector('[data-notification-count]');
+    const subtextEl = document.querySelector('[data-notification-subtext]');
+    const totalCountEl = document.querySelector('[data-notification-total-count]');
+    const announcementCountEl = document.querySelector('[data-notification-announcement-count]');
+    const listEl = document.querySelector('[data-notification-list]');
+    const readRoute = (id) => `/notifications/${id}/read`;
+
+    const esc = (value) => {
+        const div = document.createElement('div');
+        div.textContent = value == null ? '' : String(value);
+        return div.innerHTML;
+    };
+
+    const formatTime = (iso) => {
+        if (!iso) return '';
+        const date = new Date(iso);
+        if (Number.isNaN(date.getTime())) return '';
+        return date.toLocaleString();
+    };
+
+    const buildRow = (event) => {
+        const isAnnouncement = event.category === 'announcement';
+        const icon = isAnnouncement ? '📣' : (event.icon === 'clipboard-check' ? '☑' : (event.icon === 'chat-bubble-left' ? '💬' : '🔔'));
+        const iconTone = isAnnouncement ? 'bg-blue-50 text-blue-600' : (event.tone === 'blue' ? 'bg-blue-50 text-blue-600' : (event.tone === 'green' ? 'bg-green-50 text-green-600' : (event.tone === 'amber' ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-500')));
+
+        const row = document.createElement('a');
+        row.href = readRoute(event.id);
+        row.className = 'flex items-start gap-3 px-4 py-3 no-underline transition hover:bg-slate-50 bg-green-50/40';
+        row.innerHTML = `
+            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl ${iconTone}">${icon}</span>
+            <span class="min-w-0 flex-1">
+                <span class="flex items-center gap-1.5">
+                    <span class="truncate text-sm font-black text-slate-800">${esc(event.title || '—')}</span>
+                    ${isAnnouncement ? `<span class="shrink-0 rounded-full bg-blue-100 px-1.5 py-0.5 text-[9px] font-black text-blue-700">${esc(dashboardMessages.notif_announcement || 'Announcement')}</span>` : ''}
+                    <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-green-600"></span>
+                </span>
+                ${event.message ? `<span class="line-clamp-1 text-xs font-semibold text-slate-500">${esc(event.message)}</span>` : ''}
+                <span class="text-[10px] font-bold text-slate-400">${esc(formatTime(event.created_at))}</span>
+            </span>`;
+        return row;
+    };
+
+    const bumpBadge = (el) => {
+        if (!el) return 0;
+        const raw = parseInt(el.textContent, 10);
+        const value = Number.isNaN(raw) ? 0 : raw;
+        const next = value + 1;
+        el.textContent = next > 99 ? '99+' : next;
+        el.classList.remove('bg-slate-300');
+        el.classList.add('bg-green-600');
+        return value;
+    };
+
+    const setSubtext = (total) => {
+        if (!subtextEl) return;
+        subtextEl.textContent = total > 0
+            ? dashboardMessages.notif_unread_count.replace(':count', total)
+            : (dashboardMessages.notif_all_read || 'No new notifications');
+    };
+
+    window.Echo.private('user.' + userId)
+        .notification((event) => {
+            const isAnnouncement = event.category === 'announcement';
+            const prevTotal = bumpBadge(badgeEl);
+
+            if (totalCountEl) {
+                const cur = parseInt(totalCountEl.textContent, 10);
+                totalCountEl.textContent = (Number.isNaN(cur) ? 0 : cur) + 1 > 99 ? '99+' : (Number.isNaN(cur) ? 0 : cur) + 1;
+            }
+
+            if (isAnnouncement) {
+                if (announcementCountEl) {
+                    const cur = parseInt(announcementCountEl.textContent, 10);
+                    announcementCountEl.textContent = (Number.isNaN(cur) ? 0 : cur) + 1 > 99 ? '99+' : (Number.isNaN(cur) ? 0 : cur) + 1;
+                } else {
+                    const parent = document.querySelector('[data-notification-total-count]')?.parentElement;
+                    if (parent) {
+                        const badge = document.createElement('span');
+                        badge.dataset.notificationAnnouncementCount = '';
+                        badge.className = 'grid h-5 min-w-5 place-items-center rounded-full bg-blue-600 px-1.5 text-[10px] font-black text-white';
+                        badge.textContent = '1';
+                        parent.insertBefore(badge, parent.querySelector('[data-notification-total-count]'));
+                    }
+                }
+            }
+
+            if (listEl) {
+                const empty = listEl.querySelector('[data-notification-empty]');
+                if (empty) empty.remove();
+                const row = buildRow(event);
+                listEl.insertBefore(row, listEl.firstChild);
+            }
+
+            setSubtext(prevTotal + 1);
+        });
+})();
+
 document.querySelectorAll('[data-logout]').forEach((link) => {
     link.addEventListener('click', async (event) => {
         event.preventDefault();

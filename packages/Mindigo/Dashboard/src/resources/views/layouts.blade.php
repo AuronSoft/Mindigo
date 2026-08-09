@@ -11,7 +11,7 @@
     <link href="https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700,800,900" rel="stylesheet"/>
     @yield('styles')
 </head>
-<body class="bg-slate-50 font-['Be_Vietnam_Pro',ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased">
+<body class="bg-slate-50 font-['Be_Vietnam_Pro',ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased" data-user-id="{{ auth()->id() }}">
 @php
     $currentUser = Auth::user();
 @endphp
@@ -77,7 +77,6 @@
             <nav class="flex flex-col gap-2">
 
             @if($currentUser?->role === 'student')
-            {{-- ── NAV HỌC SINH (chỉ route student.* — dữ liệu scope theo học sinh) ── --}}
             @php
                 $stuBase = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
                 $stuInactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
@@ -166,7 +165,6 @@
                 @endforeach
             </div>
             @elseif($currentUser?->role === 'teacher')
-            {{-- ── NAV GIÁO VIÊN (chỉ route teacher.* — dữ liệu được scope theo giáo viên) ── --}}
             @php
                 $teacherBase = 'sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold no-underline';
                 $teacherInactive = 'text-slate-500 hover:bg-green-50 hover:text-green-700';
@@ -248,7 +246,6 @@
                 @endforeach
             </div>
             @else
-            {{-- ── NAV ADMIN (giữ nguyên) ── --}}
                 <div class="sidebar-group" data-sidebar-group data-group-name="@lang('Mindigo-dashboard::app.group_overview')">
                     <button class="sidebar-group-trigger flex min-h-14 w-full items-center gap-3 rounded-2xl bg-green-50 px-2 text-left text-green-800 transition hover:bg-green-50" type="button" title="@lang('Mindigo-dashboard::app.group_overview')">
                         <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-green-100 text-green-600">
@@ -385,22 +382,21 @@
                     </div>
                 </div>
             @endif
-            {{-- ── END role nav ── --}}
             </nav>
         </div>
 
-        {{-- ── Chuông thông báo (luôn hiện số; 0 nếu không có) ── --}}
+        {{-- Chuông thông báo (luôn hiện số; 0 nếu không có) --}}
         @php $unreadCount = $globalUnreadNotifications ?? 0; @endphp
         <div class="relative mt-auto">
             <button id="dashboard-notification-btn" type="button" aria-expanded="false" aria-haspopup="true"
                 class="flex min-h-12 w-full items-center gap-3 overflow-hidden rounded-xl border-0 bg-transparent text-left text-slate-700 transition hover:text-green-700" data-sidebar-compact-center>
                 <span class="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600">
                     <x-heroicon-o-bell class="h-5 w-5" />
-                    <span class="absolute -right-1 -top-1 grid h-4.5 min-w-4.5 place-items-center rounded-full px-1 text-[10px] font-black text-white {{ $unreadCount > 0 ? 'bg-green-600' : 'bg-slate-300' }}">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
+                    <span class="absolute -right-1 -top-1 grid h-4.5 min-w-4.5 place-items-center rounded-full px-1 text-[10px] font-black text-white {{ $unreadCount > 0 ? 'bg-green-600' : 'bg-slate-300' }}" data-notification-count>{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
                 </span>
                 <span class="hidden min-w-0 flex-1 whitespace-nowrap" data-sidebar-text>
                     <span class="block truncate text-sm font-black text-slate-900">@lang('notification::app.title')</span>
-                    <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">{{ $unreadCount > 0 ? __('notification::app.unread_count', ['count' => $unreadCount]) : __('notification::app.all_read') }}</span>
+                    <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400" data-notification-subtext>{{ $unreadCount > 0 ? __('notification::app.unread_count', ['count' => $unreadCount]) : __('notification::app.all_read') }}</span>
                 </span>
             </button>
 
@@ -411,10 +407,10 @@
                     <span class="flex items-center gap-1.5">
                         @php $globalUnreadAnnouncement = $globalUnreadAnnouncementNotifications ?? 0; @endphp
                         @if($globalUnreadAnnouncement > 0)
-                            <span class="grid h-5 min-w-5 place-items-center rounded-full bg-blue-600 px-1.5 text-[10px] font-black text-white">{{ $globalUnreadAnnouncement > 99 ? '99+' : $globalUnreadAnnouncement }}</span>
+                            <span class="grid h-5 min-w-5 place-items-center rounded-full bg-blue-600 px-1.5 text-[10px] font-black text-white" data-notification-announcement-count>{{ $globalUnreadAnnouncement > 99 ? '99+' : $globalUnreadAnnouncement }}</span>
                         @endif
                         @if($unreadCount > 0)
-                            <span class="grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[10px] font-black text-white">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
+                            <span class="grid h-5 min-w-5 place-items-center rounded-full bg-green-600 px-1.5 text-[10px] font-black text-white" data-notification-total-count>{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
                         @endif
                     </span>
                 </div>
@@ -430,7 +426,7 @@
                     </a>
                 </div>
 
-                <div class="mindigo-scrollbar-hidden max-h-80 overflow-y-auto">
+                <div class="mindigo-scrollbar-hidden max-h-80 overflow-y-auto" data-notification-list>
                     @forelse(($globalRecentNotifications ?? collect()) as $note)
                         @php
                             $d = $note->data;
@@ -469,7 +465,7 @@
                             </span>
                         </a>
                     @empty
-                        <div class="flex flex-col items-center gap-2 px-4 py-10 text-center">
+                        <div class="flex flex-col items-center gap-2 px-4 py-10 text-center" data-notification-empty>
                             <span class="grid h-12 w-12 place-items-center rounded-full bg-slate-50 text-slate-300"><x-heroicon-o-bell class="h-6 w-6" /></span>
                             <p class="text-xs font-bold text-slate-400">@lang('notification::app.empty_title')</p>
                         </div>
