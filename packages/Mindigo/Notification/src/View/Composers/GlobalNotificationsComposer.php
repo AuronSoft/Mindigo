@@ -13,6 +13,8 @@ class GlobalNotificationsComposer
 {
     public const CATEGORY_ANNOUNCEMENT = 'announcement';
 
+    private static array $resolved = [];
+
     public function __construct(private readonly AuthFactory $auth) {}
 
     public function compose(View $view): void
@@ -23,18 +25,17 @@ class GlobalNotificationsComposer
             return;
         }
 
-        [$count, $unreadAnnouncement, $recent] = once(function () use ($guard) {
-            /** @var Authenticatable&Model $user */
-            $user = $guard->user();
+        /** @var Authenticatable&Model $user */
+        $user = $guard->user();
+        $cacheKey = (string) $user->getAuthIdentifier();
 
-            return [
-                $user->unreadNotifications()->count(),
-                $user->unreadNotifications()
-                    ->where('data->category', self::CATEGORY_ANNOUNCEMENT)
-                    ->count(),
-                $user->notifications()->latest()->limit(6)->get(),
-            ];
-        });
+        [$count, $unreadAnnouncement, $recent] = self::$resolved[$cacheKey] ??= [
+            $user->unreadNotifications()->count(),
+            $user->unreadNotifications()
+                ->where('data->category', self::CATEGORY_ANNOUNCEMENT)
+                ->count(),
+            $user->notifications()->latest()->limit(6)->get(),
+        ];
 
         $view->with([
             'globalUnreadNotifications' => $count,

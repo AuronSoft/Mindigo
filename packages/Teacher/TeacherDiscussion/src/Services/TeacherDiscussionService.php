@@ -257,7 +257,7 @@ class TeacherDiscussionService
         bool $isPinned
     ): DiscussionMessage {
         abort_unless((int) $message->thread_id === (int) $thread->id, 404);
-        abort_unless($this->canManageThread($thread, $user), 403);
+        abort_unless($this->canAccess($thread, $user), 403);
 
         return DB::transaction(function () use ($message, $user, $isPinned): DiscussionMessage {
             $lockedMessage = DiscussionMessage::query()->lockForUpdate()->findOrFail($message->id);
@@ -628,7 +628,9 @@ class TeacherDiscussionService
     public function recordReads(DiscussionThread $thread, int $userId): void
     {
         $sub = DB::table('teacher_discussion_messages')
-            ->select('id', DB::raw((string) $userId), DB::raw('NOW()'))
+            ->select('id')
+            ->selectRaw('? as user_id', [$userId])
+            ->selectRaw('? as read_at', [now()])
             ->where('thread_id', $thread->id)
             ->where('sender_id', '!=', $userId)
             ->whereNull('deleted_at')
@@ -651,7 +653,9 @@ class TeacherDiscussionService
         $userId = $user->getAuthIdentifier();
 
         $sub = DB::table('teacher_discussion_messages')
-            ->select('id', DB::raw((string) $userId), DB::raw('NOW()'))
+            ->select('id')
+            ->selectRaw('? as user_id', [$userId])
+            ->selectRaw('? as read_at', [now()])
             ->where('sender_id', '!=', $userId)
             ->whereNull('deleted_at')
             ->whereNotIn('id', function ($query) use ($userId): void {

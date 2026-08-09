@@ -89,7 +89,7 @@ jobs:
     name: Deploy to production server
     runs-on: ubuntu-latest
     needs: build-and-push
-    if: github.ref == 'refs/heads/main'
+    if: false && github.ref == 'refs/heads/main'  # TODO: xóa "false &&" khi có server thật
     environment: production
 
     steps:
