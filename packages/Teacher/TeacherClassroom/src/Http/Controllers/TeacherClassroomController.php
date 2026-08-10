@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Mindigo\AcademicCalendar\Models\AcademicCalendarException;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Http\Requests\TeacherClassroomRequest;
 use Mindigo\TeacherClassroom\Models\Classroom;
@@ -45,7 +46,7 @@ class TeacherClassroomController extends Controller
     {
         $this->authorizeOwnership($classroom);
 
-        $classroom->load(['students:id,name,email', 'subjects:id,name,color', 'teacher:id,name,email', 'course:id,name,subject_id,starts_at,schedule_days,study_time,duration_value,duration_unit', 'course.chapters.lessons']);
+        $classroom->load(['students:id,name,email', 'subjects:id,name,color', 'teacher:id,name,email', 'assistant:id,name,email', 'course:id,name,subject_id,starts_at,ends_at,schedule_days,study_time,duration_value,duration_unit', 'course.chapters.lessons']);
 
         $formData = $this->service->formData();
 
@@ -56,6 +57,7 @@ class TeacherClassroomController extends Controller
 
         $schedules = $classroom->schedules()->with('substituteTeacher:id,name,email')->orderBy('session_date', 'desc')->orderBy('start_time', 'desc')->get();
         $announcements = $classroom->announcements()->latest('published_at')->get();
+        $calendarExceptions = AcademicCalendarException::query()->where('classroom_id', $classroom->id)->orderBy('exception_date')->get();
 
         return view('teacher-classroom::show', [
             'classroom' => $classroom,
@@ -68,6 +70,7 @@ class TeacherClassroomController extends Controller
             'attendanceSession' => $attendanceSchedule ? $this->service->attendanceSessionForSchedule($attendanceSchedule) : $this->service->attendanceSession($classroom, $selectedDate),
             'schedules' => $schedules,
             'announcements' => $announcements,
+            'calendarExceptions' => $calendarExceptions,
         ]);
     }
 
@@ -76,7 +79,7 @@ class TeacherClassroomController extends Controller
         $this->authorizeOwnership($classroom);
 
         return view('teacher-classroom::edit', [
-            'classroom' => $classroom->load('subjects:id,name,color'),
+            'classroom' => $classroom->load(['subjects:id,name,color', 'assistant:id,name,email']),
             ...$this->service->formData(),
         ]);
     }

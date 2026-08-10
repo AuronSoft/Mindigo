@@ -27,6 +27,8 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         // Schedule routes
         Route::post('/{classroom}/schedules', [ClassroomScheduleController::class, 'storeSchedule'])->name('schedules.store');
         Route::post('/{classroom}/schedules/generate-course-plan', [ClassroomScheduleController::class, 'generateCoursePlan'])->name('schedules.generate-course-plan');
+        Route::post('/{classroom}/calendar-exceptions', [ClassroomScheduleController::class, 'storeException'])->name('calendar-exceptions.store');
+        Route::delete('/calendar-exceptions/{exception}', [ClassroomScheduleController::class, 'destroyException'])->name('calendar-exceptions.destroy');
         Route::put('/schedules/{schedule}', [ClassroomScheduleController::class, 'updateSchedule'])->name('schedules.update');
         Route::delete('/schedules/{schedule}', [ClassroomScheduleController::class, 'destroySchedule'])->name('schedules.destroy');
     });

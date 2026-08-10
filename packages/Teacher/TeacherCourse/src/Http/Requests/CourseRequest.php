@@ -14,6 +14,9 @@ class CourseRequest extends FormRequest
         if ($this->filled('starts_at') && preg_match('/^\d{2}\/\d{2}\/\d{4}$/', (string) $this->input('starts_at'))) {
             $this->merge(['starts_at' => Carbon::createFromFormat('d/m/Y', (string) $this->input('starts_at'))?->format('Y-m-d')]);
         }
+        if ($this->filled('ends_at') && preg_match('/^\d{2}\/\d{2}\/\d{4}$/', (string) $this->input('ends_at'))) {
+            $this->merge(['ends_at' => Carbon::createFromFormat('d/m/Y', (string) $this->input('ends_at'))?->format('Y-m-d')]);
+        }
 
         if ($this->filled('study_time_start') && $this->filled('study_time_end')) {
             $this->merge(['study_time' => $this->input('study_time_start').' - '.$this->input('study_time_end')]);
@@ -61,6 +64,7 @@ class CourseRequest extends FormRequest
             'price' => ['nullable', 'required_if:access_type,paid', 'numeric', 'min:0', 'max:999999999'],
             'currency' => ['sometimes', 'string', Rule::in(['VND'])],
             'starts_at' => ['nullable', 'date'],
+            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
             'schedule_days' => ['nullable', 'array'],
             'schedule_days.*' => ['string', Rule::in(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'])],
             'study_time_start' => ['nullable', 'date_format:H:i'],

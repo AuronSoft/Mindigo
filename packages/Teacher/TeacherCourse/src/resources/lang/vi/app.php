@@ -160,4 +160,5 @@ return [
     'lesson_content_ph' => 'Viết nội dung bài học tại đây...',
     'back_to_course' => 'Quay lại khóa học',
     'save_lesson' => 'Lưu bài học',
+    'ends_at_field' => 'Ngày kết thúc khóa học',
 ];

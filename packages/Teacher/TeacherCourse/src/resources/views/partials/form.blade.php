@@ -158,9 +158,18 @@
                 </div>
                 @error('starts_at')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
             </div>
+            <div>
+                <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.ends_at_field')</label>
+                <div class="relative">
+                    <input type="text" name="ends_at" inputmode="numeric" value="{{ old('ends_at', isset($course) && $course->ends_at ? $course->ends_at->format('d/m/Y') : '') }}" placeholder="@lang('teacher-course::app.date_placeholder')" class="h-11 w-full rounded-xl border border-slate-200 px-3 pr-11 text-sm font-bold text-slate-700">
+                    <input type="date" data-course-date-picker value="{{ isset($course) && $course->ends_at ? $course->ends_at->format('Y-m-d') : '' }}" class="pointer-events-none absolute inset-y-0 right-0 w-11 cursor-pointer opacity-0">
+                    <button type="button" data-course-date-trigger class="absolute inset-y-0 right-0 grid w-11 place-items-center text-slate-500 transition hover:text-green-700" aria-label="@lang('teacher-course::app.pick_date')"><x-heroicon-o-calendar-days class="h-4 w-4" /></button>
+                </div>
+                @error('ends_at')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+            </div>
         </div>
 
-        <div class="grid gap-3 xl:grid-cols-[1fr_1fr]">
+        <div class="grid gap-3 xl:grid-cols-3">
             <div>
                 <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-course::app.schedule_days_field')</label>
                 <div class="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2">
@@ -288,8 +297,7 @@
         const activeClass = ['bg-white', 'text-green-700', 'shadow-sm'];
         const inactiveClass = ['text-slate-500', 'hover:text-slate-800'];
         const dateInput = root.querySelector('[name="starts_at"]');
-        const datePicker = root.querySelector('[data-course-date-picker]');
-        const dateTrigger = root.querySelector('[data-course-date-trigger]');
+        const datePickers = root.querySelectorAll('[data-course-date-picker]');
         const previewCard = root.querySelector('[data-course-preview-card]');
         const preview = previewCard ? {
             image: previewCard.querySelector('[data-course-preview-image]'),
@@ -364,31 +372,38 @@
             activateTab(tabs[nextIndex], nextIndex);
         });
 
-        dateInput?.addEventListener('input', () => {
-            const digits = dateInput.value.replace(/\D/g, '').slice(0, 8);
-            const parts = [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 8)].filter(Boolean);
-            dateInput.value = parts.join('/');
-            refreshPreview();
-        });
+        datePickers.forEach((picker) => {
+            const field = picker.closest('.relative');
+            const input = field?.querySelector('input[type="text"]');
+            const trigger = field?.querySelector('[data-course-date-trigger]');
 
-        dateTrigger?.addEventListener('click', () => {
-            if (typeof datePicker.showPicker === 'function') {
-                datePicker.showPicker();
-                return;
-            }
+            input?.addEventListener('input', () => {
+                const digits = input.value.replace(/\D/g, '').slice(0, 8);
+                const parts = [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 8)].filter(Boolean);
+                input.value = parts.join('/');
+                refreshPreview();
+            });
 
-            datePicker.click();
-        });
+            trigger?.addEventListener('click', () => {
+                if (typeof picker.showPicker === 'function') {
+                    picker.showPicker();
+                    return;
+                }
 
-        datePicker?.addEventListener('change', () => {
-            if (! datePicker.value) {
-                dateInput.value = '';
-                return;
-            }
+                picker.click();
+            });
 
-            const [year, month, day] = datePicker.value.split('-');
-            dateInput.value = `${day}/${month}/${year}`;
-            refreshPreview();
+            picker.addEventListener('change', () => {
+                if (! picker.value) {
+                    input.value = '';
+                    refreshPreview();
+                    return;
+                }
+
+                const [year, month, day] = picker.value.split('-');
+                input.value = `${day}/${month}/${year}`;
+                refreshPreview();
+            });
         });
 
         const selectedPickerText = (name, fallback) => {

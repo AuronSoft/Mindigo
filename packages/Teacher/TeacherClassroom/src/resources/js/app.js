@@ -238,3 +238,44 @@ document.querySelectorAll('[data-classroom-subject-picker]').forEach((picker) =>
         if (!picker.contains(event.target)) close();
     });
 });
+
+document.querySelectorAll('[data-classroom-assistant-picker]').forEach((picker) => {
+    const trigger = picker.querySelector('[data-classroom-assistant-trigger]');
+    const panel = picker.querySelector('[data-classroom-assistant-panel]');
+    const search = picker.querySelector('[data-classroom-assistant-search]');
+    const select = picker.querySelector('[data-classroom-assistant-select]');
+    const label = picker.querySelector('[data-classroom-assistant-label]');
+    const options = [...picker.querySelectorAll('[data-classroom-assistant-option]')];
+    const empty = picker.querySelector('[data-classroom-assistant-empty]');
+    const close = () => {
+        panel?.classList.add('hidden');
+        trigger?.setAttribute('aria-expanded', 'false');
+    };
+
+    trigger?.addEventListener('click', () => {
+        const opening = panel?.classList.contains('hidden');
+        panel?.classList.toggle('hidden', !opening);
+        trigger.setAttribute('aria-expanded', opening ? 'true' : 'false');
+        if (opening) window.requestAnimationFrame(() => search?.focus());
+    });
+    search?.addEventListener('input', () => {
+        const keyword = normalizeSubjectSearch(search.value.trim());
+        let visible = 0;
+        options.forEach((option) => {
+            const matches = normalizeSubjectSearch(option.dataset.search || option.dataset.label || '').includes(keyword);
+            option.classList.toggle('hidden', !matches);
+            if (matches) visible += 1;
+        });
+        empty?.classList.toggle('hidden', visible > 0);
+    });
+    options.forEach((option) => option.addEventListener('click', () => {
+        select.value = option.dataset.value || '';
+        label.textContent = option.dataset.label || '';
+        label.classList.toggle('text-slate-400', !select.value);
+        label.classList.toggle('text-slate-800', Boolean(select.value));
+        close();
+        trigger?.focus();
+    }));
+    picker.addEventListener('keydown', (event) => event.key === 'Escape' && close());
+    document.addEventListener('click', (event) => !picker.contains(event.target) && close());
+});
