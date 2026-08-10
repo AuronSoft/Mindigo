@@ -61,6 +61,20 @@ document.addEventListener('click', (event) => {
             attendanceLink.href = data.attendanceUrl || '#';
             attendanceLink.classList.toggle('hidden', !data.attendanceUrl);
         }
+        const substituteShell = document.querySelector('[data-event-substitute-shell]');
+        substituteShell?.classList.toggle('hidden', !data.substituteStatus);
+        const substituteStatus = document.querySelector('[data-event-substitute-status]');
+        if (substituteStatus) substituteStatus.textContent = [data.substituteTeacherName, data.substituteStatusLabel].filter(Boolean).join(' · ');
+        const substituteNote = document.querySelector('[data-event-substitute-note]');
+        if (substituteNote) {
+            substituteNote.textContent = data.substituteResponseNote || '';
+            substituteNote.classList.toggle('hidden', !data.substituteResponseNote);
+        }
+        const substituteForm = document.querySelector('[data-event-substitute-form]');
+        if (substituteForm) {
+            substituteForm.action = data.substituteResponseUrl || '#';
+            substituteForm.classList.toggle('hidden', !data.substituteResponseUrl);
+        }
         const link = document.querySelector('[data-event-link]');
         if (link) {
             link.href = data.url || '#';

@@ -207,4 +207,5 @@ return [
     'schedule_updated' => 'Đã cập nhật thông tin buổi học.',
     'schedule_deleted' => 'Đã xóa buổi học khỏi lịch.',
     'attendance_outside_session_window' => 'Chỉ được mở điểm danh từ 60 phút trước buổi học đến 30 phút sau khi buổi học kết thúc.',
+    'substitute_teacher' => 'Giáo viên dạy thay', 'no_substitute_teacher' => 'Không phân công dạy thay', 'substitute_teacher_hint' => 'Giáo viên được chọn phải xác nhận trước khi buổi học được tính vào tải giảng của họ.', 'substitute_status_pending' => 'Chờ xác nhận', 'substitute_status_accepted' => 'Đã nhận lịch', 'substitute_status_declined' => 'Đã từ chối',
 ];

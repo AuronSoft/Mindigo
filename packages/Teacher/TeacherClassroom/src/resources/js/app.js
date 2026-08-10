@@ -58,6 +58,7 @@ const fillScheduleForm = (data = {}) => {
     const descInput = document.getElementById('schedule-desc');
     const typeInput = document.getElementById('schedule-type');
     const makeupReasonInput = document.getElementById('schedule-makeup-reason');
+    const substituteTeacherInput = document.getElementById('schedule-substitute-teacher');
 
     if (!form || !method) {
         return;
@@ -76,6 +77,7 @@ const fillScheduleForm = (data = {}) => {
     descInput && (descInput.value = data.description || '');
     typeInput && (typeInput.value = data.type || 'regular');
     makeupReasonInput && (makeupReasonInput.value = data.makeupReason || '');
+    substituteTeacherInput && (substituteTeacherInput.value = data.substituteTeacherId || '');
     typeInput?.dispatchEvent(new Event('change', { bubbles: true }));
 };
 
@@ -107,6 +109,7 @@ document.addEventListener('click', (event) => {
             description: editTrigger.dataset.description,
             type: editTrigger.dataset.type,
             makeupReason: editTrigger.dataset.makeupReason,
+            substituteTeacherId: editTrigger.dataset.substituteTeacherId,
         });
         window.MindigoOpenModal?.('schedule-modal');
     }

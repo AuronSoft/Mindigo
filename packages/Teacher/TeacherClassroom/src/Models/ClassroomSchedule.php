@@ -42,6 +42,12 @@ class ClassroomSchedule extends Model
         self::STATUS_RESCHEDULED,
     ];
 
+    public const SUBSTITUTE_PENDING = 'pending';
+
+    public const SUBSTITUTE_ACCEPTED = 'accepted';
+
+    public const SUBSTITUTE_DECLINED = 'declined';
+
     protected $table = 'classroom_schedules';
 
     protected $fillable = [
@@ -61,6 +67,9 @@ class ClassroomSchedule extends Model
         'cancel_reason',
         'reschedule_reason',
         'substitute_teacher_id',
+        'substitute_status',
+        'substitute_responded_at',
+        'substitute_response_note',
         'makeup_for_schedule_id',
         'rescheduled_from_id',
         'published_at',
@@ -71,6 +80,7 @@ class ClassroomSchedule extends Model
     protected $casts = [
         'session_date' => 'date',
         'published_at' => 'datetime',
+        'substitute_responded_at' => 'datetime',
     ];
 
     public function classroom(): BelongsTo

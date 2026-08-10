@@ -41,6 +41,9 @@ class TeacherCalendarService
             classroomIds: $classroomIds,
         ));
 
+        $teachingEvents = $events->where('kind', CalendarEventKind::ClassSession)
+            ->filter(fn ($event) => ($event->metadata['teaching_responsibility'] ?? true) === true);
+
         return [
             'start' => $start,
             'end' => $end,
@@ -49,8 +52,8 @@ class TeacherCalendarService
             'eventsByDay' => $events->groupBy(fn ($event) => $event->startsAt->format('Y-m-d')),
             'summary' => [
                 'count' => $events->count(),
-                'class_sessions' => $events->where('kind', CalendarEventKind::ClassSession)->count(),
-                'hours' => round($events->where('kind', CalendarEventKind::ClassSession)->sum(
+                'class_sessions' => $teachingEvents->count(),
+                'hours' => round($teachingEvents->sum(
                     fn ($event) => $event->endsAt ? $event->startsAt->diffInMinutes($event->endsAt) / 60 : 0
                 ), 1),
             ],

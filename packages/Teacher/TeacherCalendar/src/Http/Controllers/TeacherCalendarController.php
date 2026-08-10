@@ -10,6 +10,7 @@ use Mindigo\Auth\Models\User;
 use Mindigo\TeacherCalendar\Http\Requests\CancelCalendarSessionRequest;
 use Mindigo\TeacherCalendar\Http\Requests\CompleteCalendarSessionRequest;
 use Mindigo\TeacherCalendar\Http\Requests\OpenCalendarAttendanceRequest;
+use Mindigo\TeacherCalendar\Http\Requests\RespondSubstituteAssignmentRequest;
 use Mindigo\TeacherCalendar\Http\Requests\TeacherCalendarIndexRequest;
 use Mindigo\TeacherCalendar\Http\Requests\UpdateCalendarSessionRequest;
 use Mindigo\TeacherCalendar\Services\TeacherCalendarService;
@@ -105,5 +106,16 @@ class TeacherCalendarController extends Controller
         $classrooms->openScheduleAttendance($schedule, $request->user(), (int) $request->validated('duration_minutes'));
 
         return back()->with('success', __('teacher-calendar::app.attendance_opened'));
+    }
+
+    public function respondToSubstitute(
+        RespondSubstituteAssignmentRequest $request,
+        ClassroomSchedule $schedule,
+        TeacherClassroomService $classrooms,
+    ): RedirectResponse {
+        $accept = $request->validated('decision') === 'accept';
+        $classrooms->respondToSubstituteAssignment($schedule, $request->user(), $accept, $request->validated('response_note'));
+
+        return back()->with('success', __($accept ? 'teacher-calendar::app.substitute_accepted' : 'teacher-calendar::app.substitute_declined'));
     }
 }

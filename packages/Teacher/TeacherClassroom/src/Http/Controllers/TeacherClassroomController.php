@@ -54,12 +54,13 @@ class TeacherClassroomController extends Controller
         $attendanceRecords = $attendanceSchedule ? $this->service->getAttendanceBySchedule($attendanceSchedule) : $this->service->getAttendanceByDate($classroom, $selectedDate);
         $attendanceHistory = $this->service->getAttendanceHistory($classroom);
 
-        $schedules = $classroom->schedules()->orderBy('session_date', 'desc')->orderBy('start_time', 'desc')->get();
+        $schedules = $classroom->schedules()->with('substituteTeacher:id,name,email')->orderBy('session_date', 'desc')->orderBy('start_time', 'desc')->get();
         $announcements = $classroom->announcements()->latest('published_at')->get();
 
         return view('teacher-classroom::show', [
             'classroom' => $classroom,
             'allStudents' => $formData['students'],
+            'availableTeachers' => $formData['teachers'],
             'selectedDate' => $selectedDate,
             'attendanceRecords' => $attendanceRecords,
             'attendanceHistory' => $attendanceHistory,

@@ -10,5 +10,6 @@ Route::middleware(['web', 'auth', 'role:teacher'])->prefix('teacher/calendar')->
     Route::post('/sessions/{schedule}/reschedule', [TeacherCalendarController::class, 'reschedule'])->name('sessions.reschedule');
     Route::post('/sessions/{schedule}/complete', [TeacherCalendarController::class, 'complete'])->name('sessions.complete');
     Route::post('/sessions/{schedule}/attendance', [TeacherCalendarController::class, 'openAttendance'])->name('sessions.attendance.open');
+    Route::post('/sessions/{schedule}/substitute-response', [TeacherCalendarController::class, 'respondToSubstitute'])->name('sessions.substitute.respond');
     Route::post('/sessions/{schedule}/cancel', [TeacherCalendarController::class, 'cancel'])->name('sessions.cancel');
 });
