@@ -72,6 +72,11 @@ return [
     'notif_system_news' => 'System news and updates',
     'notif_system_news_desc' => 'Get notified about maintenance, upgrades, policy changes, or important updates.',
 
+    'notif_calendar_updates' => 'Calendar changes',
+    'notif_calendar_updates_desc' => 'Get notified when a class is scheduled, rescheduled, or cancelled.',
+    'notif_calendar_reminders' => 'Learning reminders',
+    'notif_calendar_reminders_desc' => 'Get reminders before classes, assignment deadlines, and exams.',
+
     'change_password' => 'Change password',
     'change_password_desc' => 'Use a strong password to protect your account and system access.',
     'current_password' => 'Current password',

@@ -12,3 +12,8 @@ Schedule::command('news:fetch')
     ->everyThreeHours()
     ->runInBackground()
     ->withoutOverlapping();
+
+Schedule::command('calendar:send-reminders')
+    ->everyFiveMinutes()
+    ->withoutOverlapping()
+    ->onOneServer();

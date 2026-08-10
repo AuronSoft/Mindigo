@@ -14,11 +14,15 @@ class NotificationPreference extends Model
         'user_id',
         'notif_new_quiz',
         'notif_system_news',
+        'notif_calendar_updates',
+        'notif_calendar_reminders',
     ];
 
     protected $casts = [
         'notif_new_quiz' => 'boolean',
         'notif_system_news' => 'boolean',
+        'notif_calendar_updates' => 'boolean',
+        'notif_calendar_reminders' => 'boolean',
     ];
 
     public function user(): BelongsTo

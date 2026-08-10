@@ -72,6 +72,11 @@ return [
     'notif_system_news' => 'Tin tức và cập nhật hệ thống',
     'notif_system_news_desc' => 'Nhận thông báo về bảo trì, nâng cấp, thay đổi chính sách hoặc cập nhật quan trọng.',
 
+    'notif_calendar_updates' => 'Thay đổi lịch học',
+    'notif_calendar_updates_desc' => 'Nhận thông báo khi buổi học được tạo, đổi lịch hoặc hủy.',
+    'notif_calendar_reminders' => 'Nhắc lịch học tập',
+    'notif_calendar_reminders_desc' => 'Nhận lời nhắc trước buổi học, hạn nộp bài và kỳ thi quan trọng.',
+
     'change_password' => 'Đổi mật khẩu',
     'change_password_desc' => 'Dùng mật khẩu mạnh để bảo vệ tài khoản và quyền truy cập trong hệ thống.',
     'current_password' => 'Mật khẩu hiện tại',

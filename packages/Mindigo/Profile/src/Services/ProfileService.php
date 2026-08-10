@@ -43,6 +43,8 @@ class ProfileService
             [
                 'notif_new_quiz' => $request->boolean('notif_new_quiz'),
                 'notif_system_news' => $request->boolean('notif_system_news'),
+                'notif_calendar_updates' => $request->boolean('notif_calendar_updates'),
+                'notif_calendar_reminders' => $request->boolean('notif_calendar_reminders'),
             ]
         );
     }
