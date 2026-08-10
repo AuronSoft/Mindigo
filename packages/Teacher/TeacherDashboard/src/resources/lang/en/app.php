@@ -85,6 +85,12 @@ return [
     'calendar' => 'Calendar',
     'weekdays_short' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     'today_schedule' => "Today's schedule",
+    'month_events' => ':count events this month',
+    'events_unit' => 'events',
+    'open_calendar' => 'Open teaching calendar',
+    'view_schedule' => 'View schedule',
+    'personal_event' => 'Personal event',
+    'no_today_events' => 'Nothing scheduled for today.',
     'smart_reminders' => 'Smart reminders',
 
     'no_upcoming_activities' => 'No upcoming activities',

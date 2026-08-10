@@ -2,9 +2,14 @@
 
 namespace Mindigo\TeacherDashboard\Services;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Mindigo\AcademicCalendar\Data\CalendarQuery;
+use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
+use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;
+use Mindigo\AcademicCalendar\Services\AcademicCalendarService;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
@@ -15,6 +20,35 @@ use Mindigo\TeacherClassroom\Models\Classroom;
 
 class TeacherDashboardService
 {
+    public function __construct(private readonly AcademicCalendarService $calendar) {}
+
+    public function getCalendarSnapshot(User $teacher, ?CarbonImmutable $anchor = null): array
+    {
+        $anchor ??= CarbonImmutable::now(config('app.timezone'));
+        $gridStart = $anchor->startOfMonth()->startOfWeek();
+        $gridEnd = $gridStart->addDays(42);
+        $events = $this->calendar->events(new CalendarQuery(
+            viewer: $teacher,
+            from: $gridStart,
+            to: $gridEnd,
+            timezone: config('app.timezone', 'Asia/Ho_Chi_Minh'),
+        ));
+        $activeEvents = $events->reject(fn ($event) => $event->status === CalendarEventStatus::Cancelled);
+        $todayEvents = $activeEvents
+            ->filter(fn ($event) => $event->startsAt->isSameDay($anchor))
+            ->sortBy('startsAt')
+            ->values();
+
+        return [
+            'anchor' => $anchor,
+            'days' => collect(range(0, 41))->map(fn (int $offset) => $gridStart->addDays($offset)),
+            'eventsByDay' => $activeEvents->groupBy(fn ($event) => $event->startsAt->toDateString()),
+            'todayEvents' => $todayEvents,
+            'todayClassCount' => $todayEvents->where('kind', CalendarEventKind::ClassSession)->count(),
+            'monthEventCount' => $activeEvents->filter(fn ($event) => $event->startsAt->month === $anchor->month)->count(),
+        ];
+    }
+
     public function getStats(User $teacher): array
     {
         $totalClassrooms = Classroom::where('teacher_id', $teacher->id)->count();

@@ -29,6 +29,7 @@ class TeacherDashboardController extends Controller
         $recentAssignmentSubmissions = $this->service->getRecentAssignmentSubmissions($teacher);
         $upcomingActivities = $this->service->getUpcomingActivities($teacher);
         $performance = $this->service->getPerformanceOverview($teacher);
+        $calendar = $this->service->getCalendarSnapshot($teacher);
 
         return view('teacher-dashboard::dashboard', compact(
             'teacher', 'stats',
@@ -36,7 +37,7 @@ class TeacherDashboardController extends Controller
             'recentAttempts', 'topStudents',
             'trend', 'assignmentStats',
             'recentAssignments', 'recentAssignmentSubmissions',
-            'upcomingActivities', 'performance'
+            'upcomingActivities', 'performance', 'calendar'
         ));
     }
 }
