@@ -333,6 +333,69 @@ class TeacherClassroomService
         ]);
     }
 
+    public function generateCourseSchedulePlan(Classroom $classroom, User $actor, string $startDate, int $sessionCount): array
+    {
+        if ($classroom->type !== Classroom::TYPE_COURSE || ! $classroom->course_id) {
+            throw ValidationException::withMessages(['session_count' => __('teacher-classroom::app.course_plan_course_only')]);
+        }
+
+        $course = $classroom->course()->with('chapters.lessons')->firstOrFail();
+        if (! $course->starts_at || empty($course->schedule_days) || ! preg_match('/^(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})$/', (string) $course->study_time, $times)) {
+            throw ValidationException::withMessages(['session_count' => __('teacher-classroom::app.course_schedule_incomplete')]);
+        }
+
+        $dayCodes = ['sun' => 0, 'mon' => 1, 'tue' => 2, 'wed' => 3, 'thu' => 4, 'fri' => 5, 'sat' => 6];
+        $allowedDays = collect($course->schedule_days)->map(fn (string $day) => $dayCodes[$day] ?? null)->filter(fn ($day) => $day !== null)->all();
+        $lessons = $course->chapters->sortBy('sort_order')->flatMap(fn ($chapter) => $chapter->lessons->sortBy('sort_order'))->values();
+
+        return DB::transaction(function () use ($classroom, $actor, $course, $startDate, $sessionCount, $allowedDays, $lessons, $times): array {
+            Classroom::query()->whereKey($classroom->id)->lockForUpdate()->first();
+            $cursor = Carbon::parse($startDate)->startOfDay();
+            $planned = $created = $skipped = 0;
+            $scanLimit = 730;
+
+            while ($planned < $sessionCount && $scanLimit-- > 0) {
+                if (! in_array($cursor->dayOfWeek, $allowedDays, true)) {
+                    $cursor->addDay();
+
+                    continue;
+                }
+
+                $lesson = $lessons->get($planned);
+                $exists = ClassroomSchedule::query()
+                    ->where('classroom_id', $classroom->id)
+                    ->whereDate('session_date', $cursor->toDateString())
+                    ->whereIn('start_time', [$times[1], $times[1].':00'])
+                    ->exists();
+
+                if ($exists) {
+                    $skipped++;
+                } else {
+                    $this->addSchedule($classroom, [
+                        'type' => ClassroomSchedule::TYPE_REGULAR,
+                        'lesson_id' => $lesson?->id,
+                        'delivery_mode' => ClassroomSchedule::DELIVERY_OFFLINE,
+                        'status' => ClassroomSchedule::STATUS_SCHEDULED,
+                        'title' => $lesson?->name ?: __('teacher-classroom::app.generated_session_title', ['course' => $course->name, 'number' => $planned + 1]),
+                        'session_date' => $cursor->toDateString(),
+                        'start_time' => $times[1],
+                        'end_time' => $times[2],
+                    ], $actor);
+                    $created++;
+                }
+
+                $planned++;
+                $cursor->addDay();
+            }
+
+            if ($planned < $sessionCount) {
+                throw ValidationException::withMessages(['session_count' => __('teacher-classroom::app.course_plan_range_too_large')]);
+            }
+
+            return ['created' => $created, 'skipped' => $skipped, 'planned' => $planned];
+        });
+    }
+
     public function updateSchedule(ClassroomSchedule $schedule, array $data, ?User $actor = null): ClassroomSchedule
     {
         $substituteId = $data['substitute_teacher_id'] ?? null;

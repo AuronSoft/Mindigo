@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Http\Requests\ClassroomScheduleRequest;
+use Mindigo\TeacherClassroom\Http\Requests\GenerateCourseScheduleRequest;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
@@ -36,6 +37,20 @@ class ClassroomScheduleController extends Controller
         return redirect()
             ->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
             ->with('success', __('teacher-classroom::app.schedule_updated'));
+    }
+
+    public function generateCoursePlan(GenerateCourseScheduleRequest $request, Classroom $classroom): RedirectResponse
+    {
+        $this->authorizeOwnership($classroom);
+        $result = $this->service->generateCourseSchedulePlan(
+            $classroom,
+            $request->user(),
+            $request->validated('start_date'),
+            (int) $request->validated('session_count'),
+        );
+
+        return redirect()->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
+            ->with('success', __('teacher-classroom::app.course_plan_generated', $result));
     }
 
     public function destroySchedule(ClassroomSchedule $schedule): RedirectResponse

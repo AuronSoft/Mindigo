@@ -163,6 +163,22 @@ document.querySelectorAll('[data-attendance-date-form]').forEach((form) => {
     });
 });
 
+document.querySelectorAll('[data-course-plan-form]').forEach((form) => {
+    const valueInput = form.querySelector('[data-course-plan-date]');
+    const displayInput = form.querySelector('[data-course-plan-date-display]');
+    const picker = form.querySelector('[data-course-plan-date-picker]');
+    const trigger = form.querySelector('[data-course-plan-date-trigger]');
+
+    [displayInput, trigger].forEach((control) => control?.addEventListener('click', () => openNativeDatePicker(picker)));
+    picker?.addEventListener('change', () => {
+        const value = formatDateValue(picker.value);
+        if (!value) return;
+
+        valueInput.value = value;
+        displayInput.value = formatDateDisplay(value);
+    });
+});
+
 const normalizeSubjectSearch = (value) => value
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
