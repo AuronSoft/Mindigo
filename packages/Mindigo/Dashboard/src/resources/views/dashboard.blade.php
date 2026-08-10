@@ -568,6 +568,10 @@
                     <a href="{{ route('admin.course-publication-reviews.index') }}" class="mt-4 inline-flex h-10 w-full items-center justify-center rounded-2xl bg-green-600 px-4 text-xs font-black text-white no-underline transition hover:bg-green-500">
                         @lang('teacher-course::admin-review.view_queue')
                     </a>
+                    <a href="{{ route('admin.calendar-exceptions.index') }}" class="mt-2 inline-flex h-10 w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline transition hover:border-green-200 hover:bg-green-50 hover:text-green-700">
+                        <x-heroicon-o-calendar-days class="h-4 w-4" />
+                        @lang('academic-calendar::app.exceptions_title')
+                    </a>
                 </section>
             </aside>
         </div>

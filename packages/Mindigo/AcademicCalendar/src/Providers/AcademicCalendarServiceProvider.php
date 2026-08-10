@@ -18,6 +18,8 @@ final class AcademicCalendarServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'academic-calendar');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'academic-calendar');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         ClassroomSchedule::observe(ClassroomScheduleObserver::class);
 
         if ($this->app->runningInConsole()) {
