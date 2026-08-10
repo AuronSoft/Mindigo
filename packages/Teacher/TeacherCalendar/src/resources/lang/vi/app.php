@@ -3,6 +3,7 @@
 return [
     'title' => 'Lịch giảng dạy', 'subtitle' => 'Quản lý buổi học và công việc theo tuần',
     'today' => 'Hôm nay', 'day' => 'Ngày', 'week' => 'Tuần', 'month' => 'Tháng', 'schedule' => 'Lịch biểu', 'filters' => 'Bộ lọc', 'all_classrooms' => 'Tất cả lớp học',
+    'filter_title' => 'Lọc lịch giảng dạy', 'filter_description' => 'Thu hẹp lịch theo lớp học và loại sự kiện.', 'event_types' => 'Loại sự kiện', 'clear_filter' => 'Xóa bộ lọc', 'apply_filter' => 'Áp dụng', 'close' => 'Đóng',
     'mini_calendar' => 'Tháng :month', 'summary' => 'Tổng quan tuần', 'sessions' => 'Buổi học',
     'hours' => 'Giờ giảng', 'events' => 'Sự kiện', 'new_session' => 'Tạo buổi học',
     'event_details' => 'Chi tiết sự kiện', 'classroom' => 'Lớp học', 'session_type' => 'Loại buổi', 'lesson' => 'Bài học',

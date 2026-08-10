@@ -11,7 +11,7 @@
 
 /* Desktop content uses the system type scale; only panels scroll. */
 @media (min-width: 1024px) {
-    .teacher-calendar-header { grid-template-columns:minmax(230px,1fr) auto minmax(340px,auto) auto; gap:20px; height:76px; padding-inline:24px; }
+    .teacher-calendar-header { grid-template-columns:minmax(190px,1fr) auto auto auto; gap:16px; height:76px; padding-inline:20px; }
     .teacher-calendar-brand-icon { width:40px; height:40px; border-radius:12px; }
     .teacher-calendar-brand strong,.teacher-calendar-period strong { font-size:16px; }
     .teacher-calendar-brand small,.teacher-calendar-period small { font-size:12px; }
@@ -19,6 +19,10 @@
     .calendar-arrow { width:40px; }
     .teacher-calendar-view-switch span { padding:8px 15px; font-size:11px; }
     .teacher-calendar-view-switch a { padding:8px 15px; font-size:11px; }
+    .teacher-calendar-period { min-width:auto; flex-direction:row; align-items:baseline; gap:6px; white-space:nowrap; }
+    .teacher-calendar-period small { margin-top:0; }
+    .teacher-calendar-view-switch { min-width:0; white-space:nowrap; }
+    .teacher-calendar-actions { flex:none; }
     .teacher-calendar-body { grid-template-columns:252px minmax(0,1fr); }
     .teacher-calendar-sidebar { gap:14px; overflow:hidden; padding:16px; }
     .calendar-side-card { height:auto; border-radius:16px; padding:16px; }
@@ -75,6 +79,15 @@
     }
 }
 
+@media (min-width: 1024px) and (max-width: 1399px) {
+    .teacher-calendar-header { grid-template-columns:minmax(160px,1fr) auto auto auto; gap:10px; padding-inline:14px; }
+    .teacher-calendar-navigation { gap:6px; }
+    .teacher-calendar-view-switch a { padding-inline:10px; font-size:10px; }
+    .teacher-calendar-filter-trigger span,.teacher-calendar-add span { display:none; }
+    .teacher-calendar-filter-trigger,.teacher-calendar-add { width:40px; justify-content:center; padding:0; }
+    .teacher-calendar-filter-trigger em { position:absolute; margin:-28px 0 0 28px; }
+}
+
 .teacher-calendar-view-switch a {
     border-radius:8px;
     padding:7px 12px;
@@ -90,6 +103,11 @@
     color:#fff;
     box-shadow:0 2px 5px rgb(15 23 42/.12);
 }
+
+.teacher-calendar-actions { display:flex; align-items:center; gap:8px; }
+.teacher-calendar-filter-trigger { position:relative; display:flex; height:40px; align-items:center; gap:7px; border:1px solid #e2e8f0; border-radius:10px; background:#fff; padding:0 12px; color:#475569; font-size:12px; font-weight:900; transition:.15s ease; }
+.teacher-calendar-filter-trigger:hover { border-color:#bbf7d0; background:#f0fdf4; color:#15803d; }
+.teacher-calendar-filter-trigger em { display:grid; min-width:20px; height:20px; place-items:center; border-radius:999px; background:#16a34a; padding-inline:5px; color:#fff; font-size:10px; font-style:normal; }
 
 .teacher-calendar-month,
 .teacher-calendar-agenda {

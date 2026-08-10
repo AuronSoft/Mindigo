@@ -3,6 +3,7 @@
 return [
     'title' => 'Teaching calendar', 'subtitle' => 'Manage weekly sessions and academic work',
     'today' => 'Today', 'day' => 'Day', 'week' => 'Week', 'month' => 'Month', 'schedule' => 'Schedule', 'filters' => 'Filters', 'all_classrooms' => 'All classrooms',
+    'filter_title' => 'Filter teaching calendar', 'filter_description' => 'Narrow the calendar by classroom and event type.', 'event_types' => 'Event types', 'clear_filter' => 'Clear filters', 'apply_filter' => 'Apply', 'close' => 'Close',
     'mini_calendar' => ':month', 'summary' => 'Week summary', 'sessions' => 'Sessions',
     'hours' => 'Teaching hours', 'events' => 'Events', 'new_session' => 'New session',
     'event_details' => 'Event details', 'classroom' => 'Classroom', 'session_type' => 'Session type', 'lesson' => 'Lesson',

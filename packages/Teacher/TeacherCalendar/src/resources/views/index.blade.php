@@ -28,6 +28,7 @@
     $makeup = $events->filter(fn ($event) => $event->kind === CalendarEventKind::ClassSession && ($event->metadata['session_type'] ?? null) === 'makeup')->count();
     $cancelled = $events->where('status', CalendarEventStatus::Cancelled)->count();
     $workload = min(100, (int) round(($summary['hours'] / 40) * 100));
+    $activeFilterCount = collect($filters)->only(['classroom_id', 'kinds'])->filter()->count();
 @endphp
 
 <div class="teacher-calendar-shell" data-calendar-workspace>
@@ -50,7 +51,10 @@
             @endforeach
         </div>
 
-        <button type="button" data-calendar-create data-date="{{ now()->toDateString() }}" class="teacher-calendar-add"><x-heroicon-o-plus class="h-4 w-4" /><span>@lang('teacher-calendar::app.new_session')</span></button>
+        <div class="teacher-calendar-actions">
+            <button type="button" data-mindigo-drawer-open="teacher-calendar-filter" class="teacher-calendar-filter-trigger"><x-heroicon-o-adjustments-horizontal class="h-4 w-4" /><span>@lang('teacher-calendar::app.filters')</span>@if($activeFilterCount)<em>{{ $activeFilterCount }}</em>@endif</button>
+            <button type="button" data-calendar-create data-date="{{ now()->toDateString() }}" class="teacher-calendar-add"><x-heroicon-o-plus class="h-4 w-4" /><span>@lang('teacher-calendar::app.new_session')</span></button>
+        </div>
     </header>
 
     <div class="teacher-calendar-body">
@@ -82,10 +86,6 @@
                 <p><x-heroicon-o-bell-alert class="h-4 w-4" />@lang('teacher-calendar::app.workload_hint')</p>
             </section>
 
-            <form method="GET" class="calendar-side-card calendar-filter-card">
-                <input type="hidden" name="date" value="{{ $anchor->toDateString() }}">
-                <label>@lang('teacher-calendar::app.filters')<select name="classroom_id" onchange="this.form.submit()"><option value="">@lang('teacher-calendar::app.all_classrooms')</option>@foreach($classrooms as $classroom)<option value="{{ $classroom->id }}" @selected(($filters['classroom_id'] ?? null) == $classroom->id)>{{ $classroom->name }}</option>@endforeach</select></label>
-            </form>
         </aside>
 
         <main class="teacher-calendar-main">
@@ -190,4 +190,5 @@
 </div>
 
 @include('teacher-calendar::partials.drawers')
+@include('teacher-calendar::partials.filter-drawer')
 @endsection
