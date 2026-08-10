@@ -271,6 +271,7 @@ class ClassroomManagementTest extends TestCase
         $service = app(TeacherClassroomService::class);
 
         $schedule = $service->addSchedule($classroom, [
+            'type' => 'regular',
             'title' => 'Buá»•i há»c toÃ¡n',
             'session_date' => now()->addDay()->toDateString(),
             'start_time' => '08:00',
@@ -285,6 +286,7 @@ class ClassroomManagementTest extends TestCase
         ]);
 
         $service->updateSchedule($schedule, [
+            'type' => 'regular',
             'title' => 'Buá»•i há»c toÃ¡n (nÃ¢ng cao)',
             'session_date' => $schedule->session_date,
             'start_time' => '09:00',
@@ -294,6 +296,76 @@ class ClassroomManagementTest extends TestCase
 
         $this->assertEquals('Buá»•i há»c toÃ¡n (nÃ¢ng cao)', $schedule->fresh()->title);
         $this->assertEquals('09:00', $schedule->fresh()->start_time);
+    }
+
+    public function test_course_regular_schedule_must_follow_start_day_and_time_while_makeup_requires_reason(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $subject = $this->createSubject('History');
+        $course = $this->createPublishedCourse($teacher, $subject, 'History Course');
+        $course->update(['starts_at' => '2026-09-01', 'schedule_days' => ['mon'], 'study_time' => '08:00 - 10:00']);
+        $classroom = app(TeacherClassroomService::class)->create($teacher, [
+            'name' => 'History Cohort', 'code' => 'HIS-A', 'status' => 'active',
+            'type' => Classroom::TYPE_COURSE, 'course_id' => $course->id,
+        ]);
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $classroom), [
+            'type' => 'regular', 'title' => 'Invalid early session', 'session_date' => '2026-08-31',
+            'start_time' => '09:00', 'end_time' => '11:00',
+        ])->assertSessionHasErrors(['session_date', 'start_time']);
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $classroom), [
+            'type' => 'makeup', 'title' => 'Make-up session', 'session_date' => '2026-09-02',
+            'start_time' => '09:00', 'end_time' => '11:00',
+        ])->assertSessionHasErrors('makeup_reason');
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $classroom), [
+            'type' => 'makeup', 'title' => 'Make-up session', 'session_date' => '2026-09-02',
+            'start_time' => '09:00', 'end_time' => '11:00', 'makeup_reason' => 'Bù buổi học bị hoãn do mất điện.',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('classroom_schedules', ['classroom_id' => $classroom->id, 'type' => 'makeup']);
+    }
+
+    public function test_student_can_check_in_with_active_code_only_once(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
+        $classroom = $this->createClassroom(['teacher' => $teacher]);
+        $classroom->students()->attach($student->id, ['status' => 'active', 'joined_at' => now()]);
+        $session = app(TeacherClassroomService::class)->openCodeAttendance($classroom, $teacher, now()->toDateString(), 30);
+
+        $this->actingAs($student)->post(route('student.classrooms.attendance.check-in', $classroom), [
+            'attendance_code' => $session->code,
+        ])->assertRedirect(route('student.classrooms.show', $classroom));
+
+        $this->actingAs($student)->post(route('student.classrooms.attendance.check-in', $classroom), [
+            'attendance_code' => $session->code,
+        ])->assertRedirect();
+
+        $this->assertDatabaseCount('classroom_attendances', 1);
+        $this->assertDatabaseHas('classroom_attendances', [
+            'classroom_id' => $classroom->id, 'student_id' => $student->id, 'method' => 'code', 'status' => 'present',
+        ]);
+    }
+
+    public function test_student_cannot_check_in_with_wrong_or_expired_code(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
+        $classroom = $this->createClassroom(['teacher' => $teacher]);
+        $classroom->students()->attach($student->id, ['status' => 'active', 'joined_at' => now()]);
+        $session = app(TeacherClassroomService::class)->openCodeAttendance($classroom, $teacher, now()->toDateString(), 30);
+
+        $this->actingAs($student)->post(route('student.classrooms.attendance.check-in', $classroom), [
+            'attendance_code' => 'WRONG1',
+        ])->assertSessionHasErrors('attendance_code');
+
+        $session->update(['expires_at' => now()->subMinute()]);
+        $this->actingAs($student)->post(route('student.classrooms.attendance.check-in', $classroom), [
+            'attendance_code' => $session->code,
+        ])->assertSessionHasErrors('attendance_code');
+        $this->assertDatabaseCount('classroom_attendances', 0);
     }
 
     public function test_student_can_view_only_classrooms_they_belong_to(): void
