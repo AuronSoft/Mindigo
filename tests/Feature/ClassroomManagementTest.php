@@ -327,6 +327,28 @@ class ClassroomManagementTest extends TestCase
         $this->assertDatabaseHas('classroom_schedules', ['classroom_id' => $classroom->id, 'type' => 'makeup']);
     }
 
+    public function test_standalone_class_can_schedule_any_date_and_time_without_session_classification(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $classroom = $this->createClassroom(['teacher' => $teacher]);
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $classroom), [
+            'title' => 'Flexible standalone session',
+            'session_date' => '2026-08-12',
+            'start_time' => '19:15',
+            'end_time' => '20:45',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('classroom_schedules', [
+            'classroom_id' => $classroom->id,
+            'type' => 'regular',
+            'session_date' => '2026-08-12 00:00:00',
+            'start_time' => '19:15',
+            'end_time' => '20:45',
+            'makeup_reason' => null,
+        ]);
+    }
+
     public function test_student_can_check_in_with_active_code_only_once(): void
     {
         $teacher = $this->createUser(['role' => 'teacher']);

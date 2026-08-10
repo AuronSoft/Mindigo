@@ -144,6 +144,7 @@ return [
     'schedule_type_regular' => 'Regular session',
     'schedule_type_makeup' => 'Make-up session',
     'schedule_type_hint' => 'Regular sessions must follow the linked course schedule. Make-up sessions require a reason.',
+    'standalone_schedule_hint' => 'This is a standalone class. You may freely choose the date and time for each session.',
     'makeup_reason' => 'Make-up reason',
     'makeup_reason_ph' => 'Explain why this make-up session is necessary...',
     'schedule_slot_exists' => 'A session already exists at this date and start time.',

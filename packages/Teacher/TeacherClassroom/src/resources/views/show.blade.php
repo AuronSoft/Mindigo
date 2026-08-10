@@ -366,7 +366,9 @@
                                     <div class="flex items-start justify-between gap-4">
                                         <div>
                                             <h4 class="text-sm font-black text-slate-900">{{ $sched->title }}</h4>
-                                            <span class="mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-black {{ $sched->type === 'makeup' ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-700' }}">@lang('teacher-classroom::app.schedule_type_' . $sched->type)</span>
+                                            @if($classroom->type === \Mindigo\TeacherClassroom\Models\Classroom::TYPE_COURSE)
+                                                <span class="mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-black {{ $sched->type === 'makeup' ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-700' }}">@lang('teacher-classroom::app.schedule_type_' . $sched->type)</span>
+                                            @endif
                                             <div class="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
                                                 <span class="flex items-center gap-1">
                                                     <x-heroicon-o-calendar class="h-4 w-4 text-slate-400" />
@@ -380,7 +382,7 @@
                                             @if($sched->description)
                                                 <p class="mt-2 text-xs font-semibold text-slate-500 leading-relaxed">{{ $sched->description }}</p>
                                             @endif
-                                            @if($sched->type === 'makeup')
+                                            @if($classroom->type === \Mindigo\TeacherClassroom\Models\Classroom::TYPE_COURSE && $sched->type === 'makeup')
                                                 <p class="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800"><strong>@lang('teacher-classroom::app.makeup_reason'):</strong> {{ $sched->makeup_reason }}</p>
                                             @endif
                                         </div>
@@ -534,14 +536,21 @@
                 </div>
             @endif
 
-            <div>
-                <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.schedule_type') <span class="text-red-500">*</span></label>
-                <select name="type" id="schedule-type" required class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
-                    <option value="regular">@lang('teacher-classroom::app.schedule_type_regular')</option>
-                    <option value="makeup">@lang('teacher-classroom::app.schedule_type_makeup')</option>
-                </select>
-                <p class="mt-1.5 text-xs font-medium text-slate-400">@lang('teacher-classroom::app.schedule_type_hint')</p>
-            </div>
+            @if($classroom->type === \Mindigo\TeacherClassroom\Models\Classroom::TYPE_COURSE)
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.schedule_type') <span class="text-red-500">*</span></label>
+                    <select name="type" id="schedule-type" required class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
+                        <option value="regular">@lang('teacher-classroom::app.schedule_type_regular')</option>
+                        <option value="makeup">@lang('teacher-classroom::app.schedule_type_makeup')</option>
+                    </select>
+                    <p class="mt-1.5 text-xs font-medium text-slate-400">@lang('teacher-classroom::app.schedule_type_hint')</p>
+                </div>
+            @else
+                <input type="hidden" name="type" id="schedule-type" value="regular">
+                <div class="rounded-xl border border-sky-100 bg-sky-50 px-4 py-3 text-xs font-semibold text-sky-800">
+                    @lang('teacher-classroom::app.standalone_schedule_hint')
+                </div>
+            @endif
 
             <div>
                 <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.schedule_title_field') <span class="text-red-500">*</span></label>

@@ -153,6 +153,7 @@ return [
     'schedule_type_regular' => 'Buổi học chính',
     'schedule_type_makeup' => 'Buổi học bù',
     'schedule_type_hint' => 'Buổi chính phải theo lịch khóa học. Buổi học bù bắt buộc có lý do.',
+    'standalone_schedule_hint' => 'Đây là lớp độc lập. Giáo viên được chủ động chọn ngày và khung giờ cho từng buổi học.',
     'makeup_reason' => 'Lý do học bù',
     'makeup_reason_ph' => 'Nêu rõ lý do cần tổ chức buổi học bù...',
     'schedule_slot_exists' => 'Đã có một buổi học vào ngày và giờ bắt đầu này.',

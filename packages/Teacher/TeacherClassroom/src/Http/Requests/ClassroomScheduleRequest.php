@@ -20,6 +20,20 @@ class ClassroomScheduleRequest extends FormRequest
         return $this->user() !== null;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $classroom = $this->classroom();
+
+        // Standalone classes own their calendar. Session classification only has
+        // meaning when a class inherits a fixed schedule from a linked course.
+        if ($classroom && ($classroom->type !== Classroom::TYPE_COURSE || ! $classroom->course_id)) {
+            $this->merge([
+                'type' => ClassroomSchedule::TYPE_REGULAR,
+                'makeup_reason' => null,
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
