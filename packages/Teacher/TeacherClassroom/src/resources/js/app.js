@@ -20,15 +20,44 @@ const formatDateValue = (value) => {
     ].join('-');
 };
 
+const formatDateDisplay = (value) => {
+    const isoDate = formatDateValue(value);
+
+    if (!isoDate) {
+        return '';
+    }
+
+    const [year, month, day] = isoDate.split('-');
+
+    return `${day}/${month}/${year}`;
+};
+
+const openNativeDatePicker = (picker) => {
+    if (!picker) {
+        return;
+    }
+
+    if (typeof picker.showPicker === 'function') {
+        picker.showPicker();
+        return;
+    }
+
+    picker.click();
+};
+
 const fillScheduleForm = (data = {}) => {
     const title = document.getElementById('schedule-modal-title');
     const method = document.getElementById('schedule-form-method');
     const form = document.getElementById('schedule-form');
     const titleInput = document.getElementById('schedule-title');
     const dateInput = document.getElementById('schedule-date');
+    const dateDisplay = document.getElementById('schedule-date-display');
+    const datePicker = document.getElementById('schedule-date-picker');
     const startInput = document.getElementById('schedule-start');
     const endInput = document.getElementById('schedule-end');
     const descInput = document.getElementById('schedule-desc');
+    const typeInput = document.getElementById('schedule-type');
+    const makeupReasonInput = document.getElementById('schedule-makeup-reason');
 
     if (!form || !method) {
         return;
@@ -38,10 +67,16 @@ const fillScheduleForm = (data = {}) => {
     method.value = data.method || 'POST';
     form.action = data.action || form.dataset.storeUrl || form.action;
     titleInput && (titleInput.value = data.title || '');
-    dateInput && (dateInput.value = formatDateValue(data.sessionDate) || form.dataset.defaultDate || '');
+    const dateValue = formatDateValue(data.sessionDate) || form.dataset.defaultDate || '';
+    dateInput && (dateInput.value = dateValue);
+    dateDisplay && (dateDisplay.value = formatDateDisplay(dateValue));
+    datePicker && (datePicker.value = dateValue);
     startInput && (startInput.value = (data.startTime || form.dataset.defaultStart || '08:00').substring(0, 5));
     endInput && (endInput.value = (data.endTime || form.dataset.defaultEnd || '10:00').substring(0, 5));
     descInput && (descInput.value = data.description || '');
+    typeInput && (typeInput.value = data.type || 'regular');
+    makeupReasonInput && (makeupReasonInput.value = data.makeupReason || '');
+    typeInput?.dispatchEvent(new Event('change', { bubbles: true }));
 };
 
 document.addEventListener('click', (event) => {
@@ -70,9 +105,59 @@ document.addEventListener('click', (event) => {
             startTime: editTrigger.dataset.startTime,
             endTime: editTrigger.dataset.endTime,
             description: editTrigger.dataset.description,
+            type: editTrigger.dataset.type,
+            makeupReason: editTrigger.dataset.makeupReason,
         });
         window.MindigoOpenModal?.('schedule-modal');
     }
+});
+
+const scheduleType = document.getElementById('schedule-type');
+const scheduleMakeupReasonField = document.getElementById('schedule-makeup-reason-field');
+const scheduleMakeupReason = document.getElementById('schedule-makeup-reason');
+
+scheduleType?.addEventListener('change', () => {
+    const isMakeup = scheduleType.value === 'makeup';
+    scheduleMakeupReasonField?.classList.toggle('hidden', !isMakeup);
+    if (scheduleMakeupReason) {
+        scheduleMakeupReason.required = isMakeup;
+        if (!isMakeup) scheduleMakeupReason.value = '';
+    }
+});
+
+const scheduleDateValue = document.getElementById('schedule-date');
+const scheduleDateDisplay = document.getElementById('schedule-date-display');
+const scheduleDatePicker = document.getElementById('schedule-date-picker');
+const scheduleDateTrigger = document.getElementById('schedule-date-trigger');
+
+[scheduleDateDisplay, scheduleDateTrigger].forEach((control) => {
+    control?.addEventListener('click', () => openNativeDatePicker(scheduleDatePicker));
+});
+
+scheduleDatePicker?.addEventListener('change', () => {
+    const value = formatDateValue(scheduleDatePicker.value);
+    if (scheduleDateValue) scheduleDateValue.value = value;
+    if (scheduleDateDisplay) scheduleDateDisplay.value = formatDateDisplay(value);
+});
+
+document.querySelectorAll('[data-attendance-date-form]').forEach((form) => {
+    const valueInput = form.querySelector('[data-attendance-date-value]');
+    const displayInput = form.querySelector('[data-attendance-date-display]');
+    const picker = form.querySelector('[data-attendance-date-picker]');
+    const trigger = form.querySelector('[data-attendance-date-trigger]');
+
+    [displayInput, trigger].forEach((control) => {
+        control?.addEventListener('click', () => openNativeDatePicker(picker));
+    });
+
+    picker?.addEventListener('change', () => {
+        const value = formatDateValue(picker.value);
+        if (!value) return;
+
+        valueInput.value = value;
+        displayInput.value = formatDateDisplay(value);
+        form.requestSubmit();
+    });
 });
 
 const normalizeSubjectSearch = (value) => value

@@ -5,10 +5,12 @@ namespace Mindigo\TeacherClassroom\Services;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
+use Mindigo\TeacherClassroom\Models\ClassroomAttendanceSession;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\CourseClassroomAssignment;
@@ -178,6 +180,7 @@ class TeacherClassroomService
                 ],
                 [
                     'status' => $record['status'] ?? 'present',
+                    'method' => 'manual',
                     'remarks' => $record['remarks'] ?? null,
                 ]
             );
@@ -203,26 +206,79 @@ class TeacherClassroomService
             ->get();
     }
 
+    public function attendanceSession(Classroom $classroom, string $date): ?ClassroomAttendanceSession
+    {
+        return $classroom->attendanceSessions()->whereDate('session_date', $date)->first();
+    }
+
+    public function openCodeAttendance(Classroom $classroom, User $teacher, string $date, int $durationMinutes): ClassroomAttendanceSession
+    {
+        $alphabet = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+        $code = collect(range(1, 6))->map(fn () => $alphabet[random_int(0, strlen($alphabet) - 1)])->join('');
+
+        return ClassroomAttendanceSession::query()->updateOrCreate(
+            ['classroom_id' => $classroom->id, 'session_date' => $date],
+            [
+                'opened_by' => $teacher->id,
+                'code' => $code,
+                'status' => ClassroomAttendanceSession::STATUS_OPEN,
+                'expires_at' => now()->addMinutes($durationMinutes),
+                'closed_at' => null,
+            ],
+        );
+    }
+
+    public function closeCodeAttendance(ClassroomAttendanceSession $session): void
+    {
+        $session->update(['status' => ClassroomAttendanceSession::STATUS_CLOSED, 'closed_at' => now()]);
+    }
+
+    public function checkInWithCode(Classroom $classroom, User $student, string $code): ClassroomAttendance
+    {
+        return DB::transaction(function () use ($classroom, $student, $code): ClassroomAttendance {
+            $session = ClassroomAttendanceSession::query()
+                ->where('classroom_id', $classroom->id)
+                ->where('status', ClassroomAttendanceSession::STATUS_OPEN)
+                ->where('expires_at', '>', now())
+                ->latest('id')
+                ->lockForUpdate()
+                ->first();
+
+            if (! $session || ! hash_equals($session->code, Str::upper(trim($code)))) {
+                throw ValidationException::withMessages(['attendance_code' => __('student-classroom::app.attendance_code_invalid')]);
+            }
+
+            return ClassroomAttendance::query()->updateOrCreate(
+                ['classroom_id' => $classroom->id, 'student_id' => $student->id, 'session_date' => $session->session_date],
+                ['attendance_session_id' => $session->id, 'status' => 'present', 'method' => 'code', 'remarks' => null],
+            );
+        });
+    }
+
     public function addSchedule(Classroom $classroom, array $data): ClassroomSchedule
     {
         return ClassroomSchedule::query()->create([
             'classroom_id' => $classroom->id,
+            'type' => $data['type'],
             'title' => $data['title'],
             'session_date' => $data['session_date'],
             'start_time' => $data['start_time'],
             'end_time' => $data['end_time'],
             'description' => $data['description'] ?? null,
+            'makeup_reason' => $data['makeup_reason'] ?? null,
         ]);
     }
 
     public function updateSchedule(ClassroomSchedule $schedule, array $data): ClassroomSchedule
     {
         $schedule->update([
+            'type' => $data['type'],
             'title' => $data['title'],
             'session_date' => $data['session_date'],
             'start_time' => $data['start_time'],
             'end_time' => $data['end_time'],
             'description' => $data['description'] ?? null,
+            'makeup_reason' => $data['makeup_reason'] ?? null,
         ]);
 
         return $schedule;

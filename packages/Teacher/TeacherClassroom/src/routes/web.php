@@ -21,6 +21,8 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         // Attendance routes
         Route::get('/{classroom}/attendance', [ClassroomAttendanceController::class, 'getAttendance'])->name('attendance.index');
         Route::post('/{classroom}/attendance', [ClassroomAttendanceController::class, 'saveAttendance'])->name('attendance.save');
+        Route::post('/{classroom}/attendance/code', [ClassroomAttendanceController::class, 'openCodeSession'])->name('attendance.code.open');
+        Route::delete('/attendance/code/{attendanceSession}', [ClassroomAttendanceController::class, 'closeCodeSession'])->name('attendance.code.close');
 
         // Schedule routes
         Route::post('/{classroom}/schedules', [ClassroomScheduleController::class, 'storeSchedule'])->name('schedules.store');

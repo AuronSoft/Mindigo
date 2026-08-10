@@ -7,15 +7,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ClassroomSchedule extends Model
 {
+    public const TYPE_REGULAR = 'regular';
+
+    public const TYPE_MAKEUP = 'makeup';
+
+    public const TYPES = [self::TYPE_REGULAR, self::TYPE_MAKEUP];
+
     protected $table = 'classroom_schedules';
 
     protected $fillable = [
         'classroom_id',
+        'type',
         'title',
         'session_date',
         'start_time',
         'end_time',
         'description',
+        'makeup_reason',
     ];
 
     protected $casts = [

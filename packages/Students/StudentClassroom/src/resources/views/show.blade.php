@@ -44,11 +44,12 @@
                             <span class="text-[9px] font-bold uppercase">{{ $s->session_date?->format('M') }}</span>
                         </span>
                         <div class="min-w-0">
-                            <p class="truncate font-black text-slate-700">{{ $s->title }}</p>
+                            <p class="flex items-center gap-2 truncate font-black text-slate-700">{{ $s->title }} @if($s->type === 'makeup')<span class="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-black text-amber-700">@lang('student-classroom::app.makeup_session')</span>@endif</p>
                             <p class="text-xs font-semibold text-slate-400">
                                 {{ \Illuminate\Support\Str::of($s->start_time)->substr(0,5) }}
                                 @if($s->end_time) – {{ \Illuminate\Support\Str::of($s->end_time)->substr(0,5) }} @endif
                             </p>
+                            @if($s->type === 'makeup' && $s->makeup_reason)<p class="mt-1 text-xs font-semibold text-amber-700">@lang('student-classroom::app.makeup_reason'): {{ $s->makeup_reason }}</p>@endif
                         </div>
                     </div>
                 @empty
@@ -116,6 +117,20 @@
 
         {{-- ── Cột phụ ── --}}
         <div class="flex flex-col gap-5">
+            @if($attendanceSession)
+                <section class="rounded-3xl border border-green-200 bg-green-50 p-5 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="grid h-10 w-10 place-items-center rounded-xl bg-green-600 text-white"><x-heroicon-o-check-badge class="h-5 w-5" /></span>
+                        <div><h2 class="text-sm font-black text-green-900">@lang('student-classroom::app.attendance_open')</h2><p class="text-xs font-semibold text-green-700">@lang('student-classroom::app.attendance_open_hint', ['time' => $attendanceSession->expires_at->format('H:i')])</p></div>
+                    </div>
+                    <form method="POST" action="{{ route('student.classrooms.attendance.check-in', $classroom) }}" class="mt-4 flex gap-2">
+                        @csrf
+                        <input name="attendance_code" value="{{ old('attendance_code') }}" required maxlength="6" autocomplete="one-time-code" placeholder="@lang('student-classroom::app.attendance_code_placeholder')" class="h-11 min-w-0 flex-1 rounded-xl border border-green-200 bg-white px-3 text-center font-mono text-base font-black uppercase tracking-[0.2em] outline-none focus:border-green-500">
+                        <button class="h-11 shrink-0 rounded-xl bg-green-600 px-4 text-xs font-black text-white hover:bg-green-700">@lang('student-classroom::app.check_in')</button>
+                    </form>
+                    @error('attendance_code')<p class="mt-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+                </section>
+            @endif
 
             {{-- Thông tin lớp --}}
             <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">

@@ -62,6 +62,7 @@ class TeacherClassroomController extends Controller
             'selectedDate' => $selectedDate,
             'attendanceRecords' => $attendanceRecords,
             'attendanceHistory' => $attendanceHistory,
+            'attendanceSession' => $this->service->attendanceSession($classroom, $selectedDate),
             'schedules' => $schedules,
             'announcements' => $announcements,
         ]);

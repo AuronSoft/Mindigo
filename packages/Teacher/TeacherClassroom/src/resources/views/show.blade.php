@@ -190,12 +190,32 @@
                         <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.attendance_title')</h2>
                         <p class="text-xs font-bold text-slate-400">@lang('teacher-classroom::app.attendance_subtitle')</p>
                     </div>
-                    <form method="GET" action="{{ route('teacher.classrooms.show', $classroom) }}" class="flex items-center gap-2">
+                    <form method="GET" action="{{ route('teacher.classrooms.show', $classroom) }}" class="flex items-center gap-2" data-attendance-date-form>
                         <input type="hidden" name="tab" value="attendance">
-                        <input type="date" name="attendance_date" value="{{ $selectedDate }}" data-mindigo-auto-submit
-                               class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
+                        <input type="hidden" name="attendance_date" value="{{ $selectedDate }}" data-attendance-date-value>
+                        <div class="relative">
+                            <input type="text" value="{{ \Illuminate\Support\Carbon::parse($selectedDate)->format('d/m/Y') }}" readonly data-attendance-date-display
+                                   aria-label="@lang('teacher-classroom::app.attendance_date_label')"
+                                   class="h-10 w-40 cursor-pointer rounded-xl border border-slate-200 bg-white px-3 pr-10 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-50">
+                            <button type="button" data-attendance-date-trigger aria-label="@lang('teacher-classroom::app.choose_date')" class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-slate-400 transition hover:bg-green-50 hover:text-green-700"><x-heroicon-o-calendar-days class="h-4 w-4" /></button>
+                            <input type="date" value="{{ $selectedDate }}" data-attendance-date-picker tabindex="-1" aria-hidden="true" class="pointer-events-none absolute bottom-0 right-0 h-px w-px opacity-0">
+                        </div>
                     </form>
                 </div>
+
+                <section class="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div><p class="text-sm font-black text-slate-800">@lang('teacher-classroom::app.code_attendance')</p><p class="mt-1 text-xs font-semibold text-slate-500">@lang('teacher-classroom::app.code_attendance_hint')</p></div>
+                        @if($attendanceSession?->isOpen())
+                            <div class="flex items-center gap-3">
+                                <div class="rounded-xl border border-green-200 bg-white px-4 py-2 text-center"><p class="text-[10px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.attendance_code')</p><p class="font-mono text-xl font-black tracking-[0.2em] text-green-700">{{ $attendanceSession->code }}</p><p class="text-[10px] font-semibold text-slate-400">@lang('teacher-classroom::app.expires_at') {{ $attendanceSession->expires_at->format('H:i') }}</p></div>
+                                <form method="POST" action="{{ route('teacher.classrooms.attendance.code.close', $attendanceSession) }}">@csrf @method('DELETE')<button type="submit" class="h-9 rounded-xl border border-red-200 px-3 text-xs font-black text-red-600 hover:bg-red-50">@lang('teacher-classroom::app.close_attendance')</button></form>
+                            </div>
+                        @else
+                            <form method="POST" action="{{ route('teacher.classrooms.attendance.code.open', $classroom) }}" class="flex items-center gap-2">@csrf<input type="hidden" name="attendance_date" value="{{ $selectedDate }}"><select name="duration_minutes" class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700"><option value="15">15 @lang('teacher-classroom::app.minutes')</option><option value="30" selected>30 @lang('teacher-classroom::app.minutes')</option><option value="60">60 @lang('teacher-classroom::app.minutes')</option><option value="90">90 @lang('teacher-classroom::app.minutes')</option></select><button type="submit" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-key class="h-4 w-4" />@lang('teacher-classroom::app.create_attendance_code')</button></form>
+                        @endif
+                    </div>
+                </section>
 
                 @if($classroom->students->isEmpty())
                     <div class="flex flex-col items-center justify-center gap-3 py-20">
@@ -346,6 +366,9 @@
                                     <div class="flex items-start justify-between gap-4">
                                         <div>
                                             <h4 class="text-sm font-black text-slate-900">{{ $sched->title }}</h4>
+                                            @if($classroom->type === \Mindigo\TeacherClassroom\Models\Classroom::TYPE_COURSE)
+                                                <span class="mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-black {{ $sched->type === 'makeup' ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-700' }}">@lang('teacher-classroom::app.schedule_type_' . $sched->type)</span>
+                                            @endif
                                             <div class="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
                                                 <span class="flex items-center gap-1">
                                                     <x-heroicon-o-calendar class="h-4 w-4 text-slate-400" />
@@ -359,6 +382,9 @@
                                             @if($sched->description)
                                                 <p class="mt-2 text-xs font-semibold text-slate-500 leading-relaxed">{{ $sched->description }}</p>
                                             @endif
+                                            @if($classroom->type === \Mindigo\TeacherClassroom\Models\Classroom::TYPE_COURSE && $sched->type === 'makeup')
+                                                <p class="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800"><strong>@lang('teacher-classroom::app.makeup_reason'):</strong> {{ $sched->makeup_reason }}</p>
+                                            @endif
                                         </div>
                                         <div class="flex items-center gap-1">
                                             <button type="button"
@@ -370,6 +396,8 @@
                                                     data-start-time="{{ $sched->start_time }}"
                                                     data-end-time="{{ $sched->end_time }}"
                                                     data-description="{{ $sched->description }}"
+                                                    data-type="{{ $sched->type }}"
+                                                    data-makeup-reason="{{ $sched->makeup_reason }}"
                                                     class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800">
                                                 <x-heroicon-o-pencil class="h-3.5 w-3.5" />
                                             </button>
@@ -502,6 +530,28 @@
             @csrf
             <input type="hidden" name="_method" id="schedule-form-method" value="POST">
 
+            @if($errors->hasAny(['type', 'title', 'session_date', 'start_time', 'end_time', 'description', 'makeup_reason']))
+                <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-bold text-red-700">
+                    <ul class="list-disc space-y-1 pl-4">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+                </div>
+            @endif
+
+            @if($classroom->type === \Mindigo\TeacherClassroom\Models\Classroom::TYPE_COURSE)
+                <div>
+                    <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.schedule_type') <span class="text-red-500">*</span></label>
+                    <select name="type" id="schedule-type" required class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
+                        <option value="regular">@lang('teacher-classroom::app.schedule_type_regular')</option>
+                        <option value="makeup">@lang('teacher-classroom::app.schedule_type_makeup')</option>
+                    </select>
+                    <p class="mt-1.5 text-xs font-medium text-slate-400">@lang('teacher-classroom::app.schedule_type_hint')</p>
+                </div>
+            @else
+                <input type="hidden" name="type" id="schedule-type" value="regular">
+                <div class="rounded-xl border border-sky-100 bg-sky-50 px-4 py-3 text-xs font-semibold text-sky-800">
+                    @lang('teacher-classroom::app.standalone_schedule_hint')
+                </div>
+            @endif
+
             <div>
                 <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.schedule_title_field') <span class="text-red-500">*</span></label>
                 <input type="text" name="title" id="schedule-title" required placeholder="{{ __('teacher-classroom::app.schedule_title_ph') }}"
@@ -511,8 +561,12 @@
             <div class="grid gap-4 grid-cols-3">
                 <div class="col-span-1">
                     <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.session_date_field') <span class="text-red-500">*</span></label>
-                    <input type="date" name="session_date" id="schedule-date" required
-                           class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400">
+                    <input type="hidden" name="session_date" id="schedule-date" required>
+                    <div class="relative">
+                        <input type="text" id="schedule-date-display" readonly aria-label="@lang('teacher-classroom::app.session_date_field')" class="h-10 w-full cursor-pointer rounded-xl border border-slate-200 bg-white px-3 pr-10 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-50">
+                        <button type="button" id="schedule-date-trigger" aria-label="@lang('teacher-classroom::app.choose_date')" class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-slate-400 transition hover:bg-green-50 hover:text-green-700"><x-heroicon-o-calendar-days class="h-4 w-4" /></button>
+                        <input type="date" id="schedule-date-picker" tabindex="-1" aria-hidden="true" class="pointer-events-none absolute bottom-0 right-0 h-px w-px opacity-0">
+                    </div>
                 </div>
                 <div>
                     <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.start_time_field') <span class="text-red-500">*</span></label>
@@ -532,6 +586,11 @@
                           class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400 resize-none"></textarea>
             </div>
 
+            <div id="schedule-makeup-reason-field" class="hidden">
+                <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.makeup_reason') <span class="text-red-500">*</span></label>
+                <textarea name="makeup_reason" id="schedule-makeup-reason" rows="3" placeholder="@lang('teacher-classroom::app.makeup_reason_ph')" class="w-full resize-none rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-amber-400"></textarea>
+            </div>
+
             <div class="mt-6 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
                 <button type="button" data-mindigo-modal-close="schedule-modal" class="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-600 hover:bg-slate-50">@lang('teacher-classroom::app.cancel')</button>
                 <button type="submit" class="inline-flex h-9 items-center rounded-xl bg-green-600 px-5 text-xs font-black text-white hover:bg-green-500 shadow-sm shadow-green-100">@lang('teacher-classroom::app.save_schedule')</button>
@@ -539,5 +598,28 @@
         </form>
     </div>
 </div>
+
+@if($errors->hasAny(['type', 'title', 'session_date', 'start_time', 'end_time', 'description', 'makeup_reason']))
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const values = @js([
+                'type' => old('type', 'regular'), 'title' => old('title'), 'sessionDate' => old('session_date'),
+                'startTime' => old('start_time'), 'endTime' => old('end_time'), 'description' => old('description'),
+                'makeupReason' => old('makeup_reason'),
+            ]);
+            document.getElementById('schedule-type').value = values.type;
+            document.getElementById('schedule-title').value = values.title || '';
+            document.getElementById('schedule-date').value = values.sessionDate || '';
+            document.getElementById('schedule-date-display').value = values.sessionDate ? values.sessionDate.split('-').reverse().join('/') : '';
+            document.getElementById('schedule-date-picker').value = values.sessionDate || '';
+            document.getElementById('schedule-start').value = values.startTime || '';
+            document.getElementById('schedule-end').value = values.endTime || '';
+            document.getElementById('schedule-desc').value = values.description || '';
+            document.getElementById('schedule-makeup-reason').value = values.makeupReason || '';
+            document.getElementById('schedule-type').dispatchEvent(new Event('change', { bubbles: true }));
+            window.MindigoOpenModal?.('schedule-modal');
+        });
+    </script>
+@endif
 
 @endsection
