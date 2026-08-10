@@ -85,6 +85,12 @@ return [
     'calendar' => 'Lịch',
     'weekdays_short' => ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
     'today_schedule' => 'Lịch hôm nay',
+    'month_events' => ':count sự kiện trong tháng',
+    'events_unit' => 'sự kiện',
+    'open_calendar' => 'Mở lịch giảng dạy',
+    'view_schedule' => 'Xem lịch',
+    'personal_event' => 'Lịch cá nhân',
+    'no_today_events' => 'Hôm nay chưa có lịch.',
     'smart_reminders' => 'Nhắc việc thông minh',
 
     'no_upcoming_activities' => 'Chưa có hoạt động sắp tới',

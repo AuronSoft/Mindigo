@@ -31,13 +31,20 @@
 
 @section('content')
 @php
-    $totalTodayClasses = $myClassrooms->where('status', 'active')->count();
+    $totalTodayClasses = $calendar['todayClassCount'] ?? 0;
     $pendingGrading = $assignmentStats['pendingSubmissions'] ?? 0;
     $passRate = ($stats['totalAttempts'] ?? 0) > 0
         ? round(($stats['passedAttempts'] / max(1, $stats['totalAttempts'])) * 100)
         : 0;
 
     $safeRoute = fn (string $route, array $params = []) => Route::has($route) ? route($route, $params) : '#';
+    $calendarRoute = fn (string $view, $date) => $safeRoute('teacher.calendar.index', ['view' => $view, 'date' => $date->toDateString()]);
+    $calendarTones = [
+        'class_session' => 'border-green-500 bg-green-50 text-green-800',
+        'assignment_due' => 'border-amber-400 bg-amber-50 text-amber-800',
+        'exam_window' => 'border-rose-400 bg-rose-50 text-rose-800',
+        'live_session' => 'border-blue-400 bg-blue-50 text-blue-800',
+    ];
     $teacherGender = strtolower(trim((string) $teacher->gender));
     $teacherHeroImage = match (true) {
         in_array($teacherGender, ['female', 'woman', 'nu', 'nữ'], true) => asset('image/Teacher1.png'),
@@ -314,46 +321,42 @@
         </section>
 
         <aside class="space-y-5">
-            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div class="mb-5 flex items-center justify-between">
-                    <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.calendar')</h2>
-                    <span class="text-xs font-black text-slate-400">{{ now()->locale(app()->getLocale())->translatedFormat('F Y') }}</span>
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" data-dashboard-calendar>
+                <div class="mb-5 flex items-start justify-between gap-3">
+                    <div><h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.calendar')</h2><p class="mt-1 text-[11px] font-bold text-slate-400">@lang('teacher-dashboard::app.month_events', ['count' => $calendar['monthEventCount']])</p></div>
+                    <a href="{{ $calendarRoute('month', $calendar['anchor']) }}" class="inline-flex items-center gap-1 text-xs font-black text-green-700 no-underline hover:text-green-800">{{ $calendar['anchor']->locale(app()->getLocale())->translatedFormat('F Y') }}<x-heroicon-o-chevron-right class="h-3.5 w-3.5" /></a>
                 </div>
-                <div class="grid grid-cols-7 gap-2 text-center">
-                    @foreach(__('teacher-dashboard::app.weekdays_short') as $day)
-                        <span class="text-[10px] font-black uppercase text-slate-400">{{ $day }}</span>
-                    @endforeach
-                    @php
-                        $start = now()->copy()->startOfMonth()->startOfWeek();
-                        $today = now()->toDateString();
-                    @endphp
-                    @for($i = 0; $i < 35; $i++)
-                        @php $date = $start->copy()->addDays($i); @endphp
-                        <span class="grid h-9 place-items-center rounded-full text-xs font-black {{ $date->toDateString() === $today ? 'bg-blue-600 text-white' : ($date->month === now()->month ? 'text-slate-700' : 'text-slate-300') }}">
+                <div class="grid grid-cols-7 gap-y-1 text-center">
+                    @foreach(__('teacher-dashboard::app.weekdays_short') as $day)<span class="pb-1 text-[10px] font-black uppercase text-slate-400">{{ $day }}</span>@endforeach
+                    @foreach($calendar['days'] as $date)
+                        @php $dayEvents = $calendar['eventsByDay']->get($date->toDateString(), collect()); @endphp
+                        <a href="{{ $calendarRoute('day', $date) }}" aria-label="{{ $date->format('d/m/Y') }} · {{ $dayEvents->count() }} @lang('teacher-dashboard::app.events_unit')" class="group relative grid h-9 place-items-center rounded-xl text-xs font-black no-underline transition {{ $date->isToday() ? 'bg-green-600 text-white shadow-sm' : ($date->month === $calendar['anchor']->month ? 'text-slate-700 hover:bg-green-50 hover:text-green-700' : 'text-slate-300') }}">
                             {{ $date->day }}
-                        </span>
-                    @endfor
+                            @if($dayEvents->isNotEmpty())<span class="absolute bottom-1 h-1 w-1 rounded-full {{ $date->isToday() ? 'bg-white' : 'bg-green-500' }}"></span>@endif
+                        </a>
+                    @endforeach
                 </div>
+                <a href="{{ $calendarRoute('week', $calendar['anchor']) }}" class="mt-4 inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-green-200 bg-green-50 text-xs font-black text-green-700 no-underline transition hover:bg-green-100"><x-heroicon-o-calendar-days class="h-4 w-4" />@lang('teacher-dashboard::app.open_calendar')</a>
             </section>
 
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div class="mb-4 flex items-center justify-between">
                     <h2 class="text-sm font-black text-slate-950">@lang('teacher-dashboard::app.today_schedule')</h2>
-                    @if(Route::has('teacher.classrooms.index'))
-                        <a href="{{ route('teacher.classrooms.index') }}" class="text-xs font-black text-green-700 no-underline hover:underline">@lang('teacher-dashboard::app.view_class')</a>
+                    @if(Route::has('teacher.calendar.index'))
+                        <a href="{{ $calendarRoute('day', $calendar['anchor']) }}" class="text-xs font-black text-green-700 no-underline hover:underline">@lang('teacher-dashboard::app.view_schedule')</a>
                     @endif
                 </div>
                 <div class="space-y-3">
-                    @forelse($myClassrooms->take(4) as $index => $classroom)
-                        <a href="{{ $safeRoute('teacher.classrooms.show', [$classroom]) }}" class="flex gap-3 rounded-xl border-l-4 {{ $index === 0 ? 'border-blue-500 bg-blue-50' : 'border-green-400 bg-slate-50' }} p-3 no-underline">
-                            <span class="w-16 shrink-0 text-xs font-black text-slate-500">{{ now()->copy()->setTime(8 + $index, 30)->format('H:i') }}</span>
+                    @forelse($calendar['todayEvents']->take(4) as $event)
+                        <a href="{{ $event->url ?: $calendarRoute('day', $calendar['anchor']) }}" class="flex gap-3 rounded-xl border-l-4 p-3 no-underline transition hover:shadow-sm {{ $calendarTones[$event->kind->value] ?? 'border-green-500 bg-green-50 text-green-800' }}">
+                            <span class="w-13 shrink-0 text-xs font-black">{{ $event->startsAt->format('H:i') }}</span>
                             <span class="min-w-0">
-                                <span class="block truncate text-sm font-black text-slate-900">{{ $classroom->name }}</span>
-                                <span class="block text-xs font-bold text-slate-400">{{ $classroom->students_count }} @lang('teacher-dashboard::app.students_unit')</span>
+                                <span class="block truncate text-sm font-black">{{ $event->title }}</span>
+                                <span class="block truncate text-xs font-bold opacity-70">{{ $event->metadata['classroom_name'] ?? __('teacher-dashboard::app.personal_event') }}@if($event->endsAt) · {{ $event->endsAt->format('H:i') }}@endif</span>
                             </span>
                         </a>
                     @empty
-                        <p class="py-6 text-center text-sm font-bold text-slate-400">@lang('teacher-dashboard::app.no_visible_classrooms')</p>
+                        <div class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center"><x-heroicon-o-calendar class="mx-auto h-6 w-6 text-slate-300" /><p class="mt-2 text-sm font-bold text-slate-400">@lang('teacher-dashboard::app.no_today_events')</p></div>
                     @endforelse
                 </div>
             </section>

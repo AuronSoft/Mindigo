@@ -5,7 +5,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^8.2",
-        "illuminate/support": "^12.0"
+        "illuminate/support": "^12.0",
+        "mindigo/academic-calendar": "*"
     },
     "autoload": {
         "psr-4": {
