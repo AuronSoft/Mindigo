@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5ac0ef4c627ddcc939fb08143b0a1b5",
+    "content-hash": "1d040fcb9698d507ab69e3642174672c",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -2732,7 +2732,7 @@
         },
         {
             "name": "mindigo/academic-calendar",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AcademicCalendar",
@@ -2767,7 +2767,7 @@
         },
         {
             "name": "mindigo/audit-log",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/AuditLog",
@@ -2797,7 +2797,7 @@
         },
         {
             "name": "mindigo/auth",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Auth",
@@ -2863,7 +2863,7 @@
         },
         {
             "name": "mindigo/core",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Core",
@@ -2893,7 +2893,7 @@
         },
         {
             "name": "mindigo/dashboard",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Dashboard",
@@ -2923,7 +2923,7 @@
         },
         {
             "name": "mindigo/exam-management",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/ExamManagement",
@@ -2953,7 +2953,7 @@
         },
         {
             "name": "mindigo/learning-tools",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/LearningTools",
@@ -2983,7 +2983,7 @@
         },
         {
             "name": "mindigo/notification",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Notification",
@@ -3013,7 +3013,7 @@
         },
         {
             "name": "mindigo/profile",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Profile",
@@ -3043,7 +3043,7 @@
         },
         {
             "name": "mindigo/question-bank",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/QuestionBank",
@@ -3073,7 +3073,7 @@
         },
         {
             "name": "mindigo/report",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/Report",
@@ -3103,7 +3103,7 @@
         },
         {
             "name": "mindigo/role-permission",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/RolePermission",
@@ -3133,7 +3133,7 @@
         },
         {
             "name": "mindigo/student-assignment",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentAssignment",
@@ -3163,7 +3163,7 @@
         },
         {
             "name": "mindigo/student-classroom",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentClassroom",
@@ -3193,7 +3193,7 @@
         },
         {
             "name": "mindigo/student-dashboard",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentDashboard",
@@ -3223,7 +3223,7 @@
         },
         {
             "name": "mindigo/student-discussion",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentDiscussion",
@@ -3253,7 +3253,7 @@
         },
         {
             "name": "mindigo/student-exam",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentExam",
@@ -3283,7 +3283,7 @@
         },
         {
             "name": "mindigo/student-history",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentHistory",
@@ -3313,7 +3313,7 @@
         },
         {
             "name": "mindigo/student-leaderboard",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentLeaderboard",
@@ -3343,7 +3343,7 @@
         },
         {
             "name": "mindigo/student-live-session",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentLiveSession",
@@ -3373,7 +3373,7 @@
         },
         {
             "name": "mindigo/student-notebook",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentNotebook",
@@ -3403,7 +3403,7 @@
         },
         {
             "name": "mindigo/student-practice",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentPractice",
@@ -3437,7 +3437,7 @@
         },
         {
             "name": "mindigo/student-progress",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentProgress",
@@ -3467,7 +3467,7 @@
         },
         {
             "name": "mindigo/student-schedule",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Students/StudentSchedule",
@@ -3498,7 +3498,7 @@
         },
         {
             "name": "mindigo/subject-management",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SubjectManagement",
@@ -3528,7 +3528,7 @@
         },
         {
             "name": "mindigo/support-management",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SupportManagement",
@@ -3558,7 +3558,7 @@
         },
         {
             "name": "mindigo/system-setting",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/SystemSetting",
@@ -3588,7 +3588,7 @@
         },
         {
             "name": "mindigo/teacher-announcement",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAnnouncement",
@@ -3618,7 +3618,7 @@
         },
         {
             "name": "mindigo/teacher-assignment",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherAssignment",
@@ -3647,8 +3647,40 @@
             }
         },
         {
+            "name": "mindigo/teacher-calendar",
+            "version": "dev-feature/teacher-calendar-phase-4",
+            "dist": {
+                "type": "path",
+                "url": "packages/Teacher/TeacherCalendar",
+                "reference": "4e5dbc50d4036b1d5daac64e65365fef1c42d24b"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "mindigo/academic-calendar": "*",
+                "mindigo/teacher-classroom": "*",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mindigo\\TeacherCalendar\\Providers\\TeacherCalendarServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mindigo\\TeacherCalendar\\": "src/"
+                }
+            },
+            "description": "Teacher academic calendar workspace for Mindigo LMS",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "mindigo/teacher-classroom",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherClassroom",
@@ -3678,7 +3710,7 @@
         },
         {
             "name": "mindigo/teacher-course",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherCourse",
@@ -3708,7 +3740,7 @@
         },
         {
             "name": "mindigo/teacher-dashboard",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDashboard",
@@ -3738,7 +3770,7 @@
         },
         {
             "name": "mindigo/teacher-discussion",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherDiscussion",
@@ -3768,7 +3800,7 @@
         },
         {
             "name": "mindigo/teacher-exam",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherExam",
@@ -3798,7 +3830,7 @@
         },
         {
             "name": "mindigo/teacher-live-session",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherLiveSession",
@@ -3828,7 +3860,7 @@
         },
         {
             "name": "mindigo/teacher-onboarding",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherOnboarding",
@@ -3858,7 +3890,7 @@
         },
         {
             "name": "mindigo/teacher-question",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherQuestion",
@@ -3888,7 +3920,7 @@
         },
         {
             "name": "mindigo/teacher-result",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Teacher/TeacherResult",
@@ -3918,7 +3950,7 @@
         },
         {
             "name": "mindigo/user-management",
-            "version": "dev-feature/academic-calendar-phase-1",
+            "version": "dev-feature/teacher-calendar-phase-4",
             "dist": {
                 "type": "path",
                 "url": "packages/Mindigo/UserManagement",

@@ -46,6 +46,7 @@
         "mindigo/teacher-announcement": "*",
         "mindigo/teacher-assignment": "*",
         "mindigo/teacher-classroom": "*",
+        "mindigo/teacher-calendar": "*",
         "mindigo/teacher-course": "*",
         "mindigo/teacher-dashboard": "*",
         "mindigo/teacher-discussion": "*",
@@ -92,6 +93,7 @@
             "Mindigo\\SubjectManagement\\": "packages/Mindigo/SubjectManagement/src/",
             "Mindigo\\TeacherDashboard\\": "packages/Teacher/TeacherDashboard/src/",
             "Mindigo\\TeacherClassroom\\": "packages/Teacher/TeacherClassroom/src/",
+            "Mindigo\\TeacherCalendar\\": "packages/Teacher/TeacherCalendar/src/",
             "Mindigo\\TeacherDiscussion\\": "packages/Teacher/TeacherDiscussion/src/",
             "Mindigo\\TeacherExam\\": "packages/Teacher/TeacherExam/src/",
             "Mindigo\\TeacherAnnouncement\\": "packages/Teacher/TeacherAnnouncement/src/",
@@ -196,6 +198,10 @@
         {
             "type": "path",
             "url": "packages/Teacher/TeacherClassroom"
+        },
+        {
+            "type": "path",
+            "url": "packages/Teacher/TeacherCalendar"
         },
         {
             "type": "path",
