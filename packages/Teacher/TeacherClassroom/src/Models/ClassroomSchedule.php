@@ -58,6 +58,7 @@ class ClassroomSchedule extends Model
         'description',
         'makeup_reason',
         'cancel_reason',
+        'reschedule_reason',
         'substitute_teacher_id',
         'makeup_for_schedule_id',
         'rescheduled_from_id',

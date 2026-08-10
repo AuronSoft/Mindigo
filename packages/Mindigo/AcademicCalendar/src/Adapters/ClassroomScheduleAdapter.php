@@ -79,7 +79,12 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                         'description' => $schedule->description,
                         'makeup_reason' => $schedule->type === ClassroomSchedule::TYPE_MAKEUP ? $schedule->makeup_reason : null,
                         'cancel_reason' => $schedule->cancel_reason,
+                        'reschedule_reason' => $schedule->reschedule_reason,
+                        'lifecycle_status' => $schedule->status,
                         'substitute_teacher_id' => $schedule->substitute_teacher_id,
+                        'update_url' => $isTeacher ? route('teacher.calendar.sessions.update', $schedule) : null,
+                        'reschedule_url' => $isTeacher ? route('teacher.calendar.sessions.reschedule', $schedule) : null,
+                        'complete_url' => $isTeacher ? route('teacher.calendar.sessions.complete', $schedule) : null,
                     ], fn ($value) => $value !== null),
                 );
             })

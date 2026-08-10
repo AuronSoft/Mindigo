@@ -15,4 +15,8 @@ return [
     'empty_day' => 'No events', 'timezone' => 'GMT+7', 'view_classroom' => 'Open classroom',
     'class_session' => 'Class session', 'assignment_due' => 'Assignment due', 'exam_window' => 'Exam', 'live_session' => 'Live session',
     'cancelled' => 'Cancelled', 'workload' => 'Workload', 'workload_hint' => 'Keep an eye on schedule density and balance your teaching time.', 'empty' => 'No events scheduled this week.',
+    'session_lifecycle' => 'Session management', 'edit_session' => 'Edit details', 'reschedule_session' => 'Reschedule', 'complete_session' => 'Complete',
+    'save_changes' => 'Save changes', 'reschedule_reason' => 'Reschedule reason', 'reschedule_hint' => 'The original session remains in history. The new date and time must follow the course schedule and cannot overlap.', 'confirm_reschedule' => 'Confirm reschedule',
+    'session_updated' => 'Session details updated.', 'session_rescheduled' => 'The session was rescheduled and linked to its original session.', 'session_completed' => 'The session was marked complete.',
+    'lifecycle_status' => 'Status', 'lifecycle_reason' => 'Change reason', 'status_draft' => 'Draft', 'status_scheduled' => 'Scheduled', 'status_in_progress' => 'In progress', 'status_completed' => 'Completed', 'status_cancelled' => 'Cancelled', 'status_rescheduled' => 'Rescheduled',
 ];

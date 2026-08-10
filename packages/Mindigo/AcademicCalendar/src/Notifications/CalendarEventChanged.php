@@ -22,9 +22,9 @@ class CalendarEventChanged extends Notification
         return [
             'category' => 'calendar_update',
             'icon' => $this->change === 'cancelled' ? 'x-circle' : 'calendar-days',
-            'tone' => $this->change === 'cancelled' ? 'red' : 'blue',
+            'tone' => $this->change === 'cancelled' ? 'red' : 'green',
             'title' => __('academic-calendar::app.update_'.$this->change, ['session' => $schedule->title]),
-            'message' => collect([$schedule->classroom?->name, $date, $schedule->cancel_reason])->filter()->implode(' · '),
+            'message' => collect([$schedule->classroom?->name, $date, $schedule->cancel_reason, $schedule->reschedule_reason])->filter()->implode(' · '),
             'event_id' => 'classroom_schedule:'.$schedule->id,
             'classroom_id' => $schedule->classroom_id,
             'url' => route('student.schedule.index', ['date' => $schedule->session_date->toDateString(), 'view' => 'today']),

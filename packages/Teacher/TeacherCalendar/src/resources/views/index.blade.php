@@ -21,6 +21,36 @@
         'exam_window' => 'calendar-tone-rose',
         'live_session' => 'calendar-tone-violet',
     ];
+    $eventPayload = function ($event) {
+        $isSession = $event->kind === CalendarEventKind::ClassSession;
+        $lifecycleStatus = $event->metadata['lifecycle_status'] ?? $event->status->value;
+        $locked = in_array($lifecycleStatus, ['cancelled', 'rescheduled', 'completed'], true);
+
+        return [
+            'title' => $event->title,
+            'kindLabel' => __('teacher-calendar::app.'.$event->kind->value),
+            'time' => $event->startsAt->format('d/m/Y H:i').($event->endsAt ? ' – '.$event->endsAt->format('H:i') : ''),
+            'classroom' => $event->metadata['classroom_name'] ?? null,
+            'url' => $event->url,
+            'cancelUrl' => $isSession && ! $locked ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null,
+            'updateUrl' => $isSession && ! $locked ? ($event->metadata['update_url'] ?? null) : null,
+            'rescheduleUrl' => $isSession && ! $locked ? ($event->metadata['reschedule_url'] ?? null) : null,
+            'completeUrl' => $isSession && $lifecycleStatus === 'scheduled' ? ($event->metadata['complete_url'] ?? null) : null,
+            'date' => $event->startsAt->toDateString(),
+            'start' => $event->startsAt->format('H:i'),
+            'end' => $event->endsAt?->format('H:i'),
+            'deliveryMode' => $event->metadata['delivery_mode'] ?? 'offline',
+            'location' => $event->metadata['location'] ?? '',
+            'meetingUrl' => $event->metadata['meeting_url'] ?? '',
+            'description' => $event->metadata['description'] ?? '',
+            'type' => $event->metadata['session_type'] ?? 'regular',
+            'lessonId' => $event->lessonId,
+            'makeupReason' => $event->metadata['makeup_reason'] ?? '',
+            'lifecycleStatus' => $lifecycleStatus,
+            'statusLabel' => __('teacher-calendar::app.status_'.$lifecycleStatus),
+            'reason' => $event->metadata['cancel_reason'] ?? $event->metadata['reschedule_reason'] ?? '',
+        ];
+    };
     $query = request()->except('date');
     $previousDate = match ($viewMode) { 'day' => $anchor->subDay(), 'month' => $anchor->subMonth(), 'schedule' => $anchor->subDays(30), default => $anchor->subWeek() };
     $nextDate = match ($viewMode) { 'day' => $anchor->addDay(), 'month' => $anchor->addMonth(), 'schedule' => $anchor->addDays(30), default => $anchor->addWeek() };
@@ -110,7 +140,7 @@
                                     $eventTop = min(100, ($startOffset / 12) * 100);
                                     $eventHeight = min(100 - $eventTop, ($duration / 12) * 100);
                                     $eventTone = $event->status === CalendarEventStatus::Cancelled ? 'calendar-tone-cancelled' : (($event->metadata['session_type'] ?? null) === 'makeup' ? 'calendar-tone-orange' : ($tones[$event->kind->value] ?? 'calendar-tone-blue'));
-                                    $payload = ['title' => $event->title, 'kindLabel' => __('teacher-calendar::app.'.$event->kind->value), 'time' => $event->startsAt->format('H:i').($event->endsAt ? ' – '.$event->endsAt->format('H:i') : ''), 'classroom' => $event->metadata['classroom_name'] ?? null, 'url' => $event->url, 'cancelUrl' => $event->kind === CalendarEventKind::ClassSession ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null];
+                                    $payload = $eventPayload($event);
                                 @endphp
                                 <button type="button" data-calendar-event='@json($payload)' class="teacher-calendar-event {{ $eventTone }}" style="top: {{ $eventTop }}%; height: {{ $eventHeight }}%">
                                     <span class="calendar-event-meta"><x-dynamic-component :component="$event->kind === CalendarEventKind::LiveSession ? 'heroicon-o-video-camera' : 'heroicon-o-building-library'" class="h-3.5 w-3.5" /><i>{{ strtoupper(substr($event->metadata['classroom_name'] ?? 'LMS', 0, 2)) }}</i></span>
@@ -131,13 +161,7 @@
                                 <a href="{{ route('teacher.calendar.index', [...$query, 'view' => 'day', 'date' => $day->toDateString()]) }}" class="{{ $day->isToday() ? 'is-today' : '' }}">{{ $day->day }}</a>
                                 @foreach(($eventsByDay[$day->toDateString()] ?? collect())->take(3) as $event)
                                     @php
-                                        $monthPayload = [
-                                            'title' => $event->title,
-                                            'kindLabel' => __('teacher-calendar::app.'.$event->kind->value),
-                                            'time' => $event->startsAt->format('d/m/Y H:i'),
-                                            'classroom' => $event->metadata['classroom_name'] ?? null,
-                                            'url' => $event->url,
-                                        ];
+                                        $monthPayload = $eventPayload($event);
                                     @endphp
                                     <button type="button" data-calendar-event='@json($monthPayload)'>{{ $event->startsAt->format('H:i') }} · {{ $event->title }}</button>
                                 @endforeach
@@ -152,13 +176,7 @@
                             <div>
                                 @foreach($dateEvents as $event)
                                     @php
-                                        $agendaPayload = [
-                                            'title' => $event->title,
-                                            'kindLabel' => __('teacher-calendar::app.'.$event->kind->value),
-                                            'time' => $event->startsAt->format('d/m/Y H:i'),
-                                            'classroom' => $event->metadata['classroom_name'] ?? null,
-                                            'url' => $event->url,
-                                        ];
+                                        $agendaPayload = $eventPayload($event);
                                     @endphp
                                     <button type="button" data-calendar-event='@json($agendaPayload)'><strong>{{ $event->startsAt->format('H:i') }}</strong><span>{{ $event->title }}<small>{{ $event->metadata['classroom_name'] ?? __('teacher-calendar::app.'.$event->kind->value) }}</small></span></button>
                                 @endforeach
@@ -171,14 +189,7 @@
             <div class="teacher-calendar-mobile-list">
                 @forelse($events as $event)
                     @php
-                        $mobilePayload = [
-                            'title' => $event->title,
-                            'kindLabel' => __('teacher-calendar::app.'.$event->kind->value),
-                            'time' => $event->startsAt->format('d/m/Y H:i'),
-                            'classroom' => $event->metadata['classroom_name'] ?? null,
-                            'url' => $event->url,
-                            'cancelUrl' => $event->kind === CalendarEventKind::ClassSession ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null,
-                        ];
+                        $mobilePayload = $eventPayload($event);
                     @endphp
                     <button type="button" data-calendar-event='@json($mobilePayload)'><span>{{ $event->startsAt->format('d/m') }}<strong>{{ $event->startsAt->format('H:i') }}</strong></span><p><strong>{{ $event->title }}</strong><small>{{ $event->metadata['classroom_name'] ?? __('teacher-calendar::app.'.$event->kind->value) }}</small></p><x-heroicon-o-chevron-right class="h-4 w-4" /></button>
                 @empty

@@ -15,4 +15,8 @@ return [
     'empty_day' => 'Không có lịch', 'timezone' => 'GMT+7', 'view_classroom' => 'Mở lớp học',
     'class_session' => 'Buổi học', 'assignment_due' => 'Hạn bài tập', 'exam_window' => 'Bài kiểm tra', 'live_session' => 'Lớp trực tuyến',
     'cancelled' => 'Đã hủy', 'workload' => 'Tải giảng dạy', 'workload_hint' => 'Theo dõi mật độ lịch để chủ động cân bằng thời gian.', 'empty' => 'Chưa có lịch trong tuần này.',
+    'session_lifecycle' => 'Quản lý buổi học', 'edit_session' => 'Sửa thông tin', 'reschedule_session' => 'Dời lịch', 'complete_session' => 'Hoàn thành',
+    'save_changes' => 'Lưu thay đổi', 'reschedule_reason' => 'Lý do dời lịch', 'reschedule_hint' => 'Buổi cũ sẽ được giữ trong lịch sử. Ngày và giờ mới phải tuân thủ lịch khóa học và không được trùng lịch.', 'confirm_reschedule' => 'Xác nhận dời lịch',
+    'session_updated' => 'Đã cập nhật thông tin buổi học.', 'session_rescheduled' => 'Đã dời lịch và lưu liên kết với buổi học cũ.', 'session_completed' => 'Đã đánh dấu buổi học hoàn thành.',
+    'lifecycle_status' => 'Trạng thái', 'lifecycle_reason' => 'Lý do thay đổi', 'status_draft' => 'Bản nháp', 'status_scheduled' => 'Đã lên lịch', 'status_in_progress' => 'Đang diễn ra', 'status_completed' => 'Đã hoàn thành', 'status_cancelled' => 'Đã hủy', 'status_rescheduled' => 'Đã được dời lịch',
 ];
