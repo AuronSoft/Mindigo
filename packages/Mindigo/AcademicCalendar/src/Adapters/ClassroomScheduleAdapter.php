@@ -10,6 +10,7 @@ use Mindigo\AcademicCalendar\Data\CalendarEvent;
 use Mindigo\AcademicCalendar\Data\CalendarQuery;
 use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
 use Mindigo\AcademicCalendar\Enums\CalendarEventSource;
+use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;
 use Mindigo\AcademicCalendar\Support\CalendarScope;
 use Mindigo\AcademicCalendar\Support\MapsCalendarStatus;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
@@ -33,6 +34,7 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
 
         return ClassroomSchedule::query()
             ->whereIn('classroom_id', $classroomIds)
+            ->when($query->viewer->role === 'student', fn ($builder) => $builder->where('status', '!=', ClassroomSchedule::STATUS_DRAFT))
             ->whereDate('session_date', '>=', $query->from->setTimezone($query->timezone)->toDateString())
             ->whereDate('session_date', '<=', $query->to->setTimezone($query->timezone)->toDateString())
             ->with('classroom:id,name,course_id,teacher_id')
@@ -52,21 +54,32 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                     source: CalendarEventSource::ClassroomSchedule,
                     sourceId: $schedule->id,
                     kind: CalendarEventKind::ClassSession,
-                    status: $this->temporalStatus($startsAt, $endsAt),
+                    status: match ($schedule->status) {
+                        ClassroomSchedule::STATUS_DRAFT => CalendarEventStatus::Draft,
+                        ClassroomSchedule::STATUS_CANCELLED, ClassroomSchedule::STATUS_RESCHEDULED => CalendarEventStatus::Cancelled,
+                        ClassroomSchedule::STATUS_COMPLETED => CalendarEventStatus::Completed,
+                        default => $this->temporalStatus($startsAt, $endsAt),
+                    },
                     title: $schedule->title,
                     startsAt: $startsAt,
                     endsAt: $endsAt,
                     timezone: $query->timezone,
                     classroomId: $schedule->classroom_id,
                     courseId: $schedule->classroom?->course_id,
+                    lessonId: $schedule->lesson_id,
                     ownerId: $schedule->classroom?->teacher_id,
                     url: $this->routeFor($query, $schedule->classroom_id),
                     actions: $isTeacher ? ['view', 'edit', 'reschedule', 'cancel'] : ['view'],
                     metadata: array_filter([
                         'classroom_name' => $schedule->classroom?->name,
                         'session_type' => $schedule->type,
+                        'delivery_mode' => $schedule->delivery_mode,
+                        'location' => $schedule->location,
+                        'meeting_url' => $schedule->meeting_url,
                         'description' => $schedule->description,
                         'makeup_reason' => $schedule->type === ClassroomSchedule::TYPE_MAKEUP ? $schedule->makeup_reason : null,
+                        'cancel_reason' => $schedule->cancel_reason,
+                        'substitute_teacher_id' => $schedule->substitute_teacher_id,
                     ], fn ($value) => $value !== null),
                 );
             })
