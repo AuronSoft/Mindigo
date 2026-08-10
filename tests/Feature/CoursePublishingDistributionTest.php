@@ -74,7 +74,7 @@ class CoursePublishingDistributionTest extends TestCase
         $teacher = $this->createUser(['role' => 'teacher']);
         $student = $this->createUser(['role' => 'student']);
         $course = $this->course($teacher);
-        $classroom = $this->classroom($teacher, $student);
+        $classroom = $this->classroom($teacher, $student, $course);
         $payload = ['classroom_ids' => [$classroom->id], 'starts_at' => now()->toDateString(), 'due_at' => now()->addWeek()->toDateString(), 'is_mandatory' => false, 'visibility' => 'visible'];
 
         $this->actingAs($teacher)->post(route('teacher.courses.assign', $course), $payload)->assertRedirect();
@@ -92,7 +92,7 @@ class CoursePublishingDistributionTest extends TestCase
         $teacher = $this->createUser(['role' => 'teacher']);
         $student = $this->createUser(['role' => 'student']);
         $course = $this->course($teacher);
-        $classroom = $this->classroom($teacher, $student);
+        $classroom = $this->classroom($teacher, $student, $course);
 
         $this->actingAs($teacher)->post(route('teacher.courses.assign', $course), ['classroom_ids' => [$classroom->id], 'visibility' => 'hidden'])->assertRedirect();
         $this->actingAs($student)->get(route('student.courses.show', $course->slug))->assertNotFound();
@@ -109,7 +109,7 @@ class CoursePublishingDistributionTest extends TestCase
         $student = $this->createUser(['role' => 'student']);
         $course = $this->course($teacher);
         $lesson = $this->lessons($course, 1)->first();
-        $classroom = $this->classroom($teacher, $student);
+        $classroom = $this->classroom($teacher, $student, $course);
         $this->actingAs($teacher)->post(route('teacher.courses.assign', $course), ['classroom_ids' => [$classroom->id]])->assertRedirect();
         $enrollment = CourseEnrollment::query()->firstOrFail();
         $enrollment->update(['status' => CourseEnrollment::STATUS_COMPLETED, 'completion_percentage' => 100, 'last_activity_at' => now()]);
@@ -132,9 +132,9 @@ class CoursePublishingDistributionTest extends TestCase
         return Course::query()->create(['teacher_id' => $teacher->id, 'name' => 'Course '.str()->random(6), 'slug' => 'course-'.str()->lower(str()->random(10)), 'status' => 'active', 'is_active' => true, 'publication_status' => $status, 'published_at' => $status === Course::PUBLICATION_PUBLISHED ? now() : null, 'difficulty' => 'beginner', 'language' => 'vi']);
     }
 
-    private function classroom(User $teacher, User $student): Classroom
+    private function classroom(User $teacher, User $student, Course $course): Classroom
     {
-        $classroom = Classroom::query()->create(['created_by' => $teacher->id, 'teacher_id' => $teacher->id, 'name' => 'Class '.str()->random(5), 'code' => str()->upper(str()->random(8)), 'slug' => 'class-'.str()->lower(str()->random(8)), 'status' => 'active']);
+        $classroom = Classroom::query()->create(['created_by' => $teacher->id, 'teacher_id' => $teacher->id, 'type' => Classroom::TYPE_COURSE, 'course_id' => $course->id, 'name' => 'Class '.str()->random(5), 'code' => str()->upper(str()->random(8)), 'slug' => 'class-'.str()->lower(str()->random(8)), 'status' => 'active']);
         $classroom->students()->attach($student->id, ['status' => 'active', 'joined_at' => now()]);
 
         return $classroom;

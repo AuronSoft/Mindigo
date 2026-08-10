@@ -72,6 +72,8 @@ class CourseEnrollmentService
         $classrooms = Classroom::query()
             ->whereIn('id', $classroomIds)
             ->where('status', 'active')
+            ->where('type', Classroom::TYPE_COURSE)
+            ->where('course_id', $course->id)
             ->when(! $teacher->isAdmin(), fn ($query) => $query->where('teacher_id', $teacher->id))
             ->with(['students' => fn ($query) => $query->where('classroom_students.status', 'active')->where('users.role', 'student')])
             ->get();
@@ -164,14 +166,16 @@ class CourseEnrollmentService
         return $newStudentIds->count();
     }
 
-    public function teacherClassrooms(User $teacher): Collection
+    public function teacherClassrooms(User $teacher, Course $course): Collection
     {
         return Classroom::query()
             ->when(! $teacher->isAdmin(), fn ($query) => $query->where('teacher_id', $teacher->id))
             ->where('status', 'active')
+            ->where('type', Classroom::TYPE_COURSE)
+            ->where('course_id', $course->id)
             ->withCount(['students' => fn ($query) => $query->where('classroom_students.status', 'active')])
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get(['id', 'name', 'course_id']);
     }
 
     public function studentCourses(User $student): LengthAwarePaginator

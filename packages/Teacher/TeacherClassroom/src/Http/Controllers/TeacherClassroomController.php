@@ -45,7 +45,7 @@ class TeacherClassroomController extends Controller
     {
         $this->authorizeOwnership($classroom);
 
-        $classroom->load(['students:id,name,email', 'subjects:id,name,color', 'assistant:id,name,email']);
+        $classroom->load(['students:id,name,email', 'subjects:id,name,color', 'teacher:id,name,email', 'course:id,name,subject_id']);
 
         $formData = $this->service->formData();
 
@@ -59,7 +59,6 @@ class TeacherClassroomController extends Controller
         return view('teacher-classroom::show', [
             'classroom' => $classroom,
             'allStudents' => $formData['students'],
-            'assistants' => $formData['assistants'],
             'selectedDate' => $selectedDate,
             'attendanceRecords' => $attendanceRecords,
             'attendanceHistory' => $attendanceHistory,

@@ -74,3 +74,63 @@ document.addEventListener('click', (event) => {
         window.MindigoOpenModal?.('schedule-modal');
     }
 });
+
+const normalizeSubjectSearch = (value) => value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase();
+
+document.querySelectorAll('[data-classroom-subject-picker]').forEach((picker) => {
+    const trigger = picker.querySelector('[data-classroom-subject-trigger]');
+    const panel = picker.querySelector('[data-classroom-subject-panel]');
+    const search = picker.querySelector('[data-classroom-subject-search]');
+    const select = picker.querySelector('[data-classroom-subject-select]');
+    const label = picker.querySelector('[data-classroom-subject-label]');
+    const options = [...picker.querySelectorAll('[data-classroom-subject-option]')];
+    const empty = picker.querySelector('[data-classroom-subject-empty]');
+
+    const close = () => {
+        panel?.classList.add('hidden');
+        trigger?.setAttribute('aria-expanded', 'false');
+    };
+
+    trigger?.addEventListener('click', () => {
+        const opening = panel?.classList.contains('hidden');
+        panel?.classList.toggle('hidden', !opening);
+        trigger.setAttribute('aria-expanded', opening ? 'true' : 'false');
+        if (opening) window.requestAnimationFrame(() => search?.focus());
+    });
+
+    search?.addEventListener('input', () => {
+        const keyword = normalizeSubjectSearch(search.value.trim());
+        let visible = 0;
+
+        options.forEach((option) => {
+            const matches = normalizeSubjectSearch(option.dataset.label || '').includes(keyword);
+            option.classList.toggle('hidden', !matches);
+            if (matches) visible += 1;
+        });
+
+        empty?.classList.toggle('hidden', visible > 0);
+    });
+
+    options.forEach((option) => option.addEventListener('click', () => {
+        select.value = option.dataset.value || '';
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        label.textContent = option.dataset.label || '';
+        label.classList.remove('text-slate-400');
+        search.value = '';
+        options.forEach((item) => item.classList.remove('hidden'));
+        empty?.classList.add('hidden');
+        close();
+        trigger?.focus();
+    }));
+
+    picker.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') close();
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!picker.contains(event.target)) close();
+    });
+});

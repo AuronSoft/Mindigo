@@ -7,6 +7,7 @@
         'packages/Mindigo/Dashboard/src/resources/css/app.css',
         'packages/Mindigo/Dashboard/src/resources/js/app.js',
         'packages/Teacher/TeacherClassroom/src/resources/css/app.css',
+        'packages/Teacher/TeacherClassroom/src/resources/js/app.js',
     ])
 @endsection
 

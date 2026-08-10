@@ -42,7 +42,7 @@ class CourseEnrollmentLearningTest extends TestCase
         $teacher = $this->createUser(['role' => 'teacher']);
         $student = $this->createUser(['role' => 'student']);
         $course = $this->course($teacher);
-        $classroom = $this->classroom($teacher, $student);
+        $classroom = $this->classroom($teacher, $student, $course);
 
         $this->actingAs($teacher)->post(route('teacher.courses.assign', $course), [
             'classroom_ids' => [$classroom->id],
@@ -61,7 +61,7 @@ class CourseEnrollmentLearningTest extends TestCase
         $teacher = $this->createUser(['role' => 'teacher']);
         $other = $this->createUser(['role' => 'teacher']);
         $course = $this->course($teacher);
-        $classroom = $this->classroom($other, $this->createUser(['role' => 'student']));
+        $classroom = $this->classroom($other, $this->createUser(['role' => 'student']), $course);
 
         $this->actingAs($teacher)->post(route('teacher.courses.assign', $course), [
             'classroom_ids' => [$classroom->id],
@@ -160,10 +160,11 @@ class CourseEnrollmentLearningTest extends TestCase
         ]);
     }
 
-    private function classroom(User $teacher, User $student): Classroom
+    private function classroom(User $teacher, User $student, Course $course): Classroom
     {
         $classroom = Classroom::query()->create([
-            'created_by' => $teacher->id, 'teacher_id' => $teacher->id, 'name' => 'Class '.str()->random(5),
+            'created_by' => $teacher->id, 'teacher_id' => $teacher->id, 'type' => Classroom::TYPE_COURSE,
+            'course_id' => $course->id, 'name' => 'Class '.str()->random(5),
             'code' => str()->upper(str()->random(8)), 'slug' => 'class-'.str()->lower(str()->random(8)), 'status' => 'active',
         ]);
         $classroom->students()->attach($student->id, ['status' => 'active', 'joined_at' => now()]);

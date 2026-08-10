@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Mindigo\Auth\Models\User;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class Course extends Model
 {
@@ -143,6 +144,11 @@ class Course extends Model
     public function classroomAssignments(): HasMany
     {
         return $this->hasMany(CourseClassroomAssignment::class);
+    }
+
+    public function classrooms(): HasMany
+    {
+        return $this->hasMany(Classroom::class);
     }
 
     public function reviews(): HasMany
