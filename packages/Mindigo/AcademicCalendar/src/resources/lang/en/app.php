@@ -4,6 +4,7 @@ return [
     'update_created' => '“:session” has been scheduled',
     'update_rescheduled' => '“:session” has been rescheduled',
     'update_cancelled' => '“:session” has been cancelled',
+    'update_updated' => '“:session” has new information',
     'reminder_24h' => 'In 24 hours: :event',
     'reminder_60m' => 'Starting in one hour: :event',
     'exceptions_title' => 'Academic closures',
