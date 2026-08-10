@@ -37,7 +37,7 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
             ->when($query->viewer->role === 'student', fn ($builder) => $builder->where('status', '!=', ClassroomSchedule::STATUS_DRAFT))
             ->whereDate('session_date', '>=', $query->from->setTimezone($query->timezone)->toDateString())
             ->whereDate('session_date', '<=', $query->to->setTimezone($query->timezone)->toDateString())
-            ->with('classroom:id,name,course_id,teacher_id')
+            ->with(['classroom:id,name,course_id,teacher_id', 'attendanceSession'])
             ->get()
             ->map(function (ClassroomSchedule $schedule) use ($query): CalendarEvent {
                 $startsAt = CarbonImmutable::parse(
@@ -48,6 +48,8 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                     ? CarbonImmutable::parse($schedule->session_date->format('Y-m-d').' '.$schedule->end_time, $query->timezone)
                     : null;
                 $isTeacher = $query->viewer->role !== 'student';
+                $attendance = $schedule->attendanceSession;
+                $attendanceOpen = $attendance?->isOpen() ?? false;
 
                 return new CalendarEvent(
                     id: 'classroom_schedule:'.$schedule->id,
@@ -85,6 +87,12 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                         'update_url' => $isTeacher ? route('teacher.calendar.sessions.update', $schedule) : null,
                         'reschedule_url' => $isTeacher ? route('teacher.calendar.sessions.reschedule', $schedule) : null,
                         'complete_url' => $isTeacher ? route('teacher.calendar.sessions.complete', $schedule) : null,
+                        'attendance_status' => $attendanceOpen ? 'open' : ($attendance ? 'closed' : 'not_open'),
+                        'attendance_code' => $isTeacher && $attendanceOpen ? $attendance->code : null,
+                        'attendance_expires_at' => $attendanceOpen ? $attendance->expires_at?->format('H:i') : null,
+                        'attendance_open_url' => $isTeacher && $schedule->status === ClassroomSchedule::STATUS_SCHEDULED ? route('teacher.calendar.sessions.attendance.open', $schedule) : null,
+                        'attendance_close_url' => $isTeacher && $attendanceOpen ? route('teacher.classrooms.attendance.code.close', $attendance) : null,
+                        'attendance_url' => $this->attendanceRouteFor($query, $schedule),
                     ], fn ($value) => $value !== null),
                 );
             })
@@ -97,5 +105,17 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
         $route = $query->viewer->role === 'student' ? 'student.classrooms.show' : 'teacher.classrooms.show';
 
         return Route::has($route) ? route($route, $classroomId) : null;
+    }
+
+    private function attendanceRouteFor(CalendarQuery $query, ClassroomSchedule $schedule): ?string
+    {
+        $route = $query->viewer->role === 'student' ? 'student.classrooms.show' : 'teacher.classrooms.show';
+
+        return Route::has($route) ? route($route, [
+            $schedule->classroom_id,
+            'tab' => 'attendance',
+            'attendance_date' => $schedule->session_date->toDateString(),
+            'attendance_schedule_id' => $schedule->id,
+        ]) : null;
     }
 }

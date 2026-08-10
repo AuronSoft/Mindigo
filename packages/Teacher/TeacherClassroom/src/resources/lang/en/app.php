@@ -197,4 +197,5 @@ return [
     'schedule_created' => 'New session added to schedule.',
     'schedule_updated' => 'Session details updated.',
     'schedule_deleted' => 'Session removed from schedule.',
+    'attendance_outside_session_window' => 'Attendance can only be opened from 60 minutes before the session until 30 minutes after it ends.',
 ];

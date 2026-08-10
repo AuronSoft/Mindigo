@@ -36,6 +36,31 @@ document.addEventListener('click', (event) => {
         document.querySelector('[data-event-status]').textContent = data.statusLabel || '';
         document.querySelector('[data-event-reason]').textContent = data.reason || '';
         document.querySelector('[data-event-reason-shell]')?.classList.toggle('hidden', !data.reason);
+        const attendanceShell = document.querySelector('[data-event-attendance-shell]');
+        attendanceShell?.classList.toggle('hidden', !data.attendanceStatus);
+        const attendanceStatus = document.querySelector('[data-event-attendance-status]');
+        if (attendanceStatus) attendanceStatus.textContent = data.attendanceStatusLabel || '';
+        const attendanceCode = document.querySelector('[data-event-attendance-code]');
+        if (attendanceCode) {
+            attendanceCode.textContent = data.attendanceCode ? `${data.attendanceCode} · ${data.attendanceExpiresAt || ''}` : '';
+            attendanceCode.classList.toggle('hidden', !data.attendanceCode);
+        }
+        const attendanceOpen = document.querySelector('[data-event-attendance-open-form]');
+        if (attendanceOpen) {
+            attendanceOpen.action = data.attendanceOpenUrl || '#';
+            attendanceOpen.classList.toggle('hidden', !data.attendanceOpenUrl || data.attendanceStatus === 'open');
+            attendanceOpen.classList.toggle('flex', Boolean(data.attendanceOpenUrl) && data.attendanceStatus !== 'open');
+        }
+        const attendanceClose = document.querySelector('[data-event-attendance-close-form]');
+        if (attendanceClose) {
+            attendanceClose.action = data.attendanceCloseUrl || '#';
+            attendanceClose.classList.toggle('hidden', !data.attendanceCloseUrl);
+        }
+        const attendanceLink = document.querySelector('[data-event-attendance-link]');
+        if (attendanceLink) {
+            attendanceLink.href = data.attendanceUrl || '#';
+            attendanceLink.classList.toggle('hidden', !data.attendanceUrl);
+        }
         const link = document.querySelector('[data-event-link]');
         if (link) {
             link.href = data.url || '#';

@@ -212,7 +212,7 @@
                                 <form method="POST" action="{{ route('teacher.classrooms.attendance.code.close', $attendanceSession) }}">@csrf @method('DELETE')<button type="submit" class="h-9 rounded-xl border border-red-200 px-3 text-xs font-black text-red-600 hover:bg-red-50">@lang('teacher-classroom::app.close_attendance')</button></form>
                             </div>
                         @else
-                            <form method="POST" action="{{ route('teacher.classrooms.attendance.code.open', $classroom) }}" class="flex items-center gap-2">@csrf<input type="hidden" name="attendance_date" value="{{ $selectedDate }}"><select name="duration_minutes" class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700"><option value="15">15 @lang('teacher-classroom::app.minutes')</option><option value="30" selected>30 @lang('teacher-classroom::app.minutes')</option><option value="60">60 @lang('teacher-classroom::app.minutes')</option><option value="90">90 @lang('teacher-classroom::app.minutes')</option></select><button type="submit" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-key class="h-4 w-4" />@lang('teacher-classroom::app.create_attendance_code')</button></form>
+                            <form method="POST" action="{{ route('teacher.classrooms.attendance.code.open', $classroom) }}" class="flex items-center gap-2">@csrf<input type="hidden" name="attendance_date" value="{{ $selectedDate }}">@if($attendanceSchedule)<input type="hidden" name="classroom_schedule_id" value="{{ $attendanceSchedule->id }}">@endif<select name="duration_minutes" class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700"><option value="15">15 @lang('teacher-classroom::app.minutes')</option><option value="30" selected>30 @lang('teacher-classroom::app.minutes')</option><option value="60">60 @lang('teacher-classroom::app.minutes')</option><option value="90">90 @lang('teacher-classroom::app.minutes')</option></select><button type="submit" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-key class="h-4 w-4" />@lang('teacher-classroom::app.create_attendance_code')</button></form>
                         @endif
                     </div>
                 </section>
@@ -227,6 +227,7 @@
                     <form method="POST" action="{{ route('teacher.classrooms.attendance.save', $classroom) }}">
                         @csrf
                         <input type="hidden" name="attendance_date" value="{{ $selectedDate }}">
+                        @if($attendanceSchedule)<input type="hidden" name="classroom_schedule_id" value="{{ $attendanceSchedule->id }}">@endif
                         <div class="overflow-x-auto rounded-2xl border border-slate-200 mb-6">
                             <table class="w-full text-left">
                                 <thead class="bg-slate-50 text-[11px] font-black uppercase tracking-wide text-slate-400">

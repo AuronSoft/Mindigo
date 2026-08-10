@@ -49,6 +49,13 @@
             'lifecycleStatus' => $lifecycleStatus,
             'statusLabel' => __('teacher-calendar::app.status_'.$lifecycleStatus),
             'reason' => $event->metadata['cancel_reason'] ?? $event->metadata['reschedule_reason'] ?? '',
+            'attendanceStatus' => $event->metadata['attendance_status'] ?? null,
+            'attendanceStatusLabel' => isset($event->metadata['attendance_status']) ? __('teacher-calendar::app.attendance_'.$event->metadata['attendance_status']) : null,
+            'attendanceCode' => $event->metadata['attendance_code'] ?? null,
+            'attendanceExpiresAt' => $event->metadata['attendance_expires_at'] ?? null,
+            'attendanceOpenUrl' => $event->metadata['attendance_open_url'] ?? null,
+            'attendanceCloseUrl' => $event->metadata['attendance_close_url'] ?? null,
+            'attendanceUrl' => $event->metadata['attendance_url'] ?? null,
         ];
     };
     $query = request()->except('date');

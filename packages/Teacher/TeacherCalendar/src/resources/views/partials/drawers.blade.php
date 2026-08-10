@@ -12,6 +12,14 @@
                 <div><dt class="text-xs font-bold text-slate-400">@lang('teacher-calendar::app.classroom')</dt><dd data-event-classroom class="mt-1 font-black text-slate-800"></dd></div>
                 <div><dt class="text-xs font-bold text-slate-400">@lang('teacher-calendar::app.lifecycle_status')</dt><dd data-event-status class="mt-1 font-black text-green-700"></dd></div>
                 <div data-event-reason-shell class="hidden rounded-xl border border-amber-100 bg-amber-50 p-3"><dt class="text-xs font-bold text-amber-700">@lang('teacher-calendar::app.lifecycle_reason')</dt><dd data-event-reason class="mt-1 text-xs font-semibold leading-5 text-amber-900"></dd></div>
+                <div data-event-attendance-shell class="hidden rounded-xl border border-green-100 bg-green-50 p-3">
+                    <dt class="text-xs font-black text-green-700">@lang('teacher-calendar::app.attendance')</dt>
+                    <dd data-event-attendance-status class="mt-1 text-sm font-black text-slate-800"></dd>
+                    <p data-event-attendance-code class="mt-2 hidden rounded-lg border border-green-200 bg-white px-3 py-2 text-center font-mono text-xl font-black tracking-[0.2em] text-green-700"></p>
+                    <form method="POST" data-event-attendance-open-form class="mt-3 hidden items-center gap-2">@csrf<select name="duration_minutes" class="h-9 rounded-lg border border-green-200 bg-white px-2 text-xs font-bold"><option value="15">15 phút</option><option value="30" selected>30 phút</option><option value="60">60 phút</option></select><button class="h-9 rounded-lg bg-green-600 px-3 text-xs font-black text-white">@lang('teacher-calendar::app.open_attendance')</button></form>
+                    <form method="POST" data-event-attendance-close-form class="mt-3 hidden">@csrf @method('DELETE')<button class="h-9 rounded-lg border border-green-200 bg-white px-3 text-xs font-black text-green-700">@lang('teacher-classroom::app.close_attendance')</button></form>
+                    <a data-event-attendance-link href="#" class="mt-3 hidden text-xs font-black text-green-700 no-underline">@lang('teacher-calendar::app.go_to_attendance') →</a>
+                </div>
             </dl>
             <form method="POST" data-event-cancel-form class="hidden rounded-xl border border-red-100 bg-red-50 p-3">
                 @csrf

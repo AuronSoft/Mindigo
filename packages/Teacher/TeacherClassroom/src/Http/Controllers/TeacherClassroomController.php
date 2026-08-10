@@ -50,7 +50,8 @@ class TeacherClassroomController extends Controller
         $formData = $this->service->formData();
 
         $selectedDate = request('attendance_date', now()->toDateString());
-        $attendanceRecords = $this->service->getAttendanceByDate($classroom, $selectedDate);
+        $attendanceSchedule = $classroom->schedules()->whereKey(request('attendance_schedule_id'))->first();
+        $attendanceRecords = $attendanceSchedule ? $this->service->getAttendanceBySchedule($attendanceSchedule) : $this->service->getAttendanceByDate($classroom, $selectedDate);
         $attendanceHistory = $this->service->getAttendanceHistory($classroom);
 
         $schedules = $classroom->schedules()->orderBy('session_date', 'desc')->orderBy('start_time', 'desc')->get();
@@ -62,7 +63,8 @@ class TeacherClassroomController extends Controller
             'selectedDate' => $selectedDate,
             'attendanceRecords' => $attendanceRecords,
             'attendanceHistory' => $attendanceHistory,
-            'attendanceSession' => $this->service->attendanceSession($classroom, $selectedDate),
+            'attendanceSchedule' => $attendanceSchedule,
+            'attendanceSession' => $attendanceSchedule ? $this->service->attendanceSessionForSchedule($attendanceSchedule) : $this->service->attendanceSession($classroom, $selectedDate),
             'schedules' => $schedules,
             'announcements' => $announcements,
         ]);

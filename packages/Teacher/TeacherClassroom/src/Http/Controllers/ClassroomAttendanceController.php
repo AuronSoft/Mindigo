@@ -11,6 +11,7 @@ use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Http\Requests\ClassroomAttendanceRequest;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomAttendanceSession;
+use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
 
 class ClassroomAttendanceController extends Controller
@@ -23,10 +24,15 @@ class ClassroomAttendanceController extends Controller
 
         $validated = $request->validated();
 
-        $this->service->saveAttendance($classroom, $validated['attendance_date'], $validated['records']);
+        if (! empty($validated['classroom_schedule_id'])) {
+            $schedule = ClassroomSchedule::query()->whereBelongsTo($classroom)->findOrFail($validated['classroom_schedule_id']);
+            $this->service->saveScheduleAttendance($schedule, $validated['records']);
+        } else {
+            $this->service->saveAttendance($classroom, $validated['attendance_date'], $validated['records']);
+        }
 
         return redirect()
-            ->route('teacher.classrooms.show', [$classroom, 'tab' => 'attendance', 'attendance_date' => $validated['attendance_date']])
+            ->route('teacher.classrooms.show', [$classroom, 'tab' => 'attendance', 'attendance_date' => $validated['attendance_date'], 'attendance_schedule_id' => $validated['classroom_schedule_id'] ?? null])
             ->with('success', __('teacher-classroom::app.attendance_saved', ['date' => Carbon::parse($validated['attendance_date'])->format('d/m/Y')]));
     }
 
@@ -45,11 +51,17 @@ class ClassroomAttendanceController extends Controller
         $validated = $request->validate([
             'attendance_date' => ['required', 'date_format:Y-m-d'],
             'duration_minutes' => ['required', 'integer', 'in:15,30,45,60,90,120'],
+            'classroom_schedule_id' => ['nullable', 'integer', 'exists:classroom_schedules,id'],
         ]);
 
-        $this->service->openCodeAttendance($classroom, $request->user(), $validated['attendance_date'], (int) $validated['duration_minutes']);
+        if (! empty($validated['classroom_schedule_id'])) {
+            $schedule = ClassroomSchedule::query()->whereBelongsTo($classroom)->findOrFail($validated['classroom_schedule_id']);
+            $this->service->openScheduleAttendance($schedule, $request->user(), (int) $validated['duration_minutes']);
+        } else {
+            $this->service->openCodeAttendance($classroom, $request->user(), $validated['attendance_date'], (int) $validated['duration_minutes']);
+        }
 
-        return redirect()->route('teacher.classrooms.show', [$classroom, 'tab' => 'attendance', 'attendance_date' => $validated['attendance_date']])
+        return redirect()->route('teacher.classrooms.show', [$classroom, 'tab' => 'attendance', 'attendance_date' => $validated['attendance_date'], 'attendance_schedule_id' => $validated['classroom_schedule_id'] ?? null])
             ->with('success', __('teacher-classroom::app.attendance_code_opened'));
     }
 
@@ -59,7 +71,7 @@ class ClassroomAttendanceController extends Controller
         $this->authorizeOwnership($classroom);
         $this->service->closeCodeAttendance($attendanceSession);
 
-        return redirect()->route('teacher.classrooms.show', [$classroom, 'tab' => 'attendance', 'attendance_date' => $attendanceSession->session_date->toDateString()])
+        return redirect()->route('teacher.classrooms.show', [$classroom, 'tab' => 'attendance', 'attendance_date' => $attendanceSession->session_date->toDateString(), 'attendance_schedule_id' => $attendanceSession->classroom_schedule_id])
             ->with('success', __('teacher-classroom::app.attendance_code_closed'));
     }
 

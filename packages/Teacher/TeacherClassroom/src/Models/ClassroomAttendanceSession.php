@@ -13,7 +13,7 @@ class ClassroomAttendanceSession extends Model
 
     public const STATUS_CLOSED = 'closed';
 
-    protected $fillable = ['classroom_id', 'opened_by', 'session_date', 'code', 'status', 'expires_at', 'closed_at'];
+    protected $fillable = ['classroom_id', 'classroom_schedule_id', 'opened_by', 'session_date', 'code', 'status', 'expires_at', 'closed_at'];
 
     protected function casts(): array
     {
@@ -23,6 +23,11 @@ class ClassroomAttendanceSession extends Model
     public function classroom(): BelongsTo
     {
         return $this->belongsTo(Classroom::class);
+    }
+
+    public function schedule(): BelongsTo
+    {
+        return $this->belongsTo(ClassroomSchedule::class, 'classroom_schedule_id');
     }
 
     public function opener(): BelongsTo

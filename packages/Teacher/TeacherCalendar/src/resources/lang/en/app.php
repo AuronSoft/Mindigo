@@ -19,4 +19,5 @@ return [
     'save_changes' => 'Save changes', 'reschedule_reason' => 'Reschedule reason', 'reschedule_hint' => 'The original session remains in history. The new date and time must follow the course schedule and cannot overlap.', 'confirm_reschedule' => 'Confirm reschedule',
     'session_updated' => 'Session details updated.', 'session_rescheduled' => 'The session was rescheduled and linked to its original session.', 'session_completed' => 'The session was marked complete.',
     'lifecycle_status' => 'Status', 'lifecycle_reason' => 'Change reason', 'status_draft' => 'Draft', 'status_scheduled' => 'Scheduled', 'status_in_progress' => 'In progress', 'status_completed' => 'Completed', 'status_cancelled' => 'Cancelled', 'status_rescheduled' => 'Rescheduled',
+    'attendance' => 'Session attendance', 'attendance_opened' => 'Attendance is now open for this session.', 'attendance_not_open' => 'Not opened', 'attendance_open' => 'Open', 'attendance_closed' => 'Closed', 'open_attendance' => 'Open attendance', 'attendance_expires' => 'Expires at :time', 'go_to_attendance' => 'Manage attendance',
 ];

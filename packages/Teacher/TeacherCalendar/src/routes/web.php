@@ -9,5 +9,6 @@ Route::middleware(['web', 'auth', 'role:teacher'])->prefix('teacher/calendar')->
     Route::put('/sessions/{schedule}', [TeacherCalendarController::class, 'update'])->name('sessions.update');
     Route::post('/sessions/{schedule}/reschedule', [TeacherCalendarController::class, 'reschedule'])->name('sessions.reschedule');
     Route::post('/sessions/{schedule}/complete', [TeacherCalendarController::class, 'complete'])->name('sessions.complete');
+    Route::post('/sessions/{schedule}/attendance', [TeacherCalendarController::class, 'openAttendance'])->name('sessions.attendance.open');
     Route::post('/sessions/{schedule}/cancel', [TeacherCalendarController::class, 'cancel'])->name('sessions.cancel');
 });

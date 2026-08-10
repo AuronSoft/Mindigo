@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherCalendar\Http\Requests\CancelCalendarSessionRequest;
 use Mindigo\TeacherCalendar\Http\Requests\CompleteCalendarSessionRequest;
+use Mindigo\TeacherCalendar\Http\Requests\OpenCalendarAttendanceRequest;
 use Mindigo\TeacherCalendar\Http\Requests\TeacherCalendarIndexRequest;
 use Mindigo\TeacherCalendar\Http\Requests\UpdateCalendarSessionRequest;
 use Mindigo\TeacherCalendar\Services\TeacherCalendarService;
@@ -94,5 +95,15 @@ class TeacherCalendarController extends Controller
         $classrooms->completeSchedule($schedule, $request->user());
 
         return back()->with('success', __('teacher-calendar::app.session_completed'));
+    }
+
+    public function openAttendance(
+        OpenCalendarAttendanceRequest $request,
+        ClassroomSchedule $schedule,
+        TeacherClassroomService $classrooms,
+    ): RedirectResponse {
+        $classrooms->openScheduleAttendance($schedule, $request->user(), (int) $request->validated('duration_minutes'));
+
+        return back()->with('success', __('teacher-calendar::app.attendance_opened'));
     }
 }

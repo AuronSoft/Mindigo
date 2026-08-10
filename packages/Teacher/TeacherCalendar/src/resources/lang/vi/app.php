@@ -19,4 +19,5 @@ return [
     'save_changes' => 'Lưu thay đổi', 'reschedule_reason' => 'Lý do dời lịch', 'reschedule_hint' => 'Buổi cũ sẽ được giữ trong lịch sử. Ngày và giờ mới phải tuân thủ lịch khóa học và không được trùng lịch.', 'confirm_reschedule' => 'Xác nhận dời lịch',
     'session_updated' => 'Đã cập nhật thông tin buổi học.', 'session_rescheduled' => 'Đã dời lịch và lưu liên kết với buổi học cũ.', 'session_completed' => 'Đã đánh dấu buổi học hoàn thành.',
     'lifecycle_status' => 'Trạng thái', 'lifecycle_reason' => 'Lý do thay đổi', 'status_draft' => 'Bản nháp', 'status_scheduled' => 'Đã lên lịch', 'status_in_progress' => 'Đang diễn ra', 'status_completed' => 'Đã hoàn thành', 'status_cancelled' => 'Đã hủy', 'status_rescheduled' => 'Đã được dời lịch',
+    'attendance' => 'Điểm danh buổi học', 'attendance_opened' => 'Đã mở điểm danh cho đúng buổi học này.', 'attendance_not_open' => 'Chưa mở', 'attendance_open' => 'Đang mở', 'attendance_closed' => 'Đã đóng', 'open_attendance' => 'Mở điểm danh', 'attendance_expires' => 'Hết hạn lúc :time', 'go_to_attendance' => 'Quản lý điểm danh',
 ];
