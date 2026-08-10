@@ -5,9 +5,12 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherClassroom\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
+use Mindigo\TeacherCourse\Models\Chapter;
 use Mindigo\TeacherCourse\Models\Course;
 use Mindigo\TeacherCourse\Models\CourseEnrollment;
+use Mindigo\TeacherCourse\Models\Lesson;
 use Tests\TestCase;
 
 class ClassroomManagementTest extends TestCase
@@ -346,6 +349,99 @@ class ClassroomManagementTest extends TestCase
             'start_time' => '19:15',
             'end_time' => '20:45',
             'makeup_reason' => null,
+        ]);
+    }
+
+    public function test_course_session_can_link_its_own_lesson_and_store_delivery_and_audit_context(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $subject = $this->createSubject('Physics');
+        $course = $this->createPublishedCourse($teacher, $subject, 'Physics Course');
+        $course->update(['starts_at' => '2026-09-01', 'schedule_days' => ['mon'], 'study_time' => '08:00 - 10:00']);
+        $chapter = Chapter::query()->create(['course_id' => $course->id, 'name' => 'Mechanics']);
+        $lesson = Lesson::query()->create(['chapter_id' => $chapter->id, 'name' => 'Motion']);
+        $classroom = app(TeacherClassroomService::class)->create($teacher, [
+            'name' => 'Physics Cohort', 'code' => 'PHY-A', 'status' => 'active',
+            'type' => Classroom::TYPE_COURSE, 'course_id' => $course->id,
+        ]);
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $classroom), [
+            'type' => 'regular', 'lesson_id' => $lesson->id, 'delivery_mode' => 'hybrid',
+            'title' => 'Motion workshop', 'session_date' => '2026-09-07',
+            'start_time' => '08:00', 'end_time' => '10:00', 'location' => 'Room A1',
+            'meeting_url' => 'https://meet.example.test/physics',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('classroom_schedules', [
+            'classroom_id' => $classroom->id,
+            'lesson_id' => $lesson->id,
+            'delivery_mode' => 'hybrid',
+            'status' => 'scheduled',
+            'created_by' => $teacher->id,
+            'updated_by' => $teacher->id,
+        ]);
+    }
+
+    public function test_course_session_rejects_a_lesson_from_another_course(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $subject = $this->createSubject('Chemistry');
+        $course = $this->createPublishedCourse($teacher, $subject, 'Chemistry Course');
+        $course->update(['starts_at' => '2026-09-01', 'schedule_days' => ['mon'], 'study_time' => '08:00 - 10:00']);
+        $foreignCourse = $this->createPublishedCourse($teacher, $subject, 'Foreign Course');
+        $foreignChapter = Chapter::query()->create(['course_id' => $foreignCourse->id, 'name' => 'Foreign chapter']);
+        $foreignLesson = Lesson::query()->create(['chapter_id' => $foreignChapter->id, 'name' => 'Foreign lesson']);
+        $classroom = app(TeacherClassroomService::class)->create($teacher, [
+            'name' => 'Chemistry Cohort', 'code' => 'CHE-A', 'status' => 'active',
+            'type' => Classroom::TYPE_COURSE, 'course_id' => $course->id,
+        ]);
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $classroom), [
+            'type' => 'regular', 'lesson_id' => $foreignLesson->id, 'title' => 'Invalid lesson',
+            'session_date' => '2026-09-07', 'start_time' => '08:00', 'end_time' => '10:00',
+        ])->assertSessionHasErrors('lesson_id');
+    }
+
+    public function test_schedule_rejects_overlapping_classroom_and_teacher_time_ranges(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $first = $this->createClassroom(['teacher' => $teacher, 'code' => 'OVER-A']);
+        $second = $this->createClassroom(['teacher' => $teacher, 'code' => 'OVER-B']);
+        ClassroomSchedule::query()->create([
+            'classroom_id' => $first->id, 'type' => 'regular', 'title' => 'Existing session',
+            'session_date' => '2026-09-08', 'start_time' => '08:00', 'end_time' => '10:00',
+        ]);
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $first), [
+            'title' => 'Same classroom overlap', 'session_date' => '2026-09-08',
+            'start_time' => '09:00', 'end_time' => '11:00',
+        ])->assertSessionHasErrors('start_time');
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $second), [
+            'title' => 'Teacher overlap', 'session_date' => '2026-09-08',
+            'start_time' => '09:00', 'end_time' => '11:00',
+        ])->assertSessionHasErrors('start_time');
+    }
+
+    public function test_cancelled_session_requires_a_clear_reason(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $classroom = $this->createClassroom(['teacher' => $teacher]);
+        $payload = [
+            'status' => 'cancelled', 'title' => 'Cancelled session', 'session_date' => '2026-09-08',
+            'start_time' => '08:00', 'end_time' => '10:00',
+        ];
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $classroom), $payload)
+            ->assertSessionHasErrors('cancel_reason');
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.schedules.store', $classroom), [
+            ...$payload, 'cancel_reason' => 'Buổi học được hủy do giảng viên bị ốm đột xuất.',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('classroom_schedules', [
+            'classroom_id' => $classroom->id, 'status' => 'cancelled',
+            'cancel_reason' => 'Buổi học được hủy do giảng viên bị ốm đột xuất.',
         ]);
     }
 

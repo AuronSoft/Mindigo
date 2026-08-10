@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
+use Mindigo\TeacherCourse\Models\Lesson;
 
 class ClassroomScheduleRequest extends FormRequest
 {
@@ -24,6 +25,11 @@ class ClassroomScheduleRequest extends FormRequest
     {
         $classroom = $this->classroom();
 
+        $this->merge([
+            'delivery_mode' => $this->input('delivery_mode', ClassroomSchedule::DELIVERY_OFFLINE),
+            'status' => $this->input('status', ClassroomSchedule::STATUS_SCHEDULED),
+        ]);
+
         // Standalone classes own their calendar. Session classification only has
         // meaning when a class inherits a fixed schedule from a linked course.
         if ($classroom && ($classroom->type !== Classroom::TYPE_COURSE || ! $classroom->course_id)) {
@@ -38,12 +44,25 @@ class ClassroomScheduleRequest extends FormRequest
     {
         return [
             'type' => ['required', Rule::in(ClassroomSchedule::TYPES)],
+            'lesson_id' => ['nullable', 'integer', 'exists:lessons,id'],
+            'delivery_mode' => ['required', Rule::in(ClassroomSchedule::DELIVERY_MODES)],
+            'status' => ['required', Rule::in(ClassroomSchedule::STATUSES)],
             'title' => ['required', 'string', 'max:255'],
             'session_date' => ['required', 'date_format:Y-m-d'],
             'start_time' => ['required', 'date_format:H:i'],
             'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'meeting_url' => ['nullable', 'url:http,https', 'max:2048'],
             'makeup_reason' => ['nullable', 'required_if:type,'.ClassroomSchedule::TYPE_MAKEUP, 'string', 'min:10', 'max:1000'],
+            'cancel_reason' => ['nullable', 'required_if:status,'.ClassroomSchedule::STATUS_CANCELLED, 'string', 'min:10', 'max:1000'],
+            'substitute_teacher_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('users', 'id')->where(fn ($query) => $query->where('role', 'teacher')->where('is_active', true)),
+            ],
+            'makeup_for_schedule_id' => ['nullable', 'integer', 'exists:classroom_schedules,id'],
+            'rescheduled_from_id' => ['nullable', 'integer', 'exists:classroom_schedules,id'],
         ];
     }
 
@@ -60,15 +79,27 @@ class ClassroomScheduleRequest extends FormRequest
             }
 
             $schedule = $this->route('schedule');
-            $duplicate = ClassroomSchedule::query()
+            $overlap = ClassroomSchedule::query()
                 ->where('classroom_id', $classroom->id)
                 ->whereDate('session_date', $this->string('session_date'))
-                ->where('start_time', $this->string('start_time').':00')
+                ->whereNotIn('status', [ClassroomSchedule::STATUS_CANCELLED, ClassroomSchedule::STATUS_RESCHEDULED])
+                ->where('start_time', '<', $this->string('end_time').':00')
+                ->where('end_time', '>', $this->string('start_time').':00')
                 ->when($schedule instanceof ClassroomSchedule, fn ($query) => $query->whereKeyNot($schedule->id))
                 ->exists();
 
-            if ($duplicate) {
-                $validator->errors()->add('start_time', __('teacher-classroom::app.schedule_slot_exists'));
+            if ($overlap && $this->isActiveSchedule()) {
+                $validator->errors()->add('start_time', __('teacher-classroom::app.schedule_classroom_conflict'));
+            }
+
+            if ($this->isActiveSchedule() && $this->hasTeacherConflict($classroom, $schedule)) {
+                $validator->errors()->add('start_time', __('teacher-classroom::app.schedule_teacher_conflict'));
+            }
+
+            $this->validateRelatedResources($validator, $classroom, $schedule);
+
+            if ($validator->errors()->isNotEmpty()) {
+                return;
             }
 
             if ($classroom->type !== Classroom::TYPE_COURSE || ! $classroom->course_id) {
@@ -102,6 +133,72 @@ class ClassroomScheduleRequest extends FormRequest
                 }
             }
         });
+    }
+
+    private function isActiveSchedule(): bool
+    {
+        return ! in_array($this->string('status')->toString(), [
+            ClassroomSchedule::STATUS_DRAFT,
+            ClassroomSchedule::STATUS_CANCELLED,
+            ClassroomSchedule::STATUS_RESCHEDULED,
+        ], true);
+    }
+
+    private function hasTeacherConflict(Classroom $classroom, mixed $currentSchedule): bool
+    {
+        $teacherIds = array_values(array_unique(array_filter([
+            $classroom->teacher_id,
+            $this->integer('substitute_teacher_id') ?: null,
+        ])));
+
+        if ($teacherIds === []) {
+            return false;
+        }
+
+        return ClassroomSchedule::query()
+            ->whereDate('session_date', $this->string('session_date'))
+            ->whereNotIn('status', [ClassroomSchedule::STATUS_CANCELLED, ClassroomSchedule::STATUS_RESCHEDULED])
+            ->where('start_time', '<', $this->string('end_time').':00')
+            ->where('end_time', '>', $this->string('start_time').':00')
+            ->where(function ($query) use ($teacherIds): void {
+                $query->whereIn('substitute_teacher_id', $teacherIds)
+                    ->orWhereHas('classroom', fn ($classrooms) => $classrooms->whereIn('teacher_id', $teacherIds));
+            })
+            ->when($currentSchedule instanceof ClassroomSchedule, fn ($query) => $query->whereKeyNot($currentSchedule->id))
+            ->exists();
+    }
+
+    private function validateRelatedResources(Validator $validator, Classroom $classroom, mixed $currentSchedule): void
+    {
+        if ($this->filled('lesson_id')) {
+            $validLesson = $classroom->course_id && Lesson::query()
+                ->whereKey($this->integer('lesson_id'))
+                ->whereHas('chapter', fn ($chapter) => $chapter->where('course_id', $classroom->course_id))
+                ->exists();
+
+            if (! $validLesson) {
+                $validator->errors()->add('lesson_id', __('teacher-classroom::app.schedule_lesson_invalid'));
+            }
+        }
+
+        if ($this->filled('substitute_teacher_id') && $this->integer('substitute_teacher_id') === (int) $classroom->teacher_id) {
+            $validator->errors()->add('substitute_teacher_id', __('teacher-classroom::app.schedule_substitute_is_owner'));
+        }
+
+        foreach (['makeup_for_schedule_id', 'rescheduled_from_id'] as $field) {
+            if (! $this->filled($field)) {
+                continue;
+            }
+
+            $related = ClassroomSchedule::query()->find($this->integer($field));
+            if (! $related || $related->classroom_id !== $classroom->id || ($currentSchedule instanceof ClassroomSchedule && $related->is($currentSchedule))) {
+                $validator->errors()->add($field, __('teacher-classroom::app.schedule_related_session_invalid'));
+            }
+        }
+
+        if ($this->filled('makeup_for_schedule_id') && $this->string('type')->toString() !== ClassroomSchedule::TYPE_MAKEUP) {
+            $validator->errors()->add('makeup_for_schedule_id', __('teacher-classroom::app.schedule_makeup_reference_requires_makeup'));
+        }
     }
 
     private function classroom(): ?Classroom

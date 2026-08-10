@@ -255,30 +255,53 @@ class TeacherClassroomService
         });
     }
 
-    public function addSchedule(Classroom $classroom, array $data): ClassroomSchedule
+    public function addSchedule(Classroom $classroom, array $data, ?User $actor = null): ClassroomSchedule
     {
         return ClassroomSchedule::query()->create([
             'classroom_id' => $classroom->id,
+            'lesson_id' => $data['lesson_id'] ?? null,
             'type' => $data['type'],
+            'delivery_mode' => $data['delivery_mode'] ?? ClassroomSchedule::DELIVERY_OFFLINE,
+            'status' => $data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED,
             'title' => $data['title'],
             'session_date' => $data['session_date'],
             'start_time' => $data['start_time'],
             'end_time' => $data['end_time'],
+            'location' => $data['location'] ?? null,
+            'meeting_url' => $data['meeting_url'] ?? null,
             'description' => $data['description'] ?? null,
             'makeup_reason' => $data['makeup_reason'] ?? null,
+            'cancel_reason' => $data['cancel_reason'] ?? null,
+            'substitute_teacher_id' => $data['substitute_teacher_id'] ?? null,
+            'makeup_for_schedule_id' => $data['makeup_for_schedule_id'] ?? null,
+            'rescheduled_from_id' => $data['rescheduled_from_id'] ?? null,
+            'published_at' => ($data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED) === ClassroomSchedule::STATUS_DRAFT ? null : now(),
+            'created_by' => $actor?->id,
+            'updated_by' => $actor?->id,
         ]);
     }
 
-    public function updateSchedule(ClassroomSchedule $schedule, array $data): ClassroomSchedule
+    public function updateSchedule(ClassroomSchedule $schedule, array $data, ?User $actor = null): ClassroomSchedule
     {
         $schedule->update([
+            'lesson_id' => $data['lesson_id'] ?? null,
             'type' => $data['type'],
+            'delivery_mode' => $data['delivery_mode'] ?? ClassroomSchedule::DELIVERY_OFFLINE,
+            'status' => $data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED,
             'title' => $data['title'],
             'session_date' => $data['session_date'],
             'start_time' => $data['start_time'],
             'end_time' => $data['end_time'],
+            'location' => $data['location'] ?? null,
+            'meeting_url' => $data['meeting_url'] ?? null,
             'description' => $data['description'] ?? null,
             'makeup_reason' => $data['makeup_reason'] ?? null,
+            'cancel_reason' => $data['cancel_reason'] ?? null,
+            'substitute_teacher_id' => $data['substitute_teacher_id'] ?? null,
+            'makeup_for_schedule_id' => $data['makeup_for_schedule_id'] ?? null,
+            'rescheduled_from_id' => $data['rescheduled_from_id'] ?? null,
+            'published_at' => ($data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED) === ClassroomSchedule::STATUS_DRAFT ? null : ($schedule->published_at ?? now()),
+            'updated_by' => $actor?->id,
         ]);
 
         return $schedule;

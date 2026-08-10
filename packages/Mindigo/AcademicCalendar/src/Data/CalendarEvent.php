@@ -3,6 +3,7 @@
 namespace Mindigo\AcademicCalendar\Data;
 
 use Carbon\CarbonImmutable;
+use InvalidArgumentException;
 use JsonSerializable;
 use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
 use Mindigo\AcademicCalendar\Enums\CalendarEventSource;
@@ -31,7 +32,15 @@ final readonly class CalendarEvent implements JsonSerializable
         public ?string $url = null,
         public array $actions = ['view'],
         public array $metadata = [],
-    ) {}
+    ) {
+        if ($endsAt && $endsAt->lessThanOrEqualTo($startsAt)) {
+            throw new InvalidArgumentException('Calendar event end must be after its start.');
+        }
+
+        if (! in_array($timezone, timezone_identifiers_list(), true)) {
+            throw new InvalidArgumentException('Calendar event timezone must be a valid IANA timezone.');
+        }
+    }
 
     /** @return array<string, mixed> */
     public function jsonSerialize(): array

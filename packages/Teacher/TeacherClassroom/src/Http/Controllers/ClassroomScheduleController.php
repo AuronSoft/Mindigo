@@ -19,7 +19,7 @@ class ClassroomScheduleController extends Controller
     {
         $this->authorizeOwnership($classroom);
 
-        $this->service->addSchedule($classroom, $request->validated());
+        $this->service->addSchedule($classroom, $request->validated(), $request->user());
 
         return redirect()
             ->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
@@ -31,7 +31,7 @@ class ClassroomScheduleController extends Controller
         $classroom = $schedule->classroom;
         $this->authorizeOwnership($classroom);
 
-        $this->service->updateSchedule($schedule, $request->validated());
+        $this->service->updateSchedule($schedule, $request->validated(), $request->user());
 
         return redirect()
             ->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
