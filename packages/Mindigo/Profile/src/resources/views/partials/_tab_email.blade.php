@@ -22,6 +22,18 @@
                         {{ old('notif_new_quiz', $preferences?->notif_new_quiz ?? true) ? 'checked' : '' }}>
                 </label>
 
+                @foreach(['notif_calendar_updates', 'notif_calendar_reminders'] as $calendarPreference)
+                    <label class="flex cursor-pointer items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-green-200 hover:bg-green-50/60">
+                        <span>
+                            <span class="block text-sm font-black text-slate-900">@lang('Mindigo-profile::app.'.$calendarPreference)</span>
+                            <span class="mt-1 block text-sm font-semibold leading-6 text-slate-500">@lang('Mindigo-profile::app.'.$calendarPreference.'_desc')</span>
+                        </span>
+                        <input type="hidden" name="{{ $calendarPreference }}" value="0">
+                        <input type="checkbox" name="{{ $calendarPreference }}" value="1" class="mt-1 h-5 w-5 rounded border-slate-300 text-green-600 focus:ring-green-500"
+                            {{ old($calendarPreference, $preferences?->{$calendarPreference} ?? true) ? 'checked' : '' }}>
+                    </label>
+                @endforeach
+
                 <label class="flex cursor-pointer items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-green-200 hover:bg-green-50/60">
                     <span>
                         <span class="block text-sm font-black text-slate-900">@lang('Mindigo-profile::app.notif_system_news')</span>

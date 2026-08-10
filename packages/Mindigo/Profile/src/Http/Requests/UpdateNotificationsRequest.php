@@ -16,6 +16,8 @@ class UpdateNotificationsRequest extends FormRequest
         return [
             'notif_new_quiz' => ['nullable', 'boolean'],
             'notif_system_news' => ['nullable', 'boolean'],
+            'notif_calendar_updates' => ['nullable', 'boolean'],
+            'notif_calendar_reminders' => ['nullable', 'boolean'],
         ];
     }
 
