@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@source "../views/**/*.blade.php";
+
+.student-calendar-scrollbar { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+.student-calendar-event:focus-visible { outline: 3px solid rgb(22 163 74 / .25); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .student-calendar-motion { transition: none !important; } }

@@ -42,6 +42,8 @@ export default defineConfig({
                 "packages/Teacher/TeacherAssignment/src/resources/js/app.js",
                 "packages/Students/StudentExam/src/resources/css/app.css",
                 "packages/Students/StudentExam/src/resources/js/app.js",
+                "packages/Students/StudentSchedule/src/resources/css/app.css",
+                "packages/Students/StudentSchedule/src/resources/js/app.js",
             ],
             refresh: true,
         }),

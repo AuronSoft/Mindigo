@@ -1,29 +1,12 @@
 <?php
 
 return [
-    'title' => 'Schedule',
-    'subtitle' => 'Classes, deadlines, exams and live sessions',
-    'area' => 'Student',
-
-    // Calendar nav
-    'today' => 'Today',
-    'prev_month' => 'Previous month',
-    'next_month' => 'Next month',
-    'more_count' => '+:count more',
-
-    // Weekday short labels (Mon..Sun)
-    'd_mon' => 'Mon', 'd_tue' => 'Tue', 'd_wed' => 'Wed', 'd_thu' => 'Thu',
-    'd_fri' => 'Fri', 'd_sat' => 'Sat', 'd_sun' => 'Sun',
-
-    // Event types
-    'type_class' => 'Class',
-    'type_assignment' => 'Deadline',
-    'type_exam' => 'Exam',
-    'type_live' => 'Live session',
-    'legend' => 'Legend',
-
-    // Upcoming
-    'upcoming' => 'Upcoming',
-    'empty_upcoming' => 'No upcoming events.',
-    'all_day' => 'All day',
+    'title' => 'My calendar', 'subtitle' => 'Classes, assignments and exams in one schedule',
+    'today' => 'Today', 'view_today' => 'Today', 'view_week' => 'Week', 'view_month' => 'Month', 'view_schedule' => 'Schedule',
+    'next_actions' => 'Coming up', 'next_actions_hint' => 'The most important things to prepare for', 'next_session' => 'Next class', 'next_assignment' => 'Nearest deadline', 'next_exam' => 'Next exam', 'no_upcoming' => 'Nothing scheduled', 'personal' => 'Personal',
+    'events' => 'events', 'upcoming' => 'Upcoming schedule', 'empty_upcoming' => 'No events in this period.',
+    'class_session' => 'Class session', 'assignment_due' => 'Assignment due', 'exam_window' => 'Exam', 'live_session' => 'Live session',
+    'regular' => 'Regular class', 'makeup' => 'Make-up class', 'online' => 'Online', 'offline' => 'In person', 'hybrid' => 'Hybrid', 'cancelled' => 'Cancelled',
+    'event_details' => 'Schedule details', 'time' => 'Time', 'classroom' => 'Classroom', 'context' => 'Information',
+    'join_class' => 'Join class', 'view_lesson' => 'View lesson', 'submit_assignment' => 'Submit assignment', 'take_exam' => 'Take exam',
 ];
