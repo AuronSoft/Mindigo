@@ -157,6 +157,7 @@ class TeacherClassroomService
         return [
             'statuses' => Classroom::STATUSES,
             'students' => User::query()->students()->active()->orderBy('name')->get(['id', 'name', 'email']),
+            'teachers' => User::query()->where('role', 'teacher')->active()->whereKeyNot(auth()->id())->orderBy('name')->get(['id', 'name', 'email']),
             'subjects' => Subject::query()->where('status', 'active')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
             'schoolYears' => Classroom::schoolYearOptions(),
             'courses' => Course::query()
@@ -323,6 +324,7 @@ class TeacherClassroomService
             'cancel_reason' => $data['cancel_reason'] ?? null,
             'reschedule_reason' => $data['reschedule_reason'] ?? null,
             'substitute_teacher_id' => $data['substitute_teacher_id'] ?? null,
+            'substitute_status' => ! empty($data['substitute_teacher_id']) ? ClassroomSchedule::SUBSTITUTE_PENDING : null,
             'makeup_for_schedule_id' => $data['makeup_for_schedule_id'] ?? null,
             'rescheduled_from_id' => $data['rescheduled_from_id'] ?? null,
             'published_at' => ($data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED) === ClassroomSchedule::STATUS_DRAFT ? null : now(),
@@ -333,6 +335,8 @@ class TeacherClassroomService
 
     public function updateSchedule(ClassroomSchedule $schedule, array $data, ?User $actor = null): ClassroomSchedule
     {
+        $substituteId = $data['substitute_teacher_id'] ?? null;
+        $substituteChanged = (int) $schedule->substitute_teacher_id !== (int) $substituteId;
         $schedule->update([
             'lesson_id' => $data['lesson_id'] ?? null,
             'type' => $data['type'],
@@ -347,7 +351,10 @@ class TeacherClassroomService
             'description' => $data['description'] ?? null,
             'makeup_reason' => $data['makeup_reason'] ?? null,
             'cancel_reason' => $data['cancel_reason'] ?? null,
-            'substitute_teacher_id' => $data['substitute_teacher_id'] ?? null,
+            'substitute_teacher_id' => $substituteId,
+            'substitute_status' => $substituteChanged ? ($substituteId ? ClassroomSchedule::SUBSTITUTE_PENDING : null) : $schedule->substitute_status,
+            'substitute_responded_at' => $substituteChanged ? null : $schedule->substitute_responded_at,
+            'substitute_response_note' => $substituteChanged ? null : $schedule->substitute_response_note,
             'makeup_for_schedule_id' => $data['makeup_for_schedule_id'] ?? null,
             'rescheduled_from_id' => $data['rescheduled_from_id'] ?? null,
             'published_at' => ($data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED) === ClassroomSchedule::STATUS_DRAFT ? null : ($schedule->published_at ?? now()),
@@ -355,6 +362,21 @@ class TeacherClassroomService
         ]);
 
         return $schedule;
+    }
+
+    public function respondToSubstituteAssignment(ClassroomSchedule $schedule, User $teacher, bool $accept, ?string $note): ClassroomSchedule
+    {
+        abort_unless($schedule->substitute_teacher_id === (int) $teacher->getAuthIdentifier(), 403);
+        abort_unless($schedule->substitute_status === ClassroomSchedule::SUBSTITUTE_PENDING, 422);
+
+        $schedule->update([
+            'substitute_status' => $accept ? ClassroomSchedule::SUBSTITUTE_ACCEPTED : ClassroomSchedule::SUBSTITUTE_DECLINED,
+            'substitute_responded_at' => now(),
+            'substitute_response_note' => $note,
+            'updated_by' => $teacher->id,
+        ]);
+
+        return $schedule->refresh();
     }
 
     public function deleteSchedule(ClassroomSchedule $schedule): void

@@ -383,6 +383,13 @@
                                             @if($sched->description)
                                                 <p class="mt-2 text-xs font-semibold text-slate-500 leading-relaxed">{{ $sched->description }}</p>
                                             @endif
+                                            @if($sched->substituteTeacher)
+                                                <div class="mt-2 flex flex-wrap items-center gap-2 text-xs font-bold">
+                                                    <span class="inline-flex items-center gap-1.5 rounded-lg bg-green-50 px-2.5 py-1 text-green-700"><x-heroicon-o-user-plus class="h-3.5 w-3.5" />{{ $sched->substituteTeacher->name }}</span>
+                                                    <span class="rounded-lg bg-slate-100 px-2.5 py-1 text-slate-600">{{ __('teacher-classroom::app.substitute_status_'.$sched->substitute_status) }}</span>
+                                                </div>
+                                                @if($sched->substitute_response_note)<p class="mt-1.5 text-xs font-semibold text-slate-500">{{ $sched->substitute_response_note }}</p>@endif
+                                            @endif
                                             @if($classroom->type === \Mindigo\TeacherClassroom\Models\Classroom::TYPE_COURSE && $sched->type === 'makeup')
                                                 <p class="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800"><strong>@lang('teacher-classroom::app.makeup_reason'):</strong> {{ $sched->makeup_reason }}</p>
                                             @endif
@@ -399,6 +406,7 @@
                                                     data-description="{{ $sched->description }}"
                                                     data-type="{{ $sched->type }}"
                                                     data-makeup-reason="{{ $sched->makeup_reason }}"
+                                                    data-substitute-teacher-id="{{ $sched->substitute_teacher_id }}"
                                                     class="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800">
                                                 <x-heroicon-o-pencil class="h-3.5 w-3.5" />
                                             </button>
@@ -587,6 +595,15 @@
                           class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-green-400 resize-none"></textarea>
             </div>
 
+            <div>
+                <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.substitute_teacher')</label>
+                <select name="substitute_teacher_id" id="schedule-substitute-teacher" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 outline-none focus:border-green-400">
+                    <option value="">@lang('teacher-classroom::app.no_substitute_teacher')</option>
+                    @foreach($availableTeachers as $availableTeacher)<option value="{{ $availableTeacher->id }}">{{ $availableTeacher->name }} · {{ $availableTeacher->email }}</option>@endforeach
+                </select>
+                <p class="mt-1.5 text-xs font-medium text-slate-400">@lang('teacher-classroom::app.substitute_teacher_hint')</p>
+            </div>
+
             <div id="schedule-makeup-reason-field" class="hidden">
                 <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.makeup_reason') <span class="text-red-500">*</span></label>
                 <textarea name="makeup_reason" id="schedule-makeup-reason" rows="3" placeholder="@lang('teacher-classroom::app.makeup_reason_ph')" class="w-full resize-none rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-amber-400"></textarea>
@@ -607,6 +624,7 @@
                 'type' => old('type', 'regular'), 'title' => old('title'), 'sessionDate' => old('session_date'),
                 'startTime' => old('start_time'), 'endTime' => old('end_time'), 'description' => old('description'),
                 'makeupReason' => old('makeup_reason'),
+                'substituteTeacherId' => old('substitute_teacher_id'),
             ]);
             document.getElementById('schedule-type').value = values.type;
             document.getElementById('schedule-title').value = values.title || '';
@@ -617,6 +635,7 @@
             document.getElementById('schedule-end').value = values.endTime || '';
             document.getElementById('schedule-desc').value = values.description || '';
             document.getElementById('schedule-makeup-reason').value = values.makeupReason || '';
+            document.getElementById('schedule-substitute-teacher').value = values.substituteTeacherId || '';
             document.getElementById('schedule-type').dispatchEvent(new Event('change', { bubbles: true }));
             window.MindigoOpenModal?.('schedule-modal');
         });

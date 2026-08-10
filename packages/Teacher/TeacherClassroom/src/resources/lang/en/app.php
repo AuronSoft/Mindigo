@@ -198,4 +198,5 @@ return [
     'schedule_updated' => 'Session details updated.',
     'schedule_deleted' => 'Session removed from schedule.',
     'attendance_outside_session_window' => 'Attendance can only be opened from 60 minutes before the session until 30 minutes after it ends.',
+    'substitute_teacher' => 'Substitute teacher', 'no_substitute_teacher' => 'No substitute teacher', 'substitute_teacher_hint' => 'The selected teacher must accept the assignment before it counts toward their workload.', 'substitute_status_pending' => 'Awaiting response', 'substitute_status_accepted' => 'Accepted', 'substitute_status_declined' => 'Declined',
 ];

@@ -20,6 +20,15 @@
                     <form method="POST" data-event-attendance-close-form class="mt-3 hidden">@csrf @method('DELETE')<button class="h-9 rounded-lg border border-green-200 bg-white px-3 text-xs font-black text-green-700">@lang('teacher-classroom::app.close_attendance')</button></form>
                     <a data-event-attendance-link href="#" class="mt-3 hidden text-xs font-black text-green-700 no-underline">@lang('teacher-calendar::app.go_to_attendance') →</a>
                 </div>
+                <div data-event-substitute-shell class="hidden rounded-xl border border-green-100 bg-green-50 p-3">
+                    <dt class="text-xs font-black text-green-700">@lang('teacher-calendar::app.substitute_assignment')</dt>
+                    <dd data-event-substitute-status class="mt-1 text-sm font-black text-slate-800"></dd>
+                    <p data-event-substitute-note class="mt-1 hidden text-xs font-semibold text-slate-600"></p>
+                    <form method="POST" data-event-substitute-form class="mt-3 hidden space-y-2">@csrf
+                        <textarea name="response_note" maxlength="500" rows="2" placeholder="@lang('teacher-calendar::app.substitute_response_note')" class="w-full rounded-lg border border-green-200 bg-white p-2 text-xs font-semibold outline-none focus:border-green-500"></textarea>
+                        <div class="grid grid-cols-2 gap-2"><button name="decision" value="decline" class="h-9 rounded-lg border border-slate-200 bg-white text-xs font-black text-slate-600">@lang('teacher-calendar::app.decline_assignment')</button><button name="decision" value="accept" class="h-9 rounded-lg bg-green-600 text-xs font-black text-white">@lang('teacher-calendar::app.accept_assignment')</button></div>
+                    </form>
+                </div>
             </dl>
             <form method="POST" data-event-cancel-form class="hidden rounded-xl border border-red-100 bg-red-50 p-3">
                 @csrf

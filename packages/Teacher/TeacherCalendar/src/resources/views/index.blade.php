@@ -32,7 +32,7 @@
             'time' => $event->startsAt->format('d/m/Y H:i').($event->endsAt ? ' – '.$event->endsAt->format('H:i') : ''),
             'classroom' => $event->metadata['classroom_name'] ?? null,
             'url' => $event->url,
-            'cancelUrl' => $isSession && ! $locked ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null,
+            'cancelUrl' => $isSession && ! $locked && ($event->metadata['can_manage_session'] ?? false) ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null,
             'updateUrl' => $isSession && ! $locked ? ($event->metadata['update_url'] ?? null) : null,
             'rescheduleUrl' => $isSession && ! $locked ? ($event->metadata['reschedule_url'] ?? null) : null,
             'completeUrl' => $isSession && $lifecycleStatus === 'scheduled' ? ($event->metadata['complete_url'] ?? null) : null,
@@ -56,6 +56,11 @@
             'attendanceOpenUrl' => $event->metadata['attendance_open_url'] ?? null,
             'attendanceCloseUrl' => $event->metadata['attendance_close_url'] ?? null,
             'attendanceUrl' => $event->metadata['attendance_url'] ?? null,
+            'substituteTeacherName' => $event->metadata['substitute_teacher_name'] ?? null,
+            'substituteStatus' => $event->metadata['substitute_status'] ?? null,
+            'substituteStatusLabel' => isset($event->metadata['substitute_status']) ? __('teacher-calendar::app.substitute_'.$event->metadata['substitute_status']) : null,
+            'substituteResponseNote' => $event->metadata['substitute_response_note'] ?? null,
+            'substituteResponseUrl' => $event->metadata['substitute_response_url'] ?? null,
         ];
     };
     $query = request()->except('date');

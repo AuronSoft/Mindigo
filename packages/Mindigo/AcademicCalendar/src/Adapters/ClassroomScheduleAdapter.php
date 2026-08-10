@@ -28,16 +28,21 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
         }
 
         $classroomIds = $this->scope->classroomIds($query);
-        if ($classroomIds->isEmpty()) {
+        if ($classroomIds->isEmpty() && $query->viewer->role !== 'teacher') {
             return collect();
         }
 
         return ClassroomSchedule::query()
-            ->whereIn('classroom_id', $classroomIds)
+            ->where(function ($builder) use ($classroomIds, $query): void {
+                $builder->whereIn('classroom_id', $classroomIds);
+                if ($query->viewer->role === 'teacher' && $query->classroomIds === []) {
+                    $builder->orWhere('substitute_teacher_id', $query->viewer->id);
+                }
+            })
             ->when($query->viewer->role === 'student', fn ($builder) => $builder->where('status', '!=', ClassroomSchedule::STATUS_DRAFT))
             ->whereDate('session_date', '>=', $query->from->setTimezone($query->timezone)->toDateString())
             ->whereDate('session_date', '<=', $query->to->setTimezone($query->timezone)->toDateString())
-            ->with(['classroom:id,name,course_id,teacher_id', 'attendanceSession'])
+            ->with(['classroom:id,name,course_id,teacher_id', 'attendanceSession', 'substituteTeacher:id,name,email'])
             ->get()
             ->map(function (ClassroomSchedule $schedule) use ($query): CalendarEvent {
                 $startsAt = CarbonImmutable::parse(
@@ -48,6 +53,8 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                     ? CarbonImmutable::parse($schedule->session_date->format('Y-m-d').' '.$schedule->end_time, $query->timezone)
                     : null;
                 $isTeacher = $query->viewer->role !== 'student';
+                $isOwner = $schedule->classroom?->teacher_id === (int) $query->viewer->id;
+                $isSubstitute = $schedule->substitute_teacher_id === (int) $query->viewer->id;
                 $attendance = $schedule->attendanceSession;
                 $attendanceOpen = $attendance?->isOpen() ?? false;
 
@@ -70,8 +77,8 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                     courseId: $schedule->classroom?->course_id,
                     lessonId: $schedule->lesson_id,
                     ownerId: $schedule->classroom?->teacher_id,
-                    url: $this->routeFor($query, $schedule->classroom_id),
-                    actions: $isTeacher ? ['view', 'edit', 'reschedule', 'cancel'] : ['view'],
+                    url: ! $isTeacher || $isOwner ? $this->routeFor($query, $schedule->classroom_id) : null,
+                    actions: $isOwner ? ['view', 'edit', 'reschedule', 'cancel'] : ['view'],
                     metadata: array_filter([
                         'classroom_name' => $schedule->classroom?->name,
                         'session_type' => $schedule->type,
@@ -83,16 +90,22 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                         'cancel_reason' => $schedule->cancel_reason,
                         'reschedule_reason' => $schedule->reschedule_reason,
                         'lifecycle_status' => $schedule->status,
+                        'can_manage_session' => $isOwner,
                         'substitute_teacher_id' => $schedule->substitute_teacher_id,
-                        'update_url' => $isTeacher ? route('teacher.calendar.sessions.update', $schedule) : null,
-                        'reschedule_url' => $isTeacher ? route('teacher.calendar.sessions.reschedule', $schedule) : null,
-                        'complete_url' => $isTeacher ? route('teacher.calendar.sessions.complete', $schedule) : null,
+                        'substitute_teacher_name' => $schedule->substituteTeacher?->name,
+                        'substitute_status' => $schedule->substitute_status,
+                        'substitute_response_note' => $schedule->substitute_response_note,
+                        'substitute_response_url' => $isSubstitute && $schedule->substitute_status === ClassroomSchedule::SUBSTITUTE_PENDING ? route('teacher.calendar.sessions.substitute.respond', $schedule) : null,
+                        'teaching_responsibility' => $isOwner || ($isSubstitute && $schedule->substitute_status === ClassroomSchedule::SUBSTITUTE_ACCEPTED),
+                        'update_url' => $isOwner ? route('teacher.calendar.sessions.update', $schedule) : null,
+                        'reschedule_url' => $isOwner ? route('teacher.calendar.sessions.reschedule', $schedule) : null,
+                        'complete_url' => $isOwner ? route('teacher.calendar.sessions.complete', $schedule) : null,
                         'attendance_status' => $attendanceOpen ? 'open' : ($attendance ? 'closed' : 'not_open'),
-                        'attendance_code' => $isTeacher && $attendanceOpen ? $attendance->code : null,
+                        'attendance_code' => $isOwner && $attendanceOpen ? $attendance->code : null,
                         'attendance_expires_at' => $attendanceOpen ? $attendance->expires_at?->format('H:i') : null,
-                        'attendance_open_url' => $isTeacher && $schedule->status === ClassroomSchedule::STATUS_SCHEDULED ? route('teacher.calendar.sessions.attendance.open', $schedule) : null,
-                        'attendance_close_url' => $isTeacher && $attendanceOpen ? route('teacher.classrooms.attendance.code.close', $attendance) : null,
-                        'attendance_url' => $this->attendanceRouteFor($query, $schedule),
+                        'attendance_open_url' => $isOwner && $schedule->status === ClassroomSchedule::STATUS_SCHEDULED ? route('teacher.calendar.sessions.attendance.open', $schedule) : null,
+                        'attendance_close_url' => $isOwner && $attendanceOpen ? route('teacher.classrooms.attendance.code.close', $attendance) : null,
+                        'attendance_url' => ! $isTeacher || $isOwner ? $this->attendanceRouteFor($query, $schedule) : null,
                     ], fn ($value) => $value !== null),
                 );
             })
