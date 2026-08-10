@@ -15,11 +15,23 @@ return [
     'stat_students' => 'Students',
 
     'search' => 'Search by name, code...',
+    'search_label' => 'Find a classroom',
+    'search_action' => 'Search',
+    'clear_search' => 'Clear search',
+    'classroom_summary' => ':classes classes · :students students',
+    'filters' => 'Filters',
+    'filter_title' => 'Filter classrooms',
+    'filter_description' => 'Search and narrow the classroom list without taking up workspace.',
+    'filtering_by' => 'Filtering by:',
+    'clear_filter' => 'Clear filters',
+    'apply_filter' => 'Apply filters',
+    'close' => 'Close',
     'all_status' => 'All statuses',
 
     'name' => 'Class name',
     'code' => 'Class code',
     'school_year' => 'School year',
+    'school_year_unset' => 'School year not set',
     'description' => 'Description',
     'status' => 'Status',
     'students' => 'Students',
@@ -68,6 +80,7 @@ return [
     'name_col' => 'Name',
     'email_col' => 'Email',
     'view' => 'Detail',
+    'open_class' => 'Open classroom',
 
     // Show Detail View
     'assistant' => 'Assistant',
