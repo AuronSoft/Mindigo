@@ -4,6 +4,7 @@ namespace Mindigo\TeacherClassroom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherCourse\Models\Lesson;
 
@@ -105,5 +106,10 @@ class ClassroomSchedule extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function attendanceSession(): HasOne
+    {
+        return $this->hasOne(ClassroomAttendanceSession::class, 'classroom_schedule_id');
     }
 }

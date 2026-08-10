@@ -15,6 +15,7 @@ class ClassroomAttendanceRequest extends FormRequest
     {
         return [
             'attendance_date' => ['required', 'date'],
+            'classroom_schedule_id' => ['nullable', 'integer', 'exists:classroom_schedules,id'],
             'records' => ['required', 'array'],
             'records.*.status' => ['required', 'string', 'in:present,absent,late,excused'],
             'records.*.remarks' => ['nullable', 'string', 'max:255'],

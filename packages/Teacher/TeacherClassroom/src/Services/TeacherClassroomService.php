@@ -3,6 +3,7 @@
 namespace Mindigo\TeacherClassroom\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -196,6 +197,21 @@ class TeacherClassroomService
             ->keyBy('student_id');
     }
 
+    public function getAttendanceBySchedule(ClassroomSchedule $schedule)
+    {
+        return ClassroomAttendance::query()->where('classroom_schedule_id', $schedule->id)->get()->keyBy('student_id');
+    }
+
+    public function saveScheduleAttendance(ClassroomSchedule $schedule, array $records): void
+    {
+        foreach ($records as $studentId => $record) {
+            ClassroomAttendance::query()->updateOrCreate(
+                ['classroom_schedule_id' => $schedule->id, 'student_id' => $studentId],
+                ['classroom_id' => $schedule->classroom_id, 'session_date' => $schedule->session_date, 'status' => $record['status'] ?? 'present', 'method' => 'manual', 'remarks' => $record['remarks'] ?? null],
+            );
+        }
+    }
+
     public function getAttendanceHistory(Classroom $classroom)
     {
         return ClassroomAttendance::query()
@@ -209,6 +225,11 @@ class TeacherClassroomService
     public function attendanceSession(Classroom $classroom, string $date): ?ClassroomAttendanceSession
     {
         return $classroom->attendanceSessions()->whereDate('session_date', $date)->first();
+    }
+
+    public function attendanceSessionForSchedule(ClassroomSchedule $schedule): ?ClassroomAttendanceSession
+    {
+        return ClassroomAttendanceSession::query()->where('classroom_schedule_id', $schedule->id)->first();
     }
 
     public function openCodeAttendance(Classroom $classroom, User $teacher, string $date, int $durationMinutes): ClassroomAttendanceSession
@@ -228,6 +249,29 @@ class TeacherClassroomService
         );
     }
 
+    public function openScheduleAttendance(ClassroomSchedule $schedule, User $teacher, int $durationMinutes): ClassroomAttendanceSession
+    {
+        $start = Carbon::parse($schedule->session_date->format('Y-m-d').' '.$schedule->start_time, config('app.timezone'));
+        $end = Carbon::parse($schedule->session_date->format('Y-m-d').' '.$schedule->end_time, config('app.timezone'));
+        if (now()->lt($start->copy()->subHour()) || now()->gt($end->copy()->addMinutes(30))) {
+            throw ValidationException::withMessages(['attendance' => __('teacher-classroom::app.attendance_outside_session_window')]);
+        }
+
+        $alphabet = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+        $code = collect(range(1, 6))->map(fn () => $alphabet[random_int(0, strlen($alphabet) - 1)])->join('');
+
+        return ClassroomAttendanceSession::query()->updateOrCreate(
+            ['classroom_schedule_id' => $schedule->id],
+            [
+                'classroom_id' => $schedule->classroom_id, 'opened_by' => $teacher->id,
+                'session_date' => $schedule->session_date, 'code' => $code,
+                'status' => ClassroomAttendanceSession::STATUS_OPEN,
+                'expires_at' => min(now()->addMinutes($durationMinutes), $end->copy()->addMinutes(30)),
+                'closed_at' => null,
+            ],
+        );
+    }
+
     public function closeCodeAttendance(ClassroomAttendanceSession $session): void
     {
         $session->update(['status' => ClassroomAttendanceSession::STATUS_CLOSED, 'closed_at' => now()]);
@@ -236,21 +280,26 @@ class TeacherClassroomService
     public function checkInWithCode(Classroom $classroom, User $student, string $code): ClassroomAttendance
     {
         return DB::transaction(function () use ($classroom, $student, $code): ClassroomAttendance {
-            $session = ClassroomAttendanceSession::query()
+            $sessions = ClassroomAttendanceSession::query()
                 ->where('classroom_id', $classroom->id)
                 ->where('status', ClassroomAttendanceSession::STATUS_OPEN)
                 ->where('expires_at', '>', now())
                 ->latest('id')
                 ->lockForUpdate()
-                ->first();
+                ->get();
 
-            if (! $session || ! hash_equals($session->code, Str::upper(trim($code)))) {
+            $normalizedCode = Str::upper(trim($code));
+            $session = $sessions->first(fn (ClassroomAttendanceSession $candidate): bool => hash_equals($candidate->code, $normalizedCode));
+
+            if (! $session) {
                 throw ValidationException::withMessages(['attendance_code' => __('student-classroom::app.attendance_code_invalid')]);
             }
 
             return ClassroomAttendance::query()->updateOrCreate(
-                ['classroom_id' => $classroom->id, 'student_id' => $student->id, 'session_date' => $session->session_date],
-                ['attendance_session_id' => $session->id, 'status' => 'present', 'method' => 'code', 'remarks' => null],
+                $session->classroom_schedule_id
+                    ? ['classroom_schedule_id' => $session->classroom_schedule_id, 'student_id' => $student->id]
+                    : ['classroom_id' => $classroom->id, 'student_id' => $student->id, 'session_date' => $session->session_date],
+                ['classroom_id' => $classroom->id, 'classroom_schedule_id' => $session->classroom_schedule_id, 'session_date' => $session->session_date, 'attendance_session_id' => $session->id, 'status' => 'present', 'method' => 'code', 'remarks' => null],
             );
         });
     }

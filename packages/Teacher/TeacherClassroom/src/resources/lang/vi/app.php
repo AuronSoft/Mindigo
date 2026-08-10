@@ -206,4 +206,5 @@ return [
     'schedule_created' => 'Đã thêm buổi học mới vào lịch.',
     'schedule_updated' => 'Đã cập nhật thông tin buổi học.',
     'schedule_deleted' => 'Đã xóa buổi học khỏi lịch.',
+    'attendance_outside_session_window' => 'Chỉ được mở điểm danh từ 60 phút trước buổi học đến 30 phút sau khi buổi học kết thúc.',
 ];
