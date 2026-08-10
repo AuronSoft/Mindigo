@@ -23,7 +23,6 @@ class TeacherClassroomController extends Controller
 
         return view('teacher-classroom::index', [
             'classrooms' => $this->service->ownedList($request->user(), $filters),
-            'stats' => $this->service->stats($request->user()),
             'filters' => $filters,
         ]);
     }

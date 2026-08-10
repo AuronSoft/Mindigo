@@ -17,12 +17,24 @@ return [
 
     // Filters
     'search' => 'Tìm theo tên, mã lớp...',
+    'search_label' => 'Tìm kiếm lớp học',
+    'search_action' => 'Tìm kiếm',
+    'clear_search' => 'Xóa nội dung tìm kiếm',
+    'classroom_summary' => ':classes lớp học · :students học sinh',
+    'filters' => 'Bộ lọc',
+    'filter_title' => 'Lọc danh sách lớp học',
+    'filter_description' => 'Tìm kiếm và thu gọn danh sách mà không chiếm không gian hiển thị lớp học.',
+    'filtering_by' => 'Đang lọc theo:',
+    'clear_filter' => 'Xóa bộ lọc',
+    'apply_filter' => 'Áp dụng',
+    'close' => 'Đóng',
     'all_status' => 'Tất cả trạng thái',
 
     // Fields
     'name' => 'Tên lớp',
     'code' => 'Mã lớp',
     'school_year' => 'Năm học',
+    'school_year_unset' => 'Chưa thiết lập năm học',
     'description' => 'Mô tả',
     'status' => 'Trạng thái',
     'students' => 'Học sinh',
@@ -77,6 +89,7 @@ return [
     'name_col' => 'Tên',
     'email_col' => 'Email',
     'view' => 'Chi tiết',
+    'open_class' => 'Vào lớp học',
 
     // Show Detail View
     'assistant' => 'Trợ giảng',
