@@ -3,12 +3,25 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Tests\TestCase;
 
 class TeacherCalendarTest extends TestCase
 {
+    public function test_teacher_calendar_supports_every_workspace_view(): void
+    {
+        $teacher = User::factory()->create(['role' => 'teacher']);
+
+        foreach (['day', 'week', 'month', 'schedule'] as $view) {
+            $this->actingAs($teacher)
+                ->get(route('teacher.calendar.index', ['date' => '2026-08-12', 'view' => $view]))
+                ->assertOk()
+                ->assertSee('data-calendar-workspace', false);
+        }
+    }
+
     use RefreshDatabase;
 
     public function test_teacher_calendar_only_renders_owned_classroom_events(): void

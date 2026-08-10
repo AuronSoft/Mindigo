@@ -17,6 +17,7 @@ class TeacherCalendarIndexRequest extends FormRequest
     {
         return [
             'date' => ['nullable', 'date_format:Y-m-d'],
+            'view' => ['nullable', Rule::in(['day', 'week', 'month', 'schedule'])],
             'classroom_id' => ['nullable', 'integer'],
             'kinds' => ['nullable', 'array'],
             'kinds.*' => ['string', Rule::enum(CalendarEventKind::class)],

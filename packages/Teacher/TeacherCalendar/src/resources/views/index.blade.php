@@ -13,95 +13,163 @@
 
 @section('content')
 @php
+    use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
+    use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;
     $tones = [
-        'class_session' => 'border-blue-200 bg-blue-50 text-blue-800',
-        'assignment_due' => 'border-orange-200 bg-orange-50 text-orange-800',
-        'exam_window' => 'border-violet-200 bg-violet-50 text-violet-800',
-        'live_session' => 'border-rose-200 bg-rose-50 text-rose-800',
+        'class_session' => 'calendar-tone-blue',
+        'assignment_due' => 'calendar-tone-orange',
+        'exam_window' => 'calendar-tone-rose',
+        'live_session' => 'calendar-tone-violet',
     ];
-    $hours = range(7, 19);
     $query = request()->except('date');
+    $previousDate = match ($viewMode) { 'day' => $anchor->subDay(), 'month' => $anchor->subMonth(), 'schedule' => $anchor->subDays(30), default => $anchor->subWeek() };
+    $nextDate = match ($viewMode) { 'day' => $anchor->addDay(), 'month' => $anchor->addMonth(), 'schedule' => $anchor->addDays(30), default => $anchor->addWeek() };
+    $regular = $events->filter(fn ($event) => $event->kind === CalendarEventKind::ClassSession && ($event->metadata['session_type'] ?? 'regular') === 'regular' && $event->status !== CalendarEventStatus::Cancelled)->count();
+    $makeup = $events->filter(fn ($event) => $event->kind === CalendarEventKind::ClassSession && ($event->metadata['session_type'] ?? null) === 'makeup')->count();
+    $cancelled = $events->where('status', CalendarEventStatus::Cancelled)->count();
+    $workload = min(100, (int) round(($summary['hours'] / 40) * 100));
 @endphp
-<div class="flex min-h-screen flex-col bg-slate-50 text-slate-900">
-    <header class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 lg:px-6">
-        <div class="flex items-center gap-3">
-            <span class="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-blue-700"><x-heroicon-o-calendar-days class="h-6 w-6" /></span>
-            <div><h1 class="text-lg font-black">@lang('teacher-calendar::app.title')</h1><p class="text-xs font-semibold text-slate-400">@lang('teacher-calendar::app.subtitle')</p></div>
+
+<div class="teacher-calendar-shell" data-calendar-workspace>
+    <header class="teacher-calendar-header">
+        <div class="teacher-calendar-brand">
+            <span class="teacher-calendar-brand-icon"><x-heroicon-o-calendar-days class="h-5 w-5" /></span>
+            <span><strong>@lang('teacher-calendar::app.title')</strong><small>{{ $summary['count'] }} @lang('teacher-calendar::app.events')</small></span>
         </div>
-        <div class="flex flex-wrap items-center gap-2">
-            <a href="{{ route('teacher.calendar.index', [...$query, 'date' => now()->toDateString()]) }}" class="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 no-underline hover:bg-slate-50">@lang('teacher-calendar::app.today')</a>
-            <a aria-label="Previous week" href="{{ route('teacher.calendar.index', [...$query, 'date' => $start->subWeek()->toDateString()]) }}" class="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600"><x-heroicon-o-arrow-left class="h-4 w-4" /></a>
-            <a aria-label="Next week" href="{{ route('teacher.calendar.index', [...$query, 'date' => $start->addWeek()->toDateString()]) }}" class="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600"><x-heroicon-o-arrow-right class="h-4 w-4" /></a>
-            <strong class="min-w-48 text-center text-sm">{{ $start->format('d/m') }} – {{ $end->subDay()->format('d/m/Y') }}</strong>
-            <span class="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-black text-white">@lang('teacher-calendar::app.week')</span>
-            <button type="button" data-calendar-create data-date="{{ now()->toDateString() }}" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-plus class="h-4 w-4" />@lang('teacher-calendar::app.new_session')</button>
+
+        <div class="teacher-calendar-navigation">
+            <a href="{{ route('teacher.calendar.index', [...$query, 'date' => now()->toDateString()]) }}" class="calendar-control calendar-today">@lang('teacher-calendar::app.today')</a>
+            <a aria-label="Previous period" href="{{ route('teacher.calendar.index', [...$query, 'date' => $previousDate->toDateString()]) }}" class="calendar-control calendar-arrow"><x-heroicon-o-arrow-left class="h-4 w-4" /></a>
+            <a aria-label="Next period" href="{{ route('teacher.calendar.index', [...$query, 'date' => $nextDate->toDateString()]) }}" class="calendar-control calendar-arrow"><x-heroicon-o-arrow-right class="h-4 w-4" /></a>
+            <span class="teacher-calendar-period"><strong class="capitalize">{{ $anchor->translatedFormat('F') }}</strong><small>{{ $anchor->year }}</small></span>
         </div>
+
+        <div class="teacher-calendar-view-switch" aria-label="Calendar view">
+            @foreach(['day', 'week', 'month', 'schedule'] as $mode)
+                <a href="{{ route('teacher.calendar.index', [...request()->except(['view']), 'view' => $mode]) }}" class="{{ $viewMode === $mode ? 'is-active' : '' }}">@lang('teacher-calendar::app.'.$mode)</a>
+            @endforeach
+        </div>
+
+        <button type="button" data-calendar-create data-date="{{ now()->toDateString() }}" class="teacher-calendar-add"><x-heroicon-o-plus class="h-4 w-4" /><span>@lang('teacher-calendar::app.new_session')</span></button>
     </header>
 
-    <div class="grid flex-1 lg:grid-cols-[16rem_minmax(0,1fr)]">
-        <aside class="hidden border-r border-slate-200 bg-white p-4 lg:block">
-            <section class="rounded-2xl border border-slate-200 p-4">
-                <h2 class="text-sm font-black capitalize">{{ $anchor->translatedFormat('F Y') }}</h2>
-                <div class="mt-4 grid grid-cols-7 gap-y-2 text-center text-[10px] font-bold text-slate-400">
-                    @foreach(['T2','T3','T4','T5','T6','T7','CN'] as $label)<span>{{ $label }}</span>@endforeach
+    <div class="teacher-calendar-body">
+        <aside class="teacher-calendar-sidebar">
+            <section class="calendar-side-card calendar-mini-month">
+                <div class="calendar-side-heading"><strong class="capitalize">{{ $anchor->translatedFormat('M Y') }}</strong><span><a href="{{ route('teacher.calendar.index', [...$query, 'date' => $anchor->subMonth()->toDateString()]) }}">‹</a><a href="{{ route('teacher.calendar.index', [...$query, 'date' => $anchor->addMonth()->toDateString()]) }}">›</a></span></div>
+                <div class="calendar-mini-grid">
+                    @foreach(['T2','T3','T4','T5','T6','T7','CN'] as $label)<small>{{ $label }}</small>@endforeach
                     @php $monthStart = $anchor->startOfMonth()->startOfWeek(); @endphp
                     @foreach(range(0, 41) as $offset)
                         @php $date = $monthStart->addDays($offset); @endphp
-                        <a href="{{ route('teacher.calendar.index', [...$query, 'date' => $date->toDateString()]) }}" class="grid h-7 w-7 place-items-center rounded-lg text-[11px] no-underline {{ $date->isToday() ? 'bg-blue-600 text-white' : ($date->month === $anchor->month ? 'text-slate-700 hover:bg-slate-100' : 'text-slate-300') }}">{{ $date->day }}</a>
+                        <a href="{{ route('teacher.calendar.index', [...$query, 'date' => $date->toDateString()]) }}" class="{{ $date->isSameDay($anchor) ? 'is-selected' : '' }} {{ $date->month !== $anchor->month ? 'is-outside' : '' }}">{{ $date->day }}</a>
                     @endforeach
                 </div>
             </section>
 
-            <form method="GET" class="mt-4 rounded-2xl border border-slate-200 p-4">
+            <section class="calendar-side-card calendar-summary-card">
+                <div class="calendar-side-heading"><span><strong>@lang('teacher-calendar::app.summary')</strong><small>{{ $start->format('d/m') }} – {{ $end->subDay()->format('d/m/Y') }}</small></span></div>
+                <div class="calendar-donut" style="--calendar-progress: {{ min(100, $summary['class_sessions'] * 10) }}">
+                    <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="17" pathLength="100" /><circle class="calendar-donut-value" cx="22" cy="22" r="17" pathLength="100" /></svg>
+                    <span><strong>{{ $summary['class_sessions'] }}</strong><small>@lang('teacher-calendar::app.sessions')</small></span>
+                </div>
+                <dl class="calendar-legend"><div><dt><i class="bg-blue-500"></i>@lang('teacher-calendar::app.regular')</dt><dd>{{ $regular }}</dd></div><div><dt><i class="bg-amber-400"></i>@lang('teacher-calendar::app.makeup')</dt><dd>{{ $makeup }}</dd></div><div><dt><i class="bg-rose-400"></i>@lang('teacher-calendar::app.cancelled')</dt><dd>{{ $cancelled }}</dd></div></dl>
+            </section>
+
+            <section class="calendar-side-card calendar-workload-card">
+                <div class="calendar-side-heading"><span><strong>@lang('teacher-calendar::app.workload')</strong><small>{{ $summary['class_sessions'] }} @lang('teacher-calendar::app.sessions') · {{ $summary['hours'] }}h</small></span><em>{{ $workload }}%</em></div>
+                <div class="calendar-progress"><span style="width: {{ $workload }}%"></span></div>
+                <p><x-heroicon-o-bell-alert class="h-4 w-4" />@lang('teacher-calendar::app.workload_hint')</p>
+            </section>
+
+            <form method="GET" class="calendar-side-card calendar-filter-card">
                 <input type="hidden" name="date" value="{{ $anchor->toDateString() }}">
-                <h2 class="text-xs font-black uppercase tracking-wide text-slate-500">@lang('teacher-calendar::app.filters')</h2>
-                <select name="classroom_id" onchange="this.form.submit()" class="mt-3 h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold">
-                    <option value="">@lang('teacher-calendar::app.all_classrooms')</option>
-                    @foreach($classrooms as $classroom)<option value="{{ $classroom->id }}" @selected(($filters['classroom_id'] ?? null) == $classroom->id)>{{ $classroom->name }}</option>@endforeach
-                </select>
-                <div class="mt-3 space-y-2">
-                    @foreach(\Mindigo\AcademicCalendar\Enums\CalendarEventKind::cases() as $kind)
-                        <label class="flex items-center gap-2 text-xs font-bold text-slate-600"><input type="checkbox" name="kinds[]" value="{{ $kind->value }}" @checked(empty($filters['kinds']) || in_array($kind->value, $filters['kinds'], true)) onchange="this.form.submit()" class="accent-green-600">@lang('teacher-calendar::app.'.$kind->value)</label>
-                    @endforeach
-                </div>
+                <label>@lang('teacher-calendar::app.filters')<select name="classroom_id" onchange="this.form.submit()"><option value="">@lang('teacher-calendar::app.all_classrooms')</option>@foreach($classrooms as $classroom)<option value="{{ $classroom->id }}" @selected(($filters['classroom_id'] ?? null) == $classroom->id)>{{ $classroom->name }}</option>@endforeach</select></label>
             </form>
-
-            <section class="mt-4 rounded-2xl border border-slate-200 p-4">
-                <h2 class="text-xs font-black uppercase tracking-wide text-slate-500">@lang('teacher-calendar::app.summary')</h2>
-                <dl class="mt-3 space-y-3 text-xs"><div class="flex justify-between"><dt class="font-semibold text-slate-500">@lang('teacher-calendar::app.sessions')</dt><dd class="font-black">{{ $summary['class_sessions'] }}</dd></div><div class="flex justify-between"><dt class="font-semibold text-slate-500">@lang('teacher-calendar::app.hours')</dt><dd class="font-black">{{ $summary['hours'] }}</dd></div><div class="flex justify-between"><dt class="font-semibold text-slate-500">@lang('teacher-calendar::app.events')</dt><dd class="font-black">{{ $summary['count'] }}</dd></div></dl>
-            </section>
         </aside>
 
-        <main class="min-w-0 p-3 lg:p-5">
-            <div class="calendar-scrollbar overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <div class="min-w-245">
-                    <div class="grid grid-cols-[4.5rem_repeat(7,minmax(8rem,1fr))] border-b border-slate-200">
-                        <div class="px-3 py-4 text-[10px] font-black text-slate-400">@lang('teacher-calendar::app.timezone')</div>
-                        @foreach($days as $day)<div class="border-l border-slate-100 px-3 py-3 text-center"><span class="block text-[10px] font-black uppercase text-slate-400">{{ $day->translatedFormat('D') }}</span><strong class="mt-1 inline-grid h-8 w-8 place-items-center rounded-xl {{ $day->isToday() ? 'bg-blue-600 text-white' : 'text-slate-800' }}">{{ $day->day }}</strong></div>@endforeach
+        <main class="teacher-calendar-main">
+            @if(in_array($viewMode, ['day', 'week'], true))
+            <div class="teacher-calendar-grid {{ $viewMode === 'day' ? 'is-day-view' : '' }}">
+                <div class="teacher-calendar-days">
+                    <div class="calendar-timezone">GMT+07</div>
+                    @foreach($days as $day)<div class="calendar-day-heading"><small>{{ $day->translatedFormat('D') }}</small><strong class="{{ $day->isToday() ? 'is-today' : '' }}">{{ $day->day }}</strong></div>@endforeach
+                </div>
+
+                <div class="teacher-calendar-timeline">
+                    <div class="calendar-time-axis">
+                        @foreach(range(7, 19) as $hour)<span style="top: {{ (($hour - 7) / 12) * 100 }}%">{{ $hour > 12 ? $hour - 12 : $hour }} {{ $hour >= 12 ? 'PM' : 'AM' }}</span>@endforeach
                     </div>
-                    <div class="grid grid-cols-[4.5rem_repeat(7,minmax(8rem,1fr))]">
-                        <div class="relative h-192">@foreach($hours as $hour)<span class="absolute right-3 -translate-y-2 text-[10px] font-bold text-slate-400" style="top: {{ ($hour - 7) * 64 }}px">{{ sprintf('%02d:00', $hour) }}</span>@endforeach</div>
-                        @foreach($days as $day)
-                            <div class="relative h-192 border-l border-slate-100 {{ $day->isToday() ? 'bg-blue-50/25' : '' }}">
-                                @foreach($hours as $hour)<button type="button" data-calendar-create data-date="{{ $day->toDateString() }}" data-start="{{ sprintf('%02d:00', $hour) }}" data-end="{{ sprintf('%02d:00', min(23, $hour + 1)) }}" aria-label="Create at {{ $day->format('d/m/Y H:00') }}" class="absolute inset-x-0 h-16 border-t border-slate-100 hover:bg-green-50/50" style="top: {{ ($hour - 7) * 64 }}px"></button>@endforeach
-                                @foreach(($eventsByDay[$day->toDateString()] ?? collect()) as $event)
-                                    @php
-                                        $startMinutes = max(0, ($event->startsAt->hour - 7) * 60 + $event->startsAt->minute);
-                                        $duration = $event->endsAt ? max(45, $event->startsAt->diffInMinutes($event->endsAt)) : 45;
-                                        $payload = ['title' => $event->title, 'kindLabel' => __('teacher-calendar::app.'.$event->kind->value), 'time' => $event->startsAt->format('H:i').($event->endsAt ? ' – '.$event->endsAt->format('H:i') : ''), 'classroom' => $event->metadata['classroom_name'] ?? null, 'url' => $event->url, 'cancelUrl' => $event->kind === \Mindigo\AcademicCalendar\Enums\CalendarEventKind::ClassSession ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null];
-                                    @endphp
-                                    <button type="button" data-calendar-event='@json($payload)' class="calendar-event calendar-motion absolute inset-x-1 z-10 overflow-hidden rounded-xl border p-2 text-left shadow-sm transition hover:shadow-md {{ $tones[$event->kind->value] }}" style="top: {{ ($startMinutes / 60) * 64 }}px; height: {{ min(180, ($duration / 60) * 64) }}px">
-                                        <span class="block truncate text-[10px] font-black">{{ $event->startsAt->format('H:i') }}</span><strong class="mt-0.5 block text-xs leading-tight">{{ $event->title }}</strong><span class="mt-1 block truncate text-[10px] font-semibold opacity-70">{{ $event->metadata['classroom_name'] ?? __('teacher-calendar::app.'.$event->kind->value) }}</span>
-                                    </button>
-                                @endforeach
-                            </div>
-                        @endforeach
-                    </div>
+                    @foreach($days as $day)
+                        <div class="calendar-day-column {{ $day->isToday() ? 'is-today-column' : '' }}">
+                            @foreach(range(7, 18) as $hour)<button type="button" data-calendar-create data-date="{{ $day->toDateString() }}" data-start="{{ sprintf('%02d:00', $hour) }}" data-end="{{ sprintf('%02d:00', $hour + 1) }}" aria-label="Create at {{ $day->format('d/m/Y H:00') }}" class="calendar-hour-slot" style="top: {{ (($hour - 7) / 12) * 100 }}%"></button>@endforeach
+                            @foreach(($eventsByDay[$day->toDateString()] ?? collect()) as $event)
+                                @php
+                                    $startOffset = max(0, (($event->startsAt->hour - 7) * 60 + $event->startsAt->minute) / 60);
+                                    $duration = $event->endsAt ? max(.75, $event->startsAt->diffInMinutes($event->endsAt) / 60) : .75;
+                                    $eventTop = min(100, ($startOffset / 12) * 100);
+                                    $eventHeight = min(100 - $eventTop, ($duration / 12) * 100);
+                                    $eventTone = $event->status === CalendarEventStatus::Cancelled ? 'calendar-tone-cancelled' : (($event->metadata['session_type'] ?? null) === 'makeup' ? 'calendar-tone-orange' : ($tones[$event->kind->value] ?? 'calendar-tone-blue'));
+                                    $payload = ['title' => $event->title, 'kindLabel' => __('teacher-calendar::app.'.$event->kind->value), 'time' => $event->startsAt->format('H:i').($event->endsAt ? ' – '.$event->endsAt->format('H:i') : ''), 'classroom' => $event->metadata['classroom_name'] ?? null, 'url' => $event->url, 'cancelUrl' => $event->kind === CalendarEventKind::ClassSession ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null];
+                                @endphp
+                                <button type="button" data-calendar-event='@json($payload)' class="teacher-calendar-event {{ $eventTone }}" style="top: {{ $eventTop }}%; height: {{ $eventHeight }}%">
+                                    <span class="calendar-event-meta"><x-dynamic-component :component="$event->kind === CalendarEventKind::LiveSession ? 'heroicon-o-video-camera' : 'heroicon-o-building-library'" class="h-3.5 w-3.5" /><i>{{ strtoupper(substr($event->metadata['classroom_name'] ?? 'LMS', 0, 2)) }}</i></span>
+                                    <strong>{{ $event->title }}</strong><small>{{ $event->startsAt->format('H:i') }} – {{ $event->endsAt?->format('H:i') }}</small>
+                                </button>
+                            @endforeach
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
-            <div class="mt-3 space-y-2 lg:hidden">
-                @foreach($events as $event)
+            @elseif($viewMode === 'month')
+                <section class="teacher-calendar-month">
+                    <header>@foreach(['T2','T3','T4','T5','T6','T7','CN'] as $label)<span>{{ $label }}</span>@endforeach</header>
+                    <div class="teacher-calendar-month-grid">
+                        @foreach($days as $day)
+                            <article class="{{ $day->month !== $anchor->month ? 'is-outside' : '' }}">
+                                <a href="{{ route('teacher.calendar.index', [...$query, 'view' => 'day', 'date' => $day->toDateString()]) }}" class="{{ $day->isToday() ? 'is-today' : '' }}">{{ $day->day }}</a>
+                                @foreach(($eventsByDay[$day->toDateString()] ?? collect())->take(3) as $event)
+                                    @php
+                                        $monthPayload = [
+                                            'title' => $event->title,
+                                            'kindLabel' => __('teacher-calendar::app.'.$event->kind->value),
+                                            'time' => $event->startsAt->format('d/m/Y H:i'),
+                                            'classroom' => $event->metadata['classroom_name'] ?? null,
+                                            'url' => $event->url,
+                                        ];
+                                    @endphp
+                                    <button type="button" data-calendar-event='@json($monthPayload)'>{{ $event->startsAt->format('H:i') }} · {{ $event->title }}</button>
+                                @endforeach
+                            </article>
+                        @endforeach
+                    </div>
+                </section>
+            @else
+                <section class="teacher-calendar-agenda">
+                    @forelse($events->groupBy(fn ($event) => $event->startsAt->toDateString()) as $date => $dateEvents)
+                        <div class="teacher-calendar-agenda-day"><time>{{ $dateEvents->first()->startsAt->translatedFormat('l, d/m/Y') }}</time>
+                            <div>
+                                @foreach($dateEvents as $event)
+                                    @php
+                                        $agendaPayload = [
+                                            'title' => $event->title,
+                                            'kindLabel' => __('teacher-calendar::app.'.$event->kind->value),
+                                            'time' => $event->startsAt->format('d/m/Y H:i'),
+                                            'classroom' => $event->metadata['classroom_name'] ?? null,
+                                            'url' => $event->url,
+                                        ];
+                                    @endphp
+                                    <button type="button" data-calendar-event='@json($agendaPayload)'><strong>{{ $event->startsAt->format('H:i') }}</strong><span>{{ $event->title }}<small>{{ $event->metadata['classroom_name'] ?? __('teacher-calendar::app.'.$event->kind->value) }}</small></span></button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @empty<p class="calendar-empty">@lang('teacher-calendar::app.empty')</p>@endforelse
+                </section>
+            @endif
+
+            <div class="teacher-calendar-mobile-list">
+                @forelse($events as $event)
                     @php
                         $mobilePayload = [
                             'title' => $event->title,
@@ -109,33 +177,17 @@
                             'time' => $event->startsAt->format('d/m/Y H:i'),
                             'classroom' => $event->metadata['classroom_name'] ?? null,
                             'url' => $event->url,
-                            'cancelUrl' => $event->kind === \Mindigo\AcademicCalendar\Enums\CalendarEventKind::ClassSession ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null,
+                            'cancelUrl' => $event->kind === CalendarEventKind::ClassSession ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null,
                         ];
                     @endphp
-                    <button type="button" data-calendar-event='@json($mobilePayload)' class="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left"><span class="h-9 w-1 rounded-full bg-blue-500"></span><span><strong class="block text-sm">{{ $event->title }}</strong><small class="font-semibold text-slate-400">{{ $event->startsAt->format('d/m H:i') }}</small></span></button>
-                @endforeach
+                    <button type="button" data-calendar-event='@json($mobilePayload)'><span>{{ $event->startsAt->format('d/m') }}<strong>{{ $event->startsAt->format('H:i') }}</strong></span><p><strong>{{ $event->title }}</strong><small>{{ $event->metadata['classroom_name'] ?? __('teacher-calendar::app.'.$event->kind->value) }}</small></p><x-heroicon-o-chevron-right class="h-4 w-4" /></button>
+                @empty
+                    <p class="calendar-empty">@lang('teacher-calendar::app.empty')</p>
+                @endforelse
             </div>
         </main>
     </div>
 </div>
 
-<div id="calendar-detail-drawer" data-calendar-layer aria-hidden="true" class="fixed inset-0 z-60 hidden bg-slate-950/35">
-    <aside class="ml-auto flex h-full w-full max-w-md flex-col bg-white shadow-2xl"><div class="flex items-center justify-between border-b border-slate-200 p-5"><h2 class="font-black">@lang('teacher-calendar::app.event_details')</h2><button data-calendar-close class="grid h-9 w-9 place-items-center rounded-xl hover:bg-slate-100"><x-heroicon-o-x-mark class="h-5 w-5" /></button></div><div class="flex-1 space-y-5 p-5"><span data-event-kind class="inline-flex rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-700"></span><h3 data-event-title class="text-xl font-black"></h3><dl class="space-y-3 text-sm"><div><dt class="text-xs font-bold text-slate-400">@lang('teacher-calendar::app.date')</dt><dd data-event-time class="mt-1 font-black"></dd></div><div><dt class="text-xs font-bold text-slate-400">@lang('teacher-calendar::app.classroom')</dt><dd data-event-classroom class="mt-1 font-black"></dd></div></dl><form method="POST" data-event-cancel-form class="hidden rounded-xl border border-red-100 bg-red-50 p-3">@csrf<label class="text-xs font-black text-red-700">@lang('teacher-calendar::app.cancel_reason')<textarea required minlength="10" name="cancel_reason" rows="2" class="mt-1.5 w-full rounded-lg border border-red-200 bg-white p-2 text-slate-800"></textarea></label><button class="mt-2 h-9 rounded-lg bg-red-600 px-3 text-xs font-black text-white">@lang('teacher-calendar::app.cancel_session')</button></form></div><div class="border-t border-slate-200 p-5"><a data-event-link href="#" class="inline-flex h-10 items-center rounded-xl bg-slate-900 px-4 text-xs font-black text-white no-underline">@lang('teacher-calendar::app.view_classroom')</a></div></aside>
-</div>
-
-<div id="calendar-create-drawer" data-calendar-layer aria-hidden="true" class="fixed inset-0 z-60 hidden bg-slate-950/35">
-    <aside class="ml-auto flex h-full w-full max-w-lg flex-col overflow-y-auto bg-white shadow-2xl"><div class="flex items-center justify-between border-b border-slate-200 p-5"><h2 class="font-black">@lang('teacher-calendar::app.new_session')</h2><button data-calendar-close class="grid h-9 w-9 place-items-center rounded-xl hover:bg-slate-100"><x-heroicon-o-x-mark class="h-5 w-5" /></button></div>
-        <form id="calendar-session-form" method="POST" action="#" class="space-y-4 p-5">@csrf
-            <label class="block text-xs font-black text-slate-600">@lang('teacher-calendar::app.classroom')<select required id="calendar-classroom" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 bg-white px-3" name="classroom_id"><option value="">@lang('teacher-calendar::app.all_classrooms')</option>@foreach($classrooms as $classroom)<option value="{{ $classroom->id }}" data-type="{{ $classroom->type }}" data-store-url="{{ route('teacher.calendar.sessions.store', $classroom) }}">{{ $classroom->name }}</option>@endforeach</select></label>
-            <div id="calendar-session-type-shell" class="hidden"><label class="block text-xs font-black text-slate-600">@lang('teacher-calendar::app.session_type')<select id="calendar-session-type" name="type" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 bg-white px-3"><option value="regular">@lang('teacher-calendar::app.regular')</option><option value="makeup">@lang('teacher-calendar::app.makeup')</option></select></label></div>
-            <div id="calendar-makeup-reason-shell" class="hidden"><label class="block text-xs font-black text-slate-600">@lang('teacher-calendar::app.makeup_reason')<textarea name="makeup_reason" rows="2" class="mt-1.5 w-full rounded-xl border border-amber-200 bg-amber-50 p-3"></textarea></label></div>
-            <label class="block text-xs font-black text-slate-600">@lang('teacher-calendar::app.lesson')<select id="calendar-lesson" name="lesson_id" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 bg-white px-3"><option value="">—</option>@foreach($classrooms as $classroom)@foreach($classroom->course?->chapters ?? [] as $chapter)@foreach($chapter->lessons as $lesson)<option hidden data-classroom="{{ $classroom->id }}" value="{{ $lesson->id }}">{{ $chapter->name }} · {{ $lesson->name }}</option>@endforeach @endforeach @endforeach</select></label>
-            <label class="block text-xs font-black text-slate-600">@lang('teacher-calendar::app.title_field')<input required name="title" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 px-3"></label>
-            <div class="grid grid-cols-3 gap-3"><label class="text-xs font-black text-slate-600">@lang('teacher-calendar::app.date')<input required type="date" name="session_date" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 px-2"></label><label class="text-xs font-black text-slate-600">@lang('teacher-calendar::app.start')<input required type="time" name="start_time" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 px-2"></label><label class="text-xs font-black text-slate-600">@lang('teacher-calendar::app.end')<input required type="time" name="end_time" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 px-2"></label></div>
-            <label class="block text-xs font-black text-slate-600">@lang('teacher-calendar::app.delivery_mode')<select name="delivery_mode" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 bg-white px-3"><option value="offline">@lang('teacher-calendar::app.offline')</option><option value="online">@lang('teacher-calendar::app.online')</option><option value="hybrid">@lang('teacher-calendar::app.hybrid')</option></select></label>
-            <label class="block text-xs font-black text-slate-600">@lang('teacher-calendar::app.location')<input name="location" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 px-3"></label><label class="block text-xs font-black text-slate-600">@lang('teacher-calendar::app.meeting_url')<input type="url" name="meeting_url" class="mt-1.5 h-11 w-full rounded-xl border border-slate-200 px-3"></label><label class="block text-xs font-black text-slate-600">@lang('teacher-calendar::app.description')<textarea name="description" rows="3" class="mt-1.5 w-full rounded-xl border border-slate-200 p-3"></textarea></label>
-            <button type="submit" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-green-600 text-sm font-black text-white hover:bg-green-700">@lang('teacher-calendar::app.save')</button>
-        </form>
-    </aside>
-</div>
+@include('teacher-calendar::partials.drawers')
 @endsection

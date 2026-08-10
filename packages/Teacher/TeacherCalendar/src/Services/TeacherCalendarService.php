@@ -14,10 +14,22 @@ class TeacherCalendarService
 {
     public function __construct(private readonly AcademicCalendarService $calendar) {}
 
-    public function week(User $teacher, CarbonImmutable $anchor, array $filters): array
+    public function period(User $teacher, CarbonImmutable $anchor, string $viewMode, array $filters): array
     {
-        $start = $anchor->startOfWeek();
-        $end = $start->addWeek();
+        [$start, $end, $days] = match ($viewMode) {
+            'day' => [$anchor->startOfDay(), $anchor->addDay()->startOfDay(), collect([$anchor->startOfDay()])],
+            'month' => [
+                $anchor->startOfMonth()->startOfWeek(),
+                $anchor->endOfMonth()->endOfWeek()->addDay()->startOfDay(),
+                collect(range(0, 41))->map(fn (int $day) => $anchor->startOfMonth()->startOfWeek()->addDays($day)),
+            ],
+            'schedule' => [$anchor->startOfDay(), $anchor->addDays(30)->endOfDay(), collect()],
+            default => [
+                $anchor->startOfWeek(),
+                $anchor->startOfWeek()->addWeek(),
+                collect(range(0, 6))->map(fn (int $day) => $anchor->startOfWeek()->addDays($day)),
+            ],
+        };
         $classroomIds = isset($filters['classroom_id']) ? [(int) $filters['classroom_id']] : [];
         $kinds = collect($filters['kinds'] ?? [])->map(fn (string $kind) => CalendarEventKind::from($kind))->all();
         $events = $this->calendar->events(new CalendarQuery(
@@ -32,7 +44,7 @@ class TeacherCalendarService
         return [
             'start' => $start,
             'end' => $end,
-            'days' => collect(range(0, 6))->map(fn (int $day) => $start->addDays($day)),
+            'days' => $days,
             'events' => $events,
             'eventsByDay' => $events->groupBy(fn ($event) => $event->startsAt->format('Y-m-d')),
             'summary' => [
