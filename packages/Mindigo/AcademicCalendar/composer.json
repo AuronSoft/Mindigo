@@ -1,0 +1,26 @@
+{
+    "name": "mindigo/academic-calendar",
+    "description": "Shared academic calendar domain for Mindigo LMS",
+    "type": "library",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0",
+        "mindigo/auth": "*",
+        "mindigo/exam-management": "*",
+        "mindigo/teacher-assignment": "*",
+        "mindigo/teacher-classroom": "*",
+        "mindigo/teacher-live-session": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindigo\\AcademicCalendar\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mindigo\\AcademicCalendar\\Providers\\AcademicCalendarServiceProvider"
+            ]
+        }
+    }
+}
