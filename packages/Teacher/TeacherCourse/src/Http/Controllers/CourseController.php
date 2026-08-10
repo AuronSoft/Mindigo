@@ -52,7 +52,7 @@ class CourseController extends Controller
 
         return view('teacher-course::show', [
             'course' => $this->courses->detail($course),
-            'classrooms' => $this->enrollments->teacherClassrooms($request->user()),
+            'classrooms' => $this->enrollments->teacherClassrooms($request->user(), $course),
         ]);
     }
 

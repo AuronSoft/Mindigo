@@ -10,9 +10,15 @@ use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
+use Mindigo\TeacherCourse\Models\Course;
+use Mindigo\TeacherCourse\Models\CourseClassroomAssignment;
+use Mindigo\TeacherCourse\Models\CourseEnrollment;
+use Mindigo\TeacherCourse\Services\CourseEnrollmentService;
 
 class TeacherClassroomService
 {
+    public function __construct(private readonly CourseEnrollmentService $courseEnrollmentService) {}
+
     /**
      * Danh sách lớp học CHỈ của giáo viên đang đăng nhập.
      */
@@ -20,7 +26,7 @@ class TeacherClassroomService
     {
         $query = Classroom::query()
             ->where('teacher_id', $teacher->getAuthIdentifier())
-            ->with(['subjects:id,name,color'])
+            ->with(['subject:id,name,color', 'course:id,name,subject_id'])
             ->withCount('students')
             ->latest('updated_at');
 
@@ -65,45 +71,79 @@ class TeacherClassroomService
 
     public function create(User $teacher, array $data): Classroom
     {
-        $subjectIds = $data['subject_ids'] ?? [];
-        unset($data['subject_ids']);
+        return DB::transaction(function () use ($teacher, $data): Classroom {
+            $data = $this->resolveAcademicContext($teacher, $data);
+            $classroom = Classroom::query()->create([
+                ...$data,
+                'created_by' => $teacher->getAuthIdentifier(),
+                'teacher_id' => $teacher->getAuthIdentifier(),
+                'code' => Str::upper($data['code']),
+                'slug' => $this->uniqueSlug($data['name']),
+            ]);
 
-        $classroom = Classroom::query()->create([
-            ...$data,
-            'created_by' => $teacher->getAuthIdentifier(),
-            'teacher_id' => $teacher->getAuthIdentifier(),
-            'code' => Str::upper($data['code']),
-            'slug' => $this->uniqueSlug($data['name']),
-        ]);
+            $this->syncAcademicLinks($classroom, null);
 
-        $classroom->subjects()->sync($subjectIds);
-
-        return $classroom;
+            return $classroom;
+        });
     }
 
     public function update(Classroom $classroom, array $data): Classroom
     {
-        $subjectIds = $data['subject_ids'] ?? [];
-        unset($data['subject_ids']);
+        return DB::transaction(function () use ($classroom, $data): Classroom {
+            $previousCourseId = $classroom->course_id;
+            $data = $this->resolveAcademicContext($classroom->teacher, $data);
+            $classroom->fill([
+                ...$data,
+                'code' => Str::upper($data['code']),
+                'slug' => $classroom->name === $data['name'] ? $classroom->slug : $this->uniqueSlug($data['name'], $classroom),
+            ])->save();
 
-        $classroom->fill([
-            ...$data,
-            'code' => Str::upper($data['code']),
-            'slug' => $classroom->name === $data['name'] ? $classroom->slug : $this->uniqueSlug($data['name'], $classroom),
-        ])->save();
+            $this->syncAcademicLinks($classroom, $previousCourseId);
 
-        $classroom->subjects()->sync($subjectIds);
-
-        return $classroom;
+            return $classroom;
+        });
     }
 
     public function syncStudents(Classroom $classroom, array $studentIds): void
     {
+        $removedStudentIds = $classroom->students()
+            ->where('classroom_students.status', 'active')
+            ->whereNotIn('users.id', array_map('intval', $studentIds))
+            ->pluck('users.id');
+
         $payload = collect($studentIds)
             ->mapWithKeys(fn ($id) => [(int) $id => ['status' => 'active', 'joined_at' => now()]])
             ->all();
 
         $classroom->students()->sync($payload);
+
+        if ($classroom->type === Classroom::TYPE_COURSE && $classroom->course_id) {
+            if ($removedStudentIds->isNotEmpty()) {
+                CourseEnrollment::query()
+                    ->where('course_id', $classroom->course_id)
+                    ->where('classroom_id', $classroom->id)
+                    ->whereIn('student_id', $removedStudentIds)
+                    ->whereIn('status', [
+                        CourseEnrollment::STATUS_INVITED,
+                        CourseEnrollment::STATUS_ENROLLED,
+                        CourseEnrollment::STATUS_IN_PROGRESS,
+                    ])
+                    ->update([
+                        'status' => CourseEnrollment::STATUS_WITHDRAWN,
+                        'classroom_id' => null,
+                        'distribution_id' => null,
+                        'withdrawn_at' => now(),
+                    ]);
+            }
+
+            $this->courseEnrollmentService->assignToClassrooms($classroom->course()->firstOrFail(), $classroom->teacher()->firstOrFail(), [
+                'classroom_ids' => [$classroom->id],
+                'starts_at' => null,
+                'due_at' => null,
+                'is_mandatory' => true,
+                'visibility' => 'visible',
+            ]);
+        }
     }
 
     /**
@@ -115,7 +155,15 @@ class TeacherClassroomService
             'statuses' => Classroom::STATUSES,
             'students' => User::query()->students()->active()->orderBy('name')->get(['id', 'name', 'email']),
             'subjects' => Subject::query()->where('status', 'active')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
-            'assistants' => User::query()->teachers()->active()->orderBy('name')->get(['id', 'name', 'email']),
+            'schoolYears' => Classroom::schoolYearOptions(),
+            'courses' => Course::query()
+                ->where('teacher_id', auth()->id())
+                ->whereNotNull('subject_id')
+                ->where('publication_status', Course::PUBLICATION_PUBLISHED)
+                ->where('is_active', true)
+                ->with('subject:id,name,color')
+                ->orderBy('name')
+                ->get(['id', 'name', 'subject_id', 'publication_status']),
         ];
     }
 
@@ -201,5 +249,63 @@ class TeacherClassroomService
         }
 
         return $slug;
+    }
+
+    private function resolveAcademicContext(User $teacher, array $data): array
+    {
+        if ($data['type'] === Classroom::TYPE_COURSE) {
+            $course = Course::query()
+                ->where('teacher_id', $teacher->getAuthIdentifier())
+                ->whereNotNull('subject_id')
+                ->where('publication_status', Course::PUBLICATION_PUBLISHED)
+                ->where('is_active', true)
+                ->findOrFail($data['course_id']);
+
+            $data['subject_id'] = $course->subject_id;
+        } else {
+            $data['course_id'] = null;
+        }
+
+        return $data;
+    }
+
+    private function syncAcademicLinks(Classroom $classroom, ?int $previousCourseId): void
+    {
+        $classroom->subjects()->sync([$classroom->subject_id]);
+
+        if ($previousCourseId && $previousCourseId !== $classroom->course_id) {
+            CourseEnrollment::query()
+                ->where('course_id', $previousCourseId)
+                ->where('classroom_id', $classroom->id)
+                ->whereIn('status', [CourseEnrollment::STATUS_INVITED, CourseEnrollment::STATUS_ENROLLED])
+                ->update([
+                    'status' => CourseEnrollment::STATUS_WITHDRAWN,
+                    'classroom_id' => null,
+                    'distribution_id' => null,
+                    'withdrawn_at' => now(),
+                ]);
+
+            CourseClassroomAssignment::query()
+                ->where('course_id', $previousCourseId)
+                ->where('classroom_id', $classroom->id)
+                ->delete();
+
+            Course::query()->whereKey($previousCourseId)->update([
+                'enrollment_count' => CourseEnrollment::query()
+                    ->where('course_id', $previousCourseId)
+                    ->whereIn('status', CourseEnrollment::ACTIVE_STATUSES)
+                    ->count(),
+            ]);
+        }
+
+        if ($classroom->course_id) {
+            $this->courseEnrollmentService->assignToClassrooms($classroom->course()->firstOrFail(), $classroom->teacher()->firstOrFail(), [
+                'classroom_ids' => [$classroom->id],
+                'starts_at' => null,
+                'due_at' => null,
+                'is_mandatory' => true,
+                'visibility' => 'visible',
+            ]);
+        }
     }
 }

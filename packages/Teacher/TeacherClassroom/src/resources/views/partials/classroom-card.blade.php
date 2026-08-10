@@ -1,7 +1,6 @@
 @php
     $isActive = $classroom->status === 'active';
-    $visibleSubjects = $classroom->subjects->take(2);
-    $remainingSubjects = max(0, $classroom->subjects->count() - $visibleSubjects->count());
+    $isCourseClass = $classroom->type === \Mindigo\TeacherClassroom\Models\Classroom::TYPE_COURSE;
 @endphp
 
 <article class="group flex min-h-80 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-green-300 hover:shadow-lg">
@@ -34,15 +33,13 @@
             </p>
 
             <div class="mt-4 flex min-h-7 items-center gap-1.5 overflow-hidden">
-                @forelse($visibleSubjects as $subject)
-                    <span class="max-w-28 truncate rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-600">{{ $subject->name }}</span>
-                @empty
-                    <span class="text-[11px] font-medium italic text-slate-400">@lang('teacher-classroom::app.no_subjects')</span>
-                @endforelse
-                @if($remainingSubjects)
-                    <span class="rounded-md bg-green-50 px-2 py-1 text-[10px] font-bold text-green-700">+{{ $remainingSubjects }}</span>
-                @endif
+                <span class="shrink-0 rounded-md {{ $isCourseClass ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-600' }} px-2 py-1 text-[10px] font-bold">@lang('teacher-classroom::app.type_' . $classroom->type)</span>
+                <span class="truncate rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-600">{{ $classroom->subject?->name ?? __('teacher-classroom::app.no_subjects') }}</span>
             </div>
+
+            @if($isCourseClass && $classroom->course)
+                <p class="mt-2 flex items-center gap-1.5 truncate text-[11px] font-semibold text-slate-500"><x-heroicon-o-link class="h-3.5 w-3.5 shrink-0 text-green-600" /><span class="truncate">{{ $classroom->course->name }}</span></p>
+            @endif
 
             <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
                 <span class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500">

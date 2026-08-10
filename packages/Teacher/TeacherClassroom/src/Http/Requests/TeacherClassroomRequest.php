@@ -21,12 +21,27 @@ class TeacherClassroomRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:180'],
             'code' => ['required', 'string', 'max:60', Rule::unique('classrooms', 'code')->ignore($classroom?->id)],
-            'school_year' => ['nullable', 'string', 'max:40'],
+            'school_year' => ['required', Rule::in(array_keys(Classroom::schoolYearOptions()))],
             'description' => ['nullable', 'string', 'max:3000'],
             'status' => ['required', Rule::in(Classroom::STATUSES)],
-            'assistant_id' => ['nullable', 'integer', 'exists:users,id'],
-            'subject_ids' => ['nullable', 'array'],
-            'subject_ids.*' => ['integer', 'exists:subjects,id'],
+            'type' => ['required', Rule::in(Classroom::TYPES)],
+            'course_id' => [
+                'nullable',
+                'required_if:type,'.Classroom::TYPE_COURSE,
+                'prohibited_unless:type,'.Classroom::TYPE_COURSE,
+                Rule::exists('courses', 'id')
+                    ->where('teacher_id', $this->user()?->getAuthIdentifier())
+                    ->where('publication_status', 'published')
+                    ->where('is_active', true)
+                    ->whereNotNull('subject_id')
+                    ->whereNull('deleted_at'),
+            ],
+            'subject_id' => [
+                'nullable',
+                'required_if:type,'.Classroom::TYPE_STANDALONE,
+                'prohibited_unless:type,'.Classroom::TYPE_STANDALONE,
+                Rule::exists('subjects', 'id')->where('status', 'active')->whereNull('deleted_at'),
+            ],
         ];
     }
 

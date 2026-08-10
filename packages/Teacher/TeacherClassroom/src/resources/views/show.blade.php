@@ -80,9 +80,9 @@
             </div>
             <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div class="min-w-0">
-                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.assistant')</p>
+                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.instructor')</p>
                     <span class="mt-1 inline-flex rounded-full px-3 py-1 text-sm font-black text-indigo-700 bg-indigo-50">
-                        {{ $classroom->assistant ? $classroom->assistant->name : __('teacher-classroom::app.unassigned') }}
+                        {{ $classroom->teacher?->name ?? __('teacher-classroom::app.unassigned') }}
                     </span>
                 </div>
             </div>

@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
+use Mindigo\TeacherCourse\Models\Course;
+use Mindigo\TeacherCourse\Models\CourseEnrollment;
 use Tests\TestCase;
 
 class ClassroomManagementTest extends TestCase
@@ -50,7 +52,8 @@ class ClassroomManagementTest extends TestCase
             'code' => '11B2',
             'school_year' => '2025-2026',
             'status' => 'active',
-            'subject_ids' => [$subject->id],
+            'type' => Classroom::TYPE_STANDALONE,
+            'subject_id' => $subject->id,
         ]);
 
         $response->assertRedirect();
@@ -75,7 +78,8 @@ class ClassroomManagementTest extends TestCase
             'code' => '11B2',
             'school_year' => '2025-2026',
             'status' => 'active',
-            'subject_ids' => [$subjectB->id],
+            'type' => Classroom::TYPE_STANDALONE,
+            'subject_id' => $subjectB->id,
         ]);
 
         $response->assertRedirect();
@@ -83,6 +87,86 @@ class ClassroomManagementTest extends TestCase
         $classroom->refresh();
         $this->assertFalse($classroom->subjects->contains('id', $subjectA->id));
         $this->assertTrue($classroom->subjects->contains('id', $subjectB->id));
+        $this->assertSame($subjectB->id, $classroom->subject_id);
+    }
+
+    public function test_course_classroom_inherits_subject_and_creates_distribution(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $subject = $this->createSubject('Physics');
+        $course = $this->createPublishedCourse($teacher, $subject, 'Physics Foundation');
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.store'), [
+            'name' => 'Physics Cohort A',
+            'code' => 'PHY-A',
+            'school_year' => '2026-2027',
+            'status' => 'active',
+            'type' => Classroom::TYPE_COURSE,
+            'course_id' => $course->id,
+        ])->assertRedirect();
+
+        $classroom = Classroom::query()->where('code', 'PHY-A')->firstOrFail();
+        $this->assertSame(Classroom::TYPE_COURSE, $classroom->type);
+        $this->assertSame($course->id, $classroom->course_id);
+        $this->assertSame($subject->id, $classroom->subject_id);
+        $this->assertDatabaseHas('course_classroom_assignments', [
+            'course_id' => $course->id,
+            'classroom_id' => $classroom->id,
+        ]);
+    }
+
+    public function test_teacher_cannot_link_another_teachers_course_or_override_course_subject(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $otherTeacher = $this->createUser(['role' => 'teacher']);
+        $courseSubject = $this->createSubject('Chemistry');
+        $otherSubject = $this->createSubject('Biology');
+        $course = $this->createPublishedCourse($otherTeacher, $courseSubject, 'Chemistry Course');
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.store'), [
+            'name' => 'Invalid linked class',
+            'code' => 'INVALID-LINK',
+            'status' => 'active',
+            'type' => Classroom::TYPE_COURSE,
+            'course_id' => $course->id,
+            'subject_id' => $otherSubject->id,
+        ])->assertSessionHasErrors(['course_id', 'subject_id']);
+
+        $this->assertDatabaseMissing('classrooms', ['code' => 'INVALID-LINK']);
+    }
+
+    public function test_course_classroom_student_sync_creates_and_withdraws_enrollment(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $student = $this->createUser(['role' => 'student']);
+        $subject = $this->createSubject('English');
+        $course = $this->createPublishedCourse($teacher, $subject, 'English Course');
+        $classroom = app(TeacherClassroomService::class)->create($teacher, [
+            'name' => 'English Cohort', 'code' => 'ENG-A', 'status' => 'active',
+            'type' => Classroom::TYPE_COURSE, 'course_id' => $course->id,
+        ]);
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.students.sync', $classroom), [
+            'student_ids' => [$student->id],
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('course_enrollments', [
+            'course_id' => $course->id,
+            'student_id' => $student->id,
+            'classroom_id' => $classroom->id,
+            'status' => CourseEnrollment::STATUS_INVITED,
+        ]);
+
+        $this->actingAs($teacher)->post(route('teacher.classrooms.students.sync', $classroom), [
+            'student_ids' => [],
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('course_enrollments', [
+            'course_id' => $course->id,
+            'student_id' => $student->id,
+            'classroom_id' => null,
+            'status' => CourseEnrollment::STATUS_WITHDRAWN,
+        ]);
     }
 
     public function test_teacher_can_only_view_own_classrooms(): void
@@ -227,5 +311,20 @@ class ClassroomManagementTest extends TestCase
         $response->assertOk();
         $response->assertSee('MY01');
         $response->assertDontSee('THEIR01');
+    }
+
+    private function createPublishedCourse($teacher, Subject $subject, string $name): Course
+    {
+        return Course::query()->create([
+            'teacher_id' => $teacher->id,
+            'subject_id' => $subject->id,
+            'name' => $name,
+            'slug' => str($name)->slug().'-'.uniqid(),
+            'status' => 'active',
+            'is_active' => true,
+            'publication_status' => Course::PUBLICATION_PUBLISHED,
+            'difficulty' => 'beginner',
+            'language' => 'vi',
+        ]);
     }
 }

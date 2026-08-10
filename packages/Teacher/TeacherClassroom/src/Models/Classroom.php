@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Mindigo\Auth\Models\User;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherAnnouncement\Models\Announcement;
+use Mindigo\TeacherCourse\Models\Course;
 
 class Classroom extends Model
 {
@@ -17,9 +18,27 @@ class Classroom extends Model
 
     public const STATUSES = ['active', 'inactive'];
 
+    public const TYPE_STANDALONE = 'standalone';
+
+    public const TYPE_COURSE = 'course';
+
+    public const TYPES = [self::TYPE_STANDALONE, self::TYPE_COURSE];
+
+    public static function schoolYearOptions(): array
+    {
+        $year = (int) now()->format('Y');
+
+        return collect(range($year - 2, $year + 4))
+            ->mapWithKeys(fn (int $start) => ["{$start}-".($start + 1) => "{$start}-".($start + 1)])
+            ->all();
+    }
+
     protected $fillable = [
         'created_by',
         'teacher_id',
+        'type',
+        'course_id',
+        'subject_id',
         'assistant_id',
         'name',
         'code',
@@ -55,6 +74,16 @@ class Classroom extends Model
     {
         return $this->belongsToMany(Subject::class, 'classroom_subjects')
             ->withTimestamps();
+    }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class);
     }
 
     public function assistant(): BelongsTo
