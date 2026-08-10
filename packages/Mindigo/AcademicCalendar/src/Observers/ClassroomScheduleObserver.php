@@ -12,7 +12,7 @@ class ClassroomScheduleObserver implements ShouldHandleEventsAfterCommit
     public function created(ClassroomSchedule $schedule): void
     {
         if ($schedule->status !== ClassroomSchedule::STATUS_DRAFT) {
-            $this->notify($schedule, 'created');
+            $this->notify($schedule, $schedule->rescheduled_from_id ? 'rescheduled' : 'created');
         }
     }
 

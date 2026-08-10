@@ -272,6 +272,7 @@ class TeacherClassroomService
             'description' => $data['description'] ?? null,
             'makeup_reason' => $data['makeup_reason'] ?? null,
             'cancel_reason' => $data['cancel_reason'] ?? null,
+            'reschedule_reason' => $data['reschedule_reason'] ?? null,
             'substitute_teacher_id' => $data['substitute_teacher_id'] ?? null,
             'makeup_for_schedule_id' => $data['makeup_for_schedule_id'] ?? null,
             'rescheduled_from_id' => $data['rescheduled_from_id'] ?? null,
@@ -317,6 +318,49 @@ class TeacherClassroomService
         $schedule->update([
             'status' => ClassroomSchedule::STATUS_CANCELLED,
             'cancel_reason' => $reason,
+            'updated_by' => $actor->id,
+        ]);
+
+        return $schedule->refresh();
+    }
+
+    public function updateScheduleDetails(ClassroomSchedule $schedule, array $data, User $actor): ClassroomSchedule
+    {
+        $schedule->update([
+            'title' => $data['title'],
+            'delivery_mode' => $data['delivery_mode'],
+            'location' => $data['location'] ?? null,
+            'meeting_url' => $data['meeting_url'] ?? null,
+            'description' => $data['description'] ?? null,
+            'updated_by' => $actor->id,
+        ]);
+
+        return $schedule->refresh();
+    }
+
+    public function rescheduleSchedule(ClassroomSchedule $schedule, array $data, User $actor): ClassroomSchedule
+    {
+        return DB::transaction(function () use ($schedule, $data, $actor): ClassroomSchedule {
+            $replacement = $this->addSchedule($schedule->classroom, [
+                ...$data,
+                'rescheduled_from_id' => $schedule->id,
+                'status' => ClassroomSchedule::STATUS_SCHEDULED,
+            ], $actor);
+
+            $schedule->update([
+                'status' => ClassroomSchedule::STATUS_RESCHEDULED,
+                'reschedule_reason' => $data['reschedule_reason'],
+                'updated_by' => $actor->id,
+            ]);
+
+            return $replacement;
+        });
+    }
+
+    public function completeSchedule(ClassroomSchedule $schedule, User $actor): ClassroomSchedule
+    {
+        $schedule->update([
+            'status' => ClassroomSchedule::STATUS_COMPLETED,
             'updated_by' => $actor->id,
         ]);
 

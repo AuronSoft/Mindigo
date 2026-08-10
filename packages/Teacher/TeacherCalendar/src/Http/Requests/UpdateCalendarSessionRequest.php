@@ -3,9 +3,10 @@
 namespace Mindigo\TeacherCalendar\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 
-class CancelCalendarSessionRequest extends FormRequest
+class UpdateCalendarSessionRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -18,6 +19,12 @@ class CancelCalendarSessionRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['cancel_reason' => ['required', 'string', 'min:10', 'max:1000']];
+        return [
+            'title' => ['required', 'string', 'max:255'],
+            'delivery_mode' => ['required', Rule::in(ClassroomSchedule::DELIVERY_MODES)],
+            'location' => ['nullable', 'string', 'max:255'],
+            'meeting_url' => ['nullable', 'url:http,https', 'max:2048'],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ];
     }
 }

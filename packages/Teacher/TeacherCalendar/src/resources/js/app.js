@@ -9,6 +9,8 @@ const closeLayer = (layer) => {
     layer?.setAttribute('aria-hidden', 'true');
 };
 
+let selectedEvent = null;
+
 document.addEventListener('click', (event) => {
     const create = event.target.closest('[data-calendar-create]');
     if (create) {
@@ -26,10 +28,14 @@ document.addEventListener('click', (event) => {
     const item = event.target.closest('[data-calendar-event]');
     if (item) {
         const data = JSON.parse(item.dataset.calendarEvent || '{}');
+        selectedEvent = data;
         document.querySelector('[data-event-title]').textContent = data.title || '';
         document.querySelector('[data-event-kind]').textContent = data.kindLabel || '';
         document.querySelector('[data-event-time]').textContent = data.time || '';
         document.querySelector('[data-event-classroom]').textContent = data.classroom || '—';
+        document.querySelector('[data-event-status]').textContent = data.statusLabel || '';
+        document.querySelector('[data-event-reason]').textContent = data.reason || '';
+        document.querySelector('[data-event-reason-shell]')?.classList.toggle('hidden', !data.reason);
         const link = document.querySelector('[data-event-link]');
         if (link) {
             link.href = data.url || '#';
@@ -40,7 +46,47 @@ document.addEventListener('click', (event) => {
             cancelForm.action = data.cancelUrl || '#';
             cancelForm.classList.toggle('hidden', !data.cancelUrl);
         }
+        const completeForm = document.querySelector('[data-event-complete-form]');
+        if (completeForm) {
+            completeForm.action = data.completeUrl || '#';
+            completeForm.classList.toggle('hidden', !data.completeUrl);
+        }
+        const edit = document.querySelector('[data-event-edit]');
+        edit?.classList.toggle('hidden', !data.updateUrl);
+        edit?.classList.toggle('flex', Boolean(data.updateUrl));
+        const reschedule = document.querySelector('[data-event-reschedule]');
+        reschedule?.classList.toggle('hidden', !data.rescheduleUrl);
+        reschedule?.classList.toggle('flex', Boolean(data.rescheduleUrl));
         openLayer('calendar-detail-drawer');
+        return;
+    }
+
+    if (event.target.closest('[data-event-edit]') && selectedEvent?.updateUrl) {
+        const form = document.querySelector('[data-calendar-edit-form]');
+        form.action = selectedEvent.updateUrl;
+        ['title', 'location', 'meeting_url', 'description'].forEach((name) => {
+            form.elements[name].value = selectedEvent[name === 'meeting_url' ? 'meetingUrl' : name] || '';
+        });
+        form.elements.delivery_mode.value = selectedEvent.deliveryMode || 'offline';
+        closeLayer(document.getElementById('calendar-detail-drawer'));
+        openLayer('calendar-edit-drawer');
+        return;
+    }
+
+    if (event.target.closest('[data-event-reschedule]') && selectedEvent?.rescheduleUrl) {
+        const form = document.querySelector('[data-calendar-reschedule-form]');
+        form.action = selectedEvent.rescheduleUrl;
+        const values = {
+            type: selectedEvent.type || 'regular', lesson_id: selectedEvent.lessonId || '',
+            delivery_mode: selectedEvent.deliveryMode || 'offline', title: selectedEvent.title || '',
+            location: selectedEvent.location || '', meeting_url: selectedEvent.meetingUrl || '',
+            description: selectedEvent.description || '', makeup_reason: selectedEvent.makeupReason || '',
+            session_date: selectedEvent.date || '', start_time: selectedEvent.start || '', end_time: selectedEvent.end || '',
+        };
+        Object.entries(values).forEach(([name, value]) => { form.elements[name].value = value; });
+        form.elements.reschedule_reason.value = '';
+        closeLayer(document.getElementById('calendar-detail-drawer'));
+        openLayer('calendar-reschedule-drawer');
         return;
     }
 

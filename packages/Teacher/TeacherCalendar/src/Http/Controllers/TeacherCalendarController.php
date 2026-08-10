@@ -8,7 +8,9 @@ use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherCalendar\Http\Requests\CancelCalendarSessionRequest;
+use Mindigo\TeacherCalendar\Http\Requests\CompleteCalendarSessionRequest;
 use Mindigo\TeacherCalendar\Http\Requests\TeacherCalendarIndexRequest;
+use Mindigo\TeacherCalendar\Http\Requests\UpdateCalendarSessionRequest;
 use Mindigo\TeacherCalendar\Services\TeacherCalendarService;
 use Mindigo\TeacherClassroom\Http\Requests\ClassroomScheduleRequest;
 use Mindigo\TeacherClassroom\Models\Classroom;
@@ -58,5 +60,39 @@ class TeacherCalendarController extends Controller
         $classrooms->cancelSchedule($schedule, $request->validated('cancel_reason'), $request->user());
 
         return back()->with('success', __('teacher-calendar::app.session_cancelled'));
+    }
+
+    public function update(
+        UpdateCalendarSessionRequest $request,
+        ClassroomSchedule $schedule,
+        TeacherClassroomService $classrooms,
+    ): RedirectResponse {
+        $classrooms->updateScheduleDetails($schedule, $request->validated(), $request->user());
+
+        return back()->with('success', __('teacher-calendar::app.session_updated'));
+    }
+
+    public function reschedule(
+        ClassroomScheduleRequest $request,
+        ClassroomSchedule $schedule,
+        TeacherClassroomService $classrooms,
+    ): RedirectResponse {
+        abort_unless($schedule->classroom?->teacher_id === (int) $request->user()->getAuthIdentifier(), 403);
+        abort_if(in_array($schedule->status, [ClassroomSchedule::STATUS_CANCELLED, ClassroomSchedule::STATUS_RESCHEDULED, ClassroomSchedule::STATUS_COMPLETED], true), 422);
+
+        $replacement = $classrooms->rescheduleSchedule($schedule, $request->validated(), $request->user());
+
+        return redirect()->route('teacher.calendar.index', ['date' => $replacement->session_date->toDateString()])
+            ->with('success', __('teacher-calendar::app.session_rescheduled'));
+    }
+
+    public function complete(
+        CompleteCalendarSessionRequest $request,
+        ClassroomSchedule $schedule,
+        TeacherClassroomService $classrooms,
+    ): RedirectResponse {
+        $classrooms->completeSchedule($schedule, $request->user());
+
+        return back()->with('success', __('teacher-calendar::app.session_completed'));
     }
 }

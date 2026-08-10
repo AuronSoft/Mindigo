@@ -56,6 +56,7 @@ class ClassroomScheduleRequest extends FormRequest
             'meeting_url' => ['nullable', 'url:http,https', 'max:2048'],
             'makeup_reason' => ['nullable', 'required_if:type,'.ClassroomSchedule::TYPE_MAKEUP, 'string', 'min:10', 'max:1000'],
             'cancel_reason' => ['nullable', 'required_if:status,'.ClassroomSchedule::STATUS_CANCELLED, 'string', 'min:10', 'max:1000'],
+            'reschedule_reason' => [Rule::requiredIf($this->routeIs('teacher.calendar.sessions.reschedule')), 'nullable', 'string', 'min:10', 'max:1000'],
             'substitute_teacher_id' => [
                 'nullable',
                 'integer',
