@@ -25,12 +25,14 @@ class TeacherCalendarController extends Controller
         $teacher = $request->user();
         $anchor = CarbonImmutable::createFromFormat('Y-m-d', $request->validated('date') ?? now()->toDateString())
             ->setTimezone(config('app.timezone'));
-        $week = $this->calendar->week($teacher, $anchor, $request->validated());
+        $viewMode = $request->validated('view') ?? 'week';
+        $period = $this->calendar->period($teacher, $anchor, $viewMode, $request->validated());
         $classrooms = $this->calendar->classrooms($teacher);
 
         return view('teacher-calendar::index', [
-            ...$week,
+            ...$period,
             'anchor' => $anchor,
+            'viewMode' => $viewMode,
             'classrooms' => $classrooms,
             'filters' => $request->validated(),
         ]);
