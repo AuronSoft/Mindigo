@@ -40,7 +40,6 @@
             @if($isCourseClass && $classroom->course)
                 <p class="mt-2 flex items-center gap-1.5 truncate text-[11px] font-semibold text-slate-500"><x-heroicon-o-link class="h-3.5 w-3.5 shrink-0 text-green-600" /><span class="truncate">{{ $classroom->course->name }}</span></p>
             @endif
-
             <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
                 <span class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500">
                     <span class="grid h-7 w-7 place-items-center rounded-full bg-green-50 text-green-700"><x-heroicon-o-user-group class="h-3.5 w-3.5" /></span>
