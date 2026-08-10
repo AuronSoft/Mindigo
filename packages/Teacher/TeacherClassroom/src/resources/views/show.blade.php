@@ -350,6 +350,28 @@
                     </button>
                 </div>
 
+                @if($classroom->type === \Mindigo\TeacherClassroom\Models\Classroom::TYPE_COURSE && $classroom->course)
+                    @php
+                        $coursePlanStart = max(now()->toDateString(), $classroom->course->starts_at?->toDateString() ?? now()->toDateString());
+                        $courseLessonCount = $classroom->course->chapters->sum(fn ($chapter) => $chapter->lessons->count());
+                        $coursePlanCount = $classroom->course->duration_unit === 'session' && $classroom->course->duration_value
+                            ? (int) ceil((float) $classroom->course->duration_value)
+                            : max(1, $courseLessonCount ?: 12);
+                    @endphp
+                    <section class="mb-5 rounded-2xl border border-green-100 bg-green-50/60 p-4">
+                        <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+                            <div class="min-w-0"><p class="text-sm font-black text-green-900">@lang('teacher-classroom::app.course_plan_title')</p><p class="mt-1 text-xs font-semibold leading-5 text-green-700">@lang('teacher-classroom::app.course_plan_hint', ['days' => collect($classroom->course->schedule_days ?? [])->map(fn ($day) => __('teacher-course::app.schedule_days.'.$day))->join(', '), 'time' => $classroom->course->study_time ?: '—'])</p></div>
+                            <form method="POST" action="{{ route('teacher.classrooms.schedules.generate-course-plan', $classroom) }}" class="flex flex-col gap-2 sm:flex-row sm:items-end" data-course-plan-form>@csrf
+                                <label class="text-xs font-black text-slate-600">@lang('teacher-classroom::app.course_plan_start')<input type="hidden" name="start_date" value="{{ old('start_date', $coursePlanStart) }}" data-course-plan-date><span class="relative mt-1 block"><input type="text" readonly value="{{ \Illuminate\Support\Carbon::parse(old('start_date', $coursePlanStart))->format('d/m/Y') }}" data-course-plan-date-display class="h-10 w-40 cursor-pointer rounded-xl border border-green-200 bg-white px-3 pr-10 text-sm font-bold text-slate-700"><button type="button" data-course-plan-date-trigger class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-slate-400 hover:bg-green-50 hover:text-green-700"><x-heroicon-o-calendar-days class="h-4 w-4" /></button><input type="date" min="{{ $classroom->course->starts_at?->toDateString() }}" value="{{ old('start_date', $coursePlanStart) }}" data-course-plan-date-picker tabindex="-1" aria-hidden="true" class="pointer-events-none absolute bottom-0 right-0 h-px w-px opacity-0"></span></label>
+                                <label class="text-xs font-black text-slate-600">@lang('teacher-classroom::app.course_plan_count')<input type="number" name="session_count" min="1" max="200" value="{{ old('session_count', $coursePlanCount) }}" required class="mt-1 h-10 w-28 rounded-xl border border-green-200 bg-white px-3 text-sm font-bold text-slate-700"></label>
+                                <button class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-calendar-days class="h-4 w-4" />@lang('teacher-classroom::app.generate_course_plan')</button>
+                            </form>
+                        </div>
+                        @error('session_count')<p class="mt-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+                        @error('start_date')<p class="mt-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+                    </section>
+                @endif
+
                 @if($schedules->isEmpty())
                     <div class="flex flex-col items-center justify-center gap-3 py-20">
                         <x-heroicon-o-calendar-days class="h-14 w-14 text-slate-200" />
