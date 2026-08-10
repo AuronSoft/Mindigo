@@ -10,9 +10,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('classroom_attendance_sessions', function (Blueprint $table): void {
+            $table->index('classroom_id', 'attendance_sessions_classroom_fk_index');
+        });
+
+        Schema::table('classroom_attendance_sessions', function (Blueprint $table): void {
             $table->dropUnique(['classroom_id', 'session_date']);
             $table->foreignId('classroom_schedule_id')->nullable()->after('classroom_id')->constrained('classroom_schedules')->nullOnDelete();
             $table->unique('classroom_schedule_id');
+        });
+
+        Schema::table('classroom_attendances', function (Blueprint $table): void {
+            $table->index('classroom_id', 'attendances_classroom_fk_index');
         });
 
         Schema::table('classroom_attendances', function (Blueprint $table): void {
@@ -41,10 +49,16 @@ return new class extends Migration
             $table->dropConstrainedForeignId('classroom_schedule_id');
             $table->unique(['classroom_id', 'student_id', 'session_date'], 'classroom_student_session_unique');
         });
+        Schema::table('classroom_attendances', function (Blueprint $table): void {
+            $table->dropIndex('attendances_classroom_fk_index');
+        });
         Schema::table('classroom_attendance_sessions', function (Blueprint $table): void {
             $table->dropUnique(['classroom_schedule_id']);
             $table->dropConstrainedForeignId('classroom_schedule_id');
             $table->unique(['classroom_id', 'session_date']);
+        });
+        Schema::table('classroom_attendance_sessions', function (Blueprint $table): void {
+            $table->dropIndex('attendance_sessions_classroom_fk_index');
         });
     }
 };
