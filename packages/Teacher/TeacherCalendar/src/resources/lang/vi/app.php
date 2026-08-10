@@ -13,7 +13,7 @@ return [
     'regular' => 'Buổi học chính', 'makeup' => 'Buổi học bù', 'makeup_reason' => 'Lý do học bù',
     'save' => 'Lưu buổi học', 'cancel' => 'Đóng', 'cancel_session' => 'Hủy buổi học', 'cancel_reason' => 'Lý do hủy', 'session_created' => 'Đã thêm buổi học vào lịch.', 'session_cancelled' => 'Đã hủy buổi học và lưu lại lý do.',
     'empty_day' => 'Không có lịch', 'timezone' => 'GMT+7', 'view_classroom' => 'Mở lớp học',
-    'class_session' => 'Buổi học', 'assignment_due' => 'Hạn bài tập', 'exam_window' => 'Bài kiểm tra', 'live_session' => 'Lớp trực tuyến',
+    'class_session' => 'Buổi học', 'assignment_due' => 'Hạn bài tập', 'exam_window' => 'Bài kiểm tra', 'live_session' => 'Lớp trực tuyến', 'academic_closure' => 'Ngày nghỉ học',
     'cancelled' => 'Đã hủy', 'workload' => 'Tải giảng dạy', 'workload_hint' => 'Theo dõi mật độ lịch để chủ động cân bằng thời gian.', 'empty' => 'Chưa có lịch trong tuần này.',
     'session_lifecycle' => 'Quản lý buổi học', 'edit_session' => 'Sửa thông tin', 'reschedule_session' => 'Dời lịch', 'complete_session' => 'Hoàn thành',
     'save_changes' => 'Lưu thay đổi', 'reschedule_reason' => 'Lý do dời lịch', 'reschedule_hint' => 'Buổi cũ sẽ được giữ trong lịch sử. Ngày và giờ mới phải tuân thủ lịch khóa học và không được trùng lịch.', 'confirm_reschedule' => 'Xác nhận dời lịch',

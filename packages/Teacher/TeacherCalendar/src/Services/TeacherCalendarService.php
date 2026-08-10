@@ -64,7 +64,11 @@ class TeacherCalendarService
     public function classrooms(User $teacher): Collection
     {
         return Classroom::query()
-            ->where('teacher_id', $teacher->id)
+            ->where(function ($query) use ($teacher): void {
+                $query->where('teacher_id', $teacher->id)
+                    ->orWhere('assistant_id', $teacher->id)
+                    ->orWhereHas('schedules', fn ($schedules) => $schedules->where('substitute_teacher_id', $teacher->id));
+            })
             ->where('status', 'active')
             ->with(['course.chapters.lessons', 'subject'])
             ->orderBy('name')

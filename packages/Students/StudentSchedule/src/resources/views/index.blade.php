@@ -20,8 +20,9 @@
         'assignment_due' => 'border-orange-200 bg-orange-50 text-orange-800',
         'exam_window' => 'border-violet-200 bg-violet-50 text-violet-800',
         'live_session' => 'border-rose-200 bg-rose-50 text-rose-800',
+        'academic_closure' => 'border-slate-200 bg-slate-100 text-slate-700',
     ];
-    $icons = ['class_session' => 'heroicon-o-academic-cap', 'assignment_due' => 'heroicon-o-clipboard-document-list', 'exam_window' => 'heroicon-o-document-text', 'live_session' => 'heroicon-o-video-camera'];
+    $icons = ['class_session' => 'heroicon-o-academic-cap', 'assignment_due' => 'heroicon-o-clipboard-document-list', 'exam_window' => 'heroicon-o-document-text', 'live_session' => 'heroicon-o-video-camera', 'academic_closure' => 'heroicon-o-calendar-days'];
     $query = request()->except(['date', 'view']);
     $step = $viewMode === 'month' ? 'month' : ($viewMode === 'week' ? 'week' : 'day');
     $previous = match($step) { 'month' => $anchor->subMonth(), 'week' => $anchor->subWeek(), default => $anchor->subDay() };

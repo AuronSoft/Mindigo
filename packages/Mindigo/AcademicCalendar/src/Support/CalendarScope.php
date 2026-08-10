@@ -14,7 +14,11 @@ final class CalendarScope
         $classrooms = Classroom::query()->select('classrooms.id');
 
         if ($query->viewer->role === 'teacher') {
-            $classrooms->where('teacher_id', $query->viewer->id);
+            $classrooms->where(function ($builder) use ($query): void {
+                $builder->where('teacher_id', $query->viewer->id)
+                    ->orWhere('assistant_id', $query->viewer->id)
+                    ->orWhereHas('schedules', fn ($schedules) => $schedules->where('substitute_teacher_id', $query->viewer->id));
+            });
         } elseif ($query->viewer->role === 'student') {
             $classrooms->whereHas('students', fn ($students) => $students
                 ->where('student_id', $query->viewer->id)

@@ -13,7 +13,7 @@ return [
     'regular' => 'Regular session', 'makeup' => 'Make-up session', 'makeup_reason' => 'Make-up reason',
     'save' => 'Save session', 'cancel' => 'Close', 'cancel_session' => 'Cancel session', 'cancel_reason' => 'Cancellation reason', 'session_created' => 'The session was added to the calendar.', 'session_cancelled' => 'The session was cancelled and its reason was recorded.',
     'empty_day' => 'No events', 'timezone' => 'GMT+7', 'view_classroom' => 'Open classroom',
-    'class_session' => 'Class session', 'assignment_due' => 'Assignment due', 'exam_window' => 'Exam', 'live_session' => 'Live session',
+    'class_session' => 'Class session', 'assignment_due' => 'Assignment due', 'exam_window' => 'Exam', 'live_session' => 'Live session', 'academic_closure' => 'No-class day',
     'cancelled' => 'Cancelled', 'workload' => 'Workload', 'workload_hint' => 'Keep an eye on schedule density and balance your teaching time.', 'empty' => 'No events scheduled this week.',
     'session_lifecycle' => 'Session management', 'edit_session' => 'Edit details', 'reschedule_session' => 'Reschedule', 'complete_session' => 'Complete',
     'save_changes' => 'Save changes', 'reschedule_reason' => 'Reschedule reason', 'reschedule_hint' => 'The original session remains in history. The new date and time must follow the course schedule and cannot overlap.', 'confirm_reschedule' => 'Confirm reschedule',

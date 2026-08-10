@@ -3,6 +3,7 @@
 namespace Mindigo\AcademicCalendar\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Mindigo\AcademicCalendar\Adapters\AcademicExceptionAdapter;
 use Mindigo\AcademicCalendar\Adapters\AssignmentAdapter;
 use Mindigo\AcademicCalendar\Adapters\ClassroomScheduleAdapter;
 use Mindigo\AcademicCalendar\Adapters\ExamAdapter;
@@ -30,6 +31,7 @@ final class AcademicCalendarServiceProvider extends ServiceProvider
     public function register(): void
     {
         $adapters = [
+            AcademicExceptionAdapter::class,
             ClassroomScheduleAdapter::class,
             AssignmentAdapter::class,
             ExamAdapter::class,
