@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@source "../views/**/*.blade.php";
+
+.calendar-scrollbar { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+.calendar-event { min-height: 2.75rem; }
+.calendar-event:focus-visible { outline: 3px solid rgb(34 197 94 / .28); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .calendar-motion { transition: none !important; } }

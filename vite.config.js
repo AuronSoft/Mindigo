@@ -35,6 +35,8 @@ export default defineConfig({
                 "packages/Teacher/TeacherDashboard/src/resources/js/app.js",
                 "packages/Teacher/TeacherClassroom/src/resources/css/app.css",
                 "packages/Teacher/TeacherClassroom/src/resources/js/app.js",
+                "packages/Teacher/TeacherCalendar/src/resources/css/app.css",
+                "packages/Teacher/TeacherCalendar/src/resources/js/app.js",
                 "packages/Teacher/TeacherCourse/src/resources/css/app.css",
                 "packages/Teacher/TeacherCourse/src/resources/js/app.js",
                 "packages/Teacher/TeacherAssignment/src/resources/js/app.js",

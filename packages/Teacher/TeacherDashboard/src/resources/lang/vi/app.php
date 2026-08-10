@@ -7,6 +7,7 @@ return [
     'dashboard' => 'Dashboard',
     'teacher_dashboard' => 'Teacher Dashboard',
     'my_classrooms' => 'Lớp học của tôi',
+    'calendar' => 'Lịch giảng dạy',
     'my_exams' => 'Đề thi của tôi',
     'my_assignments' => 'Bài tập của tôi',
     'my_questions' => 'Câu hỏi của tôi',

@@ -7,6 +7,7 @@ return [
     'dashboard' => 'Dashboard',
     'teacher_dashboard' => 'Teacher Dashboard',
     'my_classrooms' => 'My Classrooms',
+    'calendar' => 'Teaching calendar',
     'my_exams' => 'My Exams',
     'my_assignments' => 'My Assignments',
     'my_questions' => 'My Questions',

@@ -312,6 +312,17 @@ class TeacherClassroomService
         $schedule->delete();
     }
 
+    public function cancelSchedule(ClassroomSchedule $schedule, string $reason, User $actor): ClassroomSchedule
+    {
+        $schedule->update([
+            'status' => ClassroomSchedule::STATUS_CANCELLED,
+            'cancel_reason' => $reason,
+            'updated_by' => $actor->id,
+        ]);
+
+        return $schedule->refresh();
+    }
+
     private function uniqueSlug(string $name, ?Classroom $ignore = null): string
     {
         $base = Str::slug($name) ?: 'lop-hoc';
