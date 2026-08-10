@@ -16,6 +16,7 @@
         "laravel/reverb": "^1.11",
         "laravel/tinker": "^2.10.1",
         "mindigo/audit-log": "*",
+        "mindigo/academic-calendar": "*",
         "mindigo/auth": "*",
         "mindigo/blog-management": "dev-main",
         "mindigo/core": "*",
@@ -86,6 +87,7 @@
             "Mindigo\\BlogManagement\\": "packages/Mindigo/BlogManagement/src/",
             "Mindigo\\SystemSetting\\": "packages/Mindigo/SystemSetting/src/",
             "Mindigo\\AuditLog\\": "packages/Mindigo/AuditLog/src/",
+            "Mindigo\\AcademicCalendar\\": "packages/Mindigo/AcademicCalendar/src/",
             "Mindigo\\Report\\": "packages/Mindigo/Report/src/",
             "Mindigo\\SubjectManagement\\": "packages/Mindigo/SubjectManagement/src/",
             "Mindigo\\TeacherDashboard\\": "packages/Teacher/TeacherDashboard/src/",
@@ -174,6 +176,10 @@
         {
             "type": "path",
             "url": "packages/Mindigo/AuditLog"
+        },
+        {
+            "type": "path",
+            "url": "packages/Mindigo/AcademicCalendar"
         },
         {
             "type": "path",

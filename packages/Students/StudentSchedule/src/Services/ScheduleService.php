@@ -2,19 +2,19 @@
 
 namespace Mindigo\StudentSchedule\Services;
 
-use Carbon\CarbonInterface;
-use DateTimeInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Route;
-use Mindigo\ExamManagement\Models\Exam;
-use Mindigo\TeacherAssignment\Models\Assignment;
+use Mindigo\AcademicCalendar\Data\CalendarEvent;
+use Mindigo\AcademicCalendar\Data\CalendarQuery;
+use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
+use Mindigo\AcademicCalendar\Services\AcademicCalendarService;
+use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\Classroom;
-use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
-use Mindigo\TeacherLiveSession\Models\LiveSession;
 
 class ScheduleService
 {
+    public function __construct(private readonly AcademicCalendarService $calendar) {}
+
     // ID các lớp học sinh đang tham gia (status active)
 
     public function classroomIdsForStudent(int|string $studentId): Collection
@@ -33,96 +33,14 @@ class ScheduleService
      */
     public function eventsBetween(int|string $studentId, Carbon $from, Carbon $to): Collection
     {
-        $classroomIds = $this->classroomIdsForStudent($studentId);
-        $events = collect();
+        $student = User::query()->findOrFail($studentId);
 
-        if ($classroomIds->isEmpty()) {
-            // Vẫn còn nguồn đề thi toàn hệ thống bên dưới
-            $classroomIds = collect();
-        }
-
-        // 1) Buổi học của lớp (classroom_schedules)
-        if ($classroomIds->isNotEmpty()) {
-            ClassroomSchedule::query()
-                ->whereIn('classroom_id', $classroomIds)
-                ->whereBetween('session_date', [$from->toDateString(), $to->toDateString()])
-                ->with('classroom:id,name')
-                ->get()
-                ->each(function ($s) use ($events) {
-                    $at = $this->combine($s->session_date, $s->start_time);
-                    $events->push((object) [
-                        'type' => 'class',
-                        'title' => $s->title,
-                        'at' => $at,
-                        'end' => $s->end_time ? $this->combine($s->session_date, $s->end_time) : null,
-                        'url' => Route::has('student.classrooms.show') && $s->classroom ? route('student.classrooms.show', $s->classroom_id) : null,
-                        'classroom' => $s->classroom?->name,
-                        'tone' => 'indigo',
-                        'icon' => 'heroicon-o-calendar-days',
-                    ]);
-                });
-
-            // 2) Hạn nộp bài tập
-            Assignment::query()
-                ->whereIn('classroom_id', $classroomIds)
-                ->where('status', 'published')
-                ->whereBetween('due_date', [$from, $to])
-                ->with('classroom:id,name')
-                ->get()
-                ->each(function ($a) use ($events) {
-                    $events->push((object) [
-                        'type' => 'assignment',
-                        'title' => $a->title,
-                        'at' => $a->due_date,
-                        'end' => null,
-                        'url' => Route::has('student.assignments.index') ? route('student.assignments.index') : null,
-                        'classroom' => $a->classroom?->name,
-                        'tone' => 'amber',
-                        'icon' => 'heroicon-o-clipboard-document-list',
-                    ]);
-                });
-
-            // 4) Buổi học trực tuyến
-            LiveSession::query()
-                ->whereIn('classroom_id', $classroomIds)
-                ->where('status', '!=', 'cancelled')
-                ->whereBetween('scheduled_start', [$from, $to])
-                ->with('classroom:id,name')
-                ->get()
-                ->each(function ($l) use ($events) {
-                    $events->push((object) [
-                        'type' => 'live',
-                        'title' => $l->title,
-                        'at' => $l->scheduled_start,
-                        'end' => $l->scheduled_end,
-                        'url' => Route::has('student.live-sessions.index') ? route('student.live-sessions.index') : null,
-                        'classroom' => $l->classroom?->name,
-                        'tone' => 'rose',
-                        'icon' => 'heroicon-o-video-camera',
-                    ]);
-                });
-        }
-
-        // 3) Đề thi mở (toàn hệ thống, audience = student)
-        Exam::query()
-            ->where('status', 'published')
-            ->whereNotNull('starts_at')
-            ->whereBetween('starts_at', [$from, $to])
-            ->get()
-            ->each(function ($e) use ($events) {
-                $events->push((object) [
-                    'type' => 'exam',
-                    'title' => $e->title,
-                    'at' => $e->starts_at,
-                    'end' => $e->ends_at,
-                    'url' => Route::has('student.exams.index') ? route('student.exams.index') : null,
-                    'classroom' => null,
-                    'tone' => 'violet',
-                    'icon' => 'heroicon-o-document-text',
-                ]);
-            });
-
-        return $events->sortBy('at')->values();
+        return $this->calendar->events(new CalendarQuery(
+            viewer: $student,
+            from: $from->toImmutable(),
+            to: $to->toImmutable(),
+            timezone: config('app.timezone', 'Asia/Ho_Chi_Minh'),
+        ))->map(fn (CalendarEvent $event) => $this->legacyEvent($event));
     }
 
     /**
@@ -168,14 +86,24 @@ class ScheduleService
             ->values();
     }
 
-    private function combine(CarbonInterface|DateTimeInterface|string $date, ?string $time): Carbon
+    private function legacyEvent(CalendarEvent $event): object
     {
-        $d = $date instanceof DateTimeInterface
-            ? $date->format('Y-m-d')
-            : Carbon::parse($date)->format('Y-m-d');
+        [$type, $tone, $icon] = match ($event->kind) {
+            CalendarEventKind::ClassSession => ['class', 'indigo', 'heroicon-o-calendar-days'],
+            CalendarEventKind::AssignmentDue => ['assignment', 'amber', 'heroicon-o-clipboard-document-list'],
+            CalendarEventKind::ExamWindow => ['exam', 'violet', 'heroicon-o-document-text'],
+            CalendarEventKind::LiveSession => ['live', 'rose', 'heroicon-o-video-camera'],
+        };
 
-        $t = $time ? substr($time, 0, 8) : '00:00:00';
-
-        return Carbon::parse("{$d} {$t}");
+        return (object) [
+            'type' => $type,
+            'title' => $event->title,
+            'at' => Carbon::instance($event->startsAt),
+            'end' => $event->endsAt ? Carbon::instance($event->endsAt) : null,
+            'url' => $event->url,
+            'classroom' => $event->metadata['classroom_name'] ?? null,
+            'tone' => $tone,
+            'icon' => $icon,
+        ];
     }
 }
