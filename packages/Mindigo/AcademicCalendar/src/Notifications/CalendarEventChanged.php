@@ -18,6 +18,10 @@ class CalendarEventChanged extends Notification
     {
         $schedule = $this->schedule;
         $date = $schedule->session_date->format('d/m/Y').' · '.substr($schedule->start_time, 0, 5);
+        $isStudent = method_exists($notifiable, 'isStudent') && $notifiable->isStudent();
+        $url = $isStudent
+            ? route('student.schedule.index', ['date' => $schedule->session_date->toDateString(), 'view' => 'today'])
+            : route('teacher.calendar.index', ['date' => $schedule->session_date->toDateString(), 'view' => 'day']);
 
         return [
             'category' => 'calendar_update',
@@ -27,7 +31,8 @@ class CalendarEventChanged extends Notification
             'message' => collect([$schedule->classroom?->name, $date, $schedule->cancel_reason, $schedule->reschedule_reason])->filter()->implode(' · '),
             'event_id' => 'classroom_schedule:'.$schedule->id,
             'classroom_id' => $schedule->classroom_id,
-            'url' => route('student.schedule.index', ['date' => $schedule->session_date->toDateString(), 'view' => 'today']),
+            'audience' => $isStudent ? 'student' : 'teacher',
+            'url' => $url,
         ];
     }
 }
