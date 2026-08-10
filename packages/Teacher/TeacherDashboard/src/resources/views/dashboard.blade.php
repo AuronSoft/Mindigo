@@ -44,6 +44,7 @@
         'assignment_due' => 'border-amber-400 bg-amber-50 text-amber-800',
         'exam_window' => 'border-rose-400 bg-rose-50 text-rose-800',
         'live_session' => 'border-blue-400 bg-blue-50 text-blue-800',
+        'academic_closure' => 'border-slate-400 bg-slate-100 text-slate-700',
     ];
     $teacherGender = strtolower(trim((string) $teacher->gender));
     $teacherHeroImage = match (true) {

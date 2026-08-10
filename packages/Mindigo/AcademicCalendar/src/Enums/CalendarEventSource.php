@@ -8,4 +8,5 @@ enum CalendarEventSource: string
     case Assignment = 'assignment';
     case Exam = 'exam';
     case LiveSession = 'live_session';
+    case AcademicException = 'academic_exception';
 }

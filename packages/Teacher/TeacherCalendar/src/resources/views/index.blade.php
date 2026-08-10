@@ -20,6 +20,7 @@
         'assignment_due' => 'calendar-tone-orange',
         'exam_window' => 'calendar-tone-rose',
         'live_session' => 'calendar-tone-violet',
+        'academic_closure' => 'calendar-tone-cancelled',
     ];
     $eventPayload = function ($event) {
         $isSession = $event->kind === CalendarEventKind::ClassSession;
@@ -148,7 +149,7 @@
                             @foreach(($eventsByDay[$day->toDateString()] ?? collect()) as $event)
                                 @php
                                     $startOffset = max(0, (($event->startsAt->hour - 7) * 60 + $event->startsAt->minute) / 60);
-                                    $duration = $event->endsAt ? max(.75, $event->startsAt->diffInMinutes($event->endsAt) / 60) : .75;
+                                    $duration = ($event->metadata['all_day'] ?? false) ? .75 : ($event->endsAt ? max(.75, $event->startsAt->diffInMinutes($event->endsAt) / 60) : .75);
                                     $eventTop = min(100, ($startOffset / 12) * 100);
                                     $eventHeight = min(100 - $eventTop, ($duration / 12) * 100);
                                     $eventTone = $event->status === CalendarEventStatus::Cancelled ? 'calendar-tone-cancelled' : (($event->metadata['session_type'] ?? null) === 'makeup' ? 'calendar-tone-orange' : ($tones[$event->kind->value] ?? 'calendar-tone-blue'));

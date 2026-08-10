@@ -8,4 +8,5 @@ enum CalendarEventKind: string
     case AssignmentDue = 'assignment_due';
     case ExamWindow = 'exam_window';
     case LiveSession = 'live_session';
+    case AcademicClosure = 'academic_closure';
 }
