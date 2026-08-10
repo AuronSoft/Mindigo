@@ -62,6 +62,53 @@
         </div>
     </div>
 
+    {{-- Teaching roles: the signed-in teacher remains the owner; an assistant is optional. --}}
+    <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+            <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.primary_teacher')</label>
+            <div class="flex min-h-11 items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5">
+                <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-green-100 text-xs font-black text-green-700">{{ mb_substr(auth()->user()->name, 0, 1) }}</span>
+                <div class="min-w-0">
+                    <p class="truncate text-sm font-black text-slate-800">{{ auth()->user()->name }}</p>
+                    <p class="truncate text-[11px] font-bold text-slate-400">@lang('teacher-classroom::app.primary_teacher_owner_hint')</p>
+                </div>
+            </div>
+        </div>
+        <div data-classroom-assistant-picker class="relative">
+            @php
+                $selectedAssistantId = (string) old('assistant_id', $sel?->assistant_id ?? '');
+                $selectedAssistant = $teachers->firstWhere('id', (int) $selectedAssistantId);
+            @endphp
+            <label class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.assistant')</label>
+            <input type="hidden" name="assistant_id" value="{{ $selectedAssistantId }}" data-classroom-assistant-select>
+            <button type="button" data-classroom-assistant-trigger aria-haspopup="listbox" aria-expanded="false"
+                    class="flex min-h-11 w-full items-center justify-between gap-3 rounded-2xl border {{ $errors->has('assistant_id') ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-white' }} px-4 py-2.5 text-left outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-50">
+                <span data-classroom-assistant-label class="truncate text-sm font-bold {{ $selectedAssistant ? 'text-slate-800' : 'text-slate-400' }}">{{ $selectedAssistant?->name ?? __('teacher-classroom::app.no_assistant') }}</span>
+                <x-heroicon-o-chevron-down class="h-4 w-4 shrink-0 text-slate-400" />
+            </button>
+            <div data-classroom-assistant-panel class="absolute left-0 right-0 top-full z-30 mt-2 hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                <div class="border-b border-slate-100 p-2.5">
+                    <div class="flex items-center gap-2 rounded-xl bg-slate-50 px-3">
+                        <x-heroicon-o-magnifying-glass class="h-4 w-4 text-slate-400" />
+                        <input type="search" data-classroom-assistant-search placeholder="@lang('teacher-classroom::app.search_assistant')" class="h-9 min-w-0 flex-1 border-0 bg-transparent text-sm font-semibold text-slate-700 outline-none">
+                    </div>
+                </div>
+                <div class="max-h-56 overflow-y-auto p-1.5" role="listbox">
+                    <button type="button" data-classroom-assistant-option data-value="" data-label="@lang('teacher-classroom::app.no_assistant')" class="flex w-full items-center rounded-xl px-3 py-2.5 text-left text-sm font-bold text-slate-500 hover:bg-slate-50">@lang('teacher-classroom::app.no_assistant')</button>
+                    @foreach($teachers as $teacher)
+                        <button type="button" data-classroom-assistant-option data-value="{{ $teacher->id }}" data-label="{{ $teacher->name }}" data-search="{{ $teacher->name }} {{ $teacher->email }}" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-green-50">
+                            <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-black text-slate-600">{{ mb_substr($teacher->name, 0, 1) }}</span>
+                            <span class="min-w-0"><span class="block truncate text-sm font-black text-slate-700">{{ $teacher->name }}</span><span class="block truncate text-[11px] font-semibold text-slate-400">{{ $teacher->email }}</span></span>
+                        </button>
+                    @endforeach
+                    <p data-classroom-assistant-empty class="hidden px-3 py-4 text-center text-xs font-bold text-slate-400">@lang('teacher-classroom::app.no_assistant_results')</p>
+                </div>
+            </div>
+            <p class="mt-1.5 text-[11px] font-semibold text-slate-400">@lang('teacher-classroom::app.assistant_hint')</p>
+            @error('assistant_id')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+        </div>
+    </div>
+
     @include('teacher-classroom::partials.academic-context-fields', [
         'classroom' => $sel,
         'subjects' => $subjects,

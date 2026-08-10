@@ -61,12 +61,20 @@
     <div class="flex flex-1 flex-col gap-5 p-6">
 
         {{-- Mini stats / Info --}}
-        <div class="grid gap-3 sm:grid-cols-4">
+        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
             <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div class="min-w-0">
                     <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.status')</p>
                     <span class="mt-1 inline-flex rounded-full px-3 py-1 text-sm font-black {{ $classroom->status === 'active' ? 'text-green-700 bg-green-50' : 'text-slate-600 bg-slate-100' }}">
                         {{ __('teacher-classroom::app.' . $classroom->status) }}
+                    </span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div class="min-w-0">
+                    <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">@lang('teacher-classroom::app.assistant')</p>
+                    <span class="mt-1 inline-flex max-w-full truncate rounded-full bg-green-50 px-3 py-1 text-sm font-black text-green-700">
+                        {{ $classroom->assistant?->name ?? __('teacher-classroom::app.unassigned') }}
                     </span>
                 </div>
             </div>
@@ -369,6 +377,20 @@
                         </div>
                         @error('session_count')<p class="mt-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
                         @error('start_date')<p class="mt-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+                    </section>
+
+                    <section class="mb-5 rounded-2xl border border-slate-200 bg-white p-4">
+                        <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                            <div><p class="text-sm font-black text-slate-900">@lang('teacher-classroom::app.calendar_exceptions')</p><p class="mt-1 text-xs font-semibold text-slate-500">@lang('teacher-classroom::app.calendar_exceptions_hint')</p></div>
+                            <form method="POST" action="{{ route('teacher.classrooms.calendar-exceptions.store', $classroom) }}" class="grid gap-2 sm:grid-cols-[10rem_12rem_minmax(14rem,1fr)_auto]" data-course-plan-form>@csrf
+                                <label class="text-xs font-black text-slate-600">@lang('teacher-classroom::app.exception_date')<input type="hidden" name="exception_date" value="{{ old('exception_date', $coursePlanStart) }}" data-course-plan-date><span class="relative mt-1 block"><input type="text" readonly value="{{ \Illuminate\Support\Carbon::parse(old('exception_date', $coursePlanStart))->format('d/m/Y') }}" data-course-plan-date-display class="h-10 w-full cursor-pointer rounded-xl border border-slate-200 px-3 pr-9 text-sm font-bold"><button type="button" data-course-plan-date-trigger class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center text-slate-400"><x-heroicon-o-calendar-days class="h-4 w-4" /></button><input type="date" min="{{ $classroom->course->starts_at?->toDateString() }}" max="{{ $classroom->course->ends_at?->toDateString() }}" value="{{ old('exception_date', $coursePlanStart) }}" data-course-plan-date-picker class="pointer-events-none absolute h-px w-px opacity-0"></span></label>
+                                <label class="text-xs font-black text-slate-600">@lang('teacher-classroom::app.exception_title')<input name="title" required maxlength="255" value="{{ old('title') }}" class="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-sm font-bold"></label>
+                                <label class="text-xs font-black text-slate-600">@lang('teacher-classroom::app.exception_reason')<input name="reason" required minlength="10" maxlength="1000" value="{{ old('reason') }}" class="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-sm font-bold"></label>
+                                <button class="mt-5 h-10 rounded-xl border border-green-200 bg-green-50 px-4 text-xs font-black text-green-700 hover:bg-green-100">@lang('teacher-classroom::app.add_exception')</button>
+                            </form>
+                        </div>
+                        @if($calendarExceptions->isNotEmpty())<div class="mt-4 flex flex-wrap gap-2">@foreach($calendarExceptions as $exception)<div class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs"><span><strong class="text-slate-800">{{ $exception->exception_date->format('d/m/Y') }} · {{ $exception->title }}</strong><small class="mt-0.5 block text-slate-500">{{ $exception->reason }}</small></span><form method="POST" action="{{ route('teacher.classrooms.calendar-exceptions.destroy', $exception) }}">@csrf @method('DELETE')<button aria-label="@lang('teacher-classroom::app.delete')" class="grid h-7 w-7 place-items-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600"><x-heroicon-o-x-mark class="h-4 w-4" /></button></form></div>@endforeach</div>@endif
+                        @error('exception_date')<p class="mt-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror @error('reason')<p class="mt-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
                     </section>
                 @endif
 

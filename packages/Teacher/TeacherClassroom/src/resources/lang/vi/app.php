@@ -111,6 +111,11 @@ return [
     // Show Detail View
     'assistant' => 'Trợ giảng',
     'no_assistant' => '-- Không có trợ giảng --',
+    'primary_teacher' => 'Giảng viên chính',
+    'primary_teacher_owner_hint' => 'Người sở hữu và chịu trách nhiệm lớp học',
+    'assistant_hint' => 'Trợ giảng hỗ trợ lớp học, không thay thế quyền sở hữu của giảng viên chính.',
+    'search_assistant' => 'Tìm theo tên hoặc email...',
+    'no_assistant_results' => 'Không tìm thấy giảng viên phù hợp.',
     'unassigned' => 'Chưa phân công',
     'draft' => 'Nháp',
     'unauthorized' => 'Bạn không có quyền truy cập lớp học này.',
@@ -208,5 +213,5 @@ return [
     'schedule_deleted' => 'Đã xóa buổi học khỏi lịch.',
     'attendance_outside_session_window' => 'Chỉ được mở điểm danh từ 60 phút trước buổi học đến 30 phút sau khi buổi học kết thúc.',
     'substitute_teacher' => 'Giáo viên dạy thay', 'no_substitute_teacher' => 'Không phân công dạy thay', 'substitute_teacher_hint' => 'Giáo viên được chọn phải xác nhận trước khi buổi học được tính vào tải giảng của họ.', 'substitute_status_pending' => 'Chờ xác nhận', 'substitute_status_accepted' => 'Đã nhận lịch', 'substitute_status_declined' => 'Đã từ chối',
-    'course_plan_title' => 'Kế hoạch buổi học theo khóa học', 'course_plan_hint' => 'Sinh buổi học chính vào :days, khung giờ :time. Các lịch đã tồn tại được giữ nguyên và bỏ qua.', 'course_plan_start' => 'Lập lịch từ ngày', 'course_plan_count' => 'Số buổi', 'generate_course_plan' => 'Sinh kế hoạch', 'course_plan_generated' => 'Đã xử lý kế hoạch: tạo :created buổi, bỏ qua :skipped lịch đã tồn tại.', 'course_plan_course_only' => 'Chỉ lớp học liên kết với khóa học mới được sinh kế hoạch tự động.', 'course_plan_range_too_large' => 'Kế hoạch yêu cầu vượt quá phạm vi hai năm được hỗ trợ.', 'generated_session_title' => ':course · Buổi :number',
+    'course_plan_title' => 'Kế hoạch buổi học theo khóa học', 'course_plan_hint' => 'Sinh buổi học chính vào :days, khung giờ :time. Lịch đã có và ngày nghỉ được tự động bỏ qua.', 'course_plan_start' => 'Lập lịch từ ngày', 'course_plan_count' => 'Số buổi', 'generate_course_plan' => 'Sinh kế hoạch', 'course_plan_generated' => 'Đã xử lý kế hoạch: tạo :created buổi, bỏ qua :skipped lịch đã có và :exceptions ngày ngoại lệ.', 'course_plan_course_only' => 'Chỉ lớp học liên kết với khóa học mới được sinh kế hoạch tự động.', 'course_plan_range_too_large' => 'Không còn đủ ngày học hợp lệ trước ngày kết thúc khóa học.', 'generated_session_title' => ':course · Buổi :number', 'calendar_exceptions' => 'Ngày nghỉ và ngoại lệ học vụ', 'calendar_exceptions_hint' => 'Các ngày này được lưu rõ lý do và tự động loại khỏi kế hoạch buổi học.', 'exception_date' => 'Ngày nghỉ', 'exception_title' => 'Tên ngoại lệ', 'exception_reason' => 'Lý do rõ ràng', 'add_exception' => 'Thêm ngày nghỉ', 'calendar_exception_saved' => 'Đã lưu ngày nghỉ học.', 'calendar_exception_deleted' => 'Đã xóa ngày nghỉ học.',
 ];

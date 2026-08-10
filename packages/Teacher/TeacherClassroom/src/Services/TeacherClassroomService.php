@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Mindigo\AcademicCalendar\Models\AcademicCalendarException;
 use Mindigo\Auth\Models\User;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherClassroom\Models\Classroom;
@@ -347,15 +348,36 @@ class TeacherClassroomService
         $dayCodes = ['sun' => 0, 'mon' => 1, 'tue' => 2, 'wed' => 3, 'thu' => 4, 'fri' => 5, 'sat' => 6];
         $allowedDays = collect($course->schedule_days)->map(fn (string $day) => $dayCodes[$day] ?? null)->filter(fn ($day) => $day !== null)->all();
         $lessons = $course->chapters->sortBy('sort_order')->flatMap(fn ($chapter) => $chapter->lessons->sortBy('sort_order'))->values();
+        $exceptionDates = AcademicCalendarException::query()
+            ->where('kind', AcademicCalendarException::KIND_NO_CLASS)
+            ->where(function ($query) use ($classroom, $course): void {
+                $query->where(fn ($global) => $global->whereNull('course_id')->whereNull('classroom_id'))
+                    ->orWhere('course_id', $course->id)
+                    ->orWhere('classroom_id', $classroom->id);
+            })
+            ->pluck('exception_date')
+            ->map(fn ($date) => Carbon::parse($date)->toDateString())
+            ->flip();
 
-        return DB::transaction(function () use ($classroom, $actor, $course, $startDate, $sessionCount, $allowedDays, $lessons, $times): array {
+        return DB::transaction(function () use ($classroom, $actor, $course, $startDate, $sessionCount, $allowedDays, $lessons, $times, $exceptionDates): array {
             Classroom::query()->whereKey($classroom->id)->lockForUpdate()->first();
             $cursor = Carbon::parse($startDate)->startOfDay();
-            $planned = $created = $skipped = 0;
+            $planned = $created = $skipped = $exceptions = 0;
             $scanLimit = 730;
 
             while ($planned < $sessionCount && $scanLimit-- > 0) {
+                if ($course->ends_at && $cursor->gt($course->ends_at->copy()->endOfDay())) {
+                    break;
+                }
+
                 if (! in_array($cursor->dayOfWeek, $allowedDays, true)) {
+                    $cursor->addDay();
+
+                    continue;
+                }
+
+                if ($exceptionDates->has($cursor->toDateString())) {
+                    $exceptions++;
                     $cursor->addDay();
 
                     continue;
@@ -392,8 +414,16 @@ class TeacherClassroomService
                 throw ValidationException::withMessages(['session_count' => __('teacher-classroom::app.course_plan_range_too_large')]);
             }
 
-            return ['created' => $created, 'skipped' => $skipped, 'planned' => $planned];
+            return ['created' => $created, 'skipped' => $skipped, 'exceptions' => $exceptions, 'planned' => $planned];
         });
+    }
+
+    public function storeCalendarException(Classroom $classroom, User $actor, array $data): AcademicCalendarException
+    {
+        return AcademicCalendarException::query()->updateOrCreate(
+            ['classroom_id' => $classroom->id, 'exception_date' => $data['exception_date']],
+            ['course_id' => $classroom->course_id, 'created_by' => $actor->id, 'kind' => AcademicCalendarException::KIND_NO_CLASS, 'title' => $data['title'], 'reason' => $data['reason']],
+        );
     }
 
     public function updateSchedule(ClassroomSchedule $schedule, array $data, ?User $actor = null): ClassroomSchedule

@@ -24,6 +24,15 @@ class TeacherClassroomRequest extends FormRequest
             'school_year' => ['required', Rule::in(array_keys(Classroom::schoolYearOptions()))],
             'description' => ['nullable', 'string', 'max:3000'],
             'status' => ['required', Rule::in(Classroom::STATUSES)],
+            'assistant_id' => [
+                'nullable',
+                'integer',
+                Rule::notIn([(int) $this->user()?->getAuthIdentifier()]),
+                Rule::exists('users', 'id')
+                    ->where('role', 'teacher')
+                    ->where('is_active', true)
+                    ->whereNull('deleted_at'),
+            ],
             'type' => ['required', Rule::in(Classroom::TYPES)],
             'course_id' => [
                 'nullable',

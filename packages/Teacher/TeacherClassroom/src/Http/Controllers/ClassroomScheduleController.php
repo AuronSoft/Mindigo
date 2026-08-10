@@ -5,9 +5,11 @@ namespace Mindigo\TeacherClassroom\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Mindigo\AcademicCalendar\Models\AcademicCalendarException;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Http\Requests\ClassroomScheduleRequest;
 use Mindigo\TeacherClassroom\Http\Requests\GenerateCourseScheduleRequest;
+use Mindigo\TeacherClassroom\Http\Requests\StoreCalendarExceptionRequest;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
@@ -51,6 +53,26 @@ class ClassroomScheduleController extends Controller
 
         return redirect()->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
             ->with('success', __('teacher-classroom::app.course_plan_generated', $result));
+    }
+
+    public function storeException(StoreCalendarExceptionRequest $request, Classroom $classroom): RedirectResponse
+    {
+        $this->authorizeOwnership($classroom);
+        $this->service->storeCalendarException($classroom, $request->user(), $request->validated());
+
+        return redirect()->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
+            ->with('success', __('teacher-classroom::app.calendar_exception_saved'));
+    }
+
+    public function destroyException(AcademicCalendarException $exception): RedirectResponse
+    {
+        $classroom = $exception->classroom;
+        abort_unless($classroom, 404);
+        $this->authorizeOwnership($classroom);
+        $exception->delete();
+
+        return redirect()->route('teacher.classrooms.show', [$classroom, 'tab' => 'schedule'])
+            ->with('success', __('teacher-classroom::app.calendar_exception_deleted'));
     }
 
     public function destroySchedule(ClassroomSchedule $schedule): RedirectResponse

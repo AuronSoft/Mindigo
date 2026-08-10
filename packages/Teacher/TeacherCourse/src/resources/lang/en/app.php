@@ -160,4 +160,5 @@ return [
     'lesson_content_ph' => 'Write lesson body content here...',
     'back_to_course' => 'Back to Course',
     'save_lesson' => 'Save Lesson',
+    'ends_at_field' => 'Course end date',
 ];

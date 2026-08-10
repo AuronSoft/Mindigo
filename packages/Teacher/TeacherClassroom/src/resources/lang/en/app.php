@@ -102,6 +102,11 @@ return [
     // Show Detail View
     'assistant' => 'Assistant',
     'no_assistant' => '-- No assistant --',
+    'primary_teacher' => 'Primary teacher',
+    'primary_teacher_owner_hint' => 'Classroom owner and accountable teacher',
+    'assistant_hint' => 'The assistant supports the classroom without receiving primary-teacher ownership.',
+    'search_assistant' => 'Search by name or email...',
+    'no_assistant_results' => 'No matching teacher found.',
     'unassigned' => 'Unassigned',
     'draft' => 'Draft',
     'unauthorized' => 'You do not have permission to access this classroom.',
@@ -199,5 +204,5 @@ return [
     'schedule_deleted' => 'Session removed from schedule.',
     'attendance_outside_session_window' => 'Attendance can only be opened from 60 minutes before the session until 30 minutes after it ends.',
     'substitute_teacher' => 'Substitute teacher', 'no_substitute_teacher' => 'No substitute teacher', 'substitute_teacher_hint' => 'The selected teacher must accept the assignment before it counts toward their workload.', 'substitute_status_pending' => 'Awaiting response', 'substitute_status_accepted' => 'Accepted', 'substitute_status_declined' => 'Declined',
-    'course_plan_title' => 'Course session plan', 'course_plan_hint' => 'Generate regular sessions on :days at :time. Existing slots are preserved and skipped.', 'course_plan_start' => 'Plan from', 'course_plan_count' => 'Sessions', 'generate_course_plan' => 'Generate plan', 'course_plan_generated' => 'Course plan processed: :created created, :skipped existing sessions skipped.', 'course_plan_course_only' => 'Automatic planning is only available to classrooms linked to a course.', 'course_plan_range_too_large' => 'The requested plan exceeds the supported two-year range.', 'generated_session_title' => ':course · Session :number',
+    'course_plan_title' => 'Course session plan', 'course_plan_hint' => 'Generate regular sessions on :days at :time. Existing slots and no-class dates are skipped.', 'course_plan_start' => 'Plan from', 'course_plan_count' => 'Sessions', 'generate_course_plan' => 'Generate plan', 'course_plan_generated' => 'Course plan processed: :created created, :skipped existing sessions skipped, :exceptions exception dates skipped.', 'course_plan_course_only' => 'Automatic planning is only available to classrooms linked to a course.', 'course_plan_range_too_large' => 'There are not enough valid teaching dates before the course end date.', 'generated_session_title' => ':course · Session :number', 'calendar_exceptions' => 'No-class dates and exceptions', 'calendar_exceptions_hint' => 'These dates are preserved as academic exceptions and excluded when generating the course plan.', 'exception_date' => 'Date', 'exception_title' => 'Exception name', 'exception_reason' => 'Clear reason', 'add_exception' => 'Add exception', 'calendar_exception_saved' => 'The no-class date was saved.', 'calendar_exception_deleted' => 'The no-class date was removed.',
 ];
