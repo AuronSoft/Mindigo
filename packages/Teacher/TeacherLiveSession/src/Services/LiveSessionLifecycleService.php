@@ -40,6 +40,9 @@ final class LiveSessionLifecycleService
     public function end(LiveSession $session, User $actor): LiveSession
     {
         $this->assertCurrentState($session, [LiveSessionStatus::Waiting, LiveSessionStatus::Live]);
+        if ($session->recordings()->whereIn('status', ['recording', 'processing'])->exists()) {
+            throw ValidationException::withMessages(['recording' => __('teacher-live-session::app.validation.stop_recording_before_end')]);
+        }
         $this->providers->resolve($session->provider)->end($session, $actor);
 
         return $this->transition($session, $actor, LiveSessionStatus::Ended, [LiveSessionStatus::Waiting, LiveSessionStatus::Live], [

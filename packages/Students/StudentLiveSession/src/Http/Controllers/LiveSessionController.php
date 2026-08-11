@@ -41,6 +41,9 @@ class LiveSessionController extends Controller
         if (! $liveSession->isLive() || $participant->admission_status !== ParticipantAdmissionStatus::Admitted) {
             return view('student-live-session::waiting', ['session' => $liveSession, 'participant' => $participant]);
         }
+        if (($liveSession->room_settings['recording_enabled'] ?? false) === true && $participant->recording_consented_at === null) {
+            return view('teacher-live-session::recording-consent', ['session' => $liveSession]);
+        }
 
         $join = $this->service->join($liveSession, $request->user());
         $join['access_token'] = $this->tokens->issue($liveSession, $request->user(), $role);

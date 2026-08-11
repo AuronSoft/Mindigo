@@ -29,7 +29,7 @@ final class LiveSessionService
                     ->orWhereHas('classroom', fn ($classrooms) => $classrooms->where('assistant_id', $teacherId));
             })
             ->when($classroomId, fn ($query) => $query->where('classroom_id', $classroomId))
-            ->with(['classroom.course', 'schedule.lesson'])
+            ->with(['classroom.course', 'schedule.lesson', 'recordings' => fn ($query) => $query->where('status', 'ready')->latest()])
             ->latest('scheduled_start')
             ->paginate($perPage)
             ->withQueryString();

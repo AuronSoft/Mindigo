@@ -116,6 +116,9 @@ class TeacherLiveSessionController extends Controller
         $role = $this->access->roleFor($liveSession, $request->user());
         $participant = $this->admissions->requestEntry($liveSession, $request->user(), $role);
         abort_unless($participant->admission_status === ParticipantAdmissionStatus::Admitted, 403);
+        if (($liveSession->room_settings['recording_enabled'] ?? false) === true && $participant->recording_consented_at === null) {
+            return view('teacher-live-session::recording-consent', ['session' => $liveSession]);
+        }
 
         $join = $this->service->join($liveSession, $request->user());
         $join['access_token'] = $this->tokens->issue($liveSession, $request->user(), $role);
@@ -302,6 +305,12 @@ class TeacherLiveSessionController extends Controller
             'moderateUrl' => route('live-collaboration.moderate', $session),
             'leaveUrl' => route('teacher.live-sessions.index'),
             'joinTokenUrl' => route('teacher.live-sessions.join-token', $session),
+            'recordingEnabled' => ($session->room_settings['recording_enabled'] ?? false) === true,
+            'canRecord' => $this->access->canModerate($session, $request->user()),
+            'recordingStartUrl' => route('live-recordings.start', $session),
+            'recordingChunkUrl' => route('live-recordings.chunk', [$session, '__RECORDING__']),
+            'recordingFinalizeUrl' => route('live-recordings.finalize', [$session, '__RECORDING__']),
+            'recordingAbortUrl' => route('live-recordings.abort', [$session, '__RECORDING__']),
             'iceServers' => config('live-media.ice_servers', []),
         ];
     }

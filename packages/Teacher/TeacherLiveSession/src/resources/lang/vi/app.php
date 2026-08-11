@@ -172,6 +172,15 @@ return [
     'admitted_guests' => 'Khách trong phòng',
     'in_room' => 'Đang trong phòng',
     'remove_guest' => 'Đưa ra',
+    'start_recording' => 'Ghi hình',
+    'stop_recording' => 'Dừng ghi hình',
+    'recording_failed' => 'Không thể hoàn tất bản ghi. Vui lòng kiểm tra kết nối và thử lại.',
+    'recording_consent_title' => 'Lớp học này có thể được ghi hình',
+    'recording_consent_description' => 'Âm thanh, hình ảnh và màn hình chia sẻ có thể được ghi lại để phục vụ việc xem lại bài học. Bản ghi được bảo vệ theo quyền truy cập lớp.',
+    'recording_consent_checkbox' => 'Tôi đã hiểu và đồng ý tham gia buổi học có ghi hình này.',
+    'continue_to_room' => 'Tiếp tục vào lớp',
+    'recording_ready' => 'Bản ghi',
+    'watch_recording' => 'Xem bản ghi',
 
     // Messages
     'created_success' => 'Đã tạo buổi học trực tuyến.',
@@ -207,5 +216,11 @@ return [
         'invalid_join_token' => 'Token tham gia không hợp lệ, đã hết hạn hoặc đã bị thu hồi.',
         'signal_too_large' => 'Dữ liệu thương lượng kết nối media vượt quá giới hạn.',
         'guest_link_unavailable' => 'Link mời đã hết hạn, bị thu hồi hoặc đạt giới hạn lượt sử dụng.',
+        'recording_already_active' => 'Phòng học đang có một bản ghi hoạt động.',
+        'recording_checksum' => 'Chunk bản ghi không vượt qua kiểm tra toàn vẹn.',
+        'recording_chunk_conflict' => 'Chunk bản ghi này xung đột với chunk đã tồn tại.',
+        'recording_chunks_incomplete' => 'Không thể hoàn tất bản ghi vì đang thiếu một hoặc nhiều chunk.',
+        'recording_consent_missing' => 'Tất cả người đã được duyệt phải chấp thuận thông báo ghi hình trước khi bắt đầu.',
+        'stop_recording_before_end' => 'Hãy dừng và hoàn tất bản ghi đang chạy trước khi kết thúc lớp học.',
     ],
 ];
