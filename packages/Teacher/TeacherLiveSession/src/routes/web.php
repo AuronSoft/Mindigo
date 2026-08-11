@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionCollaborationController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionMediaController;
+use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestController;
+use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-sessions')->name('teacher.live-sessions.')->group(function () {
@@ -25,6 +27,21 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-s
     Route::post('/{liveSession}/participants/{participant}/admit', [TeacherLiveSessionController::class, 'admit'])->middleware('throttle:30,1')->name('participants.admit');
     Route::post('/{liveSession}/participants/{participant}/deny', [TeacherLiveSessionController::class, 'deny'])->middleware('throttle:30,1')->name('participants.deny');
     Route::post('/{liveSession}/participants/{participant}/remove', [TeacherLiveSessionController::class, 'remove'])->middleware('throttle:30,1')->name('participants.remove');
+    Route::post('/{liveSession}/guest-links', [TeacherLiveSessionController::class, 'createGuestLink'])->middleware('throttle:10,1')->name('guest-links.store');
+    Route::delete('/{liveSession}/guest-links/{guestLink}', [TeacherLiveSessionController::class, 'revokeGuestLink'])->name('guest-links.destroy');
+    Route::post('/{liveSession}/guests/{guest}/decision', [TeacherLiveSessionController::class, 'decideGuest'])->middleware('throttle:30,1')->name('guests.decision');
+});
+
+Route::middleware(['web', 'throttle:120,1'])->prefix('live/guest-media/{liveSession}/{guest}')->name('live-guest-media.')->scopeBindings()->group(function () {
+    Route::post('/presence', [PublicLiveSessionGuestMediaController::class, 'presence'])->name('presence');
+    Route::post('/signals', [PublicLiveSessionGuestMediaController::class, 'signal'])->name('signals.store');
+    Route::post('/signals/inbox', [PublicLiveSessionGuestMediaController::class, 'inbox'])->name('signals.inbox');
+});
+
+Route::middleware(['web', 'throttle:30,1'])->prefix('live/guest')->name('live-guest.')->group(function () {
+    Route::get('/{token}', [PublicLiveSessionGuestController::class, 'show'])->where('token', '[A-Za-z0-9]{64}')->name('show');
+    Route::post('/{token}', [PublicLiveSessionGuestController::class, 'join'])->where('token', '[A-Za-z0-9]{64}')->middleware('throttle:10,1')->name('join');
+    Route::get('/status/{guest}', [PublicLiveSessionGuestController::class, 'status'])->whereNumber('guest')->name('status');
 });
 
 Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('live-collaboration/{liveSession}')->name('live-collaboration.')->group(function () {

@@ -53,7 +53,7 @@ if (root) {
         return tile;
     };
 
-    const sendSignal = (recipientId, type, payload) => request(config.signalUrl, {recipient_id: recipientId, type, payload});
+    const sendSignal = (recipientKey, type, payload) => request(config.signalUrl, {recipient_key: recipientKey, type, payload});
 
     const peerFor = (userId, name = '') => {
         if (peers.has(userId)) return peers.get(userId);
@@ -97,22 +97,22 @@ if (root) {
         const {participants} = await request(config.presenceUrl, state);
         root.querySelector('[data-participant-count]').textContent = participants.length;
         for (const participant of participants) {
-            if (participant.user_id === config.userId || peers.has(participant.user_id)) continue;
-            if (config.userId < participant.user_id) await createOffer(participant);
+            if (participant.key === config.participantKey || peers.has(participant.key)) continue;
+            if (config.participantKey.localeCompare(participant.key) < 0) await createOffer({...participant, user_id: participant.key});
         }
-        const onlineIds = new Set(participants.map(item => item.user_id));
+        const onlineIds = new Set(participants.map(item => item.key));
         for (const userId of peers.keys()) if (!onlineIds.has(userId)) removePeer(userId);
     };
 
     const pollSignals = async () => {
         const {signals} = await request(config.inboxUrl, {});
         for (const signal of signals) {
-            const peer = peerFor(signal.sender_id);
+            const peer = peerFor(signal.sender_key || `user:${signal.sender_id}`);
             if (signal.type === 'offer') {
                 await peer.setRemoteDescription(signal.payload);
                 const answer = await peer.createAnswer();
                 await peer.setLocalDescription(answer);
-                await sendSignal(signal.sender_id, 'answer', answer);
+                await sendSignal(signal.sender_key || `user:${signal.sender_id}`, 'answer', answer);
             } else if (signal.type === 'answer') {
                 await peer.setRemoteDescription(signal.payload);
             } else if (signal.type === 'ice') {
@@ -275,7 +275,7 @@ if (root) {
 
     const loop = async () => {
         if (stopped) return;
-        try { await refreshJoinToken(); await pollPresence(); await pollSignals(); await pollCollaboration(); setStatus(config.labels.connected); }
+        try { if (config.joinTokenUrl) await refreshJoinToken(); await pollPresence(); await pollSignals(); if (config.collaborationSyncUrl) await pollCollaboration(); setStatus(config.labels.connected); }
         catch (error) {
             if ([403, 404, 409].includes(error.status)) { stopped = true; window.location.assign(config.leaveUrl); return; }
             setStatus(config.labels.reconnecting, true);

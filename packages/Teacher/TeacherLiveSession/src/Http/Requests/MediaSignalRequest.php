@@ -16,7 +16,8 @@ final class MediaSignalRequest extends FormRequest
     {
         return [
             'token' => ['required', 'string', 'max:4096'],
-            'recipient_id' => ['required', 'integer', 'different:sender_id'],
+            'recipient_id' => ['nullable', 'integer'],
+            'recipient_key' => ['required_without:recipient_id', 'string', 'regex:/^(user|guest):[1-9][0-9]*$/'],
             'type' => ['required', Rule::in(['offer', 'answer', 'ice'])],
             'payload' => [
                 'required',
