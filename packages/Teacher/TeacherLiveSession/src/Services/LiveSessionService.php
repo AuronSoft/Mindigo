@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
+use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherLiveSession\Data\SessionContext;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionProvider;
 use Mindigo\TeacherLiveSession\Enums\ProviderSyncStatus;
@@ -29,21 +30,21 @@ final class LiveSessionService
 
     public function create(array $data, User $actor): LiveSession
     {
-        return DB::transaction(function () use ($data, $actor): LiveSession {
-            $providerKey = LiveSessionProvider::from($data['provider'] ?? LiveSessionProvider::Native->value);
-            $idempotencyKey = $data['idempotency_key'] ?? (string) Str::uuid();
-            $context = new SessionContext(
-                classroomId: (int) $data['classroom_id'],
-                teacherId: (int) $actor->getKey(),
-                title: $data['title'],
-                description: $data['description'] ?? null,
-                scheduledStart: Carbon::parse($data['scheduled_start']),
-                scheduledEnd: filled($data['scheduled_end'] ?? null) ? Carbon::parse($data['scheduled_end']) : null,
-                idempotencyKey: $idempotencyKey,
-            );
-            $meeting = $this->providers->resolve($providerKey)->create($context);
+        $providerKey = LiveSessionProvider::from($data['provider'] ?? LiveSessionProvider::Native->value);
+        $idempotencyKey = $data['idempotency_key'] ?? (string) Str::uuid();
+        $context = new SessionContext(
+            classroomId: (int) $data['classroom_id'],
+            teacherId: (int) $actor->getKey(),
+            title: $data['title'],
+            description: $data['description'] ?? null,
+            scheduledStart: Carbon::parse($data['scheduled_start']),
+            scheduledEnd: filled($data['scheduled_end'] ?? null) ? Carbon::parse($data['scheduled_end']) : null,
+            idempotencyKey: $idempotencyKey,
+        );
+        $meeting = $this->providers->resolve($providerKey)->create($context);
 
-            return LiveSession::query()->create([
+        return DB::transaction(function () use ($data, $actor, $providerKey, $idempotencyKey, $meeting): LiveSession {
+            $session = LiveSession::query()->create([
                 ...$data,
                 'teacher_id' => $actor->getKey(),
                 'created_by' => $actor->getKey(),
@@ -61,16 +62,26 @@ final class LiveSessionService
                     : ProviderSyncStatus::Pending,
                 'status' => 'scheduled',
             ]);
+
+            if ($session->classroom_schedule_id) {
+                ClassroomSchedule::query()
+                    ->whereKey($session->classroom_schedule_id)
+                    ->where('delivery_mode', ClassroomSchedule::DELIVERY_OFFLINE)
+                    ->update(['delivery_mode' => ClassroomSchedule::DELIVERY_ONLINE]);
+            }
+
+            return $session;
         });
     }
 
     public function update(LiveSession $session, array $data): LiveSession
     {
-        return DB::transaction(function () use ($session, $data): LiveSession {
-            unset($data['provider']);
-            $session->update($data);
-            $meeting = $this->providers->resolve($session->provider)->update($session->refresh());
+        unset($data['provider']);
+        $meeting = $this->providers->resolve($session->provider)->update($session);
+
+        return DB::transaction(function () use ($session, $data, $meeting): LiveSession {
             $session->update([
+                ...$data,
                 'provider_meeting_id' => $meeting->meetingId,
                 'provider_join_url' => $meeting->joinUrl,
                 'provider_host_url' => $meeting->hostUrl,
@@ -89,9 +100,14 @@ final class LiveSessionService
 
     public function start(LiveSession $session, User $actor): LiveSession
     {
-        return DB::transaction(function () use ($session, $actor): LiveSession {
+        if ($session->status !== 'scheduled') {
+            return $session;
+        }
+
+        $this->providers->resolve($session->provider)->start($session, $actor);
+
+        return DB::transaction(function () use ($session): LiveSession {
             if ($session->status === 'scheduled') {
-                $this->providers->resolve($session->provider)->start($session, $actor);
                 $session->update([
                     'status' => 'live',
                     'started_at' => now(),
@@ -105,8 +121,9 @@ final class LiveSessionService
 
     public function end(LiveSession $session, User $actor): LiveSession
     {
+        $this->providers->resolve($session->provider)->end($session, $actor);
+
         return DB::transaction(function () use ($session, $actor): LiveSession {
-            $this->providers->resolve($session->provider)->end($session, $actor);
             $session->update([
                 'status' => 'ended',
                 'ended_at' => now(),

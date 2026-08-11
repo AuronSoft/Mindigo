@@ -8,11 +8,15 @@ use Illuminate\Support\Facades\Auth;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherLiveSession\Http\Requests\LiveSessionRequest;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
+use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
 use Mindigo\TeacherLiveSession\Services\LiveSessionService;
 
 class TeacherLiveSessionController extends Controller
 {
-    public function __construct(protected LiveSessionService $service) {}
+    public function __construct(
+        protected LiveSessionService $service,
+        protected LiveMeetingProviderRegistry $providers,
+    ) {}
 
     public function index(Request $request)
     {
@@ -26,9 +30,10 @@ class TeacherLiveSessionController extends Controller
 
     public function create()
     {
-        $classrooms = $this->classroomsForTeacher();
+        $classrooms = $this->classroomsForTeacher(withAcademicContext: true);
+        $providerCapabilities = $this->providers->capabilities();
 
-        return view('teacher-live-session::create', compact('classrooms'));
+        return view('teacher-live-session::create', compact('classrooms', 'providerCapabilities'));
     }
 
     public function store(LiveSessionRequest $request)
@@ -44,9 +49,10 @@ class TeacherLiveSessionController extends Controller
     {
         $this->authorizeOwner($liveSession);
 
-        $classrooms = $this->classroomsForTeacher();
+        $classrooms = $this->classroomsForTeacher($liveSession, true);
+        $providerCapabilities = $this->providers->capabilities();
 
-        return view('teacher-live-session::edit', ['session' => $liveSession, 'classrooms' => $classrooms]);
+        return view('teacher-live-session::edit', ['session' => $liveSession, ...compact('classrooms', 'providerCapabilities')]);
     }
 
     public function update(LiveSessionRequest $request, LiveSession $liveSession)
@@ -79,7 +85,7 @@ class TeacherLiveSessionController extends Controller
         return redirect()->route('teacher.live-sessions.room', $liveSession);
     }
 
-    // Phòng họp (nhúng Jitsi)
+    // Phòng học theo provider đã được đăng ký.
 
     public function room(Request $request, LiveSession $liveSession)
     {
@@ -108,11 +114,25 @@ class TeacherLiveSessionController extends Controller
         abort_if($session->teacher_id !== Auth::id(), 403);
     }
 
-    private function classroomsForTeacher()
+    private function classroomsForTeacher(?LiveSession $current = null, bool $withAcademicContext = false)
     {
+        $linkedScheduleIds = LiveSession::query()
+            ->when($current, fn ($query) => $query->whereKeyNot($current->id))
+            ->whereNotNull('classroom_schedule_id')
+            ->select('classroom_schedule_id');
+
         return Classroom::query()
             ->where('teacher_id', Auth::id())
             ->where('status', 'active')
+            ->when($withAcademicContext, fn ($query) => $query->with([
+                'course:id,name,starts_at,ends_at,schedule_days,study_time',
+                'schedules' => fn ($query) => $query
+                    ->whereIn('status', ['draft', 'scheduled'])
+                    ->whereNotIn('id', $linkedScheduleIds)
+                    ->with('lesson:id,name')
+                    ->orderBy('session_date')
+                    ->orderBy('start_time'),
+            ]))
             ->withCount('students')
             ->orderBy('name')
             ->get();
