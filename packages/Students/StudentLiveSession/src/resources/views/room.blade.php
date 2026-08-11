@@ -1,86 +1,19 @@
 @extends('Mindigo-dashboard::layouts')
-@section('title', $session->title . ' — ' . __('student-live-session::app.room_title'))
+@section('title', $session->title.' — '.__('student-live-session::app.room_title'))
 
 @section('styles')
-    @vite([
-        'packages/Mindigo/Dashboard/src/resources/css/app.css',
-        'packages/Mindigo/Dashboard/src/resources/js/app.js',
-    ])
+    @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js'])
 @endsection
 
 @section('content')
-<div class="flex h-screen flex-col bg-slate-900">
-
-    {{-- Top bar --}}
-    <header class="flex items-center justify-between gap-4 border-b border-slate-800 bg-slate-900 px-5 py-3">
-        <div class="flex items-center gap-3 min-w-0">
-            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-red-600/20 text-red-400">
-                <x-heroicon-o-video-camera class="h-5 w-5" />
-            </span>
-            <div class="min-w-0">
-                <p class="truncate text-sm font-black text-white">{{ $session->title }}</p>
-                <p class="truncate text-xs font-semibold text-slate-400">
-                    {{ $session->classroom->name ?? '' }}
-                    @if($session->teacher) · {{ __('student-live-session::app.teacher') }}: {{ $session->teacher->name }} @endif
-                </p>
-            </div>
-        </div>
-        <a href="{{ route('student.live-sessions.index') }}"
-           class="inline-flex h-9 items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800 px-4 text-xs font-black text-slate-200 no-underline transition hover:bg-slate-700">
-            <x-heroicon-o-arrow-left-on-rectangle class="h-4 w-4" />
-            @lang('student-live-session::app.leave_room')
-        </a>
-    </header>
-
-    {{-- Jitsi container --}}
-    <div id="jitsi-root" class="relative flex-1">
-        <div id="jitsi-loading" class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-400">
-            <span class="h-8 w-8 animate-spin rounded-full border-2 border-slate-600 border-t-green-500"></span>
-            <p class="text-sm font-bold">@lang('student-live-session::app.room_loading')</p>
-        </div>
-    </div>
-</div>
-
-<script src="https://meet.jit.si/external_api.js"></script>
-<script>
-(function () {
-    const indexUrl = @json(route('student.live-sessions.index'));
-
-    function launch() {
-        if (typeof JitsiMeetExternalAPI === 'undefined') {
-            return setTimeout(launch, 1000);
-        }
-
-        const root = document.getElementById('jitsi-root');
-        const loading = document.getElementById('jitsi-loading');
-
-        const api = new JitsiMeetExternalAPI('meet.jit.si', {
-            roomName: @json($session->room_name),
-            parentNode: root,
-            width: '100%',
-            height: '100%',
-            userInfo: { displayName: @json(auth()->user()->name) },
-            configOverwrite: {
-                startWithAudioMuted: true,
-                startWithVideoMuted: true,
-                prejoinPageEnabled: false,
-                disableDeepLinking: true,
-            },
-            interfaceConfigOverwrite: {
-                SHOW_JITSI_WATERMARK: false,
-            },
-        });
-
-        api.addEventListener('videoConferenceJoined', function () {
-            if (loading) loading.remove();
-        });
-
-        api.addEventListener('readyToClose', function () {
-            window.location = indexUrl;
-        });
-    }
-
-    launch();
-})();
-</script>
+<main class="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-slate-50 p-6">
+    <section class="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+        <span class="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-green-50 text-green-700"><x-heroicon-o-video-camera class="h-6 w-6" /></span>
+        <p class="mt-4 text-xs font-bold uppercase tracking-widest text-green-700">Mindigo Live</p>
+        <h1 class="mt-2 text-xl font-black text-slate-950">{{ $session->title }}</h1>
+        <p class="mt-1 text-sm font-semibold text-slate-500">{{ $session->classroom->name ?? '' }}</p>
+        <div class="mt-6 rounded-xl border border-green-100 bg-green-50 p-4 text-sm font-semibold text-green-900">@lang('student-live-session::app.native_room_preparing')</div>
+        <a href="{{ route('student.live-sessions.index') }}" class="mt-6 inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-sm font-bold text-slate-700 no-underline">@lang('student-live-session::app.leave_room')</a>
+    </section>
+</main>
 @endsection

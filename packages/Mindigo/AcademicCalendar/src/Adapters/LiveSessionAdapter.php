@@ -62,7 +62,7 @@ final class LiveSessionAdapter implements CalendarSourceAdapter
                     ownerId: $session->teacher_id,
                     url: $this->routeFor($query),
                     actions: $query->viewer->role === 'student' ? ['view', 'join'] : ['view', 'edit', 'start', 'cancel'],
-                    metadata: ['classroom_name' => $session->classroom?->name, 'provider' => $session->provider],
+                    metadata: ['classroom_name' => $session->classroom?->name, 'provider' => $session->provider->value],
                 );
             });
     }

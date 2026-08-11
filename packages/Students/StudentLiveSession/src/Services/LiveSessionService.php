@@ -3,11 +3,15 @@
 namespace Mindigo\StudentLiveSession\Services;
 
 use Illuminate\Support\Collection;
+use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
+use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
 
 class LiveSessionService
 {
+    public function __construct(private readonly LiveMeetingProviderRegistry $providers) {}
+
     // ID các lớp mà học sinh đang tham gia (status active)
 
     public function classroomIdsForStudent(int|string $studentId): Collection
@@ -66,5 +70,18 @@ class LiveSessionService
         if (! $attendance->joined_at) {
             $attendance->update(['joined_at' => now()]);
         }
+    }
+
+    public function join(LiveSession $session, User $user): array
+    {
+        $result = $this->providers->resolve($session->provider)->join($session, $user);
+        $this->recordJoin($session, $user->getKey());
+
+        return [
+            'mode' => $result->mode,
+            'url' => $result->url,
+            'token' => $result->token,
+            'metadata' => $result->metadata,
+        ];
     }
 }
