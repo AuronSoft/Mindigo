@@ -119,6 +119,10 @@ class ClassroomScheduleRequest extends FormRequest
                 $validator->errors()->add('session_date', __('teacher-classroom::app.session_before_course_start', ['date' => $course->starts_at->format('d/m/Y')]));
             }
 
+            if ($course->ends_at && $sessionDate->startOfDay()->gt($course->ends_at->copy()->endOfDay())) {
+                $validator->errors()->add('session_date', __('teacher-classroom::app.session_after_course_end', ['date' => $course->ends_at->format('d/m/Y')]));
+            }
+
             if ($this->string('type')->toString() === ClassroomSchedule::TYPE_MAKEUP) {
                 return;
             }

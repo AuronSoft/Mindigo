@@ -224,4 +224,5 @@ return [
     'attendance_metric_sessions' => 'Recorded sessions',
     'session_attendance_summary' => 'Summary by session',
     'course_attendance_summary' => 'Entire course: :total records · :present present · :late late · :absent absent · :excused excused',
+    'session_after_course_end' => 'The session cannot be after the course end date (:date).',
 ];

@@ -367,30 +367,35 @@ class TeacherClassroomService
 
     public function addSchedule(Classroom $classroom, array $data, ?User $actor = null): ClassroomSchedule
     {
-        return ClassroomSchedule::query()->create([
-            'classroom_id' => $classroom->id,
-            'lesson_id' => $data['lesson_id'] ?? null,
-            'type' => $data['type'],
-            'delivery_mode' => $data['delivery_mode'] ?? ClassroomSchedule::DELIVERY_OFFLINE,
-            'status' => $data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED,
-            'title' => $data['title'],
-            'session_date' => $data['session_date'],
-            'start_time' => $data['start_time'],
-            'end_time' => $data['end_time'],
-            'location' => $data['location'] ?? null,
-            'meeting_url' => $data['meeting_url'] ?? null,
-            'description' => $data['description'] ?? null,
-            'makeup_reason' => $data['makeup_reason'] ?? null,
-            'cancel_reason' => $data['cancel_reason'] ?? null,
-            'reschedule_reason' => $data['reschedule_reason'] ?? null,
-            'substitute_teacher_id' => $data['substitute_teacher_id'] ?? null,
-            'substitute_status' => ! empty($data['substitute_teacher_id']) ? ClassroomSchedule::SUBSTITUTE_PENDING : null,
-            'makeup_for_schedule_id' => $data['makeup_for_schedule_id'] ?? null,
-            'rescheduled_from_id' => $data['rescheduled_from_id'] ?? null,
-            'published_at' => ($data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED) === ClassroomSchedule::STATUS_DRAFT ? null : now(),
-            'created_by' => $actor?->id,
-            'updated_by' => $actor?->id,
-        ]);
+        return DB::transaction(function () use ($classroom, $data, $actor): ClassroomSchedule {
+            $this->lockScheduleResources($classroom, $data);
+            $this->assertNoScheduleConflict($classroom, $data);
+
+            return ClassroomSchedule::query()->create([
+                'classroom_id' => $classroom->id,
+                'lesson_id' => $data['lesson_id'] ?? null,
+                'type' => $data['type'],
+                'delivery_mode' => $data['delivery_mode'] ?? ClassroomSchedule::DELIVERY_OFFLINE,
+                'status' => $data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED,
+                'title' => $data['title'],
+                'session_date' => $data['session_date'],
+                'start_time' => $data['start_time'],
+                'end_time' => $data['end_time'],
+                'location' => $data['location'] ?? null,
+                'meeting_url' => $data['meeting_url'] ?? null,
+                'description' => $data['description'] ?? null,
+                'makeup_reason' => $data['makeup_reason'] ?? null,
+                'cancel_reason' => $data['cancel_reason'] ?? null,
+                'reschedule_reason' => $data['reschedule_reason'] ?? null,
+                'substitute_teacher_id' => $data['substitute_teacher_id'] ?? null,
+                'substitute_status' => ! empty($data['substitute_teacher_id']) ? ClassroomSchedule::SUBSTITUTE_PENDING : null,
+                'makeup_for_schedule_id' => $data['makeup_for_schedule_id'] ?? null,
+                'rescheduled_from_id' => $data['rescheduled_from_id'] ?? null,
+                'published_at' => ($data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED) === ClassroomSchedule::STATUS_DRAFT ? null : now(),
+                'created_by' => $actor?->id,
+                'updated_by' => $actor?->id,
+            ]);
+        });
     }
 
     public function generateCourseSchedulePlan(Classroom $classroom, User $actor, string $startDate, int $sessionCount): array
@@ -487,33 +492,83 @@ class TeacherClassroomService
 
     public function updateSchedule(ClassroomSchedule $schedule, array $data, ?User $actor = null): ClassroomSchedule
     {
-        $substituteId = $data['substitute_teacher_id'] ?? null;
-        $substituteChanged = (int) $schedule->substitute_teacher_id !== (int) $substituteId;
-        $schedule->update([
-            'lesson_id' => $data['lesson_id'] ?? null,
-            'type' => $data['type'],
-            'delivery_mode' => $data['delivery_mode'] ?? ClassroomSchedule::DELIVERY_OFFLINE,
-            'status' => $data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED,
-            'title' => $data['title'],
-            'session_date' => $data['session_date'],
-            'start_time' => $data['start_time'],
-            'end_time' => $data['end_time'],
-            'location' => $data['location'] ?? null,
-            'meeting_url' => $data['meeting_url'] ?? null,
-            'description' => $data['description'] ?? null,
-            'makeup_reason' => $data['makeup_reason'] ?? null,
-            'cancel_reason' => $data['cancel_reason'] ?? null,
-            'substitute_teacher_id' => $substituteId,
-            'substitute_status' => $substituteChanged ? ($substituteId ? ClassroomSchedule::SUBSTITUTE_PENDING : null) : $schedule->substitute_status,
-            'substitute_responded_at' => $substituteChanged ? null : $schedule->substitute_responded_at,
-            'substitute_response_note' => $substituteChanged ? null : $schedule->substitute_response_note,
-            'makeup_for_schedule_id' => $data['makeup_for_schedule_id'] ?? null,
-            'rescheduled_from_id' => $data['rescheduled_from_id'] ?? null,
-            'published_at' => ($data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED) === ClassroomSchedule::STATUS_DRAFT ? null : ($schedule->published_at ?? now()),
-            'updated_by' => $actor?->id,
-        ]);
+        return DB::transaction(function () use ($schedule, $data, $actor): ClassroomSchedule {
+            $schedule = ClassroomSchedule::query()->with('classroom')->lockForUpdate()->findOrFail($schedule->id);
+            $this->lockScheduleResources($schedule->classroom, $data);
+            $this->assertNoScheduleConflict($schedule->classroom, $data, $schedule);
+            $substituteId = $data['substitute_teacher_id'] ?? null;
+            $substituteChanged = (int) $schedule->substitute_teacher_id !== (int) $substituteId;
+            $schedule->update([
+                'lesson_id' => $data['lesson_id'] ?? null,
+                'type' => $data['type'],
+                'delivery_mode' => $data['delivery_mode'] ?? ClassroomSchedule::DELIVERY_OFFLINE,
+                'status' => $data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED,
+                'title' => $data['title'],
+                'session_date' => $data['session_date'],
+                'start_time' => $data['start_time'],
+                'end_time' => $data['end_time'],
+                'location' => $data['location'] ?? null,
+                'meeting_url' => $data['meeting_url'] ?? null,
+                'description' => $data['description'] ?? null,
+                'makeup_reason' => $data['makeup_reason'] ?? null,
+                'cancel_reason' => $data['cancel_reason'] ?? null,
+                'substitute_teacher_id' => $substituteId,
+                'substitute_status' => $substituteChanged ? ($substituteId ? ClassroomSchedule::SUBSTITUTE_PENDING : null) : $schedule->substitute_status,
+                'substitute_responded_at' => $substituteChanged ? null : $schedule->substitute_responded_at,
+                'substitute_response_note' => $substituteChanged ? null : $schedule->substitute_response_note,
+                'makeup_for_schedule_id' => $data['makeup_for_schedule_id'] ?? null,
+                'rescheduled_from_id' => $data['rescheduled_from_id'] ?? null,
+                'published_at' => ($data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED) === ClassroomSchedule::STATUS_DRAFT ? null : ($schedule->published_at ?? now()),
+                'updated_by' => $actor?->id,
+            ]);
 
-        return $schedule;
+            return $schedule;
+        });
+    }
+
+    private function lockScheduleResources(Classroom $classroom, array $data): void
+    {
+        Classroom::query()->whereKey($classroom->id)->lockForUpdate()->firstOrFail();
+        User::query()->whereIn('id', array_values(array_unique(array_filter([
+            $classroom->teacher_id,
+            $data['substitute_teacher_id'] ?? null,
+        ]))))->orderBy('id')->lockForUpdate()->get();
+    }
+
+    private function assertNoScheduleConflict(Classroom $classroom, array $data, ?ClassroomSchedule $current = null): void
+    {
+        $status = $data['status'] ?? ClassroomSchedule::STATUS_SCHEDULED;
+        if (in_array($status, [ClassroomSchedule::STATUS_DRAFT, ClassroomSchedule::STATUS_CANCELLED, ClassroomSchedule::STATUS_RESCHEDULED], true)) {
+            return;
+        }
+
+        $overlap = ClassroomSchedule::query()
+            ->where('classroom_id', $classroom->id)
+            ->whereDate('session_date', $data['session_date'])
+            ->whereNotIn('status', [ClassroomSchedule::STATUS_CANCELLED, ClassroomSchedule::STATUS_RESCHEDULED])
+            ->where('start_time', '<', $data['end_time'].':00')
+            ->where('end_time', '>', $data['start_time'].':00')
+            ->when($current, fn ($query) => $query->whereKeyNot($current->id))
+            ->exists();
+
+        if ($overlap) {
+            throw ValidationException::withMessages(['start_time' => __('teacher-classroom::app.schedule_classroom_conflict')]);
+        }
+
+        $teacherIds = array_values(array_unique(array_filter([$classroom->teacher_id, $data['substitute_teacher_id'] ?? null])));
+        $teacherConflict = ClassroomSchedule::query()
+            ->whereDate('session_date', $data['session_date'])
+            ->whereNotIn('status', [ClassroomSchedule::STATUS_CANCELLED, ClassroomSchedule::STATUS_RESCHEDULED])
+            ->where('start_time', '<', $data['end_time'].':00')
+            ->where('end_time', '>', $data['start_time'].':00')
+            ->where(fn ($query) => $query->whereIn('substitute_teacher_id', $teacherIds)
+                ->orWhereHas('classroom', fn ($classrooms) => $classrooms->whereIn('teacher_id', $teacherIds)))
+            ->when($current, fn ($query) => $query->whereKeyNot($current->id))
+            ->exists();
+
+        if ($teacherConflict) {
+            throw ValidationException::withMessages(['start_time' => __('teacher-classroom::app.schedule_teacher_conflict')]);
+        }
     }
 
     public function respondToSubstituteAssignment(ClassroomSchedule $schedule, User $teacher, bool $accept, ?string $note): ClassroomSchedule

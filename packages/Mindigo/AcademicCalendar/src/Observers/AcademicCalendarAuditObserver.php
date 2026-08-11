@@ -8,6 +8,7 @@ use Mindigo\AcademicCalendar\Models\AcademicCalendarException;
 use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 
 class AcademicCalendarAuditObserver
@@ -18,12 +19,16 @@ class AcademicCalendarAuditObserver
 
     public function created(Model $model): void
     {
-        if (! $model instanceof ClassroomSchedule && ! $model instanceof AcademicCalendarException) {
+        if (! $model instanceof ClassroomSchedule && ! $model instanceof AcademicCalendarException && ! $model instanceof ClassroomAttendance) {
             return;
         }
 
         $this->audit->record(
-            action: $model instanceof AcademicCalendarException ? 'calendar_exception_created' : 'session_created',
+            action: match (true) {
+                $model instanceof AcademicCalendarException => 'calendar_exception_created',
+                $model instanceof ClassroomAttendance => 'attendance_recorded',
+                default => 'session_created',
+            },
             module: self::MODULE,
             newValues: $this->values($model, $model->getAttributes()),
             metadata: $this->metadata($model),
@@ -57,12 +62,12 @@ class AcademicCalendarAuditObserver
 
     public function deleted(Model $model): void
     {
-        if (! $model instanceof AcademicCalendarException) {
+        if (! $model instanceof AcademicCalendarException && ! $model instanceof ClassroomAttendance) {
             return;
         }
 
         $this->audit->record(
-            action: 'calendar_exception_deleted',
+            action: $model instanceof ClassroomAttendance ? 'attendance_deleted' : 'calendar_exception_deleted',
             module: self::MODULE,
             oldValues: $this->values($model, $model->getOriginal()),
             metadata: $this->metadata($model),
@@ -73,7 +78,7 @@ class AcademicCalendarAuditObserver
 
     private function supported(Model $model): bool
     {
-        return $model instanceof Classroom || $model instanceof ClassroomSchedule || $model instanceof AcademicCalendarException;
+        return $model instanceof Classroom || $model instanceof ClassroomSchedule || $model instanceof AcademicCalendarException || $model instanceof ClassroomAttendance;
     }
 
     private function updatedAction(Model $model, array $previous, array $changes): string
@@ -88,6 +93,10 @@ class AcademicCalendarAuditObserver
 
         if ($model instanceof AcademicCalendarException) {
             return 'calendar_exception_updated';
+        }
+
+        if ($model instanceof ClassroomAttendance) {
+            return 'attendance_corrected';
         }
 
         return match (true) {
@@ -117,6 +126,12 @@ class AcademicCalendarAuditObserver
                 'classroom_id' => $model->classroom_id,
                 'course_id' => $model->course_id,
             ],
+            $model instanceof ClassroomAttendance => [
+                'classroom_id' => $model->classroom_id,
+                'classroom_schedule_id' => $model->classroom_schedule_id,
+                'student_id' => $model->student_id,
+                'session_date' => $model->session_date?->toDateString(),
+            ],
             default => [],
         }, fn ($value) => $value !== null);
     }
@@ -134,6 +149,9 @@ class AcademicCalendarAuditObserver
             $model instanceof AcademicCalendarException => [
                 'course_id', 'classroom_id', 'exception_date', 'kind', 'title', 'reason', 'created_by',
             ],
+            $model instanceof ClassroomAttendance => [
+                'status', 'late_minutes', 'absence_reason', 'method', 'remarks', 'updated_by',
+            ],
             default => [],
         };
 
@@ -148,9 +166,11 @@ class AcademicCalendarAuditObserver
             return $authenticatedUser;
         }
 
-        $actorId = $model instanceof ClassroomSchedule
-            ? ($model->updated_by ?: $model->created_by)
-            : ($model->created_by ?? null);
+        $actorId = match (true) {
+            $model instanceof ClassroomSchedule => $model->updated_by ?: $model->created_by,
+            $model instanceof ClassroomAttendance => $model->updated_by,
+            default => $model->created_by ?? null,
+        };
 
         return $actorId ? User::query()->find($actorId) : null;
     }
