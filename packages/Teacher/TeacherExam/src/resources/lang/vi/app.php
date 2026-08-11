@@ -37,6 +37,17 @@ return [
     // Filters
     'search' => 'Tìm theo tên, môn học...',
     'all_status' => 'Tất cả trạng thái',
+    'clear_filter' => 'Xóa bộ lọc',
+    'catalog_title' => 'Tất cả đề thi',
+    'catalog_count' => ':count đề thi trong thư viện của bạn',
+    'general_subject' => 'Đề thi tổng hợp',
+    'no_topic' => 'Chưa phân loại chủ đề',
+    'view_exam' => 'Xem đề thi',
+    'updated_date' => 'Cập nhật ngày :date',
+    'open_exam' => 'Mở đề thi :title',
+    'edit_exam_label' => 'Chỉnh sửa đề thi :title',
+    'delete_exam_label' => 'Xóa đề thi :title',
+    'pagination' => 'Phân trang danh sách đề thi',
 
     // Status
     'published' => 'Đã xuất bản',

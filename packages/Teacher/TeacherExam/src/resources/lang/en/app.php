@@ -35,6 +35,17 @@ return [
 
     'search' => 'Search by title, subject...',
     'all_status' => 'All statuses',
+    'clear_filter' => 'Clear filters',
+    'catalog_title' => 'All exams',
+    'catalog_count' => ':count exams in your library',
+    'general_subject' => 'General exam',
+    'no_topic' => 'No topic assigned',
+    'view_exam' => 'View exam',
+    'updated_date' => 'Updated :date',
+    'open_exam' => 'Open exam :title',
+    'edit_exam_label' => 'Edit exam :title',
+    'delete_exam_label' => 'Delete exam :title',
+    'pagination' => 'Exam list pagination',
 
     'published' => 'Published',
     'draft' => 'Draft',

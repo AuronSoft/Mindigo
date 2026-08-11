@@ -52,18 +52,6 @@ class TeacherExamService
         return $query->paginate(12)->withQueryString();
     }
 
-    public function stats(User $teacher): array
-    {
-        $base = Exam::query()->where('created_by', $teacher->getAuthIdentifier());
-
-        return [
-            'total' => (clone $base)->count(),
-            'published' => (clone $base)->where('status', 'published')->count(),
-            'draft' => (clone $base)->where('status', 'draft')->count(),
-            'closed' => (clone $base)->where('status', 'closed')->count(),
-        ];
-    }
-
     public function create(TeacherExamRequest $request): Exam
     {
         return $this->exams->create($request);
