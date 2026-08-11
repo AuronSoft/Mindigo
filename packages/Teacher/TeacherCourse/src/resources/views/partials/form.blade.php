@@ -205,6 +205,26 @@
                 @error('study_time')<p class="mt-1.5 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
             </div>
         </div>
+
+        @if($editing && ($scheduleImpact['sessions'] ?? 0) > 0)
+            <fieldset class="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                <legend class="px-2 text-sm font-black text-amber-900">@lang('teacher-course::app.schedule_impact_title')</legend>
+                <p class="mb-3 text-xs font-semibold leading-5 text-amber-800">
+                    {{ __('teacher-course::app.schedule_impact_summary', ['sessions' => $scheduleImpact['sessions'], 'classrooms' => $scheduleImpact['classrooms']]) }}
+                </p>
+                <div class="grid gap-2 lg:grid-cols-3">
+                    @foreach(['keep', 'align_future', 'cancel_affected'] as $action)
+                        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-amber-200 bg-white p-3 transition has-checked:border-green-400 has-checked:ring-2 has-checked:ring-green-100">
+                            <input type="radio" name="schedule_change_action" value="{{ $action }}" @checked(old('schedule_change_action', 'keep') === $action) class="mt-0.5 h-4 w-4 accent-green-600">
+                            <span><strong class="block text-xs font-black text-slate-800">@lang('teacher-course::app.schedule_actions.'.$action.'.title')</strong><span class="mt-1 block text-[11px] font-semibold leading-5 text-slate-500">@lang('teacher-course::app.schedule_actions.'.$action.'.description')</span></span>
+                        </label>
+                    @endforeach
+                </div>
+                @error('schedule_change_action')<p class="mt-2 text-xs font-bold text-red-600">{{ $message }}</p>@enderror
+            </fieldset>
+        @else
+            <input type="hidden" name="schedule_change_action" value="keep">
+        @endif
     </section>
 
     <section data-course-form-panel="content" hidden class="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">

@@ -11,6 +11,11 @@ class CourseRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
+        $this->merge(['schedule_change_action' => $this->input('schedule_change_action', 'keep')]);
+        if (! $this->has('schedule_days')) {
+            $this->merge(['schedule_days' => []]);
+        }
+
         if ($this->filled('starts_at') && preg_match('/^\d{2}\/\d{2}\/\d{4}$/', (string) $this->input('starts_at'))) {
             $this->merge(['starts_at' => Carbon::createFromFormat('d/m/Y', (string) $this->input('starts_at'))?->format('Y-m-d')]);
         }
@@ -70,6 +75,7 @@ class CourseRequest extends FormRequest
             'study_time_start' => ['nullable', 'date_format:H:i'],
             'study_time_end' => ['nullable', 'date_format:H:i'],
             'study_time' => ['nullable', 'string', 'max:120'],
+            'schedule_change_action' => ['required', Rule::in(['keep', 'align_future', 'cancel_affected'])],
             'learning_outcomes' => ['nullable', 'string', 'max:10000'],
             'requirements' => ['nullable', 'string', 'max:10000'],
             'target_learners' => ['nullable', 'string', 'max:10000'],
