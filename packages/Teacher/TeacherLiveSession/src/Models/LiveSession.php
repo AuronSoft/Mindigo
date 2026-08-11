@@ -11,6 +11,7 @@ use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionProvider;
+use Mindigo\TeacherLiveSession\Enums\LiveSessionType;
 use Mindigo\TeacherLiveSession\Enums\ProviderSyncStatus;
 
 class LiveSession extends Model
@@ -22,6 +23,7 @@ class LiveSession extends Model
     protected $fillable = [
         'classroom_id',
         'classroom_schedule_id',
+        'session_type',
         'teacher_id',
         'created_by',
         'ended_by',
@@ -39,6 +41,7 @@ class LiveSession extends Model
         'sync_status',
         'last_synced_at',
         'sync_error',
+        'room_settings',
         'scheduled_start',
         'scheduled_end',
         'started_at',
@@ -56,7 +59,9 @@ class LiveSession extends Model
         'fallback_provider' => LiveSessionProvider::class,
         'sync_status' => ProviderSyncStatus::class,
         'provider_metadata' => 'array',
+        'room_settings' => 'array',
         'provider_host_url' => 'encrypted',
+        'session_type' => LiveSessionType::class,
     ];
 
     // Relationships
