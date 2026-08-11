@@ -37,7 +37,8 @@ final class PublicLiveSessionGuestController extends Controller
         }
 
         $mediaConfig = null;
-        if ($model->admission_status === ParticipantAdmissionStatus::Admitted && $model->session->isLive()) {
+        $needsRecordingConsent = ($model->session->room_settings['recording_enabled'] ?? false) === true && $model->recording_consented_at === null;
+        if ($model->admission_status === ParticipantAdmissionStatus::Admitted && $model->session->isLive() && ! $needsRecordingConsent) {
             $mediaConfig = [
                 'participantKey' => 'guest:'.$model->id, 'connectionId' => (string) Str::uuid(),
                 'token' => $request->session()->get('live_guest.'.$guest),
@@ -48,7 +49,17 @@ final class PublicLiveSessionGuestController extends Controller
             ];
         }
 
-        return view('teacher-live-session::guest.status', ['guest' => $model, 'mediaConfig' => $mediaConfig]);
+        return view('teacher-live-session::guest.status', compact('mediaConfig', 'needsRecordingConsent') + ['guest' => $model]);
+    }
+
+    public function consent(Request $request, int $guest)
+    {
+        $model = $this->resolveFromSession($request, $guest);
+        abort_unless($model->admission_status === ParticipantAdmissionStatus::Admitted && ($model->session->room_settings['recording_enabled'] ?? false) === true, 403);
+        $request->validate(['consent' => ['accepted']]);
+        $model->update(['recording_consented_at' => now()]);
+
+        return redirect()->route('live-guest.status', $model);
     }
 
     private function resolveFromSession(Request $request, int $guest)

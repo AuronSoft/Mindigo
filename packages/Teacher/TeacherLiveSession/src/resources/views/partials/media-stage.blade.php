@@ -8,6 +8,9 @@
         'handRaised' => __('teacher-live-session::app.hand_raised'),
         'mutedByModerator' => __('teacher-live-session::app.muted_by_moderator'),
         'you' => __('teacher-live-session::app.you'),
+        'startRecording' => __('teacher-live-session::app.start_recording'),
+        'stopRecording' => __('teacher-live-session::app.stop_recording'),
+        'recordingFailed' => __('teacher-live-session::app.recording_failed'),
     ];
     $clientConfig = [...$mediaConfig, 'labels' => $labels];
     $displayName = $displayName ?? auth()->user()?->name ?? __('teacher-live-session::app.external_guest');
@@ -16,6 +19,7 @@
 <section data-live-media-room='@json($clientConfig)' class="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-sm">
     <div class="flex items-center justify-between border-b border-white/10 px-4 py-3 text-white">
         <div class="flex items-center gap-2 text-xs font-bold"><span class="h-2 w-2 rounded-full bg-green-400"></span><span data-media-status>@lang('teacher-live-session::app.media_connecting')</span></div>
+        <span data-recording-indicator class="hidden items-center gap-2 rounded-full bg-red-600 px-3 py-1 text-xs font-black"><span class="h-2 w-2 animate-pulse rounded-full bg-white"></span>REC <span data-recording-time>00:00</span></span>
         @if($collaborationEnabled)<button type="button" data-toggle-collaboration class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold"><x-heroicon-o-user-group class="h-4 w-4" /><span data-participant-count>1</span></button>@else<span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold"><x-heroicon-o-user-group class="h-4 w-4" /><span data-participant-count>1</span></span>@endif
     </div>
     <div data-remote-grid class="grid min-h-0 flex-1 auto-rows-fr grid-cols-1 gap-3 overflow-y-auto p-3 md:grid-cols-2 xl:grid-cols-3">
@@ -29,6 +33,7 @@
         <button type="button" data-toggle-microphone data-active="false" class="inline-flex h-11 items-center gap-2 rounded-xl bg-white/10 px-4 text-xs font-black text-white hover:bg-white/20"><x-heroicon-o-microphone class="h-5 w-5" />@lang('teacher-live-session::app.microphone')</button>
         <button type="button" data-toggle-camera data-active="false" class="inline-flex h-11 items-center gap-2 rounded-xl bg-white/10 px-4 text-xs font-black text-white hover:bg-white/20"><x-heroicon-o-video-camera class="h-5 w-5" />@lang('teacher-live-session::app.camera')</button>
         <button type="button" data-toggle-screen data-active="false" class="inline-flex h-11 items-center gap-2 rounded-xl bg-white/10 px-4 text-xs font-black text-white hover:bg-white/20"><x-heroicon-o-computer-desktop class="h-5 w-5" />@lang('teacher-live-session::app.share_screen')</button>
+        @if(($mediaConfig['recordingEnabled'] ?? false) && ($mediaConfig['canRecord'] ?? false))<button type="button" data-toggle-recording data-active="false" class="inline-flex h-11 items-center gap-2 rounded-xl bg-red-600 px-4 text-xs font-black text-white hover:bg-red-500"><span class="h-3 w-3 rounded-full bg-white"></span><span data-recording-label>@lang('teacher-live-session::app.start_recording')</span></button>@endif
         @if($collaborationEnabled)<button type="button" data-toggle-hand data-active="false" class="inline-flex h-11 items-center gap-2 rounded-xl bg-white/10 px-4 text-xs font-black text-white hover:bg-white/20"><x-heroicon-o-hand-raised class="h-5 w-5" />@lang('teacher-live-session::app.raise_hand')</button>
         <div class="flex items-center gap-1 rounded-xl bg-white/10 p-1" data-reactions>
             <button type="button" data-reaction="clap" class="grid h-9 w-9 place-items-center rounded-lg text-lg hover:bg-white/10" title="@lang('teacher-live-session::app.reaction_clap')">👏</button>

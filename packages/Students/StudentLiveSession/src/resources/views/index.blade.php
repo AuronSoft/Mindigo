@@ -92,7 +92,7 @@
                                 @foreach($sessions as $i => $s)
                                     <tr class="hover:bg-slate-50/50">
                                         <td class="px-6 py-4 text-slate-400">{{ $sessions->firstItem() + $i }}</td>
-                                        <td class="px-6 py-4 font-black text-slate-900">{{ $s->title }}</td>
+                                        <td class="px-6 py-4 font-black text-slate-900">{{ $s->title }}@if($s->recordings->isNotEmpty())<div class="mt-2 flex flex-wrap gap-1">@foreach($s->recordings as $recording)<a href="{{ route('live-recordings.stream', $recording) }}" class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-[10px] font-black text-green-700 no-underline"><x-heroicon-o-play-circle class="h-3.5 w-3.5" />@lang('teacher-live-session::app.watch_recording')</a>@endforeach</div>@endif</td>
                                         <td class="px-6 py-4">
                                             <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">
                                                 {{ $s->classroom->name ?? '—' }}

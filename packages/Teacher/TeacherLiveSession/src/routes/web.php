@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionCollaborationController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionMediaController;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionRecordingConsentController;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionRecordingController;
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestController;
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
@@ -42,6 +44,16 @@ Route::middleware(['web', 'throttle:30,1'])->prefix('live/guest')->name('live-gu
     Route::get('/{token}', [PublicLiveSessionGuestController::class, 'show'])->where('token', '[A-Za-z0-9]{64}')->name('show');
     Route::post('/{token}', [PublicLiveSessionGuestController::class, 'join'])->where('token', '[A-Za-z0-9]{64}')->middleware('throttle:10,1')->name('join');
     Route::get('/status/{guest}', [PublicLiveSessionGuestController::class, 'status'])->whereNumber('guest')->name('status');
+    Route::post('/status/{guest}/recording-consent', [PublicLiveSessionGuestController::class, 'consent'])->whereNumber('guest')->name('consent');
+});
+
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::post('/live-recording-consent/{liveSession}', [LiveSessionRecordingConsentController::class, 'store'])->name('live-recording-consent.store');
+    Route::post('/live-recordings/{liveSession}', [LiveSessionRecordingController::class, 'start'])->middleware('throttle:10,1')->name('live-recordings.start');
+    Route::post('/live-recordings/{liveSession}/{recording}/chunks', [LiveSessionRecordingController::class, 'chunk'])->middleware('throttle:120,1')->name('live-recordings.chunk');
+    Route::post('/live-recordings/{liveSession}/{recording}/finalize', [LiveSessionRecordingController::class, 'finalize'])->middleware('throttle:10,1')->name('live-recordings.finalize');
+    Route::post('/live-recordings/{liveSession}/{recording}/abort', [LiveSessionRecordingController::class, 'abort'])->middleware('throttle:10,1')->name('live-recordings.abort');
+    Route::get('/live-recordings/play/{recording}', [LiveSessionRecordingController::class, 'stream'])->middleware('throttle:120,1')->name('live-recordings.stream');
 });
 
 Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('live-collaboration/{liveSession}')->name('live-collaboration.')->group(function () {

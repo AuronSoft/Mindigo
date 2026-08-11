@@ -125,6 +125,11 @@ class LiveSession extends Model
         return $this->hasMany(LiveSessionGuestLink::class);
     }
 
+    public function recordings(): HasMany
+    {
+        return $this->hasMany(LiveSessionRecording::class);
+    }
+
     // Scopes
 
     public function scopeByTeacher($query, $teacherId)

@@ -172,6 +172,15 @@ return [
     'admitted_guests' => 'Guests in room',
     'in_room' => 'In room',
     'remove_guest' => 'Remove',
+    'start_recording' => 'Record',
+    'stop_recording' => 'Stop recording',
+    'recording_failed' => 'Recording could not be completed. Please check the connection and try again.',
+    'recording_consent_title' => 'This classroom may be recorded',
+    'recording_consent_description' => 'Audio, video and shared screens may be recorded for learning review. Recording files are protected by classroom access permissions.',
+    'recording_consent_checkbox' => 'I understand and consent to participating in this recorded session.',
+    'continue_to_room' => 'Continue to classroom',
+    'recording_ready' => 'Recording',
+    'watch_recording' => 'Watch recording',
 
     // Messages
     'created_success' => 'Live session created.',
@@ -207,5 +216,11 @@ return [
         'invalid_join_token' => 'The join token is invalid, expired, or revoked.',
         'signal_too_large' => 'The media negotiation payload is too large.',
         'guest_link_unavailable' => 'This guest link is expired, revoked, or has reached its usage limit.',
+        'recording_already_active' => 'A recording is already active for this classroom.',
+        'recording_checksum' => 'The recording chunk failed integrity verification.',
+        'recording_chunk_conflict' => 'This recording chunk conflicts with an existing chunk.',
+        'recording_chunks_incomplete' => 'The recording cannot be finalized because one or more chunks are missing.',
+        'recording_consent_missing' => 'Every admitted participant must accept the recording notice before recording starts.',
+        'stop_recording_before_end' => 'Stop and finalize the active recording before ending the classroom.',
     ],
 ];
