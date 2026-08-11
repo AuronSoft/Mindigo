@@ -7,15 +7,20 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherLiveSession\Enums\ParticipantAdmissionStatus;
 use Mindigo\TeacherLiveSession\Http\Requests\CancelLiveSessionRequest;
+use Mindigo\TeacherLiveSession\Http\Requests\CreateGuestLinkRequest;
 use Mindigo\TeacherLiveSession\Http\Requests\LiveSessionRequest;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
+use Mindigo\TeacherLiveSession\Models\LiveSessionGuest;
+use Mindigo\TeacherLiveSession\Models\LiveSessionGuestLink;
 use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
 use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAccessService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAdmissionService;
+use Mindigo\TeacherLiveSession\Services\LiveSessionGuestService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionJoinTokenService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionLifecycleService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionService;
@@ -29,6 +34,7 @@ class TeacherLiveSessionController extends Controller
         protected LiveSessionAdmissionService $admissions,
         protected LiveSessionJoinTokenService $tokens,
         protected LiveSessionLifecycleService $lifecycle,
+        protected LiveSessionGuestService $guests,
     ) {}
 
     public function index(Request $request)
@@ -118,8 +124,15 @@ class TeacherLiveSessionController extends Controller
             ->with('user:id,name,email')
             ->oldest()
             ->get();
+        $waitingGuests = LiveSessionGuest::query()->where('live_session_id', $liveSession->id)
+            ->where('admission_status', ParticipantAdmissionStatus::Waiting->value)->oldest()->get();
+        $admittedGuests = LiveSessionGuest::query()->where('live_session_id', $liveSession->id)
+            ->where('admission_status', ParticipantAdmissionStatus::Admitted->value)->oldest()->get();
+        $guestLinks = LiveSessionGuestLink::query()->where('live_session_id', $liveSession->id)
+            ->whereNull('revoked_at')->where('expires_at', '>', now())->latest()->get();
+        $canManageGuestLinks = $this->access->canManage($liveSession, $request->user());
 
-        return view('teacher-live-session::room', compact('join', 'participant', 'waitingParticipants') + [
+        return view('teacher-live-session::room', compact('join', 'participant', 'waitingParticipants', 'waitingGuests', 'admittedGuests', 'guestLinks', 'canManageGuestLinks') + [
             'session' => $liveSession,
             'mediaConfig' => $this->mediaConfig($liveSession, $join['access_token'], $request),
         ]);
@@ -204,6 +217,33 @@ class TeacherLiveSessionController extends Controller
         return response()->json(['token' => $this->tokens->issue($liveSession, $request->user(), $role), 'expires_in' => 600]);
     }
 
+    public function createGuestLink(CreateGuestLinkRequest $request, LiveSession $liveSession)
+    {
+        $this->authorizeOwner($liveSession);
+        $result = $this->guests->createLink($liveSession, $request->user(), (int) $request->validated('ttl_minutes'), $request->validated('max_uses'));
+
+        return back()->with('success', __('teacher-live-session::app.guest_link_created'))->with('guest_link_url', $result['url']);
+    }
+
+    public function revokeGuestLink(Request $request, LiveSession $liveSession, LiveSessionGuestLink $guestLink)
+    {
+        $this->authorizeOwner($liveSession);
+        abort_unless((int) $guestLink->live_session_id === (int) $liveSession->id, 404);
+        $this->guests->revokeLink($guestLink, $request->user());
+
+        return back()->with('success', __('teacher-live-session::app.guest_link_revoked'));
+    }
+
+    public function decideGuest(Request $request, LiveSession $liveSession, LiveSessionGuest $guest)
+    {
+        $this->authorizeModerator($liveSession, $request);
+        abort_unless((int) $guest->live_session_id === (int) $liveSession->id, 404);
+        $data = $request->validate(['decision' => ['required', Rule::in(['admitted', 'denied', 'removed'])]]);
+        $this->guests->decide($guest, $request->user(), ParticipantAdmissionStatus::from($data['decision']));
+
+        return back()->with('success', __('teacher-live-session::app.guest_decision_saved'));
+    }
+
     private function authorizeOwner(LiveSession $session): void
     {
         abort_unless($this->access->canManage($session, request()->user()), 403);
@@ -250,6 +290,7 @@ class TeacherLiveSessionController extends Controller
     {
         return [
             'userId' => (int) $request->user()->id,
+            'participantKey' => 'user:'.$request->user()->id,
             'connectionId' => (string) Str::uuid(),
             'token' => $token,
             'presenceUrl' => route('live-media.presence', $session),

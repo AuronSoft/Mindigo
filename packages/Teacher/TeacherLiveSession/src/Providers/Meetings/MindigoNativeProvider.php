@@ -59,7 +59,7 @@ final class MindigoNativeProvider implements LiveMeetingProvider
     {
         return new ProviderCapabilities(
             embedded: true,
-            guestLinks: false,
+            guestLinks: true,
             attendanceSync: true,
             recording: false,
         );

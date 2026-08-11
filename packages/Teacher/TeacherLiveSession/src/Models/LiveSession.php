@@ -115,6 +115,16 @@ class LiveSession extends Model
         return $this->hasMany(LiveSessionParticipant::class);
     }
 
+    public function guests(): HasMany
+    {
+        return $this->hasMany(LiveSessionGuest::class);
+    }
+
+    public function guestLinks(): HasMany
+    {
+        return $this->hasMany(LiveSessionGuestLink::class);
+    }
+
     // Scopes
 
     public function scopeByTeacher($query, $teacherId)

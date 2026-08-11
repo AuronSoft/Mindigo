@@ -50,6 +50,7 @@ class LiveSessionController extends Controller
             'join' => $join,
             'mediaConfig' => [
                 'userId' => (int) $request->user()->id,
+                'participantKey' => 'user:'.$request->user()->id,
                 'connectionId' => (string) Str::uuid(),
                 'token' => $join['access_token'],
                 'presenceUrl' => route('live-media.presence', $liveSession),
