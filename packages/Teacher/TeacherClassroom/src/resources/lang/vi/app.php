@@ -233,4 +233,5 @@ return [
     'attendance_metric_sessions' => 'Buổi đã ghi nhận',
     'session_attendance_summary' => 'Tổng hợp theo buổi học',
     'course_attendance_summary' => 'Toàn khóa: :total lượt · :present có mặt · :late muộn · :absent vắng · :excused có phép',
+    'session_after_course_end' => 'Buổi học không được sau ngày kết thúc khóa học (:date).',
 ];

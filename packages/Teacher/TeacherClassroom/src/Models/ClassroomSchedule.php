@@ -51,6 +51,7 @@ class ClassroomSchedule extends Model
     protected $table = 'classroom_schedules';
 
     protected $fillable = [
+        'slot_key',
         'classroom_id',
         'lesson_id',
         'type',
@@ -82,6 +83,20 @@ class ClassroomSchedule extends Model
         'published_at' => 'datetime',
         'substitute_responded_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $schedule): void {
+            $schedule->slot_key = in_array($schedule->status, [self::STATUS_SCHEDULED, self::STATUS_COMPLETED], true)
+                ? sprintf(
+                    'classroom:%d:date:%s:start:%s',
+                    $schedule->classroom_id,
+                    $schedule->session_date->format('Y-m-d'),
+                    substr((string) $schedule->start_time, 0, 5),
+                )
+                : null;
+        });
+    }
 
     public function classroom(): BelongsTo
     {

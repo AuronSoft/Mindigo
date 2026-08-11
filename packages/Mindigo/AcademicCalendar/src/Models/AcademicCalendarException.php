@@ -12,7 +12,15 @@ class AcademicCalendarException extends Model
 {
     public const KIND_NO_CLASS = 'no_class';
 
-    protected $fillable = ['course_id', 'classroom_id', 'created_by', 'exception_date', 'kind', 'title', 'reason'];
+    protected $fillable = ['scope_key', 'course_id', 'classroom_id', 'created_by', 'exception_date', 'kind', 'title', 'reason'];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $exception): void {
+            $scope = $exception->classroom_id ? "classroom:{$exception->classroom_id}" : ($exception->course_id ? "course:{$exception->course_id}" : 'global:0');
+            $exception->scope_key = "{$scope}:{$exception->kind}:".$exception->exception_date->format('Y-m-d');
+        });
+    }
 
     protected function casts(): array
     {

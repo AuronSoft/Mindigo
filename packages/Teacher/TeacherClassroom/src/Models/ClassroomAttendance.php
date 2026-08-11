@@ -13,6 +13,7 @@ class ClassroomAttendance extends Model
 
     protected $fillable = [
         'classroom_id',
+        'identity_key',
         'classroom_schedule_id',
         'student_id',
         'attendance_session_id',
@@ -28,6 +29,15 @@ class ClassroomAttendance extends Model
     protected $casts = [
         'session_date' => 'date',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $attendance): void {
+            $attendance->identity_key = $attendance->classroom_schedule_id
+                ? "schedule:{$attendance->classroom_schedule_id}:student:{$attendance->student_id}"
+                : "classroom:{$attendance->classroom_id}:date:".$attendance->session_date->format('Y-m-d').":student:{$attendance->student_id}";
+        });
+    }
 
     public function classroom(): BelongsTo
     {

@@ -15,6 +15,7 @@ use Mindigo\AcademicCalendar\Observers\AcademicCalendarAuditObserver;
 use Mindigo\AcademicCalendar\Observers\ClassroomScheduleObserver;
 use Mindigo\AcademicCalendar\Services\AcademicCalendarService;
 use Mindigo\TeacherClassroom\Models\Classroom;
+use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 
 final class AcademicCalendarServiceProvider extends ServiceProvider
@@ -25,6 +26,7 @@ final class AcademicCalendarServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'academic-calendar');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         Classroom::observe(AcademicCalendarAuditObserver::class);
+        ClassroomAttendance::observe(AcademicCalendarAuditObserver::class);
         AcademicCalendarException::observe(AcademicCalendarAuditObserver::class);
         ClassroomSchedule::observe(AcademicCalendarAuditObserver::class);
         ClassroomSchedule::observe(ClassroomScheduleObserver::class);

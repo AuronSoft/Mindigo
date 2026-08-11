@@ -106,17 +106,17 @@
 
         {{-- Tabs Navigation --}}
         <div class="border-b border-slate-200 bg-white rounded-t-3xl px-6 pt-3 shadow-sm">
-            <nav class="-mb-px flex gap-6" aria-label="Tabs">
-                <button type="button" data-mindigo-tab-target="students" data-mindigo-tab-sync-url="true" id="tab-btn-students" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'students' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'students' ? 'true' : 'false' }}">
+            <nav class="-mb-px flex gap-6" aria-label="Tabs" role="tablist">
+                <button type="button" role="tab" aria-controls="tab-content-students" data-mindigo-tab-target="students" data-mindigo-tab-sync-url="true" id="tab-btn-students" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'students' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'students' ? 'true' : 'false' }}">
                     @lang('teacher-classroom::app.students_and_assistants')
                 </button>
-                <button type="button" data-mindigo-tab-target="attendance" data-mindigo-tab-sync-url="true" id="tab-btn-attendance" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'attendance' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'attendance' ? 'true' : 'false' }}">
+                <button type="button" role="tab" aria-controls="tab-content-attendance" data-mindigo-tab-target="attendance" data-mindigo-tab-sync-url="true" id="tab-btn-attendance" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'attendance' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'attendance' ? 'true' : 'false' }}">
                     @lang('teacher-classroom::app.attendance')
                 </button>
-                <button type="button" data-mindigo-tab-target="schedule" data-mindigo-tab-sync-url="true" id="tab-btn-schedule" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'schedule' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'schedule' ? 'true' : 'false' }}">
+                <button type="button" role="tab" aria-controls="tab-content-schedule" data-mindigo-tab-target="schedule" data-mindigo-tab-sync-url="true" id="tab-btn-schedule" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'schedule' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'schedule' ? 'true' : 'false' }}">
                     @lang('teacher-classroom::app.schedule')
                 </button>
-                <button type="button" data-mindigo-tab-target="announcements" data-mindigo-tab-sync-url="true" id="tab-btn-announcements" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'announcements' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'announcements' ? 'true' : 'false' }}">
+                <button type="button" role="tab" aria-controls="tab-content-announcements" data-mindigo-tab-target="announcements" data-mindigo-tab-sync-url="true" id="tab-btn-announcements" class="tab-btn pb-4 px-1 border-b-2 border-transparent text-sm font-black text-slate-500 hover:text-slate-800 transition-all {{ $currentTab === 'announcements' ? 'active' : '' }}" aria-selected="{{ $currentTab === 'announcements' ? 'true' : 'false' }}">
                     @lang('teacher-classroom::app.announcements')
                 </button>
             </nav>
@@ -126,7 +126,7 @@
         <div class="bg-white rounded-b-3xl border border-slate-200 border-t-0 p-6 shadow-sm min-h-100">
 
             {{-- Tab 1: Students & Assistants --}}
-            <div id="tab-content-students" data-mindigo-tab-panel="students" class="tab-content {{ $currentTab === 'students' ? '' : 'hidden' }}">
+            <div id="tab-content-students" role="tabpanel" aria-labelledby="tab-btn-students" data-mindigo-tab-panel="students" class="tab-content {{ $currentTab === 'students' ? '' : 'hidden' }}">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                     <div>
                         <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.student_list_title')</h2>
@@ -192,7 +192,7 @@
             </div>
 
             {{-- Tab 2: Attendance --}}
-            <div id="tab-content-attendance" data-mindigo-tab-panel="attendance" class="tab-content {{ $currentTab === 'attendance' ? '' : 'hidden' }}">
+            <div id="tab-content-attendance" role="tabpanel" aria-labelledby="tab-btn-attendance" data-mindigo-tab-panel="attendance" class="tab-content {{ $currentTab === 'attendance' ? '' : 'hidden' }}">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-3">
                     <div>
                         <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.attendance_title')</h2>
@@ -267,27 +267,27 @@
                                             </td>
                                             <td class="px-5 py-3.5">
                                                 <label class="inline-flex items-center cursor-pointer">
-                                                    <input type="radio" name="records[{{ $student->id }}][status]" value="present" @checked($status === 'present') class="h-4 w-4 accent-green-600">
+                                                    <input type="radio" aria-label="@lang('teacher-classroom::app.present_label') - {{ $student->name }}" name="records[{{ $student->id }}][status]" value="present" @checked($status === 'present') class="h-4 w-4 accent-green-600">
                                                 </label>
                                             </td>
                                             <td class="px-5 py-3.5">
                                                 <label class="inline-flex items-center cursor-pointer">
-                                                    <input type="radio" name="records[{{ $student->id }}][status]" value="absent" @checked($status === 'absent') class="h-4 w-4 accent-red-600">
+                                                    <input type="radio" aria-label="@lang('teacher-classroom::app.absent_label') - {{ $student->name }}" name="records[{{ $student->id }}][status]" value="absent" @checked($status === 'absent') class="h-4 w-4 accent-red-600">
                                                 </label>
                                             </td>
                                             <td class="px-5 py-3.5">
                                                 <label class="inline-flex items-center cursor-pointer">
-                                                    <input type="radio" name="records[{{ $student->id }}][status]" value="late" @checked($status === 'late') class="h-4 w-4 accent-yellow-600">
+                                                    <input type="radio" aria-label="@lang('teacher-classroom::app.late_label') - {{ $student->name }}" name="records[{{ $student->id }}][status]" value="late" @checked($status === 'late') class="h-4 w-4 accent-yellow-600">
                                                 </label>
                                             </td>
                                             <td class="px-5 py-3.5">
                                                 <label class="inline-flex items-center cursor-pointer">
-                                                    <input type="radio" name="records[{{ $student->id }}][status]" value="excused" @checked($status === 'excused') class="h-4 w-4 accent-blue-600">
+                                                    <input type="radio" aria-label="@lang('teacher-classroom::app.excused_label') - {{ $student->name }}" name="records[{{ $student->id }}][status]" value="excused" @checked($status === 'excused') class="h-4 w-4 accent-blue-600">
                                                 </label>
                                             </td>
-                                            <td class="px-5 py-3.5"><div class="grid min-w-44 gap-2"><input type="number" min="1" max="600" name="records[{{ $student->id }}][late_minutes]" value="{{ $record?->late_minutes }}" placeholder="@lang('teacher-classroom::app.late_minutes')" class="h-8 rounded-lg border border-slate-200 px-2 text-xs font-bold"><input type="text" maxlength="500" name="records[{{ $student->id }}][absence_reason]" value="{{ $record?->absence_reason }}" placeholder="@lang('teacher-classroom::app.absence_reason')" class="h-8 rounded-lg border border-slate-200 px-2 text-xs font-bold"></div></td>
+                                            <td class="px-5 py-3.5"><div class="grid min-w-44 gap-2"><input type="number" min="1" max="600" aria-label="@lang('teacher-classroom::app.late_minutes') - {{ $student->name }}" name="records[{{ $student->id }}][late_minutes]" value="{{ $record?->late_minutes }}" placeholder="@lang('teacher-classroom::app.late_minutes')" class="h-8 rounded-lg border border-slate-200 px-2 text-xs font-bold"><input type="text" maxlength="500" aria-label="@lang('teacher-classroom::app.absence_reason') - {{ $student->name }}" name="records[{{ $student->id }}][absence_reason]" value="{{ $record?->absence_reason }}" placeholder="@lang('teacher-classroom::app.absence_reason')" class="h-8 rounded-lg border border-slate-200 px-2 text-xs font-bold"></div></td>
                                             <td class="px-5 py-3.5">
-                                                <input type="text" name="records[{{ $student->id }}][remarks]" value="{{ $remarks }}" placeholder="{{ __('teacher-classroom::app.remarks_placeholder') }}"
+                                                <input type="text" aria-label="@lang('teacher-classroom::app.remarks') - {{ $student->name }}" name="records[{{ $student->id }}][remarks]" value="{{ $remarks }}" placeholder="{{ __('teacher-classroom::app.remarks_placeholder') }}"
                                                        class="w-full max-w-xs rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 outline-none transition focus:border-green-400">
                                             </td>
                                         </tr>
@@ -349,7 +349,7 @@
             </div>
 
             {{-- Tab 3: Schedule --}}
-            <div id="tab-content-schedule" data-mindigo-tab-panel="schedule" class="tab-content {{ $currentTab === 'schedule' ? '' : 'hidden' }}">
+            <div id="tab-content-schedule" role="tabpanel" aria-labelledby="tab-btn-schedule" data-mindigo-tab-panel="schedule" class="tab-content {{ $currentTab === 'schedule' ? '' : 'hidden' }}">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                     <div>
                         <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.schedule_title')</h2>
@@ -484,7 +484,7 @@
             </div>
 
             {{-- Tab 4: Announcements --}}
-            <div id="tab-content-announcements" data-mindigo-tab-panel="announcements" class="tab-content {{ $currentTab === 'announcements' ? '' : 'hidden' }}">
+            <div id="tab-content-announcements" role="tabpanel" aria-labelledby="tab-btn-announcements" data-mindigo-tab-panel="announcements" class="tab-content {{ $currentTab === 'announcements' ? '' : 'hidden' }}">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                     <div>
                         <h2 class="text-base font-black text-slate-900">@lang('teacher-classroom::app.announcements_title')</h2>
