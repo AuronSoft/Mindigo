@@ -127,6 +127,16 @@ return [
     'admit' => 'Cho vào',
     'deny' => 'Từ chối',
     'no_waiting_participants' => 'Hiện không có người nào đang chờ.',
+    'media_connecting' => 'Đang kết nối bảo mật…',
+    'media_connected' => 'Đã kết nối',
+    'media_reconnecting' => 'Đang kết nối lại…',
+    'media_permission_denied' => 'Quyền sử dụng camera, micro hoặc chia sẻ màn hình đã bị từ chối.',
+    'microphone' => 'Micro',
+    'camera' => 'Camera',
+    'share_screen' => 'Chia sẻ màn hình',
+    'microphone_on' => 'Đã bật micro',
+    'microphone_off' => 'Đã tắt micro',
+    'you' => 'Bạn',
 
     // Messages
     'created_success' => 'Đã tạo buổi học trực tuyến.',
@@ -160,5 +170,6 @@ return [
         'session_in_past' => 'Không thể tạo phòng trực tuyến cho một khung giờ đã kết thúc.',
         'invalid_transition' => 'Không thể chuyển buổi học sang trạng thái này.',
         'invalid_join_token' => 'Token tham gia không hợp lệ, đã hết hạn hoặc đã bị thu hồi.',
+        'signal_too_large' => 'Dữ liệu thương lượng kết nối media vượt quá giới hạn.',
     ],
 ];

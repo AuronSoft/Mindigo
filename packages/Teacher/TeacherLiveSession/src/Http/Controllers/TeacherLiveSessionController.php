@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherLiveSession\Enums\ParticipantAdmissionStatus;
 use Mindigo\TeacherLiveSession\Http\Requests\CancelLiveSessionRequest;
@@ -118,7 +119,10 @@ class TeacherLiveSessionController extends Controller
             ->oldest()
             ->get();
 
-        return view('teacher-live-session::room', compact('liveSession', 'join', 'participant', 'waitingParticipants') + ['session' => $liveSession]);
+        return view('teacher-live-session::room', compact('join', 'participant', 'waitingParticipants') + [
+            'session' => $liveSession,
+            'mediaConfig' => $this->mediaConfig($liveSession, $join['access_token'], $request),
+        ]);
     }
 
     // Kết thúc buổi học
@@ -240,5 +244,18 @@ class TeacherLiveSessionController extends Controller
             ->withCount('students')
             ->orderBy('name')
             ->get();
+    }
+
+    private function mediaConfig(LiveSession $session, string $token, Request $request): array
+    {
+        return [
+            'userId' => (int) $request->user()->id,
+            'connectionId' => (string) Str::uuid(),
+            'token' => $token,
+            'presenceUrl' => route('live-media.presence', $session),
+            'signalUrl' => route('live-media.signals.store', $session),
+            'inboxUrl' => route('live-media.signals.inbox', $session),
+            'iceServers' => config('live-media.ice_servers', []),
+        ];
     }
 }

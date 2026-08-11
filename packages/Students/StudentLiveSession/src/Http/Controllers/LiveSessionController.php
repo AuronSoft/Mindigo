@@ -5,6 +5,7 @@ namespace Mindigo\StudentLiveSession\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
 use Mindigo\StudentLiveSession\Services\LiveSessionService;
 use Mindigo\TeacherLiveSession\Enums\ParticipantAdmissionStatus;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
@@ -44,7 +45,19 @@ class LiveSessionController extends Controller
         $join = $this->service->join($liveSession, $request->user());
         $join['access_token'] = $this->tokens->issue($liveSession, $request->user(), $role);
 
-        return view('student-live-session::room', ['session' => $liveSession, 'join' => $join]);
+        return view('student-live-session::room', [
+            'session' => $liveSession,
+            'join' => $join,
+            'mediaConfig' => [
+                'userId' => (int) $request->user()->id,
+                'connectionId' => (string) Str::uuid(),
+                'token' => $join['access_token'],
+                'presenceUrl' => route('live-media.presence', $liveSession),
+                'signalUrl' => route('live-media.signals.store', $liveSession),
+                'inboxUrl' => route('live-media.signals.inbox', $liveSession),
+                'iceServers' => config('live-media.ice_servers', []),
+            ],
+        ]);
     }
 
     public function joinToken(Request $request, LiveSession $liveSession): JsonResponse
