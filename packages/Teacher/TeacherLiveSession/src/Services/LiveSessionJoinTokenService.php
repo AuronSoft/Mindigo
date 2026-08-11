@@ -19,7 +19,7 @@ final class LiveSessionJoinTokenService
             'session_id' => (int) $session->getKey(),
             'user_id' => (int) $user->getKey(),
             'role' => $role->value,
-            'version' => (int) $session->join_token_version,
+            'version' => (int) ($session->join_token_version ?? 1),
             'issued_at' => now()->timestamp,
             'expires_at' => now()->addSeconds(self::TTL_SECONDS)->timestamp,
         ], JSON_THROW_ON_ERROR));

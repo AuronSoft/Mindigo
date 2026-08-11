@@ -40,6 +40,7 @@ export default defineConfig({
                 "packages/Teacher/TeacherCourse/src/resources/css/app.css",
                 "packages/Teacher/TeacherCourse/src/resources/js/app.js",
                 "packages/Teacher/TeacherAssignment/src/resources/js/app.js",
+                "packages/Teacher/TeacherLiveSession/src/resources/js/room.js",
                 "packages/Students/StudentExam/src/resources/css/app.css",
                 "packages/Students/StudentExam/src/resources/js/app.js",
                 "packages/Students/StudentSchedule/src/resources/css/app.css",

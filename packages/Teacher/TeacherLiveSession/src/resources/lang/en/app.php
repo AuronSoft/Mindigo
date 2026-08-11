@@ -127,6 +127,16 @@ return [
     'admit' => 'Admit',
     'deny' => 'Deny',
     'no_waiting_participants' => 'No one is waiting right now.',
+    'media_connecting' => 'Connecting securely…',
+    'media_connected' => 'Connected',
+    'media_reconnecting' => 'Reconnecting…',
+    'media_permission_denied' => 'Camera, microphone, or screen permission was denied.',
+    'microphone' => 'Microphone',
+    'camera' => 'Camera',
+    'share_screen' => 'Share screen',
+    'microphone_on' => 'Microphone enabled',
+    'microphone_off' => 'Microphone muted',
+    'you' => 'You',
 
     // Messages
     'created_success' => 'Live session created.',
@@ -160,5 +170,6 @@ return [
         'session_in_past' => 'A live room cannot be created for a time range that has already ended.',
         'invalid_transition' => 'The live session cannot transition to that state.',
         'invalid_join_token' => 'The join token is invalid, expired, or revoked.',
+        'signal_too_large' => 'The media negotiation payload is too large.',
     ],
 ];

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-sessions')->name('teacher.live-sessions.')->group(function () {
@@ -23,4 +24,10 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-s
     Route::post('/{liveSession}/participants/{participant}/admit', [TeacherLiveSessionController::class, 'admit'])->middleware('throttle:30,1')->name('participants.admit');
     Route::post('/{liveSession}/participants/{participant}/deny', [TeacherLiveSessionController::class, 'deny'])->middleware('throttle:30,1')->name('participants.deny');
     Route::post('/{liveSession}/participants/{participant}/remove', [TeacherLiveSessionController::class, 'remove'])->middleware('throttle:30,1')->name('participants.remove');
+});
+
+Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('live-media/{liveSession}')->name('live-media.')->group(function () {
+    Route::post('/presence', [LiveSessionMediaController::class, 'presence'])->name('presence');
+    Route::post('/signals', [LiveSessionMediaController::class, 'signal'])->name('signals.store');
+    Route::post('/signals/inbox', [LiveSessionMediaController::class, 'inbox'])->name('signals.inbox');
 });

@@ -2,7 +2,7 @@
 @section('title', $session->title.' — '.__('teacher-live-session::app.room_title'))
 
 @section('styles')
-    @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js'])
+    @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js', 'packages/Teacher/TeacherLiveSession/src/resources/js/room.js'])
 @endsection
 
 @section('content')
@@ -17,9 +17,7 @@
     </header>
 
     <div class="grid flex-1 gap-5 p-6 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <section class="flex min-h-105 items-center justify-center rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-            <div class="max-w-lg"><span class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-green-50 text-green-700"><x-heroicon-o-video-camera class="h-7 w-7" /></span><h2 class="mt-4 text-xl font-black text-slate-950">@lang('teacher-live-session::app.secure_room_ready')</h2><p class="mt-2 text-sm font-semibold leading-6 text-slate-500">@lang('teacher-live-session::app.native_room_preparing')</p><div class="mt-5 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-2 text-xs font-black text-green-800"><x-heroicon-o-shield-check class="h-4 w-4" />@lang('teacher-live-session::app.secure_token_active')</div></div>
-        </section>
+        @include('teacher-live-session::partials.media-stage')
 
         <aside class="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div class="border-b border-slate-100 p-4"><div class="flex items-center justify-between"><h2 class="text-sm font-black text-slate-950">@lang('teacher-live-session::app.waiting_participants')</h2><span class="rounded-full bg-amber-50 px-2 py-1 text-xs font-black text-amber-700">{{ $waitingParticipants->count() }}</span></div><p class="mt-1 text-xs font-semibold text-slate-500">@lang('teacher-live-session::app.waiting_participants_hint')</p></div>

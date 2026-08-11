@@ -10,6 +10,7 @@ class TeacherLiveSessionServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->mergeConfigFrom(__DIR__.'/../config/live-media.php', 'live-media');
         $this->app->singleton(LiveMeetingProviderRegistry::class, function ($app): LiveMeetingProviderRegistry {
             $registry = new LiveMeetingProviderRegistry;
             $registry->register($app->make(MindigoNativeProvider::class));
