@@ -62,6 +62,7 @@ return [
     // Room
     'room_title' => 'Phòng học trực tuyến',
     'room_loading' => 'Đang kết nối phòng học...',
+    'native_room_preparing' => 'Đã loại bỏ phụ thuộc Jitsi. Phòng media Mindigo Native bảo mật sẽ được kích hoạt ở phase media core.',
 
     // Messages
     'created_success' => 'Đã tạo buổi học trực tuyến.',
@@ -78,5 +79,7 @@ return [
         'classroom_exists' => 'Lớp học không hợp lệ.',
         'start_required' => 'Vui lòng chọn thời gian bắt đầu.',
         'end_after' => 'Thời gian kết thúc phải sau thời gian bắt đầu.',
+        'schedule_classroom' => 'Lịch học đã chọn không thuộc lớp học này.',
+        'provider_unavailable' => 'Nền tảng phòng học này chưa được kích hoạt.',
     ],
 ];

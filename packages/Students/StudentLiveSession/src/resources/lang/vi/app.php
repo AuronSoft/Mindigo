@@ -43,4 +43,5 @@ return [
     'room_title' => 'Phòng học trực tuyến',
     'room_loading' => 'Đang kết nối phòng học...',
     'teacher' => 'Giáo viên',
+    'native_room_preparing' => 'Hạ tầng media của phòng học Mindigo Native đang được chuẩn bị.',
 ];

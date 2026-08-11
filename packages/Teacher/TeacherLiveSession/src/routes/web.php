@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
 
-Route::middleware(['web', 'auth'])->prefix('teacher/live-sessions')->name('teacher.live-sessions.')->group(function () {
+Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-sessions')->name('teacher.live-sessions.')->group(function () {
     Route::get('/', [TeacherLiveSessionController::class, 'index'])->name('index');
     Route::get('/create', [TeacherLiveSessionController::class, 'create'])->name('create');
     Route::post('/', [TeacherLiveSessionController::class, 'store'])->name('store');

@@ -62,6 +62,7 @@ return [
     // Room
     'room_title' => 'Online classroom',
     'room_loading' => 'Connecting to the room...',
+    'native_room_preparing' => 'The external Jitsi dependency has been removed. The secure Mindigo Native media room will be enabled in the media-core phase.',
 
     // Messages
     'created_success' => 'Live session created.',
@@ -78,5 +79,7 @@ return [
         'classroom_exists' => 'Invalid classroom.',
         'start_required' => 'Please choose a start time.',
         'end_after' => 'End time must be after start time.',
+        'schedule_classroom' => 'The selected schedule does not belong to this classroom.',
+        'provider_unavailable' => 'This live-classroom provider is not enabled.',
     ],
 ];

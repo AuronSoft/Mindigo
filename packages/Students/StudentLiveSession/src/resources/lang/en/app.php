@@ -43,4 +43,5 @@ return [
     'room_title' => 'Online classroom',
     'room_loading' => 'Connecting to the room...',
     'teacher' => 'Teacher',
+    'native_room_preparing' => 'The Mindigo Native classroom media core is being prepared.',
 ];

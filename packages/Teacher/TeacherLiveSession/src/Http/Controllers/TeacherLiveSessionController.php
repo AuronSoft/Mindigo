@@ -33,7 +33,7 @@ class TeacherLiveSessionController extends Controller
 
     public function store(LiveSessionRequest $request)
     {
-        $this->service->create($request->validated());
+        $this->service->create($request->validated(), $request->user());
 
         return redirect()
             ->route('teacher.live-sessions.index')
@@ -71,32 +71,32 @@ class TeacherLiveSessionController extends Controller
 
     // Bắt đầu buổi học rồi vào phòng
 
-    public function start(LiveSession $liveSession)
+    public function start(Request $request, LiveSession $liveSession)
     {
         $this->authorizeOwner($liveSession);
-        $this->service->start($liveSession);
+        $this->service->start($liveSession, $request->user());
 
         return redirect()->route('teacher.live-sessions.room', $liveSession);
     }
 
     // Phòng họp (nhúng Jitsi)
 
-    public function room(LiveSession $liveSession)
+    public function room(Request $request, LiveSession $liveSession)
     {
         $this->authorizeOwner($liveSession);
         abort_unless($liveSession->canJoin(), 403);
 
-        $this->service->recordJoin($liveSession, Auth::id());
+        $join = $this->service->join($liveSession, $request->user());
 
-        return view('teacher-live-session::room', ['session' => $liveSession]);
+        return view('teacher-live-session::room', ['session' => $liveSession, 'join' => $join]);
     }
 
     // Kết thúc buổi học
 
-    public function end(LiveSession $liveSession)
+    public function end(Request $request, LiveSession $liveSession)
     {
         $this->authorizeOwner($liveSession);
-        $this->service->end($liveSession);
+        $this->service->end($liveSession, $request->user());
 
         return redirect()
             ->route('teacher.live-sessions.index')
