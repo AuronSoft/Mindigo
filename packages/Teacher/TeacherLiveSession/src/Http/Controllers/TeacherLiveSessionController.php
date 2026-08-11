@@ -255,6 +255,12 @@ class TeacherLiveSessionController extends Controller
             'presenceUrl' => route('live-media.presence', $session),
             'signalUrl' => route('live-media.signals.store', $session),
             'inboxUrl' => route('live-media.signals.inbox', $session),
+            'collaborationSyncUrl' => route('live-collaboration.sync', $session),
+            'messageUrl' => route('live-collaboration.messages.store', $session),
+            'actionUrl' => route('live-collaboration.actions.store', $session),
+            'moderateUrl' => route('live-collaboration.moderate', $session),
+            'leaveUrl' => route('teacher.live-sessions.index'),
+            'joinTokenUrl' => route('teacher.live-sessions.join-token', $session),
             'iceServers' => config('live-media.ice_servers', []),
         ];
     }

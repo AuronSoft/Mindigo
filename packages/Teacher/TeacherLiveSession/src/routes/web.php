@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionCollaborationController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
 
@@ -24,6 +25,13 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-s
     Route::post('/{liveSession}/participants/{participant}/admit', [TeacherLiveSessionController::class, 'admit'])->middleware('throttle:30,1')->name('participants.admit');
     Route::post('/{liveSession}/participants/{participant}/deny', [TeacherLiveSessionController::class, 'deny'])->middleware('throttle:30,1')->name('participants.deny');
     Route::post('/{liveSession}/participants/{participant}/remove', [TeacherLiveSessionController::class, 'remove'])->middleware('throttle:30,1')->name('participants.remove');
+});
+
+Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('live-collaboration/{liveSession}')->name('live-collaboration.')->group(function () {
+    Route::post('/sync', [LiveSessionCollaborationController::class, 'sync'])->name('sync');
+    Route::post('/messages', [LiveSessionCollaborationController::class, 'message'])->middleware('throttle:30,1')->name('messages.store');
+    Route::post('/actions', [LiveSessionCollaborationController::class, 'action'])->middleware('throttle:30,1')->name('actions.store');
+    Route::post('/moderate', [LiveSessionCollaborationController::class, 'moderate'])->middleware('throttle:30,1')->name('moderate');
 });
 
 Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('live-media/{liveSession}')->name('live-media.')->group(function () {

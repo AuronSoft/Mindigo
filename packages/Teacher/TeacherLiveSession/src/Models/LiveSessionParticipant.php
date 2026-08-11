@@ -10,7 +10,7 @@ use Mindigo\TeacherLiveSession\Enums\ParticipantAdmissionStatus;
 
 class LiveSessionParticipant extends Model
 {
-    protected $fillable = ['live_session_id', 'user_id', 'role', 'admission_status', 'admitted_by', 'admitted_at', 'denied_at', 'removed_at', 'last_seen_at', 'microphone_enabled', 'camera_enabled', 'screen_sharing', 'connection_id'];
+    protected $fillable = ['live_session_id', 'user_id', 'role', 'admission_status', 'admitted_by', 'admitted_at', 'denied_at', 'removed_at', 'last_seen_at', 'microphone_enabled', 'camera_enabled', 'screen_sharing', 'connection_id', 'hand_raised_at', 'force_muted_at'];
 
     protected $casts = [
         'role' => LiveParticipantRole::class,
@@ -22,6 +22,8 @@ class LiveSessionParticipant extends Model
         'microphone_enabled' => 'boolean',
         'camera_enabled' => 'boolean',
         'screen_sharing' => 'boolean',
+        'hand_raised_at' => 'datetime',
+        'force_muted_at' => 'datetime',
     ];
 
     public function session(): BelongsTo

@@ -55,6 +55,12 @@ class LiveSessionController extends Controller
                 'presenceUrl' => route('live-media.presence', $liveSession),
                 'signalUrl' => route('live-media.signals.store', $liveSession),
                 'inboxUrl' => route('live-media.signals.inbox', $liveSession),
+                'collaborationSyncUrl' => route('live-collaboration.sync', $liveSession),
+                'messageUrl' => route('live-collaboration.messages.store', $liveSession),
+                'actionUrl' => route('live-collaboration.actions.store', $liveSession),
+                'moderateUrl' => route('live-collaboration.moderate', $liveSession),
+                'leaveUrl' => route('student.live-sessions.index'),
+                'joinTokenUrl' => route('student.live-sessions.join-token', $liveSession),
                 'iceServers' => config('live-media.ice_servers', []),
             ],
         ]);

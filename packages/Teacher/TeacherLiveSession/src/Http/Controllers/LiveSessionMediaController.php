@@ -29,7 +29,9 @@ final class LiveSessionMediaController extends Controller
         ]);
         $participant->update([
             'connection_id' => $data['connection_id'],
-            'microphone_enabled' => $data['microphone_enabled'] ?? $participant->microphone_enabled,
+            'microphone_enabled' => $participant->force_muted_at
+                ? false
+                : ($data['microphone_enabled'] ?? $participant->microphone_enabled),
             'camera_enabled' => $data['camera_enabled'] ?? $participant->camera_enabled,
             'screen_sharing' => $data['screen_sharing'] ?? $participant->screen_sharing,
             'last_seen_at' => now(),
