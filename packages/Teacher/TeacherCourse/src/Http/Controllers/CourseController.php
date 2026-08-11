@@ -60,12 +60,16 @@ class CourseController extends Controller
     {
         Gate::authorize('update', $course);
 
-        return view('teacher-course::edit', ['course' => $course, ...$this->courses->formData()]);
+        return view('teacher-course::edit', [
+            'course' => $course,
+            'scheduleImpact' => $this->courses->scheduleImpact($course),
+            ...$this->courses->formData(),
+        ]);
     }
 
     public function update(CourseRequest $request, Course $course): RedirectResponse
     {
-        $this->courses->update($course, $request->validated(), $request->file('cover_image'));
+        $this->courses->update($course, $request->validated(), $request->file('cover_image'), $request->user());
 
         return redirect()->route('teacher.courses.show', $course)->with('success', __('teacher-course::app.course_updated'));
     }
