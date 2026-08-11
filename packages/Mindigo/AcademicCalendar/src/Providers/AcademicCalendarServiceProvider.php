@@ -10,8 +10,11 @@ use Mindigo\AcademicCalendar\Adapters\ExamAdapter;
 use Mindigo\AcademicCalendar\Adapters\LiveSessionAdapter;
 use Mindigo\AcademicCalendar\Console\SendCalendarReminders;
 use Mindigo\AcademicCalendar\Contracts\CalendarSourceAdapter;
+use Mindigo\AcademicCalendar\Models\AcademicCalendarException;
+use Mindigo\AcademicCalendar\Observers\AcademicCalendarAuditObserver;
 use Mindigo\AcademicCalendar\Observers\ClassroomScheduleObserver;
 use Mindigo\AcademicCalendar\Services\AcademicCalendarService;
+use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 
 final class AcademicCalendarServiceProvider extends ServiceProvider
@@ -21,6 +24,9 @@ final class AcademicCalendarServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'academic-calendar');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'academic-calendar');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        Classroom::observe(AcademicCalendarAuditObserver::class);
+        AcademicCalendarException::observe(AcademicCalendarAuditObserver::class);
+        ClassroomSchedule::observe(AcademicCalendarAuditObserver::class);
         ClassroomSchedule::observe(ClassroomScheduleObserver::class);
 
         if ($this->app->runningInConsole()) {
