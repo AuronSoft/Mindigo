@@ -10,11 +10,15 @@ use Mindigo\AcademicCalendar\Models\AcademicCalendarException;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Http\Requests\TeacherClassroomRequest;
 use Mindigo\TeacherClassroom\Models\Classroom;
+use Mindigo\TeacherClassroom\Services\AttendanceReportService;
 use Mindigo\TeacherClassroom\Services\TeacherClassroomService;
 
 class TeacherClassroomController extends Controller
 {
-    public function __construct(private readonly TeacherClassroomService $service) {}
+    public function __construct(
+        private readonly TeacherClassroomService $service,
+        private readonly AttendanceReportService $attendanceReports,
+    ) {}
 
     public function index(Request $request)
     {
@@ -66,6 +70,8 @@ class TeacherClassroomController extends Controller
             'selectedDate' => $selectedDate,
             'attendanceRecords' => $attendanceRecords,
             'attendanceHistory' => $attendanceHistory,
+            'attendanceSummary' => $this->attendanceReports->summary($classroom),
+            'attendanceBySession' => $this->attendanceReports->bySession($classroom),
             'attendanceSchedule' => $attendanceSchedule,
             'attendanceSession' => $attendanceSchedule ? $this->service->attendanceSessionForSchedule($attendanceSchedule) : $this->service->attendanceSession($classroom, $selectedDate),
             'schedules' => $schedules,

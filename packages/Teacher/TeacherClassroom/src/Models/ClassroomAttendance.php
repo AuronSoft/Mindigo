@@ -4,6 +4,7 @@ namespace Mindigo\TeacherClassroom\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mindigo\Auth\Models\User;
 
 class ClassroomAttendance extends Model
@@ -17,8 +18,11 @@ class ClassroomAttendance extends Model
         'attendance_session_id',
         'session_date',
         'status',
+        'late_minutes',
+        'absence_reason',
         'method',
         'remarks',
+        'updated_by',
     ];
 
     protected $casts = [
@@ -43,5 +47,15 @@ class ClassroomAttendance extends Model
     public function schedule(): BelongsTo
     {
         return $this->belongsTo(ClassroomSchedule::class, 'classroom_schedule_id');
+    }
+
+    public function editor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function revisions(): HasMany
+    {
+        return $this->hasMany(ClassroomAttendanceRevision::class, 'attendance_id')->latest('id');
     }
 }
