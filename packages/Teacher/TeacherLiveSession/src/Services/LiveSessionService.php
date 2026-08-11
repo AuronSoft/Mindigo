@@ -6,6 +6,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherLiveSession\Data\SessionContext;
@@ -15,12 +16,18 @@ use Mindigo\TeacherLiveSession\Models\LiveSession;
 
 final class LiveSessionService
 {
-    public function __construct(private readonly LiveMeetingProviderRegistry $providers) {}
+    public function __construct(
+        private readonly LiveMeetingProviderRegistry $providers,
+        private readonly AuditLogService $audit,
+    ) {}
 
     public function getSessionsByTeacher(int|string $teacherId, ?int $classroomId = null, int $perPage = 10): LengthAwarePaginator
     {
         return LiveSession::query()
-            ->byTeacher($teacherId)
+            ->where(function ($query) use ($teacherId): void {
+                $query->where('teacher_id', $teacherId)
+                    ->orWhereHas('classroom', fn ($classrooms) => $classrooms->where('assistant_id', $teacherId));
+            })
             ->when($classroomId, fn ($query) => $query->where('classroom_id', $classroomId))
             ->with(['classroom.course', 'schedule.lesson'])
             ->latest('scheduled_start')
@@ -43,7 +50,7 @@ final class LiveSessionService
         );
         $meeting = $this->providers->resolve($providerKey)->create($context);
 
-        return DB::transaction(function () use ($data, $actor, $providerKey, $idempotencyKey, $meeting): LiveSession {
+        $session = DB::transaction(function () use ($data, $actor, $providerKey, $idempotencyKey, $meeting): LiveSession {
             $session = LiveSession::query()->create([
                 ...$data,
                 'teacher_id' => $actor->getKey(),
@@ -72,6 +79,10 @@ final class LiveSessionService
 
             return $session;
         });
+
+        $this->audit->record('created', 'teacher_live_session', newValues: $this->safeAuditValues($session), auditable: $session, user: $actor);
+
+        return $session;
     }
 
     public function update(LiveSession $session, array $data): LiveSession
@@ -79,7 +90,8 @@ final class LiveSessionService
         unset($data['provider']);
         $meeting = $this->providers->resolve($session->provider)->update($session);
 
-        return DB::transaction(function () use ($session, $data, $meeting): LiveSession {
+        $oldValues = $this->safeAuditValues($session);
+        $updated = DB::transaction(function () use ($session, $data, $meeting): LiveSession {
             $session->update([
                 ...$data,
                 'provider_meeting_id' => $meeting->meetingId,
@@ -91,48 +103,18 @@ final class LiveSessionService
 
             return $session->fresh(['classroom.course', 'schedule.lesson']);
         });
+
+        $this->audit->record('updated', 'teacher_live_session', $oldValues, $this->safeAuditValues($updated), auditable: $updated);
+
+        return $updated;
     }
 
     public function delete(LiveSession $session): void
     {
+        abort_if(in_array($session->status, ['waiting', 'live'], true), 422);
+        $safeValues = $this->safeAuditValues($session);
         $session->delete();
-    }
-
-    public function start(LiveSession $session, User $actor): LiveSession
-    {
-        if ($session->status !== 'scheduled') {
-            return $session;
-        }
-
-        $this->providers->resolve($session->provider)->start($session, $actor);
-
-        return DB::transaction(function () use ($session): LiveSession {
-            if ($session->status === 'scheduled') {
-                $session->update([
-                    'status' => 'live',
-                    'started_at' => now(),
-                    'provider_status' => 'live',
-                ]);
-            }
-
-            return $session->fresh();
-        });
-    }
-
-    public function end(LiveSession $session, User $actor): LiveSession
-    {
-        $this->providers->resolve($session->provider)->end($session, $actor);
-
-        return DB::transaction(function () use ($session, $actor): LiveSession {
-            $session->update([
-                'status' => 'ended',
-                'ended_at' => now(),
-                'ended_by' => $actor->getKey(),
-                'provider_status' => 'ended',
-            ]);
-
-            return $session->fresh();
-        });
+        $this->audit->record('deleted', 'teacher_live_session', oldValues: $safeValues, auditable: $session);
     }
 
     public function join(LiveSession $session, User $actor): array
@@ -158,5 +140,13 @@ final class LiveSessionService
         if (! $attendance->joined_at) {
             $attendance->update(['joined_at' => now()]);
         }
+    }
+
+    private function safeAuditValues(LiveSession $session): array
+    {
+        return $session->only([
+            'classroom_id', 'classroom_schedule_id', 'teacher_id', 'title', 'provider',
+            'scheduled_start', 'scheduled_end', 'status', 'session_type', 'room_settings',
+        ]);
     }
 }

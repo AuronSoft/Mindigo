@@ -114,6 +114,8 @@
                                                 </span>
                                             @elseif($s->isScheduled())
                                                 <span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-700">@lang('teacher-live-session::app.status_scheduled')</span>
+                                            @elseif($s->isWaiting())
+                                                <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700">@lang('teacher-live-session::app.status_waiting')</span>
                                             @elseif($s->status === 'cancelled')
                                                 <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500">@lang('teacher-live-session::app.status_cancelled')</span>
                                             @else
@@ -124,12 +126,18 @@
                                             <div class="flex items-center justify-center gap-1">
                                                 {{-- Start (scheduled) --}}
                                                 @if($s->isScheduled())
+                                                    <form action="{{ route('teacher.live-sessions.open', $s) }}" method="POST" class="inline">@csrf<button type="submit" class="inline-flex h-8 items-center gap-1 rounded-xl border border-green-200 bg-green-50 px-3 text-xs font-black text-green-700"><x-heroicon-o-user-plus class="h-4 w-4" /> @lang('teacher-live-session::app.open_waiting_room')</button></form>
                                                     <form action="{{ route('teacher.live-sessions.start', $s) }}" method="POST" class="inline">
                                                         @csrf
                                                         <button type="submit" class="inline-flex h-8 items-center gap-1 rounded-xl bg-green-600 px-3 text-xs font-black text-white hover:bg-green-500">
                                                             <x-heroicon-o-play class="h-4 w-4" /> @lang('teacher-live-session::app.start')
                                                         </button>
                                                     </form>
+                                                @endif
+
+                                                @if($s->isWaiting())
+                                                    <a href="{{ route('teacher.live-sessions.room', $s) }}" class="inline-flex h-8 items-center gap-1 rounded-xl border border-green-200 px-3 text-xs font-black text-green-700"><x-heroicon-o-user-group class="h-4 w-4" /> @lang('teacher-live-session::app.manage_waiting_room')</a>
+                                                    <form action="{{ route('teacher.live-sessions.start', $s) }}" method="POST" class="inline">@csrf<button type="submit" class="inline-flex h-8 items-center gap-1 rounded-xl bg-green-600 px-3 text-xs font-black text-white"><x-heroicon-o-play class="h-4 w-4" /> @lang('teacher-live-session::app.start')</button></form>
                                                 @endif
 
                                                 {{-- Join + End (live) --}}
@@ -150,13 +158,13 @@
                                                 @endif
 
                                                 {{-- Edit (not ended) --}}
-                                                @unless($s->isEnded())
+                                                @if(in_array($s->status, ['draft', 'scheduled'], true))
                                                     <a href="{{ route('teacher.live-sessions.edit', $s) }}"
                                                         class="inline-flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700"
                                                         title="{{ __('teacher-live-session::app.edit') }}">
                                                         <x-heroicon-o-pencil-square class="h-4 w-4" />
                                                     </a>
-                                                @endunless
+                                                @endif
 
                                                 {{-- Delete --}}
                                                 <form action="{{ route('teacher.live-sessions.destroy', $s) }}" method="POST" class="inline"

@@ -37,6 +37,7 @@ return [
     // Status
     'status_scheduled' => 'Đã lên lịch',
     'status_live' => 'Đang diễn ra',
+    'status_waiting' => 'Đang mở phòng chờ',
     'status_ended' => 'Đã kết thúc',
     'status_cancelled' => 'Đã huỷ',
 
@@ -45,6 +46,17 @@ return [
     'join_room' => 'Vào phòng',
     'end' => 'Kết thúc',
     'leave_room' => 'Rời phòng',
+    'open_waiting_room' => 'Mở phòng chờ',
+    'manage_waiting_room' => 'Quản lý phòng chờ',
+    'lock_room' => 'Khóa phòng',
+    'unlock_room' => 'Mở khóa phòng',
+    'waiting_room_opened' => 'Đã mở phòng chờ.',
+    'room_locked' => 'Đã khóa phòng và thu hồi token tham gia cũ.',
+    'room_unlocked' => 'Đã mở khóa phòng.',
+    'cancelled_success' => 'Đã hủy buổi học trực tuyến.',
+    'participant_admitted' => 'Đã cho phép người tham gia vào phòng.',
+    'participant_denied' => 'Đã từ chối người tham gia.',
+    'participant_removed' => 'Đã đưa người tham gia ra khỏi phòng.',
 
     // Form
     'section_basic_info' => 'Thông tin buổi học',
@@ -108,6 +120,13 @@ return [
     'room_title' => 'Phòng học trực tuyến',
     'room_loading' => 'Đang kết nối phòng học...',
     'native_room_preparing' => 'Đã loại bỏ phụ thuộc Jitsi. Phòng media Mindigo Native bảo mật sẽ được kích hoạt ở phase media core.',
+    'secure_room_ready' => 'Phòng học bảo mật đã sẵn sàng',
+    'secure_token_active' => 'Token tham gia ngắn hạn đã được cấp',
+    'waiting_participants' => 'Người đang chờ',
+    'waiting_participants_hint' => 'Kiểm tra danh tính trước khi cho phép vào lớp.',
+    'admit' => 'Cho vào',
+    'deny' => 'Từ chối',
+    'no_waiting_participants' => 'Hiện không có người nào đang chờ.',
 
     // Messages
     'created_success' => 'Đã tạo buổi học trực tuyến.',
@@ -139,5 +158,7 @@ return [
         'recording_unavailable' => 'Provider hiện tại chưa hỗ trợ ghi hình.',
         'guest_access_unavailable' => 'Provider hiện tại chưa hỗ trợ link dành cho khách.',
         'session_in_past' => 'Không thể tạo phòng trực tuyến cho một khung giờ đã kết thúc.',
+        'invalid_transition' => 'Không thể chuyển buổi học sang trạng thái này.',
+        'invalid_join_token' => 'Token tham gia không hợp lệ, đã hết hạn hoặc đã bị thu hồi.',
     ],
 ];

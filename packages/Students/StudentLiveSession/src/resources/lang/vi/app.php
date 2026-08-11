@@ -31,10 +31,12 @@ return [
     // Status
     'status_scheduled' => 'Sắp diễn ra',
     'status_live' => 'Đang diễn ra',
+    'status_waiting' => 'Đã mở phòng chờ',
     'status_ended' => 'Đã kết thúc',
 
     // Actions
     'join_room' => 'Vào học',
+    'join_waiting_room' => 'Vào phòng chờ',
     'not_started' => 'Chưa bắt đầu',
     'leave_room' => 'Rời phòng',
     'waiting_teacher' => 'Chờ giáo viên bắt đầu',
@@ -43,5 +45,9 @@ return [
     'room_title' => 'Phòng học trực tuyến',
     'room_loading' => 'Đang kết nối phòng học...',
     'teacher' => 'Giáo viên',
+    'waiting_room_title' => 'Phòng chờ lớp học',
+    'waiting_room_message' => 'Yêu cầu tham gia của bạn đã được gửi tới giáo viên.',
+    'waiting_room_refresh' => 'Bạn có thể kiểm tra lại sau khi giáo viên cho phép vào phòng.',
+    'check_admission' => 'Kiểm tra lại',
     'native_room_preparing' => 'Hạ tầng media của phòng học Mindigo Native đang được chuẩn bị.',
 ];

@@ -31,10 +31,12 @@ return [
     // Status
     'status_scheduled' => 'Upcoming',
     'status_live' => 'Live',
+    'status_waiting' => 'Waiting room open',
     'status_ended' => 'Ended',
 
     // Actions
     'join_room' => 'Join',
+    'join_waiting_room' => 'Enter waiting room',
     'not_started' => 'Not started',
     'leave_room' => 'Leave room',
     'waiting_teacher' => 'Waiting for teacher to start',
@@ -43,5 +45,9 @@ return [
     'room_title' => 'Online classroom',
     'room_loading' => 'Connecting to the room...',
     'teacher' => 'Teacher',
+    'waiting_room_title' => 'Classroom waiting room',
+    'waiting_room_message' => 'Your request to join has been sent to the teacher.',
+    'waiting_room_refresh' => 'Check again after the teacher admits you.',
+    'check_admission' => 'Check again',
     'native_room_preparing' => 'The Mindigo Native classroom media core is being prepared.',
 ];

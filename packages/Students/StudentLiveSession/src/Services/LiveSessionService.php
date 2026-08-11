@@ -43,9 +43,9 @@ class LiveSessionService
         return LiveSession::query()
             ->whereIn('classroom_id', $classroomIds)
             ->when($classroomId, fn ($q) => $q->where('classroom_id', $classroomId))
-            ->where('status', '!=', 'cancelled')
+            ->whereNotIn('status', ['cancelled', 'failed'])
             ->with(['classroom', 'teacher'])
-            ->orderByRaw("FIELD(status, 'live', 'scheduled', 'ended')")
+            ->orderByRaw("FIELD(status, 'live', 'waiting', 'scheduled', 'ended')")
             ->orderByDesc('scheduled_start')
             ->paginate($perPage)
             ->withQueryString();

@@ -113,6 +113,8 @@
                                                 </span>
                                             @elseif($s->isScheduled())
                                                 <span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-700">@lang('student-live-session::app.status_scheduled')</span>
+                                            @elseif($s->isWaiting())
+                                                <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700">@lang('student-live-session::app.status_waiting')</span>
                                             @else
                                                 <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500">@lang('student-live-session::app.status_ended')</span>
                                             @endif
@@ -124,7 +126,9 @@
                                                         class="inline-flex h-8 items-center gap-1 rounded-full bg-red-600 px-3 text-xs font-black text-white no-underline hover:bg-red-500">
                                                         <x-heroicon-o-video-camera class="h-4 w-4" /> @lang('student-live-session::app.join_room')
                                                     </a>
-                                                @elseif($s->isScheduled())
+                                                @elseif($s->isWaiting() && $s->studentJoinWindowIsOpen())
+                                                    <a href="{{ route('student.live-sessions.room', $s) }}" class="inline-flex h-8 items-center gap-1 rounded-full bg-green-600 px-3 text-xs font-black text-white no-underline hover:bg-green-700"><x-heroicon-o-user-group class="h-4 w-4" /> @lang('student-live-session::app.join_waiting_room')</a>
+                                                @elseif($s->isScheduled() || $s->isWaiting())
                                                     <span class="inline-flex h-8 items-center gap-1 rounded-full bg-slate-100 px-3 text-xs font-black text-slate-400">
                                                         <x-heroicon-o-clock class="h-4 w-4" /> @lang('student-live-session::app.not_started')
                                                     </span>
