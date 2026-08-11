@@ -31,7 +31,6 @@ class TeacherExamController extends Controller
 
         return view('teacher-exam::index', [
             'exams' => $this->service->ownedList($teacher, $filters),
-            'stats' => $this->service->stats($teacher),
             'filters' => $filters,
         ]);
     }
