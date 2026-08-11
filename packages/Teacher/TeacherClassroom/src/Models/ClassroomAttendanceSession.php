@@ -13,7 +13,7 @@ class ClassroomAttendanceSession extends Model
 
     public const STATUS_CLOSED = 'closed';
 
-    protected $fillable = ['classroom_id', 'classroom_schedule_id', 'opened_by', 'session_date', 'code', 'status', 'expires_at', 'closed_at'];
+    protected $fillable = ['classroom_id', 'classroom_schedule_id', 'opened_by', 'session_date', 'code', 'status', 'expires_at', 'late_after_minutes', 'closed_at'];
 
     protected function casts(): array
     {

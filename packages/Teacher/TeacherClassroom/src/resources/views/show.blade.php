@@ -220,7 +220,7 @@
                                 <form method="POST" action="{{ route('teacher.classrooms.attendance.code.close', $attendanceSession) }}">@csrf @method('DELETE')<button type="submit" class="h-9 rounded-xl border border-red-200 px-3 text-xs font-black text-red-600 hover:bg-red-50">@lang('teacher-classroom::app.close_attendance')</button></form>
                             </div>
                         @else
-                            <form method="POST" action="{{ route('teacher.classrooms.attendance.code.open', $classroom) }}" class="flex items-center gap-2">@csrf<input type="hidden" name="attendance_date" value="{{ $selectedDate }}">@if($attendanceSchedule)<input type="hidden" name="classroom_schedule_id" value="{{ $attendanceSchedule->id }}">@endif<select name="duration_minutes" class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700"><option value="15">15 @lang('teacher-classroom::app.minutes')</option><option value="30" selected>30 @lang('teacher-classroom::app.minutes')</option><option value="60">60 @lang('teacher-classroom::app.minutes')</option><option value="90">90 @lang('teacher-classroom::app.minutes')</option></select><button type="submit" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-key class="h-4 w-4" />@lang('teacher-classroom::app.create_attendance_code')</button></form>
+                            <form method="POST" action="{{ route('teacher.classrooms.attendance.code.open', $classroom) }}" class="flex flex-wrap items-center gap-2">@csrf<input type="hidden" name="attendance_date" value="{{ $selectedDate }}">@if($attendanceSchedule)<input type="hidden" name="classroom_schedule_id" value="{{ $attendanceSchedule->id }}">@endif<select name="duration_minutes" class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700"><option value="15">15 @lang('teacher-classroom::app.minutes')</option><option value="30" selected>30 @lang('teacher-classroom::app.minutes')</option><option value="60">60 @lang('teacher-classroom::app.minutes')</option><option value="90">90 @lang('teacher-classroom::app.minutes')</option></select><select name="late_after_minutes" aria-label="@lang('teacher-classroom::app.late_threshold')" class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700"><option value="0">@lang('teacher-classroom::app.late_immediately')</option><option value="5">5 @lang('teacher-classroom::app.minutes')</option><option value="10">10 @lang('teacher-classroom::app.minutes')</option><option value="15" selected>15 @lang('teacher-classroom::app.minutes')</option><option value="30">30 @lang('teacher-classroom::app.minutes')</option></select><button type="submit" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white hover:bg-green-700"><x-heroicon-o-key class="h-4 w-4" />@lang('teacher-classroom::app.create_attendance_code')</button></form>
                         @endif
                     </div>
                 </section>
@@ -232,6 +232,10 @@
                         <p class="text-sm font-bold text-slate-400">@lang('teacher-classroom::app.add_students_first')</p>
                     </div>
                 @else
+                    <div class="mb-5 grid gap-3 sm:grid-cols-3 xl:grid-cols-6">@foreach(['total','present','late','absent','excused','sessions'] as $metric)<div class="rounded-xl border border-slate-200 bg-white p-3"><p class="text-[10px] font-black uppercase tracking-wide text-slate-400">@lang('teacher-classroom::app.attendance_metric_'.$metric)</p><strong class="mt-1 block text-xl font-black text-slate-900">{{ $attendanceSummary[$metric] }}</strong></div>@endforeach</div>
+                    @if($attendanceSummary['course_summary'])<p class="mb-4 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-xs font-bold text-blue-800">{{ $attendanceSummary['course'] }} · @lang('teacher-classroom::app.course_attendance_summary', ['total' => $attendanceSummary['course_summary']['total'], 'present' => $attendanceSummary['course_summary']['present'], 'late' => $attendanceSummary['course_summary']['late'], 'absent' => $attendanceSummary['course_summary']['absent'], 'excused' => $attendanceSummary['course_summary']['excused']])</p>@endif
+                    @if($attendanceBySession->isNotEmpty())<details class="mb-4 rounded-xl border border-slate-200 bg-white"><summary class="cursor-pointer px-4 py-3 text-xs font-black text-slate-700">@lang('teacher-classroom::app.session_attendance_summary')</summary><div class="grid gap-2 border-t border-slate-100 p-3 sm:grid-cols-2 xl:grid-cols-4">@foreach($attendanceBySession as $sessionSummary)<div class="rounded-lg bg-slate-50 p-3 text-xs"><strong class="text-slate-900">{{ \Illuminate\Support\Carbon::parse($sessionSummary->session_date)->format('d/m/Y') }}</strong><p class="mt-1 font-semibold text-slate-500">{{ $sessionSummary->present }} @lang('teacher-classroom::app.present') · {{ $sessionSummary->late }} @lang('teacher-classroom::app.late') · {{ $sessionSummary->absent }} @lang('teacher-classroom::app.absent') · {{ $sessionSummary->excused }} @lang('teacher-classroom::app.excused')</p></div>@endforeach</div></details>@endif
+                    <div class="mb-4 flex justify-end"><a href="{{ route('teacher.classrooms.attendance.export', $classroom) }}" class="inline-flex h-10 items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 text-xs font-black text-green-700 no-underline hover:bg-green-100"><x-heroicon-o-arrow-down-tray class="h-4 w-4" />@lang('teacher-classroom::app.export_attendance')</a></div>
                     <form method="POST" action="{{ route('teacher.classrooms.attendance.save', $classroom) }}">
                         @csrf
                         <input type="hidden" name="attendance_date" value="{{ $selectedDate }}">
@@ -245,6 +249,7 @@
                                         <th class="px-5 py-3">@lang('teacher-classroom::app.absent_label')</th>
                                         <th class="px-5 py-3">@lang('teacher-classroom::app.late_label')</th>
                                         <th class="px-5 py-3">@lang('teacher-classroom::app.excused_label')</th>
+                                        <th class="px-5 py-3">@lang('teacher-classroom::app.attendance_control')</th>
                                         <th class="px-5 py-3">@lang('teacher-classroom::app.remarks')</th>
                                     </tr>
                                 </thead>
@@ -280,6 +285,7 @@
                                                     <input type="radio" name="records[{{ $student->id }}][status]" value="excused" @checked($status === 'excused') class="h-4 w-4 accent-blue-600">
                                                 </label>
                                             </td>
+                                            <td class="px-5 py-3.5"><div class="grid min-w-44 gap-2"><input type="number" min="1" max="600" name="records[{{ $student->id }}][late_minutes]" value="{{ $record?->late_minutes }}" placeholder="@lang('teacher-classroom::app.late_minutes')" class="h-8 rounded-lg border border-slate-200 px-2 text-xs font-bold"><input type="text" maxlength="500" name="records[{{ $student->id }}][absence_reason]" value="{{ $record?->absence_reason }}" placeholder="@lang('teacher-classroom::app.absence_reason')" class="h-8 rounded-lg border border-slate-200 px-2 text-xs font-bold"></div></td>
                                             <td class="px-5 py-3.5">
                                                 <input type="text" name="records[{{ $student->id }}][remarks]" value="{{ $remarks }}" placeholder="{{ __('teacher-classroom::app.remarks_placeholder') }}"
                                                        class="w-full max-w-xs rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 outline-none transition focus:border-green-400">
@@ -289,6 +295,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <label class="mb-4 block"><span class="mb-1.5 block text-xs font-black text-slate-600">@lang('teacher-classroom::app.change_reason')</span><input name="change_reason" maxlength="500" placeholder="@lang('teacher-classroom::app.change_reason_hint')" class="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm font-semibold"></label>
                         <div class="flex justify-end">
                             <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-2xl bg-green-600 px-6 text-sm font-black text-white hover:bg-green-500 transition shadow-sm shadow-green-150">
                                 <x-heroicon-o-check class="h-4 w-4" /> {{ __('teacher-classroom::app.save_attendance_date', ['date' => \Illuminate\Support\Carbon::parse($selectedDate)->format('d/m/Y')]) }}
@@ -310,6 +317,7 @@
                                             <th class="px-4 py-2 bg-slate-50">@lang('teacher-classroom::app.col_student')</th>
                                             <th class="px-4 py-2 bg-slate-50">@lang('teacher-classroom::app.status')</th>
                                             <th class="px-4 py-2 bg-slate-50">@lang('teacher-classroom::app.remarks')</th>
+                                            <th class="px-4 py-2 bg-slate-50">@lang('teacher-classroom::app.updated_by')</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 text-xs">
@@ -329,6 +337,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="px-4 py-2 text-slate-400">{{ $hist->remarks ?: '—' }}</td>
+                                                <td class="px-4 py-2 text-slate-500">{{ $hist->editor?->name ?: '—' }}<span class="block text-[10px]">{{ $hist->updated_at?->format('d/m/Y H:i') }} · {{ $hist->revisions->count() }} @lang('teacher-classroom::app.revisions')</span></td>
                                             </tr>
                                         @endforeach
                                     </tbody>

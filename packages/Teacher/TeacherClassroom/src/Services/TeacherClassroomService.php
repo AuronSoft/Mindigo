@@ -12,6 +12,7 @@ use Mindigo\Auth\Models\User;
 use Mindigo\SubjectManagement\Models\Subject;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomAttendance;
+use Mindigo\TeacherClassroom\Models\ClassroomAttendanceRevision;
 use Mindigo\TeacherClassroom\Models\ClassroomAttendanceSession;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherCourse\Models\Course;
@@ -172,20 +173,19 @@ class TeacherClassroomService
         ];
     }
 
-    public function saveAttendance(Classroom $classroom, string $date, array $records): void
+    public function saveAttendance(Classroom $classroom, string $date, array $records, ?User $actor = null, ?string $changeReason = null): void
     {
+        $actor ??= $classroom->teacher()->firstOrFail();
         foreach ($records as $studentId => $record) {
-            ClassroomAttendance::query()->updateOrCreate(
+            $this->persistAttendance(
                 [
                     'classroom_id' => $classroom->id,
                     'student_id' => (int) $studentId,
                     'session_date' => $date,
                 ],
-                [
-                    'status' => $record['status'] ?? 'present',
-                    'method' => 'manual',
-                    'remarks' => $record['remarks'] ?? null,
-                ]
+                $record,
+                $actor,
+                $changeReason,
             );
         }
     }
@@ -204,21 +204,61 @@ class TeacherClassroomService
         return ClassroomAttendance::query()->where('classroom_schedule_id', $schedule->id)->get()->keyBy('student_id');
     }
 
-    public function saveScheduleAttendance(ClassroomSchedule $schedule, array $records): void
+    public function saveScheduleAttendance(ClassroomSchedule $schedule, array $records, ?User $actor = null, ?string $changeReason = null): void
     {
+        $actor ??= $schedule->classroom()->firstOrFail()->teacher()->firstOrFail();
         foreach ($records as $studentId => $record) {
-            ClassroomAttendance::query()->updateOrCreate(
+            $this->persistAttendance(
                 ['classroom_schedule_id' => $schedule->id, 'student_id' => $studentId],
-                ['classroom_id' => $schedule->classroom_id, 'session_date' => $schedule->session_date, 'status' => $record['status'] ?? 'present', 'method' => 'manual', 'remarks' => $record['remarks'] ?? null],
+                ['classroom_id' => $schedule->classroom_id, 'session_date' => $schedule->session_date, ...$record],
+                $actor,
+                $changeReason,
             );
         }
+    }
+
+    private function persistAttendance(array $identity, array $record, User $actor, ?string $changeReason): ClassroomAttendance
+    {
+        return DB::transaction(function () use ($identity, $record, $actor, $changeReason): ClassroomAttendance {
+            $attendanceQuery = ClassroomAttendance::query();
+            foreach ($identity as $column => $value) {
+                $column === 'session_date'
+                    ? $attendanceQuery->whereDate($column, $value)
+                    : $attendanceQuery->where($column, $value);
+            }
+            $attendance = $attendanceQuery->lockForUpdate()->first();
+            $oldValues = $attendance?->only(['status', 'late_minutes', 'absence_reason', 'remarks', 'method']) ?? [];
+            $values = [
+                'status' => $record['status'] ?? 'present',
+                'late_minutes' => ($record['status'] ?? null) === 'late' ? ($record['late_minutes'] ?? null) : null,
+                'absence_reason' => ($record['status'] ?? null) === 'excused' ? ($record['absence_reason'] ?? null) : null,
+                'method' => 'manual',
+                'remarks' => $record['remarks'] ?? null,
+                'updated_by' => $actor->id,
+            ];
+            $attendance ??= new ClassroomAttendance($identity);
+            $attendance->fill([...$identity, ...$values])->save();
+            $newValues = $attendance->only(['status', 'late_minutes', 'absence_reason', 'remarks', 'method']);
+
+            if ($oldValues === [] || $oldValues !== $newValues) {
+                ClassroomAttendanceRevision::query()->create([
+                    'attendance_id' => $attendance->id,
+                    'changed_by' => $actor->id,
+                    'old_values' => $oldValues ?: null,
+                    'new_values' => $newValues,
+                    'change_reason' => $changeReason,
+                ]);
+            }
+
+            return $attendance;
+        });
     }
 
     public function getAttendanceHistory(Classroom $classroom)
     {
         return ClassroomAttendance::query()
             ->where('classroom_id', $classroom->id)
-            ->with('student:id,name,email')
+            ->with(['student:id,name,email', 'editor:id,name', 'revisions.editor:id,name'])
             ->orderBy('session_date', 'desc')
             ->orderBy('student_id')
             ->get();
@@ -234,7 +274,7 @@ class TeacherClassroomService
         return ClassroomAttendanceSession::query()->where('classroom_schedule_id', $schedule->id)->first();
     }
 
-    public function openCodeAttendance(Classroom $classroom, User $teacher, string $date, int $durationMinutes): ClassroomAttendanceSession
+    public function openCodeAttendance(Classroom $classroom, User $teacher, string $date, int $durationMinutes, int $lateAfterMinutes = 15): ClassroomAttendanceSession
     {
         $alphabet = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
         $code = collect(range(1, 6))->map(fn () => $alphabet[random_int(0, strlen($alphabet) - 1)])->join('');
@@ -246,12 +286,13 @@ class TeacherClassroomService
                 'code' => $code,
                 'status' => ClassroomAttendanceSession::STATUS_OPEN,
                 'expires_at' => now()->addMinutes($durationMinutes),
+                'late_after_minutes' => $lateAfterMinutes,
                 'closed_at' => null,
             ],
         );
     }
 
-    public function openScheduleAttendance(ClassroomSchedule $schedule, User $teacher, int $durationMinutes): ClassroomAttendanceSession
+    public function openScheduleAttendance(ClassroomSchedule $schedule, User $teacher, int $durationMinutes, int $lateAfterMinutes = 15): ClassroomAttendanceSession
     {
         $start = Carbon::parse($schedule->session_date->format('Y-m-d').' '.$schedule->start_time, config('app.timezone'));
         $end = Carbon::parse($schedule->session_date->format('Y-m-d').' '.$schedule->end_time, config('app.timezone'));
@@ -269,6 +310,7 @@ class TeacherClassroomService
                 'session_date' => $schedule->session_date, 'code' => $code,
                 'status' => ClassroomAttendanceSession::STATUS_OPEN,
                 'expires_at' => min(now()->addMinutes($durationMinutes), $end->copy()->addMinutes(30)),
+                'late_after_minutes' => $lateAfterMinutes,
                 'closed_at' => null,
             ],
         );
@@ -297,12 +339,29 @@ class TeacherClassroomService
                 throw ValidationException::withMessages(['attendance_code' => __('student-classroom::app.attendance_code_invalid')]);
             }
 
-            return ClassroomAttendance::query()->updateOrCreate(
+            $status = 'present';
+            $lateMinutes = null;
+            if ($session->schedule) {
+                $start = Carbon::parse($session->schedule->session_date->format('Y-m-d').' '.$session->schedule->start_time, config('app.timezone'));
+                if (now()->gt($start->copy()->addMinutes($session->late_after_minutes))) {
+                    $status = 'late';
+                    $lateMinutes = max(1, (int) $start->diffInMinutes(now()));
+                }
+            }
+
+            $attendance = ClassroomAttendance::query()->updateOrCreate(
                 $session->classroom_schedule_id
                     ? ['classroom_schedule_id' => $session->classroom_schedule_id, 'student_id' => $student->id]
                     : ['classroom_id' => $classroom->id, 'student_id' => $student->id, 'session_date' => $session->session_date],
-                ['classroom_id' => $classroom->id, 'classroom_schedule_id' => $session->classroom_schedule_id, 'session_date' => $session->session_date, 'attendance_session_id' => $session->id, 'status' => 'present', 'method' => 'code', 'remarks' => null],
+                ['classroom_id' => $classroom->id, 'classroom_schedule_id' => $session->classroom_schedule_id, 'session_date' => $session->session_date, 'attendance_session_id' => $session->id, 'status' => $status, 'late_minutes' => $lateMinutes, 'absence_reason' => null, 'method' => 'code', 'remarks' => null, 'updated_by' => $student->id],
             );
+
+            ClassroomAttendanceRevision::query()->firstOrCreate(
+                ['attendance_id' => $attendance->id],
+                ['changed_by' => $student->id, 'new_values' => $attendance->only(['status', 'late_minutes', 'absence_reason', 'remarks', 'method'])],
+            );
+
+            return $attendance;
         });
     }
 
