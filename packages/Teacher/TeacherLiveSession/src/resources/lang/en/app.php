@@ -37,6 +37,7 @@ return [
     // Status
     'status_scheduled' => 'Scheduled',
     'status_live' => 'Live',
+    'status_waiting' => 'Waiting room open',
     'status_ended' => 'Ended',
     'status_cancelled' => 'Cancelled',
 
@@ -45,6 +46,17 @@ return [
     'join_room' => 'Join room',
     'end' => 'End',
     'leave_room' => 'Leave room',
+    'open_waiting_room' => 'Open waiting room',
+    'manage_waiting_room' => 'Manage waiting room',
+    'lock_room' => 'Lock room',
+    'unlock_room' => 'Unlock room',
+    'waiting_room_opened' => 'The waiting room is open.',
+    'room_locked' => 'The room is locked and previous join tokens were revoked.',
+    'room_unlocked' => 'The room is unlocked.',
+    'cancelled_success' => 'The live session was cancelled.',
+    'participant_admitted' => 'The participant was admitted.',
+    'participant_denied' => 'The participant was denied.',
+    'participant_removed' => 'The participant was removed.',
 
     // Form
     'section_basic_info' => 'Session info',
@@ -108,6 +120,13 @@ return [
     'room_title' => 'Online classroom',
     'room_loading' => 'Connecting to the room...',
     'native_room_preparing' => 'The external Jitsi dependency has been removed. The secure Mindigo Native media room will be enabled in the media-core phase.',
+    'secure_room_ready' => 'Secure classroom ready',
+    'secure_token_active' => 'A short-lived join token has been issued',
+    'waiting_participants' => 'Waiting participants',
+    'waiting_participants_hint' => 'Verify identity before admitting someone.',
+    'admit' => 'Admit',
+    'deny' => 'Deny',
+    'no_waiting_participants' => 'No one is waiting right now.',
 
     // Messages
     'created_success' => 'Live session created.',
@@ -139,5 +158,7 @@ return [
         'recording_unavailable' => 'The current provider does not support recording yet.',
         'guest_access_unavailable' => 'The current provider does not support guest links yet.',
         'session_in_past' => 'A live room cannot be created for a time range that has already ended.',
+        'invalid_transition' => 'The live session cannot transition to that state.',
+        'invalid_join_token' => 'The join token is invalid, expired, or revoked.',
     ],
 ];

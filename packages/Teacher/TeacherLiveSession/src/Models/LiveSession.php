@@ -11,6 +11,7 @@ use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionProvider;
+use Mindigo\TeacherLiveSession\Enums\LiveSessionStatus;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionType;
 use Mindigo\TeacherLiveSession\Enums\ProviderSyncStatus;
 
@@ -46,6 +47,12 @@ class LiveSession extends Model
         'scheduled_end',
         'started_at',
         'ended_at',
+        'locked_at',
+        'cancelled_at',
+        'cancelled_by',
+        'cancel_reason',
+        'failure_reason',
+        'join_token_version',
         'status', // scheduled | live | ended | cancelled
     ];
 
@@ -54,6 +61,8 @@ class LiveSession extends Model
         'scheduled_end' => 'datetime',
         'started_at' => 'datetime',
         'ended_at' => 'datetime',
+        'locked_at' => 'datetime',
+        'cancelled_at' => 'datetime',
         'last_synced_at' => 'datetime',
         'provider' => LiveSessionProvider::class,
         'fallback_provider' => LiveSessionProvider::class,
@@ -91,9 +100,19 @@ class LiveSession extends Model
         return $this->belongsTo(User::class, 'ended_by');
     }
 
+    public function cancelledBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cancelled_by');
+    }
+
     public function attendances(): HasMany
     {
         return $this->hasMany(LiveSessionAttendance::class);
+    }
+
+    public function participants(): HasMany
+    {
+        return $this->hasMany(LiveSessionParticipant::class);
     }
 
     // Scopes
@@ -107,22 +126,39 @@ class LiveSession extends Model
 
     public function isScheduled(): bool
     {
-        return $this->status === 'scheduled';
+        return $this->status === LiveSessionStatus::Scheduled->value;
     }
 
     public function isLive(): bool
     {
-        return $this->status === 'live';
+        return $this->status === LiveSessionStatus::Live->value;
     }
 
     public function isEnded(): bool
     {
-        return in_array($this->status, ['ended', 'cancelled']);
+        return LiveSessionStatus::tryFrom($this->status)?->isTerminal() ?? false;
     }
 
     public function canJoin(): bool
     {
-        return in_array($this->status, ['scheduled', 'live']);
+        return in_array($this->status, [LiveSessionStatus::Waiting->value, LiveSessionStatus::Live->value], true);
+    }
+
+    public function isWaiting(): bool
+    {
+        return $this->status === LiveSessionStatus::Waiting->value;
+    }
+
+    public function isLocked(): bool
+    {
+        return $this->locked_at !== null;
+    }
+
+    public function studentJoinWindowIsOpen(): bool
+    {
+        return in_array($this->status, [LiveSessionStatus::Waiting->value, LiveSessionStatus::Live->value], true)
+            && now()->gte($this->scheduled_start->copy()->subMinutes(15))
+            && ($this->isLive() || ! $this->scheduled_end || now()->lte($this->scheduled_end->copy()->addMinutes(30)));
     }
 
     public function usesExternalProvider(): bool

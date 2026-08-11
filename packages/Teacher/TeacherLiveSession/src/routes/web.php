@@ -6,13 +6,21 @@ use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
 Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-sessions')->name('teacher.live-sessions.')->group(function () {
     Route::get('/', [TeacherLiveSessionController::class, 'index'])->name('index');
     Route::get('/create', [TeacherLiveSessionController::class, 'create'])->name('create');
-    Route::post('/', [TeacherLiveSessionController::class, 'store'])->name('store');
+    Route::post('/', [TeacherLiveSessionController::class, 'store'])->middleware('throttle:10,1')->name('store');
 
     Route::get('/{liveSession}/edit', [TeacherLiveSessionController::class, 'edit'])->name('edit');
     Route::put('/{liveSession}', [TeacherLiveSessionController::class, 'update'])->name('update');
     Route::delete('/{liveSession}', [TeacherLiveSessionController::class, 'destroy'])->name('destroy');
 
-    Route::post('/{liveSession}/start', [TeacherLiveSessionController::class, 'start'])->name('start');
-    Route::get('/{liveSession}/room', [TeacherLiveSessionController::class, 'room'])->name('room');
-    Route::post('/{liveSession}/end', [TeacherLiveSessionController::class, 'end'])->name('end');
+    Route::post('/{liveSession}/start', [TeacherLiveSessionController::class, 'start'])->middleware('throttle:20,1')->name('start');
+    Route::post('/{liveSession}/open', [TeacherLiveSessionController::class, 'openWaitingRoom'])->middleware('throttle:10,1')->name('open');
+    Route::get('/{liveSession}/room', [TeacherLiveSessionController::class, 'room'])->middleware('throttle:60,1')->name('room');
+    Route::post('/{liveSession}/end', [TeacherLiveSessionController::class, 'end'])->middleware('throttle:20,1')->name('end');
+    Route::post('/{liveSession}/cancel', [TeacherLiveSessionController::class, 'cancel'])->name('cancel-session');
+    Route::post('/{liveSession}/lock', [TeacherLiveSessionController::class, 'lock'])->name('lock');
+    Route::post('/{liveSession}/unlock', [TeacherLiveSessionController::class, 'unlock'])->name('unlock');
+    Route::post('/{liveSession}/join-token', [TeacherLiveSessionController::class, 'joinToken'])->middleware('throttle:20,1')->name('join-token');
+    Route::post('/{liveSession}/participants/{participant}/admit', [TeacherLiveSessionController::class, 'admit'])->middleware('throttle:30,1')->name('participants.admit');
+    Route::post('/{liveSession}/participants/{participant}/deny', [TeacherLiveSessionController::class, 'deny'])->middleware('throttle:30,1')->name('participants.deny');
+    Route::post('/{liveSession}/participants/{participant}/remove', [TeacherLiveSessionController::class, 'remove'])->middleware('throttle:30,1')->name('participants.remove');
 });
