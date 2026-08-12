@@ -181,6 +181,20 @@ return [
     'continue_to_room' => 'Continue to classroom',
     'recording_ready' => 'Recording',
     'watch_recording' => 'Watch recording',
+    'teaching_tools' => 'Teaching tools',
+    'teaching_tools_hint' => 'Whiteboard, quick polls and classroom materials',
+    'whiteboard' => 'Whiteboard',
+    'quick_poll' => 'Poll',
+    'resources' => 'Materials',
+    'clear_board' => 'Clear board',
+    'poll_question' => 'Ask the class a question',
+    'option' => 'Option',
+    'launch_poll' => 'Launch poll',
+    'close_poll' => 'Close poll',
+    'show_results' => 'Show results',
+    'upload' => 'Upload',
+    'no_poll' => 'No active poll.',
+    'no_resources' => 'No classroom materials yet.',
 
     // Messages
     'created_success' => 'Live session created.',
@@ -222,5 +236,7 @@ return [
         'recording_chunks_incomplete' => 'The recording cannot be finalized because one or more chunks are missing.',
         'recording_consent_missing' => 'Every admitted participant must accept the recording notice before recording starts.',
         'stop_recording_before_end' => 'Stop and finalize the active recording before ending the classroom.',
+        'poll_already_voted' => 'You have already submitted an answer to this poll.',
+        'poll_options_unique' => 'Poll options must be non-empty and different from each other.',
     ],
 ];

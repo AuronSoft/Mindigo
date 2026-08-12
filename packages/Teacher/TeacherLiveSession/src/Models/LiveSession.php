@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
@@ -130,6 +131,11 @@ class LiveSession extends Model
         return $this->hasMany(LiveSessionRecording::class);
     }
 
+    public function resources(): HasMany
+    {
+        return $this->hasMany(LiveSessionResource::class);
+    }
+
     // Scopes
 
     public function scopeByTeacher($query, $teacherId)
@@ -179,5 +185,19 @@ class LiveSession extends Model
     public function usesExternalProvider(): bool
     {
         return $this->provider->isExternal();
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (LiveSession $session): void {
+            $session->recordings()->get()->each(function (LiveSessionRecording $recording): void {
+                if ($recording->storage_path) {
+                    Storage::disk($recording->storage_disk)->delete($recording->storage_path);
+                }
+
+                Storage::disk($recording->storage_disk)->delete($recording->chunks()->pluck('storage_path')->all());
+            });
+            $session->resources()->get()->each(fn (LiveSessionResource $resource) => Storage::disk($resource->storage_disk)->delete($resource->storage_path));
+        });
     }
 }

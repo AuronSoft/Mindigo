@@ -21,6 +21,8 @@ if (root) {
     let recordingAudioContext = null;
     let recordingAudioDestination = null;
     const recordedAudioTracks = new Set();
+    let lastWhiteboardActionId = 0;
+    const whiteboardActions = [];
 
     const request = async (url, payload) => {
         const response = await fetch(url, {
@@ -270,6 +272,63 @@ if (root) {
         tokenIssuedAt = Date.now();
     };
 
+    const drawWhiteboard = () => {
+        const canvas = root.querySelector('[data-whiteboard]'); if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (canvas.width !== Math.round(rect.width * devicePixelRatio) || canvas.height !== Math.round(rect.height * devicePixelRatio)) {
+            canvas.width = Math.round(rect.width * devicePixelRatio); canvas.height = Math.round(rect.height * devicePixelRatio);
+        }
+        const context = canvas.getContext('2d'); context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); context.clearRect(0, 0, rect.width, rect.height);
+        for (const action of whiteboardActions) {
+            if (action.type === 'clear') { context.clearRect(0, 0, rect.width, rect.height); continue; }
+            const points = action.payload?.points || []; if (points.length < 2) continue;
+            context.strokeStyle = action.payload.color; context.lineWidth = action.payload.width; context.lineCap = 'round'; context.lineJoin = 'round'; context.beginPath();
+            points.forEach((point, index) => { const x = point.x * rect.width; const y = point.y * rect.height; index ? context.lineTo(x, y) : context.moveTo(x, y); }); context.stroke();
+        }
+    };
+
+    const renderPoll = poll => {
+        const view = root.querySelector('[data-poll-view]'); if (!view) return; view.replaceChildren();
+        if (!poll) { const empty = document.createElement('p'); empty.className = 'py-10 text-center text-sm font-semibold text-slate-400'; empty.textContent = config.labels.noPoll; view.appendChild(empty); return; }
+        const title = document.createElement('h3'); title.className = 'text-base font-black text-slate-900'; title.textContent = poll.question; view.appendChild(title);
+        const list = document.createElement('div'); list.className = 'mt-4 space-y-2';
+        poll.options.forEach(option => {
+            const button = document.createElement('button'); button.type = 'button'; button.disabled = poll.status !== 'open' || Boolean(poll.voted_option_id);
+            button.className = `flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left text-sm font-bold ${poll.voted_option_id === option.id ? 'border-green-500 bg-green-50 text-green-800' : 'border-slate-200 text-slate-700'}`;
+            const label = document.createElement('span'); label.textContent = option.label; button.appendChild(label);
+            if (option.votes !== null) { const votes = document.createElement('span'); votes.className = 'rounded-full bg-slate-100 px-2 py-1 text-xs'; votes.textContent = option.votes; button.appendChild(votes); }
+            button.addEventListener('click', () => request(config.pollVoteUrl.replace('__POLL__', poll.id), {option_id: option.id}).then(pollTeachingTools)); list.appendChild(button);
+        }); view.appendChild(list);
+        if (config.pollCloseUrl && poll.status === 'open') { const close = document.createElement('button'); close.type = 'button'; close.className = 'mt-3 rounded-xl bg-slate-900 px-4 py-2 text-xs font-black text-white'; close.textContent = config.labels.closePoll; close.addEventListener('click', () => request(config.pollCloseUrl.replace('__POLL__', poll.id), {show_results: true}).then(pollTeachingTools)); view.appendChild(close); }
+    };
+
+    const renderResources = resources => {
+        const list = root.querySelector('[data-resource-list]'); if (!list) return; list.replaceChildren();
+        if (!resources.length) { const empty = document.createElement('p'); empty.className = 'py-10 text-center text-sm font-semibold text-slate-400'; empty.textContent = config.labels.noResources; list.appendChild(empty); return; }
+        resources.forEach(resource => { const link = document.createElement('a'); link.href = resource.download_url; link.className = 'flex items-center justify-between rounded-xl border border-slate-200 p-3 text-sm font-bold text-slate-700 no-underline hover:bg-slate-50'; const name = document.createElement('span'); name.className = 'truncate'; name.textContent = resource.name; const size = document.createElement('span'); size.className = 'ml-3 shrink-0 text-xs text-slate-400'; size.textContent = `${Math.ceil(resource.size_bytes / 1024)} KB`; link.append(name, size); list.appendChild(link); });
+    };
+
+    const pollTeachingTools = async () => {
+        if (!config.teachingToolsSyncUrl) return;
+        const data = await request(config.teachingToolsSyncUrl, {after_action_id: lastWhiteboardActionId});
+        for (const action of data.actions) { whiteboardActions.push(action); lastWhiteboardActionId = Math.max(lastWhiteboardActionId, action.id); }
+        if (data.actions.length) drawWhiteboard(); renderPoll(data.poll); renderResources(data.resources);
+    };
+
+    root.querySelector('[data-toggle-teaching-tools]')?.addEventListener('click', () => { root.querySelector('[data-teaching-tools-panel]').classList.replace('hidden', 'flex'); window.setTimeout(drawWhiteboard); });
+    root.querySelector('[data-close-teaching-tools]')?.addEventListener('click', () => root.querySelector('[data-teaching-tools-panel]').classList.replace('flex', 'hidden'));
+    root.querySelectorAll('[data-tool-tab]').forEach(button => button.addEventListener('click', () => {
+        root.querySelectorAll('[data-tool-content]').forEach(panel => panel.classList.toggle('hidden', panel.dataset.toolContent !== button.dataset.toolTab)); if (button.dataset.toolTab === 'whiteboard') window.setTimeout(drawWhiteboard);
+    }));
+    const board = root.querySelector('[data-whiteboard]'); let currentStroke = null;
+    board?.addEventListener('pointerdown', event => { board.setPointerCapture(event.pointerId); const rect = board.getBoundingClientRect(); currentStroke = {color: root.querySelector('[data-board-color]').value, width: Number(root.querySelector('[data-board-width]').value), points: [{x: (event.clientX - rect.left) / rect.width, y: (event.clientY - rect.top) / rect.height}]}; });
+    board?.addEventListener('pointermove', event => { if (!currentStroke) return; const rect = board.getBoundingClientRect(); currentStroke.points.push({x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)), y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))}); whiteboardActions.push({type: 'stroke', payload: currentStroke}); drawWhiteboard(); whiteboardActions.pop(); });
+    const finishStroke = async () => { if (!currentStroke) return; const stroke = currentStroke; currentStroke = null; if (stroke.points.length >= 2) await request(config.whiteboardUrl, {type: 'stroke', payload: stroke}); };
+    board?.addEventListener('pointerup', finishStroke); board?.addEventListener('pointercancel', finishStroke);
+    root.querySelector('[data-clear-board]')?.addEventListener('click', () => request(config.whiteboardUrl, {type: 'clear'}).then(pollTeachingTools));
+    root.querySelector('[data-poll-form]')?.addEventListener('submit', event => { event.preventDefault(); const question = root.querySelector('[data-poll-question]').value; const options = [...root.querySelectorAll('[data-poll-option]')].map(input => input.value.trim()); request(config.pollCreateUrl, {question, options}).then(() => { event.target.reset(); return pollTeachingTools(); }); });
+    root.querySelector('[data-resource-form]')?.addEventListener('submit', async event => { event.preventDefault(); const file = root.querySelector('[data-resource-file]').files[0]; if (!file) return; const form = new FormData(); form.append('token', config.token); form.append('file', file); const response = await fetch(config.resourceUploadUrl, {method: 'POST', credentials: 'same-origin', headers: {'Accept': 'application/json', 'X-CSRF-TOKEN': csrf}, body: form}); if (!response.ok) throw new Error('Resource upload failed'); event.target.reset(); await pollTeachingTools(); });
+
     const checksum = async blob => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', await blob.arrayBuffer())))
         .map(byte => byte.toString(16).padStart(2, '0')).join('');
 
@@ -376,7 +435,7 @@ if (root) {
 
     const loop = async () => {
         if (stopped) return;
-        try { if (config.joinTokenUrl) await refreshJoinToken(); await pollPresence(); await pollSignals(); if (config.collaborationSyncUrl) await pollCollaboration(); setStatus(config.labels.connected); }
+        try { if (config.joinTokenUrl) await refreshJoinToken(); await pollPresence(); await pollSignals(); if (config.collaborationSyncUrl) await pollCollaboration(); if (config.teachingToolsSyncUrl) await pollTeachingTools(); setStatus(config.labels.connected); }
         catch (error) {
             if ([403, 404, 409].includes(error.status)) { stopped = true; window.location.assign(config.leaveUrl); return; }
             setStatus(config.labels.reconnecting, true);
