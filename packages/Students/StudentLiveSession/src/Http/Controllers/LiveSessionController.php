@@ -59,6 +59,7 @@ class LiveSessionController extends Controller
                 'presenceUrl' => route('live-media.presence', $liveSession),
                 'signalUrl' => route('live-media.signals.store', $liveSession),
                 'inboxUrl' => route('live-media.signals.inbox', $liveSession),
+                'mediaLeaveUrl' => route('live-media.leave', $liveSession),
                 'collaborationSyncUrl' => route('live-collaboration.sync', $liveSession),
                 'messageUrl' => route('live-collaboration.messages.store', $liveSession),
                 'actionUrl' => route('live-collaboration.actions.store', $liveSession),

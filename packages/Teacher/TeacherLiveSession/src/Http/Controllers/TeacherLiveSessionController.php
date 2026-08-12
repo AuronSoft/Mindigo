@@ -299,6 +299,7 @@ class TeacherLiveSessionController extends Controller
             'presenceUrl' => route('live-media.presence', $session),
             'signalUrl' => route('live-media.signals.store', $session),
             'inboxUrl' => route('live-media.signals.inbox', $session),
+            'mediaLeaveUrl' => route('live-media.leave', $session),
             'collaborationSyncUrl' => route('live-collaboration.sync', $session),
             'messageUrl' => route('live-collaboration.messages.store', $session),
             'actionUrl' => route('live-collaboration.actions.store', $session),

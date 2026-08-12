@@ -19,6 +19,7 @@ final class LiveSessionService
     public function __construct(
         private readonly LiveMeetingProviderRegistry $providers,
         private readonly AuditLogService $audit,
+        private readonly LiveSessionAttendanceService $attendance,
     ) {}
 
     public function getSessionsByTeacher(int|string $teacherId, ?int $classroomId = null, int $perPage = 10): LengthAwarePaginator
@@ -120,7 +121,7 @@ final class LiveSessionService
     public function join(LiveSession $session, User $actor): array
     {
         $result = $this->providers->resolve($session->provider)->join($session, $actor);
-        $this->recordJoin($session, $actor->getKey());
+        $this->attendance->heartbeat($session, $actor);
 
         return [
             'mode' => $result->mode,
@@ -132,14 +133,8 @@ final class LiveSessionService
 
     public function recordJoin(LiveSession $session, int|string $userId): void
     {
-        $attendance = $session->attendances()->firstOrCreate(
-            ['user_id' => $userId],
-            ['joined_at' => now()],
-        );
-
-        if (! $attendance->joined_at) {
-            $attendance->update(['joined_at' => now()]);
-        }
+        $user = User::query()->findOrFail($userId);
+        $this->attendance->heartbeat($session, $user);
     }
 
     private function safeAuditValues(LiveSession $session): array

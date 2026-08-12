@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionAttendanceReportController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionBreakoutController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionCollaborationController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionMediaController;
@@ -15,6 +16,8 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-s
     Route::get('/', [TeacherLiveSessionController::class, 'index'])->name('index');
     Route::get('/create', [TeacherLiveSessionController::class, 'create'])->name('create');
     Route::post('/', [TeacherLiveSessionController::class, 'store'])->middleware('throttle:10,1')->name('store');
+    Route::get('/{liveSession}/attendance', [LiveSessionAttendanceReportController::class, 'show'])->name('attendance.show');
+    Route::get('/{liveSession}/attendance/export', [LiveSessionAttendanceReportController::class, 'export'])->middleware('throttle:10,1')->name('attendance.export');
 
     Route::get('/{liveSession}/edit', [TeacherLiveSessionController::class, 'edit'])->name('edit');
     Route::put('/{liveSession}', [TeacherLiveSessionController::class, 'update'])->name('update');
@@ -87,4 +90,5 @@ Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('live-media/{liveSe
     Route::post('/presence', [LiveSessionMediaController::class, 'presence'])->name('presence');
     Route::post('/signals', [LiveSessionMediaController::class, 'signal'])->name('signals.store');
     Route::post('/signals/inbox', [LiveSessionMediaController::class, 'inbox'])->name('signals.inbox');
+    Route::post('/leave', [LiveSessionMediaController::class, 'leave'])->middleware('throttle:30,1')->name('leave');
 });

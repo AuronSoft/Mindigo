@@ -15,6 +15,7 @@ use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
 use Mindigo\TeacherLiveSession\Models\LiveSessionRoomEvent;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAccessService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAdmissionService;
+use Mindigo\TeacherLiveSession\Services\LiveSessionAttendanceService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionJoinTokenService;
 
 final class LiveSessionCollaborationController extends Controller
@@ -26,6 +27,7 @@ final class LiveSessionCollaborationController extends Controller
         private readonly LiveSessionAccessService $access,
         private readonly LiveSessionAdmissionService $admissions,
         private readonly AuditLogService $audit,
+        private readonly LiveSessionAttendanceService $attendance,
     ) {}
 
     public function sync(Request $request, LiveSession $liveSession): JsonResponse
@@ -76,6 +78,7 @@ final class LiveSessionCollaborationController extends Controller
             'sender_id' => $request->user()->id,
             'body' => $body,
         ]);
+        $this->attendance->incrementEngagement($liveSession, $request->user(), 'chat_messages_count');
 
         return response()->json(['id' => $message->id], 201);
     }
@@ -89,7 +92,10 @@ final class LiveSessionCollaborationController extends Controller
             'reaction' => ['required_if:action,reaction', Rule::in(self::REACTIONS)],
         ]);
         if ($data['action'] === 'raise_hand') {
-            $participant->update(['hand_raised_at' => $participant->hand_raised_at ?? now()]);
+            if ($participant->hand_raised_at === null) {
+                $participant->update(['hand_raised_at' => now()]);
+                $this->attendance->incrementEngagement($liveSession, $request->user(), 'hands_raised_count');
+            }
         } elseif ($data['action'] === 'lower_hand') {
             $participant->update(['hand_raised_at' => null]);
         } else {
@@ -98,6 +104,7 @@ final class LiveSessionCollaborationController extends Controller
                 'type' => 'reaction', 'payload' => ['reaction' => $data['reaction'], 'name' => $request->user()->name],
                 'expires_at' => now()->addSeconds(15),
             ]);
+            $this->attendance->incrementEngagement($liveSession, $request->user(), 'reactions_count');
         }
 
         return response()->json([], 202);
