@@ -5,6 +5,7 @@
     <p class="text-xs font-black uppercase tracking-wider text-green-700">Mindigo Live</p>
     <div class="flex items-center justify-between gap-4"><h1 class="mt-1 text-2xl font-black text-slate-950">@lang('teacher-live-session::app.provider_health_title')</h1><a href="{{ route('admin.live-providers.configuration') }}" class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 no-underline"><x-heroicon-o-cog-6-tooth class="h-4 w-4" />@lang('teacher-live-session::app.configuration_title')</a></div>
     <p class="mt-1 text-sm font-semibold text-slate-500">@lang('teacher-live-session::app.provider_health_subtitle')</p>
+    @if($alerts)<section aria-labelledby="live-operational-alerts" class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4"><h2 id="live-operational-alerts" class="text-sm font-black text-amber-900">@lang('teacher-live-session::app.operational_alerts')</h2><div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">@foreach($alerts as $alert)<div class="rounded-xl bg-white px-3 py-2 text-xs font-bold {{ $alert['severity'] === 'critical' ? 'text-red-700' : 'text-amber-800' }}">{{ __('teacher-live-session::app.alert_'.$alert['code'], ['count' => $alert['count']]) }}</div>@endforeach</div></section>@endif
     <div class="mt-6 grid gap-4 lg:grid-cols-3">
         @foreach($health as $item)
         <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">

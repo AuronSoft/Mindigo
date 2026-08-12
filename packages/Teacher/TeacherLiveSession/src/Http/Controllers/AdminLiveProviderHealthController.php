@@ -15,6 +15,7 @@ use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
 use Mindigo\TeacherLiveSession\Services\LiveProviderCircuitBreaker;
 use Mindigo\TeacherLiveSession\Services\LiveProviderErrorSanitizer;
 use Mindigo\TeacherLiveSession\Services\LiveSessionConfigurationService;
+use Mindigo\TeacherLiveSession\Services\LiveSessionOperationalMonitor;
 
 final class AdminLiveProviderHealthController extends Controller
 {
@@ -23,6 +24,7 @@ final class AdminLiveProviderHealthController extends Controller
         LiveProviderCircuitBreaker $circuit,
         LiveSessionConfigurationService $configuration,
         LiveProviderErrorSanitizer $errors,
+        LiveSessionOperationalMonitor $monitor,
     ): View {
         $health = collect([LiveSessionProvider::Native, LiveSessionProvider::GoogleMeet, LiveSessionProvider::Zoom])
             ->map(function (LiveSessionProvider $provider) use ($providers, $circuit, $configuration): array {
@@ -46,7 +48,9 @@ final class AdminLiveProviderHealthController extends Controller
         $recentErrors = LiveSession::query()->whereNotNull('sync_error')->latest('last_synced_at')->limit(20)->get()
             ->map(fn (LiveSession $session) => ['session' => $session->title, 'provider' => $session->provider->value, 'at' => $session->last_synced_at, 'message' => $errors->from($session->sync_error)]);
 
-        return view('teacher-live-session::admin.provider-health', compact('health', 'recentErrors'));
+        $alerts = $monitor->alerts();
+
+        return view('teacher-live-session::admin.provider-health', compact('health', 'recentErrors', 'alerts'));
     }
 
     public function configuration(LiveSessionConfigurationService $configuration): View

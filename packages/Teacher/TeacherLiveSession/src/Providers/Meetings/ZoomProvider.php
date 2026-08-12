@@ -37,7 +37,7 @@ final class ZoomProvider implements LiveMeetingProvider
             'timezone' => config('app.timezone'), 'settings' => ['waiting_room' => true, 'join_before_host' => false],
         ])->throw()->json();
 
-        return new ProviderMeeting('zoom-'.$response['id'], (string) $response['id'], $response['join_url'] ?? null, $response['start_url'] ?? null, $response['status'] ?? 'waiting', ['password' => $response['password'] ?? null, 'uuid' => $response['uuid'] ?? null]);
+        return new ProviderMeeting('zoom-'.$response['id'], (string) $response['id'], $response['join_url'] ?? null, $response['start_url'] ?? null, $response['status'] ?? 'waiting', ['uuid' => $response['uuid'] ?? null]);
     }
 
     public function update(LiveSession $session): ProviderMeeting

@@ -128,6 +128,13 @@ final class LiveSessionTeachingToolController extends Controller
         $this->moderator($request, $liveSession);
         $data = $request->validate(['token' => ['required', 'string', 'max:4096'], 'file' => ['required', 'file', 'mimes:pdf,ppt,pptx,doc,docx,xls,xlsx,png,jpg,jpeg,webp', 'max:25600']]);
         $file = $data['file'];
+        $allowedMimeTypes = [
+            'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'image/png', 'image/jpeg', 'image/webp',
+        ];
+        abort_unless(in_array($file->getMimeType(), $allowedMimeTypes, true), 422);
         $checksum = hash_file('sha256', $file->getRealPath());
         $extension = strtolower($file->getClientOriginalExtension());
         $path = $file->storeAs('live-session-resources/'.$liveSession->id, $checksum.($extension !== '' ? '.'.$extension : ''), 'local');

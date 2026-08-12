@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'live_room' => 'Phòng học trực tuyến', 'reactions' => 'Cảm xúc', 'board_color' => 'Màu bút bảng trắng', 'board_width' => 'Độ rộng bút bảng trắng',
     'configuration_title' => 'Cấu hình lớp học trực tuyến',
     'configuration_subtitle' => 'Kiểm soát nền tảng, hạn mức, chất lượng media, bản ghi và thời hạn lưu dữ liệu.',
     'configuration_saved' => 'Đã lưu cấu hình lớp học trực tuyến.',
@@ -14,6 +15,8 @@ return [
     'live_recording_consent_required' => 'Yêu cầu người tham gia đồng ý ghi hình', 'sessions_this_month' => 'buổi trong tháng',
     'oauth_connections' => 'kết nối OAuth', 'redacted_error_log' => 'Lỗi nền tảng gần đây',
     'redacted_error_hint' => 'Thông tin xác thực và token nhạy cảm được tự động che.', 'no_provider_errors' => 'Chưa ghi nhận lỗi nền tảng.',
+    'operational_alerts' => 'Cảnh báo vận hành', 'alert_provider_sync_failures' => ':count lỗi đồng bộ nền tảng trong 24 giờ qua.',
+    'alert_stale_live_rooms' => ':count phòng vẫn đang mở quá giờ kết thúc dự kiến.', 'alert_recording_failures' => ':count bản ghi bị lỗi trong 24 giờ qua.',
     'analytics_report' => 'Báo cáo học trực tuyến', 'analytics_report_subtitle' => 'Tổng hợp chuyên cần, thời lượng, tương tác và chất lượng kết nối.',
     'back_to_sessions' => 'Danh sách buổi học', 'report_scope' => 'Phạm vi tổng hợp', 'all_providers' => 'Tất cả nền tảng',
     'date_from' => 'Từ ngày', 'date_to' => 'Đến ngày', 'apply_filter' => 'Áp dụng', 'report_details' => 'Chi tiết báo cáo',

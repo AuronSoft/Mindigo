@@ -55,6 +55,7 @@ class LiveSessionRequest extends FormRequest
 
         return [
             'title' => ['required', 'string', 'max:255'],
+            'idempotency_key' => ['nullable', 'uuid'],
             'description' => ['nullable', 'string', 'max:2000'],
             'classroom_id' => [
                 'required',
