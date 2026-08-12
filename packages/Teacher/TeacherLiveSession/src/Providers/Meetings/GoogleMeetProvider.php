@@ -99,6 +99,6 @@ final class GoogleMeetProvider implements LiveMeetingProvider
         return Http::withToken($this->tokens->accessToken($userId, $this->key()))->acceptJson()
             ->connectTimeout(config('live-providers.http.connect_timeout', 3))
             ->timeout(config('live-providers.http.timeout', 10))
-            ->retry(config('live-providers.http.retries', 2), 200);
+            ->retry(config('live-providers.http.retries', 2), fn (int $attempt): int => 200 * (2 ** ($attempt - 1)));
     }
 }

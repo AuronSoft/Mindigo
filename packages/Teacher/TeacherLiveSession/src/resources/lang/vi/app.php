@@ -1,6 +1,17 @@
 <?php
 
 return [
+    'fallback_native' => 'Chuyển sang Mindigo Live',
+    'fallback_native_confirm' => 'Buổi học chưa bắt đầu sẽ được đổi phòng sang Mindigo Live. Lớp, lịch và học sinh được giữ nguyên.',
+    'fallback_native_success' => 'Đã chuyển buổi học sang Mindigo Live và thông báo cho học sinh.',
+    'provider_changed_notification_title' => 'Buổi học đã đổi phòng',
+    'provider_changed_notification_message' => ':session của lớp :classroom đã chuyển sang Mindigo Live.',
+    'provider_health_title' => 'Trạng thái nền tảng học trực tuyến',
+    'provider_health_subtitle' => 'Theo dõi cấu hình, đồng bộ và circuit breaker của từng nền tảng.',
+    'default_provider' => 'Nền tảng mặc định', 'external_provider' => 'Nền tảng mở rộng',
+    'healthy' => 'Sẵn sàng', 'unavailable' => 'Tạm gián đoạn', 'pending_sync' => 'Chờ đồng bộ',
+    'failed_sync' => 'Đồng bộ lỗi', 'failures' => 'Lỗi liên tiếp', 'reset_circuit' => 'Mở lại kết nối',
+    'provider_circuit_reset' => 'Đã đặt lại circuit breaker của nền tảng.',
     'datetime_placeholder' => 'Ngày/tháng/năm giờ:phút',
     'title' => 'Học trực tuyến',
     'subtitle' => 'Quản lý các buổi học trực tuyến của bạn',

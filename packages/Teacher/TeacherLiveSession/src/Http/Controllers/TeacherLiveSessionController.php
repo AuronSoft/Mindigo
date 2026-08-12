@@ -21,6 +21,7 @@ use Mindigo\TeacherLiveSession\Models\LiveSessionGuest;
 use Mindigo\TeacherLiveSession\Models\LiveSessionGuestLink;
 use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
 use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
+use Mindigo\TeacherLiveSession\Services\LiveProviderFallbackService;
 use Mindigo\TeacherLiveSession\Services\LiveProviderOAuthService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAccessService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAdmissionService;
@@ -100,6 +101,14 @@ class TeacherLiveSessionController extends Controller
         return redirect()
             ->route('teacher.live-sessions.index')
             ->with('success', __('teacher-live-session::app.deleted_success'));
+    }
+
+    public function fallbackToNative(Request $request, LiveSession $liveSession, LiveProviderFallbackService $fallback)
+    {
+        $this->authorizeOwner($liveSession);
+        $fallback->switchToNative($liveSession, $request->user());
+
+        return back()->with('success', __('teacher-live-session::app.fallback_native_success'));
     }
 
     // Bắt đầu buổi học rồi vào phòng
