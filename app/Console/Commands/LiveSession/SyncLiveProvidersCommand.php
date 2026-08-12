@@ -15,8 +15,8 @@ final class SyncLiveProvidersCommand extends Command
     {
         $limit = max(1, min(500, (int) $this->option('limit')));
         $stats = $sync->syncDue($limit);
-        $this->info("Provider sync completed: {$stats['synced']} synced, {$stats['failed']} failed.");
+        $this->info("Provider sync queued: {$stats['queued']} sessions.");
 
-        return $stats['failed'] > 0 ? self::FAILURE : self::SUCCESS;
+        return self::SUCCESS;
     }
 }

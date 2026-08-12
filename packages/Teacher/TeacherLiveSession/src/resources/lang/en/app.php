@@ -1,6 +1,17 @@
 <?php
 
 return [
+    'fallback_native' => 'Switch to Mindigo Live',
+    'fallback_native_confirm' => 'This upcoming session will move to Mindigo Live. Its class, schedule, and students remain unchanged.',
+    'fallback_native_success' => 'The session was moved to Mindigo Live and students were notified.',
+    'provider_changed_notification_title' => 'Live room changed',
+    'provider_changed_notification_message' => ':session in :classroom has moved to Mindigo Live.',
+    'provider_health_title' => 'Live provider health',
+    'provider_health_subtitle' => 'Monitor provider configuration, synchronization, and circuit breakers.',
+    'default_provider' => 'Default provider', 'external_provider' => 'External provider',
+    'healthy' => 'Healthy', 'unavailable' => 'Unavailable', 'pending_sync' => 'Pending sync',
+    'failed_sync' => 'Failed sync', 'failures' => 'Consecutive failures', 'reset_circuit' => 'Reset circuit',
+    'provider_circuit_reset' => 'The provider circuit breaker was reset.',
     'datetime_placeholder' => 'DD/MM/YYYY HH:mm',
     'title' => 'Live Sessions',
     'subtitle' => 'Manage your online class sessions',

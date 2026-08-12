@@ -6,6 +6,10 @@ return [
         'connect_timeout' => (int) env('LIVE_PROVIDER_CONNECT_TIMEOUT', 3),
         'retries' => (int) env('LIVE_PROVIDER_HTTP_RETRIES', 2),
     ],
+    'circuit_breaker' => [
+        'failure_threshold' => (int) env('LIVE_PROVIDER_CIRCUIT_FAILURE_THRESHOLD', 3),
+        'cooldown_seconds' => (int) env('LIVE_PROVIDER_CIRCUIT_COOLDOWN', 300),
+    ],
     'google_meet' => [
         'client_id' => env('GOOGLE_MEET_CLIENT_ID'),
         'client_secret' => env('GOOGLE_MEET_CLIENT_SECRET'),

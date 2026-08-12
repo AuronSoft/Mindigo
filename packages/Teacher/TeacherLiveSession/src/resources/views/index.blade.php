@@ -163,6 +163,16 @@
 
                                                 {{-- Edit (not ended) --}}
                                                 @if(in_array($s->status, ['draft', 'scheduled'], true))
+                                                    @if($s->provider->isExternal())
+                                                        <form action="{{ route('teacher.live-sessions.fallback-native', $s) }}" method="POST" class="inline"
+                                                            data-mindigo-confirm-title="@lang('teacher-live-session::app.fallback_native')"
+                                                            data-mindigo-confirm-message="@lang('teacher-live-session::app.fallback_native_confirm')">
+                                                            @csrf
+                                                            <button type="submit" class="inline-flex h-8 items-center gap-1 rounded-xl border border-green-200 bg-green-50 px-3 text-xs font-black text-green-700" title="@lang('teacher-live-session::app.fallback_native')">
+                                                                <x-heroicon-o-arrow-path class="h-4 w-4" /> @lang('teacher-live-session::app.fallback_native')
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                     <a href="{{ route('teacher.live-sessions.edit', $s) }}"
                                                         class="inline-flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700"
                                                         title="{{ __('teacher-live-session::app.edit') }}">

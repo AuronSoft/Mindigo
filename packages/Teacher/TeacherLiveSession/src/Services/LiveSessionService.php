@@ -22,6 +22,7 @@ final class LiveSessionService
         private readonly LiveMeetingProviderRegistry $providers,
         private readonly AuditLogService $audit,
         private readonly LiveSessionAttendanceService $attendance,
+        private readonly LiveProviderCircuitBreaker $circuit,
     ) {}
 
     public function getSessionsByTeacher(int|string $teacherId, ?int $classroomId = null, int $perPage = 10): LengthAwarePaginator
@@ -53,8 +54,11 @@ final class LiveSessionService
         );
         $requestedProvider = $providerKey;
         try {
+            $this->circuit->assertAvailable($providerKey);
             $meeting = $this->providers->resolve($providerKey)->create($context);
+            $this->circuit->recordSuccess($providerKey);
         } catch (Throwable $exception) {
+            $this->circuit->recordFailure($providerKey);
             if (! $providerKey->isExternal()) {
                 throw $exception;
             }
@@ -109,7 +113,14 @@ final class LiveSessionService
         unset($data['provider']);
         $providerSnapshot = clone $session;
         $providerSnapshot->fill($data);
-        $meeting = $this->providers->resolve($session->provider)->update($providerSnapshot);
+        $this->circuit->assertAvailable($session->provider);
+        try {
+            $meeting = $this->providers->resolve($session->provider)->update($providerSnapshot);
+            $this->circuit->recordSuccess($session->provider);
+        } catch (Throwable $exception) {
+            $this->circuit->recordFailure($session->provider);
+            throw $exception;
+        }
 
         $oldValues = $this->safeAuditValues($session);
         $updated = DB::transaction(function () use ($session, $data, $meeting): LiveSession {

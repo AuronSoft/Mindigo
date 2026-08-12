@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\TeacherLiveSession\Http\Controllers\AdminLiveProviderHealthController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveProviderConnectionController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionAttendanceReportController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionBreakoutController;
@@ -12,6 +13,11 @@ use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionTeachingToolControlle
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestController;
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
+
+Route::middleware(['web', 'auth', 'role:admin'])->prefix('admin/live-providers')->name('admin.live-providers.')->group(function () {
+    Route::get('/health', [AdminLiveProviderHealthController::class, 'index'])->name('health');
+    Route::post('/health/{provider}/reset', [AdminLiveProviderHealthController::class, 'reset'])->middleware('throttle:10,1')->name('health.reset');
+});
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-providers')->name('teacher.live-providers.')->group(function () {
     Route::get('/{provider}/connect', [LiveProviderConnectionController::class, 'connect'])->middleware('throttle:10,1')->name('connect');
@@ -29,6 +35,7 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-s
     Route::get('/{liveSession}/edit', [TeacherLiveSessionController::class, 'edit'])->name('edit');
     Route::put('/{liveSession}', [TeacherLiveSessionController::class, 'update'])->name('update');
     Route::delete('/{liveSession}', [TeacherLiveSessionController::class, 'destroy'])->name('destroy');
+    Route::post('/{liveSession}/fallback-native', [TeacherLiveSessionController::class, 'fallbackToNative'])->middleware('throttle:5,1')->name('fallback-native');
 
     Route::post('/{liveSession}/start', [TeacherLiveSessionController::class, 'start'])->middleware('throttle:20,1')->name('start');
     Route::post('/{liveSession}/open', [TeacherLiveSessionController::class, 'openWaitingRoom'])->middleware('throttle:10,1')->name('open');
