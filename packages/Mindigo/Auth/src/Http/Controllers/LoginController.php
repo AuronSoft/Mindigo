@@ -2,7 +2,7 @@
 
 namespace Mindigo\Auth\Http\Controllers;
 
-use App\Support\RoleRedirector;
+use App\Support\Auth\RoleRedirector;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;

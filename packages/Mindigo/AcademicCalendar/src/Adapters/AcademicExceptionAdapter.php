@@ -2,6 +2,7 @@
 
 namespace Mindigo\AcademicCalendar\Adapters;
 
+use App\Support\AcademicCalendar\CalendarScope;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Mindigo\AcademicCalendar\Contracts\CalendarSourceAdapter;
@@ -11,7 +12,6 @@ use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
 use Mindigo\AcademicCalendar\Enums\CalendarEventSource;
 use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;
 use Mindigo\AcademicCalendar\Models\AcademicCalendarException;
-use Mindigo\AcademicCalendar\Support\CalendarScope;
 use Mindigo\TeacherClassroom\Models\Classroom;
 
 final class AcademicExceptionAdapter implements CalendarSourceAdapter

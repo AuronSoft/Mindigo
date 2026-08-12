@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Console\Commands\LiveSession;
+
+use Illuminate\Console\Command;
+use Mindigo\TeacherLiveSession\Enums\LiveSessionProvider;
+use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
+
+final class DoctorLiveSessionCommand extends Command
+{
+    protected $signature = 'live-sessions:doctor';
+
+    protected $description = 'Inspect live-classroom provider and realtime deployment configuration';
+
+    public function handle(LiveMeetingProviderRegistry $providers): int
+    {
+        $rows = collect(LiveSessionProvider::cases())
+            ->reject(fn (LiveSessionProvider $provider) => $provider === LiveSessionProvider::LegacyJitsi)
+            ->map(function (LiveSessionProvider $provider) use ($providers): array {
+                $health = $providers->resolve($provider)->health();
+
+                return [$provider->value, $health->available ? 'ready' : 'not configured', $health->message ?? ''];
+            })->all();
+        $this->table(['Provider', 'Status', 'Details'], $rows);
+
+        $hasIceServer = collect(config('live-media.ice_servers', []))->contains(fn ($server) => filled($server['urls'] ?? null));
+        $this->components->twoColumnDetail('WebRTC ICE servers', $hasIceServer ? '<fg=green>configured</>' : '<fg=yellow>missing</>');
+        $this->components->twoColumnDetail('Scheduler', '<fg=green>commands registered</>');
+
+        if (app()->isProduction() && ! $hasIceServer) {
+            $this->error('Production requires STUN/TURN configuration for reliable Native WebRTC connectivity.');
+
+            return self::FAILURE;
+        }
+
+        return self::SUCCESS;
+    }
+}

@@ -2,13 +2,13 @@
 
 namespace Mindigo\AcademicCalendar\Providers;
 
+use App\Console\Commands\AcademicCalendar\SendCalendarReminders;
 use Illuminate\Support\ServiceProvider;
 use Mindigo\AcademicCalendar\Adapters\AcademicExceptionAdapter;
 use Mindigo\AcademicCalendar\Adapters\AssignmentAdapter;
 use Mindigo\AcademicCalendar\Adapters\ClassroomScheduleAdapter;
 use Mindigo\AcademicCalendar\Adapters\ExamAdapter;
 use Mindigo\AcademicCalendar\Adapters\LiveSessionAdapter;
-use Mindigo\AcademicCalendar\Console\SendCalendarReminders;
 use Mindigo\AcademicCalendar\Contracts\CalendarSourceAdapter;
 use Mindigo\AcademicCalendar\Models\AcademicCalendarException;
 use Mindigo\AcademicCalendar\Observers\AcademicCalendarAuditObserver;

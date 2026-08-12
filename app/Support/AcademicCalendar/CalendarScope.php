@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindigo\AcademicCalendar\Support;
+namespace App\Support\AcademicCalendar;
 
 use Illuminate\Support\Collection;
 use Mindigo\AcademicCalendar\Data\CalendarQuery;

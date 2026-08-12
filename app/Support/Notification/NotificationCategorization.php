@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindigo\Notification\Support;
+namespace App\Support\Notification;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

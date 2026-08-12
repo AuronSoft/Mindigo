@@ -15,6 +15,12 @@
     ])->first(fn (array $fields) => collect($fields)->contains(fn (string $field) => $errors->has($field) || $errors->has($field.'.*')), 'academic');
     $initialTabIndex = max(0, array_search($errorTab, array_keys($tabs), true));
     $fmt = fn ($date) => $date ? $date->format('Y-m-d\TH:i') : null;
+    $startValue = old('scheduled_start', $fmt($session?->scheduled_start));
+    $endValue = old('scheduled_end', $fmt($session?->scheduled_end));
+    $displayDateTime = function ($value) {
+        if (blank($value)) return '';
+        try { return \Illuminate\Support\Carbon::parse($value)->format('d/m/Y H:i'); } catch (\Throwable) { return ''; }
+    };
     $settings = old('room_settings', $session?->room_settings ?? [
         'waiting_room_enabled' => true,
         'guest_access_enabled' => false,
@@ -110,8 +116,13 @@
     </div>
     <div class="space-y-1.5"><label for="live-title" class="text-sm font-bold text-slate-700">@lang('teacher-live-session::app.field_title') <span class="text-red-500">*</span></label><input id="live-title" type="text" name="title" value="{{ old('title', $session?->title) }}" maxlength="255" required class="block w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-800 outline-none focus:border-green-400 focus:ring-2 focus:ring-green-50" placeholder="{{ __('teacher-live-session::app.title_placeholder') }}">@error('title')<p class="text-xs font-semibold text-red-600">{{ $message }}</p>@enderror</div>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-        <div class="space-y-1.5"><label for="live-start" class="text-sm font-bold text-slate-700">@lang('teacher-live-session::app.field_start') <span class="text-red-500">*</span></label><input id="live-start" type="datetime-local" name="scheduled_start" value="{{ old('scheduled_start', $fmt($session?->scheduled_start)) }}" required class="block w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-800 outline-none focus:border-green-400">@error('scheduled_start')<p class="text-xs font-semibold text-red-600">{{ $message }}</p>@enderror</div>
-        <div class="space-y-1.5"><label for="live-end" class="text-sm font-bold text-slate-700">@lang('teacher-live-session::app.field_end') <span class="text-red-500">*</span></label><input id="live-end" type="datetime-local" name="scheduled_end" value="{{ old('scheduled_end', $fmt($session?->scheduled_end)) }}" required class="block w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-800 outline-none focus:border-green-400">@error('scheduled_end')<p class="text-xs font-semibold text-red-600">{{ $message }}</p>@enderror</div>
+        @foreach(['start' => [$startValue, 'scheduled_start', __('teacher-live-session::app.field_start')], 'end' => [$endValue, 'scheduled_end', __('teacher-live-session::app.field_end')]] as $timeKey => [$timeValue, $timeName, $timeLabel])
+            <div class="space-y-1.5"><label for="live-{{ $timeKey }}-display" class="text-sm font-bold text-slate-700">{{ $timeLabel }} <span class="text-red-500">*</span></label>
+                <input id="live-{{ $timeKey }}-value" type="hidden" name="{{ $timeName }}" value="{{ $timeValue }}">
+                <span class="relative block"><input id="live-{{ $timeKey }}-display" type="text" readonly value="{{ $displayDateTime($timeValue) }}" placeholder="@lang('teacher-live-session::app.datetime_placeholder')" class="block w-full cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2.5 pr-11 text-sm font-bold text-slate-800 outline-none focus:border-green-400"><button type="button" data-live-datetime-trigger="{{ $timeKey }}" aria-label="{{ $timeLabel }}" class="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-lg text-slate-400 hover:bg-green-50 hover:text-green-700"><x-heroicon-o-calendar-days class="h-4 w-4" /></button><input id="live-{{ $timeKey }}" type="datetime-local" value="{{ $timeValue }}" required tabindex="-1" aria-hidden="true" class="pointer-events-none absolute bottom-0 right-0 h-px w-px opacity-0"></span>
+                @error($timeName)<p data-live-time-error="{{ $timeKey }}" class="text-xs font-semibold text-red-600">{{ $message }}</p>@enderror
+            </div>
+        @endforeach
     </div>
     <p id="time-lock-hint" class="hidden rounded-lg bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">@lang('teacher-live-session::app.course_time_locked')</p>
     <div class="space-y-1.5"><label for="live-description" class="text-sm font-bold text-slate-700">@lang('teacher-live-session::app.field_desc')</label><textarea id="live-description" name="description" rows="4" maxlength="2000" class="block w-full resize-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-green-400" placeholder="{{ __('teacher-live-session::app.desc_placeholder') }}">{{ old('description', $session?->description) }}</textarea>@error('description')<p class="text-xs font-semibold text-red-600">{{ $message }}</p>@enderror</div>
@@ -119,21 +130,22 @@
 
 <section id="live-session-panel-provider" role="tabpanel" data-live-session-form-panel="provider" @if($initialTabIndex !== 2) hidden @endif class="min-h-0 flex-1 space-y-5 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
     <div class="flex items-start gap-3 border-b border-slate-100 pb-4"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-green-50 text-sm font-black text-green-700">3</span><div><h2 class="text-base font-black text-slate-950">@lang('teacher-live-session::app.creation_provider_title')</h2><p class="mt-1 text-xs font-semibold text-slate-500">@lang('teacher-live-session::app.creation_provider_desc')</p></div></div>
-    <div class="grid gap-3 md:grid-cols-3">
-        <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-green-500 bg-green-50 p-4">
+    <fieldset class="grid gap-3 md:grid-cols-3">
+        <legend class="sr-only">@lang('teacher-live-session::app.creation_provider_title')</legend>
+        <label data-provider-card="native" class="flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition {{ $selectedProvider === 'native' ? 'border-green-500 bg-green-50 shadow-sm' : 'border-slate-200 bg-white' }}">
             <input type="radio" name="provider" value="native" class="mt-1 text-green-600 focus:ring-green-500" @checked($selectedProvider === 'native')>
-            <span><strong class="block text-sm text-slate-950">Mindigo Live</strong><small class="mt-1 block font-semibold leading-5 text-slate-600">@lang('teacher-live-session::app.provider_native_hint')</small><em class="mt-2 inline-flex rounded-full bg-green-100 px-2 py-1 text-[10px] font-black not-italic text-green-800">@lang('teacher-live-session::app.provider_recommended')</em></span>
+            <span><span class="flex items-center gap-2"><img src="{{ asset('images/live-providers/mindigo-live.svg') }}" alt="" class="h-8 w-8 shrink-0"><strong class="block text-sm text-slate-950">Mindigo Live</strong></span><small class="mt-2 block font-semibold leading-5 text-slate-600">@lang('teacher-live-session::app.provider_native_hint')</small><em class="mt-2 inline-flex rounded-full bg-green-100 px-2 py-1 text-[10px] font-black not-italic text-green-800">@lang('teacher-live-session::app.provider_recommended')</em></span>
         </label>
         @foreach(['google_meet' => ['Google Meet', 'google-meet.svg'], 'zoom' => ['Zoom', 'zoom.svg']] as $provider => [$name, $logo])
             @php($connection = $providerConnections[$provider] ?? ['configured' => false, 'connected' => false])
-            <div class="flex items-start gap-3 rounded-xl border border-slate-200 {{ $connection['connected'] ? 'bg-white' : 'bg-slate-50' }} p-4">
+            <div data-provider-card="{{ $provider }}" class="flex items-start gap-3 rounded-xl border p-4 transition {{ $selectedProvider === $provider ? 'border-green-500 bg-green-50 shadow-sm' : 'border-slate-200 '.($connection['connected'] ? 'bg-white' : 'bg-slate-50') }}">
                 <input type="radio" name="provider" value="{{ $provider }}" class="mt-1 text-green-600 focus:ring-green-500" @checked($selectedProvider === $provider) @disabled(!$connection['connected'] || $editing)>
                 <span class="min-w-0 flex-1"><span class="flex items-center gap-2"><img src="{{ asset('images/live-providers/'.$logo) }}" alt="" class="h-8 w-8 shrink-0"><strong class="block text-sm text-slate-900">{{ $name }}</strong></span><small class="mt-2 block font-semibold leading-5 text-slate-500">{{ $connection['connected'] ? __('teacher-live-session::app.provider_connected') : __('teacher-live-session::app.provider_not_connected') }}</small>
                 @if(!$editing && $connection['configured'] && !$connection['connected'])<a href="{{ route('teacher.live-providers.connect', $provider) }}" class="mt-2 inline-flex rounded-lg bg-green-700 px-3 py-1.5 text-[11px] font-black text-white">@lang('teacher-live-session::app.provider_connect')</a>@endif
                 @if(!$connection['configured'])<em class="mt-2 inline-flex rounded-full bg-amber-100 px-2 py-1 text-[10px] font-black not-italic text-amber-800">@lang('teacher-live-session::app.provider_config_required')</em>@endif</span>
             </div>
         @endforeach
-    </div>
+    </fieldset>
     @error('provider')<p class="text-xs font-semibold text-red-600">{{ $message }}</p>@enderror
 </section>
 
@@ -161,7 +173,7 @@
 </div>
 
 <script>
-(() => {
+document.addEventListener('DOMContentLoaded', () => {
     const contexts = @json($classroomContext);
     const selectedSchedule = @json($selectedSchedule);
     const classroom = document.getElementById('live-classroom');
@@ -171,6 +183,10 @@
     const contextBox = document.getElementById('academic-context');
     const start = document.getElementById('live-start');
     const end = document.getElementById('live-end');
+    const startValue = document.getElementById('live-start-value');
+    const endValue = document.getElementById('live-end-value');
+    const startDisplay = document.getElementById('live-start-display');
+    const endDisplay = document.getElementById('live-end-display');
     const title = document.getElementById('live-title');
     const timeHint = document.getElementById('time-lock-hint');
     const tabRoot = document.querySelector('[data-live-session-form-tabs]');
@@ -182,6 +198,28 @@
     const submitButton = form.querySelector('[data-live-session-form-submit]');
     let currentIndex = Number(tabRoot.dataset.initialTabIndex || 0);
     let unlockedIndex = isCreateWizard ? currentIndex : tabs.length - 1;
+
+    const formatDateTime = value => {
+        const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+        return match ? `${match[3]}/${match[2]}/${match[1]} ${match[4]}:${match[5]}` : '';
+    };
+
+    const syncDateTime = () => {
+        startValue.value = start.value;
+        endValue.value = end.value;
+        startDisplay.value = formatDateTime(start.value);
+        endDisplay.value = formatDateTime(end.value);
+        const chronological = !start.value || !end.value || new Date(end.value).getTime() > new Date(start.value).getTime();
+        end.setCustomValidity(chronological ? '' : @json(__('teacher-live-session::app.validation.end_after')));
+        if (chronological) document.querySelector('[data-live-time-error="end"]')?.classList.add('hidden');
+    };
+
+    const openDateTimePicker = key => {
+        const picker = key === 'start' ? start : end;
+        if (picker.readOnly || picker.disabled) return;
+        if (typeof picker.showPicker === 'function') picker.showPicker();
+        else { picker.focus(); picker.click(); }
+    };
 
     const refreshNavigation = () => {
         tabs.forEach((tab, index) => {
@@ -216,6 +254,7 @@
         const invalid = [...panel.querySelectorAll('input, select, textarea')]
             .find(control => ! control.disabled && ! control.checkValidity());
         if (! invalid) return true;
+        if (invalid.type === 'datetime-local') openDateTimePicker(invalid.id.endsWith('start') ? 'start' : 'end');
         invalid.reportValidity();
         invalid.focus({preventScroll: true});
         invalid.scrollIntoView({behavior: 'smooth', block: 'center'});
@@ -229,6 +268,7 @@
         activateTab(currentIndex + 1);
     });
     form.addEventListener('submit', event => {
+        syncDateTime();
         const invalid = [...form.elements].find(control => typeof control.checkValidity === 'function' && ! control.disabled && ! control.checkValidity());
         if (! invalid) return;
         event.preventDefault();
@@ -257,6 +297,7 @@
         context.schedules.forEach(item => schedule.add(new Option(item.label, item.id)));
         if ([...schedule.options].some(option => option.value === previous)) schedule.value = previous;
         start.readOnly = courseClass; end.readOnly = courseClass; timeHint.classList.toggle('hidden', !courseClass);
+        document.querySelectorAll('[data-live-datetime-trigger]').forEach(button => button.disabled = courseClass);
         applySchedule();
     };
 
@@ -268,7 +309,7 @@
             return;
         }
         if (!title.value.trim()) title.value = item.lesson || item.title;
-        start.value = item.start; end.value = item.end;
+        start.value = item.start; end.value = item.end; syncDateTime();
         if (context.type === 'course') {
             const type = document.querySelector(`[name="session_type"][value="${item.type}"]`);
             if (type) type.checked = true;
@@ -277,6 +318,22 @@
 
     classroom.addEventListener('change', () => render(false));
     schedule.addEventListener('change', applySchedule);
+    start.addEventListener('change', syncDateTime);
+    end.addEventListener('change', syncDateTime);
+    startDisplay.addEventListener('click', () => openDateTimePicker('start'));
+    endDisplay.addEventListener('click', () => openDateTimePicker('end'));
+    document.querySelectorAll('[data-live-datetime-trigger]').forEach(button => button.addEventListener('click', () => openDateTimePicker(button.dataset.liveDatetimeTrigger)));
+    document.querySelectorAll('[name="provider"]').forEach(input => input.addEventListener('change', () => {
+        document.querySelectorAll('[data-provider-card]').forEach(card => {
+            const selected = card.dataset.providerCard === input.value && input.checked;
+            card.classList.toggle('border-green-500', selected);
+            card.classList.toggle('bg-green-50', selected);
+            card.classList.toggle('shadow-sm', selected);
+            card.classList.toggle('border-slate-200', !selected);
+            card.classList.toggle('bg-white', !selected);
+        });
+    }));
     render(true);
-})();
+    syncDateTime();
+});
 </script>

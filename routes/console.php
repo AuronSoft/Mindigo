@@ -17,3 +17,13 @@ Schedule::command('calendar:send-reminders')
     ->everyFiveMinutes()
     ->withoutOverlapping()
     ->onOneServer();
+
+Schedule::command('live-sessions:sync-providers')
+    ->everyFiveMinutes()
+    ->withoutOverlapping()
+    ->onOneServer();
+
+Schedule::command('live-sessions:cleanup-realtime')
+    ->hourly()
+    ->withoutOverlapping()
+    ->onOneServer();

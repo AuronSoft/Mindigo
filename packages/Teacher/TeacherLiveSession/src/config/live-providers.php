@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'http' => [
+        'timeout' => (int) env('LIVE_PROVIDER_HTTP_TIMEOUT', 10),
+        'connect_timeout' => (int) env('LIVE_PROVIDER_CONNECT_TIMEOUT', 3),
+        'retries' => (int) env('LIVE_PROVIDER_HTTP_RETRIES', 2),
+    ],
     'google_meet' => [
         'client_id' => env('GOOGLE_MEET_CLIENT_ID'),
         'client_secret' => env('GOOGLE_MEET_CLIENT_SECRET'),

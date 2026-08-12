@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindigo\AcademicCalendar\Console;
+namespace App\Console\Commands\AcademicCalendar;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;

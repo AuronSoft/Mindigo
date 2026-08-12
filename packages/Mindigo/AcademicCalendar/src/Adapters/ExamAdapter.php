@@ -2,6 +2,7 @@
 
 namespace Mindigo\AcademicCalendar\Adapters;
 
+use App\Support\AcademicCalendar\CalendarScope;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
@@ -11,7 +12,6 @@ use Mindigo\AcademicCalendar\Data\CalendarQuery;
 use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
 use Mindigo\AcademicCalendar\Enums\CalendarEventSource;
 use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;
-use Mindigo\AcademicCalendar\Support\CalendarScope;
 use Mindigo\ExamManagement\Models\Exam;
 
 final class ExamAdapter implements CalendarSourceAdapter

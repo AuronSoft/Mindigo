@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'datetime_placeholder' => 'DD/MM/YYYY HH:mm',
     'title' => 'Live Sessions',
     'subtitle' => 'Manage your online class sessions',
     'teaching_live' => 'Teaching content',

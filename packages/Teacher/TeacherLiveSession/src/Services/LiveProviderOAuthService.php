@@ -31,7 +31,10 @@ final class LiveProviderOAuthService
             throw new RuntimeException('Invalid or expired OAuth state.');
         }
         $config = $this->configured($provider);
-        $request = Http::asForm()->acceptJson();
+        $request = Http::asForm()->acceptJson()
+            ->connectTimeout(config('live-providers.http.connect_timeout', 3))
+            ->timeout(config('live-providers.http.timeout', 10))
+            ->retry(config('live-providers.http.retries', 2), 200);
         $payload = ['code' => $code, 'grant_type' => 'authorization_code', 'redirect_uri' => $config['redirect_uri']];
         if ($provider === LiveSessionProvider::Zoom) {
             $request = $request->withBasicAuth($config['client_id'], $config['client_secret']);
