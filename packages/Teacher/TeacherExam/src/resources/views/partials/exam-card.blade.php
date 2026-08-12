@@ -18,7 +18,7 @@
 
 <article class="group flex min-h-86 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
     <a href="{{ route('teacher.exams.show', $exam) }}" class="relative block h-36 overflow-hidden {{ $cover['surface'] }} no-underline" aria-label="{{ __('teacher-exam::app.open_exam', ['title' => $exam->title]) }}">
-        <span class="absolute -right-5 -top-7 h-24 w-24 rounded-full border-[14px] border-white/50"></span>
+        <span class="absolute -right-5 -top-7 h-24 w-24 rounded-full border-14 border-white/50"></span>
         <span class="absolute bottom-4 left-5 h-8 w-20 rounded-lg {{ $cover['shape'] }}"></span>
         <span class="absolute bottom-7 right-7 h-12 w-12 rotate-12 rounded-xl border-4 border-white/70 {{ $cover['shape'] }}"></span>
         <span class="absolute inset-0 grid place-items-center {{ $cover['ink'] }}">

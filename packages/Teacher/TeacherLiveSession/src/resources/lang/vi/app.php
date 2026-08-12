@@ -9,6 +9,14 @@ return [
     'cancel' => 'Huỷ',
     'delete' => 'Xoá',
     'save' => 'Lưu buổi học',
+    'continue' => 'Tiếp tục',
+    'form_navigation' => 'Các bước tạo buổi học trực tuyến',
+    'form_tabs' => [
+        'academic' => 'Lớp học & lịch',
+        'content' => 'Nội dung & thời gian',
+        'provider' => 'Nền tảng',
+        'permissions' => 'Quyền trong phòng',
+    ],
 
     // Filter
     'filter_classroom_label' => 'Lớp học',
