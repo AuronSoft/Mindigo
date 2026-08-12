@@ -9,15 +9,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Mindigo\TeacherClassroom\Models\Classroom;
+use Mindigo\TeacherLiveSession\Enums\LiveSessionProvider;
 use Mindigo\TeacherLiveSession\Enums\ParticipantAdmissionStatus;
 use Mindigo\TeacherLiveSession\Http\Requests\CancelLiveSessionRequest;
 use Mindigo\TeacherLiveSession\Http\Requests\CreateGuestLinkRequest;
 use Mindigo\TeacherLiveSession\Http\Requests\LiveSessionRequest;
+use Mindigo\TeacherLiveSession\Models\LiveProviderConnection;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Mindigo\TeacherLiveSession\Models\LiveSessionGuest;
 use Mindigo\TeacherLiveSession\Models\LiveSessionGuestLink;
 use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
 use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
+use Mindigo\TeacherLiveSession\Services\LiveProviderOAuthService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAccessService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAdmissionService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionGuestService;
@@ -51,8 +54,9 @@ class TeacherLiveSessionController extends Controller
     {
         $classrooms = $this->classroomsForTeacher(withAcademicContext: true);
         $providerCapabilities = $this->providers->capabilities();
+        $providerConnections = $this->providerConnections();
 
-        return view('teacher-live-session::create', compact('classrooms', 'providerCapabilities'));
+        return view('teacher-live-session::create', compact('classrooms', 'providerCapabilities', 'providerConnections'));
     }
 
     public function store(LiveSessionRequest $request)
@@ -71,8 +75,9 @@ class TeacherLiveSessionController extends Controller
 
         $classrooms = $this->classroomsForTeacher($liveSession, true);
         $providerCapabilities = $this->providers->capabilities();
+        $providerConnections = $this->providerConnections();
 
-        return view('teacher-live-session::edit', ['session' => $liveSession, ...compact('classrooms', 'providerCapabilities')]);
+        return view('teacher-live-session::edit', ['session' => $liveSession, ...compact('classrooms', 'providerCapabilities', 'providerConnections')]);
     }
 
     public function update(LiveSessionRequest $request, LiveSession $liveSession)
@@ -287,6 +292,21 @@ class TeacherLiveSessionController extends Controller
             ->withCount('students')
             ->orderBy('name')
             ->get();
+    }
+
+    private function providerConnections(): array
+    {
+        $oauth = app(LiveProviderOAuthService::class);
+        $connections = LiveProviderConnection::query()->where('user_id', Auth::id())->whereNull('revoked_at')
+            ->get()->keyBy(fn ($item) => $item->provider->value);
+
+        return collect([LiveSessionProvider::GoogleMeet, LiveSessionProvider::Zoom])->mapWithKeys(
+            fn (LiveSessionProvider $provider) => [$provider->value => [
+                'configured' => $oauth->isConfigured($provider),
+                'connected' => $connections->has($provider->value),
+                'account' => $connections->get($provider->value)?->external_email,
+            ]]
+        )->all();
     }
 
     private function mediaConfig(LiveSession $session, string $token, Request $request): array

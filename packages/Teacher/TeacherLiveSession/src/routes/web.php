@@ -11,6 +11,13 @@ use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionTeachingToolControlle
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestController;
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveProviderConnectionController;
+
+Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-providers')->name('teacher.live-providers.')->group(function () {
+    Route::get('/{provider}/connect', [LiveProviderConnectionController::class, 'connect'])->middleware('throttle:10,1')->name('connect');
+    Route::get('/{provider}/callback', [LiveProviderConnectionController::class, 'callback'])->middleware('throttle:10,1')->name('callback');
+    Route::delete('/{provider}', [LiveProviderConnectionController::class, 'destroy'])->name('destroy');
+});
 
 Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-sessions')->name('teacher.live-sessions.')->group(function () {
     Route::get('/', [TeacherLiveSessionController::class, 'index'])->name('index');

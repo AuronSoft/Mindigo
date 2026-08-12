@@ -10,8 +10,10 @@ use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionProvider;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionType;
+use Mindigo\TeacherLiveSession\Models\LiveProviderConnection;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
+use Mindigo\TeacherLiveSession\Services\LiveProviderOAuthService;
 
 class LiveSessionRequest extends FormRequest
 {
@@ -169,7 +171,18 @@ class LiveSessionRequest extends FormRequest
     private function validateProviderSettings(Validator $validator, LiveMeetingProviderRegistry $providers): void
     {
         $provider = $providers->resolve($this->string('provider')->toString());
+        $providerKey = $provider->key();
         $settings = $this->input('room_settings', []);
+
+        if ($providerKey->isExternal()) {
+            $connected = LiveProviderConnection::query()
+                ->where('user_id', $this->user()->getAuthIdentifier())
+                ->where('provider', $providerKey->value)
+                ->whereNull('revoked_at')->exists();
+            if (! app(LiveProviderOAuthService::class)->isConfigured($providerKey) || ! $connected) {
+                $validator->errors()->add('provider', __('teacher-live-session::app.validation.provider_not_connected'));
+            }
+        }
 
         if (($settings['recording_enabled'] ?? false) && ! $provider->capabilities()->recording) {
             $validator->errors()->add('room_settings.recording_enabled', __('teacher-live-session::app.validation.recording_unavailable'));

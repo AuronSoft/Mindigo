@@ -243,8 +243,14 @@ return [
     'delete_confirm_title' => 'Xoá buổi học?',
     'delete_confirm_message' => 'Bạn có chắc muốn xoá buổi học này? Hành động không thể hoàn tác.',
 
+    'provider_connected' => 'Đã kết nối nền tảng họp trực tuyến.',
+    'provider_disconnected' => 'Đã ngắt kết nối nền tảng họp trực tuyến.',
+    'provider_connect' => 'Kết nối tài khoản',
+    'provider_config_required' => 'Cần quản trị viên cấu hình',
+
     // Validation
     'validation' => [
+        'provider_not_connected' => 'Hãy kết nối tài khoản nền tảng trước khi lựa chọn.',
         'title_required' => 'Vui lòng nhập tiêu đề buổi học.',
         'classroom_required' => 'Vui lòng chọn lớp học.',
         'classroom_exists' => 'Lớp học không hợp lệ.',

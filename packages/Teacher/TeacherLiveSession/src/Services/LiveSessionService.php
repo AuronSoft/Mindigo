@@ -9,10 +9,12 @@ use Illuminate\Support\Str;
 use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
+use Mindigo\TeacherLiveSession\Data\ProviderMeeting;
 use Mindigo\TeacherLiveSession\Data\SessionContext;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionProvider;
 use Mindigo\TeacherLiveSession\Enums\ProviderSyncStatus;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
+use Throwable;
 
 final class LiveSessionService
 {
@@ -49,7 +51,23 @@ final class LiveSessionService
             scheduledEnd: filled($data['scheduled_end'] ?? null) ? Carbon::parse($data['scheduled_end']) : null,
             idempotencyKey: $idempotencyKey,
         );
-        $meeting = $this->providers->resolve($providerKey)->create($context);
+        $requestedProvider = $providerKey;
+        try {
+            $meeting = $this->providers->resolve($providerKey)->create($context);
+        } catch (Throwable $exception) {
+            if (! $providerKey->isExternal()) {
+                throw $exception;
+            }
+            report($exception);
+            $providerKey = LiveSessionProvider::Native;
+            $nativeMeeting = $this->providers->resolve($providerKey)->create($context);
+            $meeting = new ProviderMeeting(
+                roomName: $nativeMeeting->roomName, meetingId: $nativeMeeting->meetingId,
+                joinUrl: $nativeMeeting->joinUrl, hostUrl: $nativeMeeting->hostUrl,
+                status: $nativeMeeting->status,
+                metadata: [...$nativeMeeting->metadata, 'fallback_from' => $requestedProvider->value, 'fallback_reason' => class_basename($exception)],
+            );
+        }
 
         $session = DB::transaction(function () use ($data, $actor, $providerKey, $idempotencyKey, $meeting): LiveSession {
             $session = LiveSession::query()->create([
@@ -89,7 +107,9 @@ final class LiveSessionService
     public function update(LiveSession $session, array $data): LiveSession
     {
         unset($data['provider']);
-        $meeting = $this->providers->resolve($session->provider)->update($session);
+        $providerSnapshot = clone $session;
+        $providerSnapshot->fill($data);
+        $meeting = $this->providers->resolve($session->provider)->update($providerSnapshot);
 
         $oldValues = $this->safeAuditValues($session);
         $updated = DB::transaction(function () use ($session, $data, $meeting): LiveSession {

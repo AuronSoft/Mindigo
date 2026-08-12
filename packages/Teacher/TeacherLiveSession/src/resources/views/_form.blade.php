@@ -29,6 +29,7 @@
     $selectedSchedule = (string) old('classroom_schedule_id', $session?->classroom_schedule_id);
     $selectedProvider = old('provider', $session?->provider?->value ?? 'native');
     $nativeCapabilities = $providerCapabilities['native'] ?? null;
+    $providerConnections = $providerConnections ?? [];
     $guestAccessDisabled = ! ($nativeCapabilities?->guestLinks ?? false);
     $recordingDisabled = ! ($nativeCapabilities?->recording ?? false);
     $classroomContext = $classrooms->mapWithKeys(fn ($classroom) => [(string) $classroom->id => [
@@ -123,8 +124,14 @@
             <input type="radio" name="provider" value="native" class="mt-1 text-green-600 focus:ring-green-500" @checked($selectedProvider === 'native')>
             <span><strong class="block text-sm text-slate-950">Mindigo Live</strong><small class="mt-1 block font-semibold leading-5 text-slate-600">@lang('teacher-live-session::app.provider_native_hint')</small><em class="mt-2 inline-flex rounded-full bg-green-100 px-2 py-1 text-[10px] font-black not-italic text-green-800">@lang('teacher-live-session::app.provider_recommended')</em></span>
         </label>
-        @foreach(['google_meet' => 'Google Meet', 'zoom' => 'Zoom'] as $provider => $name)
-            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 opacity-70"><input type="radio" disabled class="mt-1"><span><strong class="block text-sm text-slate-700">{{ $name }}</strong><small class="mt-1 block font-semibold leading-5 text-slate-500">@lang('teacher-live-session::app.provider_not_connected')</small><em class="mt-2 inline-flex rounded-full bg-slate-200 px-2 py-1 text-[10px] font-black not-italic text-slate-600">@lang('teacher-live-session::app.provider_coming')</em></span></div>
+        @foreach(['google_meet' => ['Google Meet', 'google-meet.svg'], 'zoom' => ['Zoom', 'zoom.svg']] as $provider => [$name, $logo])
+            @php($connection = $providerConnections[$provider] ?? ['configured' => false, 'connected' => false])
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 {{ $connection['connected'] ? 'bg-white' : 'bg-slate-50' }} p-4">
+                <input type="radio" name="provider" value="{{ $provider }}" class="mt-1 text-green-600 focus:ring-green-500" @checked($selectedProvider === $provider) @disabled(!$connection['connected'] || $editing)>
+                <span class="min-w-0 flex-1"><span class="flex items-center gap-2"><img src="{{ asset('images/live-providers/'.$logo) }}" alt="" class="h-8 w-8 shrink-0"><strong class="block text-sm text-slate-900">{{ $name }}</strong></span><small class="mt-2 block font-semibold leading-5 text-slate-500">{{ $connection['connected'] ? __('teacher-live-session::app.provider_connected') : __('teacher-live-session::app.provider_not_connected') }}</small>
+                @if(!$editing && $connection['configured'] && !$connection['connected'])<a href="{{ route('teacher.live-providers.connect', $provider) }}" class="mt-2 inline-flex rounded-lg bg-green-700 px-3 py-1.5 text-[11px] font-black text-white">@lang('teacher-live-session::app.provider_connect')</a>@endif
+                @if(!$connection['configured'])<em class="mt-2 inline-flex rounded-full bg-amber-100 px-2 py-1 text-[10px] font-black not-italic text-amber-800">@lang('teacher-live-session::app.provider_config_required')</em>@endif</span>
+            </div>
         @endforeach
     </div>
     @error('provider')<p class="text-xs font-semibold text-red-600">{{ $message }}</p>@enderror
