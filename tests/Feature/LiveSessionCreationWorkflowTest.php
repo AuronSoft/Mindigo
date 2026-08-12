@@ -27,6 +27,36 @@ class LiveSessionCreationWorkflowTest extends TestCase
         $response->assertSee($schedule->title);
         $response->assertSee('Google Meet');
         $response->assertSee('disabled', false);
+        $response->assertSee('data-create-wizard="1"', false);
+        $response->assertSee('data-live-session-form-next', false);
+        $response->assertSee('data-live-session-form-submit hidden', false);
+    }
+
+    public function test_edit_page_keeps_all_form_tabs_available(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $classroom = $this->classroom($teacher->id, Classroom::TYPE_STANDALONE, null, 'EDIT-TABS');
+        $session = LiveSession::query()->create([
+            'classroom_id' => $classroom->id,
+            'teacher_id' => $teacher->id,
+            'created_by' => $teacher->id,
+            'title' => 'Editable live lesson',
+            'room_name' => 'edit-tabs-'.uniqid(),
+            'provider' => 'native',
+            'fallback_provider' => 'native',
+            'provider_status' => 'created',
+            'sync_status' => 'not_required',
+            'session_type' => 'flexible',
+            'scheduled_start' => now()->addDay(),
+            'scheduled_end' => now()->addDay()->addHour(),
+            'status' => 'scheduled',
+        ]);
+
+        $response = $this->actingAs($teacher)->get(route('teacher.live-sessions.edit', $session));
+
+        $response->assertOk();
+        $response->assertSee('data-create-wizard="0"', false);
+        $response->assertSee('data-live-session-form-submit', false);
     }
 
     public function test_course_class_requires_an_eligible_schedule(): void

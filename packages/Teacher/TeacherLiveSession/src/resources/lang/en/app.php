@@ -9,6 +9,14 @@ return [
     'cancel' => 'Cancel',
     'delete' => 'Delete',
     'save' => 'Save session',
+    'continue' => 'Continue',
+    'form_navigation' => 'Live session creation steps',
+    'form_tabs' => [
+        'academic' => 'Class & schedule',
+        'content' => 'Details & time',
+        'provider' => 'Platform',
+        'permissions' => 'Room permissions',
+    ],
 
     // Filter
     'filter_classroom_label' => 'Classroom',
