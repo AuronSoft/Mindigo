@@ -42,7 +42,10 @@ final class LiveSessionMediaController extends Controller
             'screen_sharing' => $data['screen_sharing'] ?? $participant->screen_sharing,
             'last_seen_at' => now(),
         ]);
-        $this->attendance->heartbeat($liveSession, $request->user());
+        $this->attendance->heartbeat($liveSession, $request->user(), [
+            'microphone_enabled' => $participant->microphone_enabled,
+            'camera_enabled' => $participant->camera_enabled,
+        ]);
 
         $participants = $liveSession->participants()
             ->where('admission_status', ParticipantAdmissionStatus::Admitted->value)

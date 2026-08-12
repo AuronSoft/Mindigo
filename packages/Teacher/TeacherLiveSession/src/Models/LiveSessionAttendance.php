@@ -25,6 +25,9 @@ class LiveSessionAttendance extends Model
         'reactions_count',
         'hands_raised_count',
         'poll_votes_count',
+        'microphone_seconds',
+        'camera_seconds',
+        'media_last_counted_at',
         'finalized_at',
     ];
 
@@ -33,6 +36,7 @@ class LiveSessionAttendance extends Model
         'left_at' => 'datetime',
         'last_seen_at' => 'datetime',
         'finalized_at' => 'datetime',
+        'media_last_counted_at' => 'datetime',
     ];
 
     public function session(): BelongsTo

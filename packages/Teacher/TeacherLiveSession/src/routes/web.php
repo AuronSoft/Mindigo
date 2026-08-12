@@ -9,6 +9,7 @@ use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionCollaborationControll
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionRecordingConsentController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionRecordingController;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionReportController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionTeachingToolController;
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestController;
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestMediaController;
@@ -29,6 +30,8 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-s
     Route::get('/', [TeacherLiveSessionController::class, 'index'])->name('index');
     Route::get('/create', [TeacherLiveSessionController::class, 'create'])->name('create');
     Route::post('/', [TeacherLiveSessionController::class, 'store'])->middleware('throttle:10,1')->name('store');
+    Route::get('/reports', [LiveSessionReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export', [LiveSessionReportController::class, 'export'])->middleware('throttle:10,1')->name('reports.export');
     Route::get('/{liveSession}/attendance', [LiveSessionAttendanceReportController::class, 'show'])->name('attendance.show');
     Route::get('/{liveSession}/attendance/export', [LiveSessionAttendanceReportController::class, 'export'])->middleware('throttle:10,1')->name('attendance.export');
 
