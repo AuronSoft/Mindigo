@@ -5,6 +5,7 @@ use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionCollaborationControll
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionRecordingConsentController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionRecordingController;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionTeachingToolController;
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestController;
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
@@ -54,6 +55,15 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/live-recordings/{liveSession}/{recording}/finalize', [LiveSessionRecordingController::class, 'finalize'])->middleware('throttle:10,1')->name('live-recordings.finalize');
     Route::post('/live-recordings/{liveSession}/{recording}/abort', [LiveSessionRecordingController::class, 'abort'])->middleware('throttle:10,1')->name('live-recordings.abort');
     Route::get('/live-recordings/play/{recording}', [LiveSessionRecordingController::class, 'stream'])->middleware('throttle:120,1')->name('live-recordings.stream');
+    Route::prefix('live-teaching-tools/{liveSession}')->name('live-teaching-tools.')->group(function () {
+        Route::post('/sync', [LiveSessionTeachingToolController::class, 'sync'])->middleware('throttle:120,1')->name('sync');
+        Route::post('/whiteboard', [LiveSessionTeachingToolController::class, 'whiteboard'])->middleware('throttle:120,1')->name('whiteboard');
+        Route::post('/polls', [LiveSessionTeachingToolController::class, 'createPoll'])->middleware('throttle:20,1')->name('polls.store');
+        Route::post('/polls/{poll}/vote', [LiveSessionTeachingToolController::class, 'vote'])->middleware('throttle:20,1')->name('polls.vote');
+        Route::post('/polls/{poll}/close', [LiveSessionTeachingToolController::class, 'closePoll'])->middleware('throttle:20,1')->name('polls.close');
+        Route::post('/resources', [LiveSessionTeachingToolController::class, 'upload'])->middleware('throttle:20,1')->name('resources.store');
+    });
+    Route::get('/live-teaching-tools/resources/{resource}', [LiveSessionTeachingToolController::class, 'download'])->middleware('throttle:120,1')->name('live-teaching-tools.resources.download');
 });
 
 Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('live-collaboration/{liveSession}')->name('live-collaboration.')->group(function () {

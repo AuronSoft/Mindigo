@@ -181,6 +181,20 @@ return [
     'continue_to_room' => 'Tiếp tục vào lớp',
     'recording_ready' => 'Bản ghi',
     'watch_recording' => 'Xem bản ghi',
+    'teaching_tools' => 'Công cụ giảng dạy',
+    'teaching_tools_hint' => 'Bảng trắng, khảo sát nhanh và tài liệu lớp học',
+    'whiteboard' => 'Bảng trắng',
+    'quick_poll' => 'Khảo sát',
+    'resources' => 'Tài liệu',
+    'clear_board' => 'Xóa bảng',
+    'poll_question' => 'Đặt câu hỏi cho lớp',
+    'option' => 'Lựa chọn',
+    'launch_poll' => 'Mở khảo sát',
+    'close_poll' => 'Đóng khảo sát',
+    'show_results' => 'Hiện kết quả',
+    'upload' => 'Tải lên',
+    'no_poll' => 'Hiện chưa có khảo sát.',
+    'no_resources' => 'Chưa có tài liệu lớp học.',
 
     // Messages
     'created_success' => 'Đã tạo buổi học trực tuyến.',
@@ -222,5 +236,7 @@ return [
         'recording_chunks_incomplete' => 'Không thể hoàn tất bản ghi vì đang thiếu một hoặc nhiều chunk.',
         'recording_consent_missing' => 'Tất cả người đã được duyệt phải chấp thuận thông báo ghi hình trước khi bắt đầu.',
         'stop_recording_before_end' => 'Hãy dừng và hoàn tất bản ghi đang chạy trước khi kết thúc lớp học.',
+        'poll_already_voted' => 'Bạn đã gửi câu trả lời cho khảo sát này.',
+        'poll_options_unique' => 'Các lựa chọn khảo sát không được để trống hoặc trùng nhau.',
     ],
 ];

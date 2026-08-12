@@ -311,6 +311,12 @@ class TeacherLiveSessionController extends Controller
             'recordingChunkUrl' => route('live-recordings.chunk', [$session, '__RECORDING__']),
             'recordingFinalizeUrl' => route('live-recordings.finalize', [$session, '__RECORDING__']),
             'recordingAbortUrl' => route('live-recordings.abort', [$session, '__RECORDING__']),
+            'teachingToolsSyncUrl' => route('live-teaching-tools.sync', $session),
+            'whiteboardUrl' => route('live-teaching-tools.whiteboard', $session),
+            'pollCreateUrl' => route('live-teaching-tools.polls.store', $session),
+            'pollVoteUrl' => route('live-teaching-tools.polls.vote', [$session, '__POLL__']),
+            'pollCloseUrl' => route('live-teaching-tools.polls.close', [$session, '__POLL__']),
+            'resourceUploadUrl' => route('live-teaching-tools.resources.store', $session),
             'iceServers' => config('live-media.ice_servers', []),
         ];
     }
