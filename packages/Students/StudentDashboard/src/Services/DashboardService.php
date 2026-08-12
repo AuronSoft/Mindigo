@@ -2,8 +2,12 @@
 
 namespace Mindigo\StudentDashboard\Services;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Mindigo\AcademicCalendar\Data\CalendarQuery;
+use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;
+use Mindigo\AcademicCalendar\Services\AcademicCalendarService;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
@@ -14,6 +18,31 @@ use Mindigo\TeacherCourse\Models\CourseEnrollment;
 
 class DashboardService
 {
+    public function __construct(private readonly AcademicCalendarService $calendar) {}
+
+    public function getCalendarTasks(User $student, ?CarbonImmutable $anchor = null): Collection
+    {
+        $anchor ??= CarbonImmutable::now(config('app.timezone', 'Asia/Ho_Chi_Minh'));
+        $from = $anchor->startOfMonth()->startOfWeek();
+        $to = $from->addDays(42);
+
+        return $this->calendar->events(new CalendarQuery(
+            viewer: $student,
+            from: $from,
+            to: $to,
+            timezone: config('app.timezone', 'Asia/Ho_Chi_Minh'),
+        ))->reject(fn ($event) => $event->status === CalendarEventStatus::Cancelled)
+            ->map(fn ($event) => (object) [
+                'type' => $event->kind->value,
+                'title' => $event->title,
+                'status' => $event->status->value,
+                'at' => Carbon::instance($event->startsAt),
+                'time_left' => $this->timeLeft(Carbon::instance($event->startsAt)),
+                'url' => $event->url,
+                'provider' => $event->metadata['provider'] ?? null,
+            ])->values();
+    }
+
     public function activeCourses(User $student): Collection
     {
         return CourseEnrollment::query()

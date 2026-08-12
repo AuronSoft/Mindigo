@@ -23,6 +23,9 @@ class CalendarEventReminder extends Notification
             'title' => __('academic-calendar::app.reminder_'.$this->reminderKey, ['event' => $this->event->title]),
             'message' => collect([
                 $this->event->metadata['classroom_name'] ?? null,
+                isset($this->event->metadata['provider'])
+                    ? str($this->event->metadata['provider'])->replace('_', ' ')->title()
+                    : null,
                 $this->event->startsAt->format('d/m/Y · H:i'),
             ])->filter()->implode(' · '),
             'event_id' => $this->event->id,

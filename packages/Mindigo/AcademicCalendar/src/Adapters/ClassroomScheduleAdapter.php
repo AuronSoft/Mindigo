@@ -14,6 +14,7 @@ use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
 use Mindigo\AcademicCalendar\Enums\CalendarEventSource;
 use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
+use Mindigo\TeacherLiveSession\Models\LiveSession;
 
 final class ClassroomScheduleAdapter implements CalendarSourceAdapter
 {
@@ -42,7 +43,7 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
             ->when($query->viewer->role === 'student', fn ($builder) => $builder->where('status', '!=', ClassroomSchedule::STATUS_DRAFT))
             ->whereDate('session_date', '>=', $query->from->setTimezone($query->timezone)->toDateString())
             ->whereDate('session_date', '<=', $query->to->setTimezone($query->timezone)->toDateString())
-            ->with(['classroom:id,name,course_id,teacher_id', 'attendanceSession', 'substituteTeacher:id,name,email'])
+            ->with(['classroom:id,name,course_id,teacher_id', 'attendanceSession', 'substituteTeacher:id,name,email', 'liveSession'])
             ->get()
             ->map(function (ClassroomSchedule $schedule) use ($query): CalendarEvent {
                 $startsAt = CarbonImmutable::parse(
@@ -57,18 +58,25 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                 $isSubstitute = $schedule->substitute_teacher_id === (int) $query->viewer->id;
                 $attendance = $schedule->attendanceSession;
                 $attendanceOpen = $attendance?->isOpen() ?? false;
+                $liveSession = $schedule->liveSession;
+                $eventStatus = $liveSession ? match ($liveSession->status) {
+                    'cancelled', 'failed' => CalendarEventStatus::Cancelled,
+                    'ended' => CalendarEventStatus::Completed,
+                    'waiting', 'live' => CalendarEventStatus::InProgress,
+                    default => CalendarEventStatus::Scheduled,
+                } : match ($schedule->status) {
+                    ClassroomSchedule::STATUS_DRAFT => CalendarEventStatus::Draft,
+                    ClassroomSchedule::STATUS_CANCELLED, ClassroomSchedule::STATUS_RESCHEDULED => CalendarEventStatus::Cancelled,
+                    ClassroomSchedule::STATUS_COMPLETED => CalendarEventStatus::Completed,
+                    default => $this->temporalStatus($startsAt, $endsAt),
+                };
 
                 return new CalendarEvent(
                     id: 'classroom_schedule:'.$schedule->id,
                     source: CalendarEventSource::ClassroomSchedule,
                     sourceId: $schedule->id,
                     kind: CalendarEventKind::ClassSession,
-                    status: match ($schedule->status) {
-                        ClassroomSchedule::STATUS_DRAFT => CalendarEventStatus::Draft,
-                        ClassroomSchedule::STATUS_CANCELLED, ClassroomSchedule::STATUS_RESCHEDULED => CalendarEventStatus::Cancelled,
-                        ClassroomSchedule::STATUS_COMPLETED => CalendarEventStatus::Completed,
-                        default => $this->temporalStatus($startsAt, $endsAt),
-                    },
+                    status: $eventStatus,
                     title: $schedule->title,
                     startsAt: $startsAt,
                     endsAt: $endsAt,
@@ -77,7 +85,7 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                     courseId: $schedule->classroom?->course_id,
                     lessonId: $schedule->lesson_id,
                     ownerId: $schedule->classroom?->teacher_id,
-                    url: ! $isTeacher || $isOwner ? $this->routeFor($query, $schedule->classroom_id) : null,
+                    url: ! $isTeacher || $isOwner ? ($liveSession ? $this->liveRouteFor($query, $liveSession) : $this->routeFor($query, $schedule->classroom_id)) : null,
                     actions: $isOwner ? ['view', 'edit', 'reschedule', 'cancel'] : ['view'],
                     metadata: array_filter([
                         'classroom_name' => $schedule->classroom?->name,
@@ -85,6 +93,10 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
                         'delivery_mode' => $schedule->delivery_mode,
                         'location' => $schedule->location,
                         'meeting_url' => $schedule->meeting_url,
+                        'provider' => $liveSession?->provider?->value,
+                        'live_session_id' => $liveSession?->id,
+                        'live_session_status' => $liveSession?->status,
+                        'joinable' => $liveSession ? in_array($liveSession->status, ['waiting', 'live'], true) : false,
                         'description' => $schedule->description,
                         'makeup_reason' => $schedule->type === ClassroomSchedule::TYPE_MAKEUP ? $schedule->makeup_reason : null,
                         'cancel_reason' => $schedule->cancel_reason,
@@ -130,5 +142,18 @@ final class ClassroomScheduleAdapter implements CalendarSourceAdapter
             'attendance_date' => $schedule->session_date->toDateString(),
             'attendance_schedule_id' => $schedule->id,
         ]) : null;
+    }
+
+    private function liveRouteFor(CalendarQuery $query, LiveSession $session): ?string
+    {
+        $joinable = in_array($session->status, ['waiting', 'live'], true);
+        $route = match (true) {
+            $query->viewer->role === 'student' && $joinable => 'student.live-sessions.room',
+            $query->viewer->role !== 'student' && $joinable => 'teacher.live-sessions.room',
+            $query->viewer->role === 'student' => 'student.live-sessions.index',
+            default => 'teacher.live-sessions.index',
+        };
+
+        return Route::has($route) ? route($route, $joinable ? $session : ['session' => $session->id]) : null;
     }
 }

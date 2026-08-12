@@ -15,7 +15,7 @@ class CalendarReminderService
 {
     private const WINDOW_MINUTES = 5;
 
-    private const LEADS = ['24h' => 1440, '60m' => 60];
+    private const LEADS = ['24h' => 1440, '60m' => 60, '15m' => 15];
 
     public function __construct(private readonly AcademicCalendarService $calendar) {}
 
