@@ -29,6 +29,7 @@
                     <p class="mt-1 text-xs font-semibold text-slate-400">@lang('teacher-live-session::app.subtitle')</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
+                <a href="{{ route('teacher.live-sessions.reports.index') }}" class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 no-underline transition hover:bg-slate-50"><x-heroicon-o-chart-bar-square class="h-4 w-4" />@lang('teacher-live-session::app.analytics_report')</a>
                 <button type="button" data-mindigo-drawer-open="teacher-live-filter"
                     class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-700 no-underline hover:bg-slate-50 transition">
                     <x-heroicon-o-adjustments-horizontal class="h-4 w-4" />

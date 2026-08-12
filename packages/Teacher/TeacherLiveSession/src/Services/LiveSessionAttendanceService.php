@@ -15,9 +15,9 @@ final class LiveSessionAttendanceService
 
     private const LATE_GRACE_MINUTES = 10;
 
-    public function heartbeat(LiveSession $session, User $user): LiveSessionAttendance
+    public function heartbeat(LiveSession $session, User $user, array $mediaState = []): LiveSessionAttendance
     {
-        return DB::transaction(function () use ($session, $user): LiveSessionAttendance {
+        return DB::transaction(function () use ($session, $user, $mediaState): LiveSessionAttendance {
             $attendance = LiveSessionAttendance::query()->firstOrCreate(
                 ['live_session_id' => $session->id, 'user_id' => $user->id],
                 ['joined_at' => now(), 'attendance_status' => 'present'],
@@ -39,6 +39,9 @@ final class LiveSessionAttendanceService
 
             $firstJoin = $attendance->joined_at ?? now();
             $lateMinutes = max(0, (int) $session->scheduled_start->diffInMinutes($firstJoin, false));
+            $mediaSeconds = $attendance->media_last_counted_at
+                ? min(self::STALE_AFTER_SECONDS, $attendance->media_last_counted_at->diffInSeconds(now()))
+                : 0;
             $attendance->update([
                 'joined_at' => $firstJoin,
                 'left_at' => null,
@@ -46,6 +49,9 @@ final class LiveSessionAttendanceService
                 'late_minutes' => $lateMinutes,
                 'attendance_status' => $lateMinutes > self::LATE_GRACE_MINUTES ? 'late' : 'present',
                 'finalized_at' => null,
+                'microphone_seconds' => (int) $attendance->microphone_seconds + (($mediaState['microphone_enabled'] ?? false) ? $mediaSeconds : 0),
+                'camera_seconds' => (int) $attendance->camera_seconds + (($mediaState['camera_enabled'] ?? false) ? $mediaSeconds : 0),
+                'media_last_counted_at' => $mediaState === [] ? $attendance->media_last_counted_at : now(),
             ]);
 
             return $attendance->fresh();

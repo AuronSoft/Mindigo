@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'analytics_report' => 'Báo cáo học trực tuyến', 'analytics_report_subtitle' => 'Tổng hợp chuyên cần, thời lượng, tương tác và chất lượng kết nối.',
+    'back_to_sessions' => 'Danh sách buổi học', 'report_scope' => 'Phạm vi tổng hợp', 'all_providers' => 'Tất cả nền tảng',
+    'date_from' => 'Từ ngày', 'date_to' => 'Đến ngày', 'apply_filter' => 'Áp dụng', 'report_details' => 'Chi tiết báo cáo',
+    'report_empty' => 'Chưa có dữ liệu phù hợp.', 'report_unassigned' => 'Chưa phân loại',
+    'scope_session' => 'Buổi học', 'scope_classroom' => 'Lớp học', 'scope_course' => 'Khóa học', 'scope_teacher' => 'Giáo viên', 'scope_student' => 'Học sinh', 'scope_provider' => 'Nền tảng',
+    'metric_sessions' => 'Buổi học', 'metric_participants' => 'Người tham gia', 'metric_attendance_rate' => 'Tỷ lệ chuyên cần', 'metric_total_minutes' => 'Tổng phút học', 'metric_connection_errors' => 'Lỗi kết nối',
+    'column_scope' => 'Đối tượng', 'column_sessions' => 'Buổi', 'column_participants' => 'Người', 'column_attendance_rate' => 'Chuyên cần', 'column_total_minutes' => 'Phút học', 'column_late' => 'Đi muộn', 'column_early_leave' => 'Rời sớm', 'column_reconnects' => 'Reconnect', 'column_microphone_minutes' => 'Phút mic', 'column_camera_minutes' => 'Phút camera', 'column_interaction' => 'Tương tác', 'column_connection_errors' => 'Lỗi mạng',
     'fallback_native' => 'Chuyển sang Mindigo Live',
     'fallback_native_confirm' => 'Buổi học chưa bắt đầu sẽ được đổi phòng sang Mindigo Live. Lớp, lịch và học sinh được giữ nguyên.',
     'fallback_native_success' => 'Đã chuyển buổi học sang Mindigo Live và thông báo cho học sinh.',

@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'analytics_report' => 'Live learning reports', 'analytics_report_subtitle' => 'Attendance, duration, engagement, and connection quality reporting.',
+    'back_to_sessions' => 'Live sessions', 'report_scope' => 'Report scope', 'all_providers' => 'All providers',
+    'date_from' => 'From', 'date_to' => 'To', 'apply_filter' => 'Apply', 'report_details' => 'Report details',
+    'report_empty' => 'No matching data.', 'report_unassigned' => 'Unassigned',
+    'scope_session' => 'Session', 'scope_classroom' => 'Classroom', 'scope_course' => 'Course', 'scope_teacher' => 'Teacher', 'scope_student' => 'Student', 'scope_provider' => 'Provider',
+    'metric_sessions' => 'Sessions', 'metric_participants' => 'Participants', 'metric_attendance_rate' => 'Attendance rate', 'metric_total_minutes' => 'Learning minutes', 'metric_connection_errors' => 'Connection errors',
+    'column_scope' => 'Entity', 'column_sessions' => 'Sessions', 'column_participants' => 'People', 'column_attendance_rate' => 'Attendance', 'column_total_minutes' => 'Minutes', 'column_late' => 'Late', 'column_early_leave' => 'Early leave', 'column_reconnects' => 'Reconnects', 'column_microphone_minutes' => 'Mic minutes', 'column_camera_minutes' => 'Camera minutes', 'column_interaction' => 'Engagement', 'column_connection_errors' => 'Network errors',
     'fallback_native' => 'Switch to Mindigo Live',
     'fallback_native_confirm' => 'This upcoming session will move to Mindigo Live. Its class, schedule, and students remain unchanged.',
     'fallback_native_success' => 'The session was moved to Mindigo Live and students were notified.',
