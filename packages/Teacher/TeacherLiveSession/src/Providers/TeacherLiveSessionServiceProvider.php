@@ -4,12 +4,14 @@ namespace Mindigo\TeacherLiveSession\Providers;
 
 use App\Console\Commands\LiveSession\CleanupLiveRealtimeCommand;
 use App\Console\Commands\LiveSession\DoctorLiveSessionCommand;
+use App\Console\Commands\LiveSession\PruneLiveSessionDataCommand;
 use App\Console\Commands\LiveSession\SyncLiveProvidersCommand;
 use Illuminate\Support\ServiceProvider;
 use Mindigo\TeacherLiveSession\Providers\Meetings\GoogleMeetProvider;
 use Mindigo\TeacherLiveSession\Providers\Meetings\MindigoNativeProvider;
 use Mindigo\TeacherLiveSession\Providers\Meetings\ZoomProvider;
 use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
+use Mindigo\TeacherLiveSession\Services\LiveSessionConfigurationService;
 
 class TeacherLiveSessionServiceProvider extends ServiceProvider
 {
@@ -18,7 +20,7 @@ class TeacherLiveSessionServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/live-media.php', 'live-media');
         $this->mergeConfigFrom(__DIR__.'/../config/live-providers.php', 'live-providers');
         $this->app->singleton(LiveMeetingProviderRegistry::class, function ($app): LiveMeetingProviderRegistry {
-            $registry = new LiveMeetingProviderRegistry;
+            $registry = new LiveMeetingProviderRegistry($app->make(LiveSessionConfigurationService::class));
             $registry->register($app->make(MindigoNativeProvider::class));
             $registry->register($app->make(GoogleMeetProvider::class));
             $registry->register($app->make(ZoomProvider::class));
@@ -30,7 +32,7 @@ class TeacherLiveSessionServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([SyncLiveProvidersCommand::class, CleanupLiveRealtimeCommand::class, DoctorLiveSessionCommand::class]);
+            $this->commands([SyncLiveProvidersCommand::class, CleanupLiveRealtimeCommand::class, DoctorLiveSessionCommand::class, PruneLiveSessionDataCommand::class]);
         }
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'teacher-live-session');

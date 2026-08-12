@@ -27,3 +27,8 @@ Schedule::command('live-sessions:cleanup-realtime')
     ->hourly()
     ->withoutOverlapping()
     ->onOneServer();
+
+Schedule::command('live-sessions:prune-data')
+    ->dailyAt('02:30')
+    ->withoutOverlapping()
+    ->onOneServer();

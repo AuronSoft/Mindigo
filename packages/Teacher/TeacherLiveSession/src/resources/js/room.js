@@ -80,10 +80,21 @@ if (root) {
 
     const sendSignal = (recipientKey, type, payload) => request(config.signalUrl, {recipient_key: recipientKey, type, payload});
 
+    const addTrack = (peer, track) => {
+        const sender = peer.addTrack(track, localStream);
+        if (track.kind === 'video' && Number(config.maxBitrateKbps) > 0) {
+            const parameters = sender.getParameters();
+            parameters.encodings = parameters.encodings?.length ? parameters.encodings : [{}];
+            parameters.encodings[0].maxBitrate = Number(config.maxBitrateKbps) * 1000;
+            sender.setParameters(parameters).catch(() => {});
+        }
+        return sender;
+    };
+
     const peerFor = (userId, name = '') => {
         if (peers.has(userId)) return peers.get(userId);
         const peer = new RTCPeerConnection({iceServers: config.iceServers});
-        localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+        localStream.getTracks().forEach(track => addTrack(peer, track));
         peer.onicecandidate = event => event.candidate && sendSignal(userId, 'ice', event.candidate.toJSON()).catch(() => {});
         peer.ontrack = event => {
             const stream = remoteStreams.get(userId) || new MediaStream();
@@ -151,7 +162,7 @@ if (root) {
         for (const peer of peers.values()) {
             const sender = peer.getSenders().find(item => item.track?.kind === 'video');
             if (sender) sender.replaceTrack(track);
-            else if (track) peer.addTrack(track, localStream);
+            else if (track) addTrack(peer, track);
         }
     };
 
@@ -166,7 +177,7 @@ if (root) {
                 cameraStream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
                 track = cameraStream.getAudioTracks()[0];
                 localStream.addTrack(track);
-                peers.forEach(peer => peer.addTrack(track, localStream));
+                peers.forEach(peer => addTrack(peer, track));
             } else track.enabled = !track.enabled;
             event.currentTarget.dataset.active = String(track.enabled);
             setStatus(track.enabled ? config.labels.microphoneOn : config.labels.microphoneOff);

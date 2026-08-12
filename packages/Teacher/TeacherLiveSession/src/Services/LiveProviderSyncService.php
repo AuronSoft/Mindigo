@@ -3,7 +3,6 @@
 namespace Mindigo\TeacherLiveSession\Services;
 
 use App\Jobs\LiveSession\SyncLiveProviderSession;
-use Illuminate\Support\Str;
 use Mindigo\TeacherLiveSession\Enums\ProviderSyncStatus;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Throwable;
@@ -13,6 +12,7 @@ final class LiveProviderSyncService
     public function __construct(
         private readonly LiveMeetingProviderRegistry $providers,
         private readonly LiveProviderCircuitBreaker $circuit,
+        private readonly LiveProviderErrorSanitizer $errors,
     ) {}
 
     public function sync(LiveSession $session): bool
@@ -40,7 +40,7 @@ final class LiveProviderSyncService
             $session->update([
                 'sync_status' => ProviderSyncStatus::Failed,
                 'last_synced_at' => now(),
-                'sync_error' => Str::limit(class_basename($exception).': '.$exception->getMessage(), 1000),
+                'sync_error' => $this->errors->from($exception),
             ]);
 
             return false;

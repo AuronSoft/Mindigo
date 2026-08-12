@@ -15,14 +15,19 @@ use RuntimeException;
 
 final class LiveSessionRecordingService
 {
-    public function __construct(private readonly AuditLogService $audit) {}
+    public function __construct(
+        private readonly AuditLogService $audit,
+        private readonly LiveSessionConfigurationService $configuration,
+    ) {}
 
     public function start(LiveSession $session, User $actor, string $mimeType): LiveSessionRecording
     {
-        abort_if(($session->room_settings['recording_enabled'] ?? false) !== true || ! $session->isLive(), 422);
-        $missingConsent = $session->participants()->where('admission_status', 'admitted')->whereNull('recording_consented_at')->exists()
-            || $session->guests()->where('admission_status', 'admitted')->whereNull('recording_consented_at')->exists();
-        abort_if($missingConsent, 422, __('teacher-live-session::app.validation.recording_consent_missing'));
+        abort_if(! $this->configuration->value('live_recording_enabled') || ($session->room_settings['recording_enabled'] ?? false) !== true || ! $session->isLive(), 422);
+        if ($this->configuration->value('live_recording_consent_required')) {
+            $missingConsent = $session->participants()->where('admission_status', 'admitted')->whereNull('recording_consented_at')->exists()
+                || $session->guests()->where('admission_status', 'admitted')->whereNull('recording_consented_at')->exists();
+            abort_if($missingConsent, 422, __('teacher-live-session::app.validation.recording_consent_missing'));
+        }
         $recording = DB::transaction(function () use ($session, $actor, $mimeType): LiveSessionRecording {
             LiveSession::query()->lockForUpdate()->findOrFail($session->id);
             if (LiveSessionRecording::query()->where('live_session_id', $session->id)->whereIn('status', ['recording', 'processing'])->exists()) {
@@ -64,6 +69,7 @@ final class LiveSessionRecordingService
     public function finalize(LiveSessionRecording $recording, User $actor, int $durationSeconds, int $expectedChunks): LiveSessionRecording
     {
         abort_unless($recording->status === 'recording' && (int) $recording->initiated_by === (int) $actor->id, 403);
+        abort_if($durationSeconds > ((int) $this->configuration->value('live_recording_max_minutes') * 60), 422, __('teacher-live-session::app.validation.recording_duration_limit'));
         $chunks = $recording->chunks()->orderBy('sequence')->get();
         if ($chunks->count() !== $expectedChunks || $chunks->pluck('sequence')->values()->all() !== range(0, $expectedChunks - 1)) {
             throw ValidationException::withMessages(['chunks' => __('teacher-live-session::app.validation.recording_chunks_incomplete')]);

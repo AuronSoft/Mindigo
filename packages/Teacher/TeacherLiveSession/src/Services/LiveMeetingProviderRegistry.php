@@ -11,6 +11,8 @@ final class LiveMeetingProviderRegistry
     /** @var array<string, LiveMeetingProvider> */
     private array $providers = [];
 
+    public function __construct(private readonly LiveSessionConfigurationService $configuration) {}
+
     public function register(LiveMeetingProvider $provider): void
     {
         $this->providers[$provider->key()->value] = $provider;
@@ -27,6 +29,7 @@ final class LiveMeetingProviderRegistry
     public function capabilities(): array
     {
         return collect($this->providers)
+            ->filter(fn (LiveMeetingProvider $provider) => $this->configuration->providerEnabled($provider->key()))
             ->map(fn (LiveMeetingProvider $provider) => $provider->capabilities())
             ->all();
     }
