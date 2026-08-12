@@ -13,11 +13,15 @@ use Mindigo\TeacherLiveSession\Models\LiveSessionGuest;
 use Mindigo\TeacherLiveSession\Models\LiveSessionGuestSignal;
 use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
 use Mindigo\TeacherLiveSession\Models\LiveSessionSignal;
+use Mindigo\TeacherLiveSession\Services\LiveSessionAttendanceService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionJoinTokenService;
 
 final class LiveSessionMediaController extends Controller
 {
-    public function __construct(private readonly LiveSessionJoinTokenService $tokens) {}
+    public function __construct(
+        private readonly LiveSessionJoinTokenService $tokens,
+        private readonly LiveSessionAttendanceService $attendance,
+    ) {}
 
     public function presence(Request $request, LiveSession $liveSession): JsonResponse
     {
@@ -38,6 +42,7 @@ final class LiveSessionMediaController extends Controller
             'screen_sharing' => $data['screen_sharing'] ?? $participant->screen_sharing,
             'last_seen_at' => now(),
         ]);
+        $this->attendance->heartbeat($liveSession, $request->user());
 
         $participants = $liveSession->participants()
             ->where('admission_status', ParticipantAdmissionStatus::Admitted->value)
@@ -129,6 +134,15 @@ final class LiveSessionMediaController extends Controller
         });
 
         return response()->json(['signals' => $signals]);
+    }
+
+    public function leave(Request $request, LiveSession $liveSession): JsonResponse
+    {
+        $this->participant($request, $liveSession);
+        $request->validate(['token' => ['required', 'string', 'max:4096']]);
+        $this->attendance->leave($liveSession, $request->user());
+
+        return response()->json([], 204);
     }
 
     private function participant(Request $request, LiveSession $session): LiveSessionParticipant

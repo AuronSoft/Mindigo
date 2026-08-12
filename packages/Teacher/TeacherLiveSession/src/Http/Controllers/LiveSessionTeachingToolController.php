@@ -18,6 +18,7 @@ use Mindigo\TeacherLiveSession\Models\LiveSessionPollVote;
 use Mindigo\TeacherLiveSession\Models\LiveSessionResource;
 use Mindigo\TeacherLiveSession\Models\LiveSessionWhiteboardAction;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAccessService;
+use Mindigo\TeacherLiveSession\Services\LiveSessionAttendanceService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionJoinTokenService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -27,6 +28,7 @@ final class LiveSessionTeachingToolController extends Controller
         private readonly LiveSessionAccessService $access,
         private readonly LiveSessionJoinTokenService $tokens,
         private readonly AuditLogService $audit,
+        private readonly LiveSessionAttendanceService $attendance,
     ) {}
 
     public function sync(Request $request, LiveSession $liveSession): JsonResponse
@@ -102,6 +104,7 @@ final class LiveSessionTeachingToolController extends Controller
         abort_unless($poll->options()->whereKey($data['option_id'])->exists(), 422);
         try {
             LiveSessionPollVote::query()->create(['poll_id' => $poll->id, 'option_id' => $data['option_id'], 'user_id' => $request->user()->id]);
+            $this->attendance->incrementEngagement($liveSession, $request->user(), 'poll_votes_count');
         } catch (UniqueConstraintViolationException) {
             throw ValidationException::withMessages(['poll' => __('teacher-live-session::app.validation.poll_already_voted')]);
         }

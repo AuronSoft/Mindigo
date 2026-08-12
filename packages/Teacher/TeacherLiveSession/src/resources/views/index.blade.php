@@ -157,6 +157,10 @@
                                                     </form>
                                                 @endif
 
+                                                @if(in_array($s->status, ['live', 'ended'], true))
+                                                    <a href="{{ route('teacher.live-sessions.attendance.show', $s) }}" class="inline-flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 hover:bg-green-50 hover:text-green-700" title="@lang('teacher-live-session::app.attendance_report')"><x-heroicon-o-chart-bar-square class="h-4 w-4" /></a>
+                                                @endif
+
                                                 {{-- Edit (not ended) --}}
                                                 @if(in_array($s->status, ['draft', 'scheduled'], true))
                                                     <a href="{{ route('teacher.live-sessions.edit', $s) }}"

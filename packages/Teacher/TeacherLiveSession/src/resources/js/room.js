@@ -500,7 +500,12 @@ if (root) {
         window.setTimeout(loop, 2000);
     };
 
-    window.addEventListener('beforeunload', event => { if (recorder?.state === 'recording') { event.preventDefault(); event.returnValue = ''; } stopped = true; localStream.getTracks().forEach(track => track.stop()); peers.forEach(peer => peer.close()); });
+    window.addEventListener('beforeunload', event => {
+        if (recorder?.state === 'recording') { event.preventDefault(); event.returnValue = ''; }
+        stopped = true;
+        if (config.mediaLeaveUrl) fetch(config.mediaLeaveUrl, {method: 'POST', credentials: 'same-origin', keepalive: true, headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf}, body: JSON.stringify({token: config.token})}).catch(() => {});
+        localStream.getTracks().forEach(track => track.stop()); peers.forEach(peer => peer.close());
+    });
     renderLocal();
     loop();
 }

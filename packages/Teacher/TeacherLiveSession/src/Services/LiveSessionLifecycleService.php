@@ -17,6 +17,7 @@ final class LiveSessionLifecycleService
     public function __construct(
         private readonly LiveMeetingProviderRegistry $providers,
         private readonly AuditLogService $audit,
+        private readonly LiveSessionAttendanceService $attendance,
     ) {}
 
     public function openWaitingRoom(LiveSession $session, User $actor): LiveSession
@@ -48,13 +49,16 @@ final class LiveSessionLifecycleService
         }
         $this->providers->resolve($session->provider)->end($session, $actor);
 
-        return $this->transition($session, $actor, LiveSessionStatus::Ended, [LiveSessionStatus::Waiting, LiveSessionStatus::Live], [
+        $ended = $this->transition($session, $actor, LiveSessionStatus::Ended, [LiveSessionStatus::Waiting, LiveSessionStatus::Live], [
             'ended_at' => now(),
             'ended_by' => $actor->getKey(),
             'provider_status' => 'ended',
             'locked_at' => now(),
             'join_token_version' => DB::raw('join_token_version + 1'),
         ]);
+        $this->attendance->finalize($ended);
+
+        return $ended;
     }
 
     public function cancel(LiveSession $session, User $actor, string $reason): LiveSession
