@@ -7,10 +7,12 @@ use Illuminate\Validation\ValidationException;
 use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionStatus;
+use Mindigo\TeacherLiveSession\Enums\ProviderSyncStatus;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Mindigo\TeacherLiveSession\Models\LiveSessionBreakoutAssignment;
 use Mindigo\TeacherLiveSession\Models\LiveSessionBreakoutRoom;
 use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
+use Throwable;
 
 final class LiveSessionLifecycleService
 {
@@ -47,12 +49,23 @@ final class LiveSessionLifecycleService
         if ($session->recordings()->whereIn('status', ['recording', 'processing'])->exists()) {
             throw ValidationException::withMessages(['recording' => __('teacher-live-session::app.validation.stop_recording_before_end')]);
         }
-        $this->providers->resolve($session->provider)->end($session, $actor);
+        $providerFailure = null;
+        try {
+            $this->providers->resolve($session->provider)->end($session, $actor);
+        } catch (Throwable $exception) {
+            if (! $session->provider->isExternal()) {
+                throw $exception;
+            }
+            report($exception);
+            $providerFailure = class_basename($exception).': '.$exception->getMessage();
+        }
 
         $ended = $this->transition($session, $actor, LiveSessionStatus::Ended, [LiveSessionStatus::Waiting, LiveSessionStatus::Live], [
             'ended_at' => now(),
             'ended_by' => $actor->getKey(),
             'provider_status' => 'ended',
+            'sync_status' => $providerFailure ? ProviderSyncStatus::Failed : $session->sync_status,
+            'sync_error' => $providerFailure ? str($providerFailure)->limit(1000)->toString() : $session->sync_error,
             'locked_at' => now(),
             'join_token_version' => DB::raw('join_token_version + 1'),
         ]);

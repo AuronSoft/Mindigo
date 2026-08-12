@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherLiveSession\Providers\Meetings;
 
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherLiveSession\Contracts\LiveMeetingProvider;
@@ -29,7 +30,7 @@ final class ZoomProvider implements LiveMeetingProvider
     public function create(SessionContext $context): ProviderMeeting
     {
         $end = $context->scheduledEnd ?? $context->scheduledStart->addHour();
-        $response = Http::withToken($this->tokens->accessToken($context->teacherId, $this->key()))->acceptJson()->post(self::API.'/users/me/meetings', [
+        $response = $this->client($context->teacherId)->post(self::API.'/users/me/meetings', [
             'topic' => $context->title, 'agenda' => $context->description, 'type' => 2,
             'start_time' => $context->scheduledStart->toRfc3339String(),
             'duration' => max(1, (int) ceil($context->scheduledStart->diffInMinutes($end))),
@@ -42,8 +43,7 @@ final class ZoomProvider implements LiveMeetingProvider
     public function update(LiveSession $session): ProviderMeeting
     {
         $duration = max(1, (int) ceil($session->scheduled_start->diffInMinutes($session->scheduled_end)));
-        Http::withToken($this->tokens->accessToken((int) $session->teacher_id, $this->key()))
-            ->acceptJson()
+        $this->client((int) $session->teacher_id)
             ->patch(self::API.'/meetings/'.rawurlencode((string) $session->provider_meeting_id), [
                 'topic' => $session->title,
                 'agenda' => $session->description,
@@ -67,12 +67,19 @@ final class ZoomProvider implements LiveMeetingProvider
 
     public function end(LiveSession $session, User $actor): void
     {
-        Http::withToken($this->tokens->accessToken((int) $session->teacher_id, $this->key()))->put(self::API.'/meetings/'.$session->provider_meeting_id.'/status', ['action' => 'end'])->throw();
+        $this->client((int) $session->teacher_id)->put(self::API.'/meetings/'.$session->provider_meeting_id.'/status', ['action' => 'end'])->throw();
     }
 
     public function sync(LiveSession $session): SyncResult
     {
-        return new SyncResult('synced', $session->provider_metadata ?? []);
+        $meeting = $this->client((int) $session->teacher_id)->get(self::API.'/meetings/'.rawurlencode((string) $session->provider_meeting_id))
+            ->throw()->json();
+
+        return new SyncResult($meeting['status'] ?? 'waiting', [
+            ...($session->provider_metadata ?? []),
+            'uuid' => $meeting['uuid'] ?? ($session->provider_metadata['uuid'] ?? null),
+            'external_updated_at' => $meeting['start_time'] ?? null,
+        ]);
     }
 
     public function capabilities(): ProviderCapabilities
@@ -88,5 +95,13 @@ final class ZoomProvider implements LiveMeetingProvider
     private function fromSession(LiveSession $s): ProviderMeeting
     {
         return new ProviderMeeting($s->room_name, $s->provider_meeting_id, $s->provider_join_url, $s->provider_host_url, $s->provider_status, $s->provider_metadata ?? []);
+    }
+
+    private function client(int $userId): PendingRequest
+    {
+        return Http::withToken($this->tokens->accessToken($userId, $this->key()))->acceptJson()
+            ->connectTimeout(config('live-providers.http.connect_timeout', 3))
+            ->timeout(config('live-providers.http.timeout', 10))
+            ->retry(config('live-providers.http.retries', 2), 200);
     }
 }

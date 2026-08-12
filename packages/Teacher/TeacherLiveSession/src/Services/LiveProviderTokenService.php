@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherLiveSession\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionProvider;
 use Mindigo\TeacherLiveSession\Models\LiveProviderConnection;
@@ -19,27 +20,40 @@ final class LiveProviderTokenService
         if (! $connection->expires_at || $connection->expires_at->isAfter(now()->addMinute())) {
             return $connection->access_token;
         }
-        if (blank($connection->refresh_token)) {
-            throw new RuntimeException('External meeting provider token has expired.');
-        }
 
-        $config = config("live-providers.{$provider->value}");
-        $request = Http::asForm()->acceptJson();
-        $payload = ['grant_type' => 'refresh_token', 'refresh_token' => $connection->refresh_token];
-        if ($provider === LiveSessionProvider::Zoom) {
-            $request = $request->withBasicAuth($config['client_id'], $config['client_secret']);
-        } else {
-            $payload += ['client_id' => $config['client_id'], 'client_secret' => $config['client_secret']];
-        }
+        return Cache::lock("live-provider-token:{$userId}:{$provider->value}", 15)->block(5, function () use ($userId, $provider): string {
+            $connection = LiveProviderConnection::query()->where('user_id', $userId)->where('provider', $provider->value)->first();
+            if (! $connection?->isUsable()) {
+                throw new RuntimeException('External meeting provider is not connected.');
+            }
+            if (! $connection->expires_at || $connection->expires_at->isAfter(now()->addMinute())) {
+                return $connection->access_token;
+            }
+            if (blank($connection->refresh_token)) {
+                throw new RuntimeException('External meeting provider token has expired.');
+            }
 
-        $tokens = $request->post($config['token_url'], $payload)->throw()->json();
-        $connection->update([
-            'access_token' => $tokens['access_token'],
-            'refresh_token' => $tokens['refresh_token'] ?? $connection->refresh_token,
-            'expires_at' => now()->addSeconds((int) ($tokens['expires_in'] ?? 3600)),
-            'last_refreshed_at' => now(),
-        ]);
+            $config = config("live-providers.{$provider->value}");
+            $request = Http::asForm()->acceptJson()
+                ->connectTimeout(config('live-providers.http.connect_timeout', 3))
+                ->timeout(config('live-providers.http.timeout', 10))
+                ->retry(config('live-providers.http.retries', 2), 200);
+            $payload = ['grant_type' => 'refresh_token', 'refresh_token' => $connection->refresh_token];
+            if ($provider === LiveSessionProvider::Zoom) {
+                $request = $request->withBasicAuth($config['client_id'], $config['client_secret']);
+            } else {
+                $payload += ['client_id' => $config['client_id'], 'client_secret' => $config['client_secret']];
+            }
 
-        return $tokens['access_token'];
+            $tokens = $request->post($config['token_url'], $payload)->throw()->json();
+            $connection->update([
+                'access_token' => $tokens['access_token'],
+                'refresh_token' => $tokens['refresh_token'] ?? $connection->refresh_token,
+                'expires_at' => now()->addSeconds((int) ($tokens['expires_in'] ?? 3600)),
+                'last_refreshed_at' => now(),
+            ]);
+
+            return $tokens['access_token'];
+        });
     }
 }

@@ -30,6 +30,11 @@ class LiveSessionCreationWorkflowTest extends TestCase
         $response->assertSee('data-create-wizard="1"', false);
         $response->assertSee('data-live-session-form-next', false);
         $response->assertSee('data-live-session-form-submit hidden', false);
+        $response->assertSee("document.addEventListener('DOMContentLoaded'", false);
+        $response->assertSee('Ngày/tháng/năm giờ:phút');
+        $response->assertSee('name="scheduled_start"', false);
+        $response->assertSee('id="live-start-display"', false);
+        $response->assertSee('images/live-providers/mindigo-live.svg', false);
     }
 
     public function test_edit_page_keeps_all_form_tabs_available(): void

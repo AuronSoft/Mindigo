@@ -2,6 +2,7 @@
 
 namespace Mindigo\TeacherLiveSession\Providers\Meetings;
 
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherLiveSession\Contracts\LiveMeetingProvider;
@@ -28,7 +29,7 @@ final class GoogleMeetProvider implements LiveMeetingProvider
 
     public function create(SessionContext $context): ProviderMeeting
     {
-        $response = Http::withToken($this->tokens->accessToken($context->teacherId, $this->key()))->acceptJson()->post(self::API.'/calendars/primary/events?conferenceDataVersion=1', [
+        $response = $this->client($context->teacherId)->post(self::API.'/calendars/primary/events?conferenceDataVersion=1', [
             'summary' => $context->title, 'description' => $context->description,
             'start' => ['dateTime' => $context->scheduledStart->toRfc3339String()],
             'end' => ['dateTime' => ($context->scheduledEnd ?? $context->scheduledStart->addHour())->toRfc3339String()],
@@ -41,8 +42,7 @@ final class GoogleMeetProvider implements LiveMeetingProvider
 
     public function update(LiveSession $session): ProviderMeeting
     {
-        $response = Http::withToken($this->tokens->accessToken((int) $session->teacher_id, $this->key()))
-            ->acceptJson()
+        $response = $this->client((int) $session->teacher_id)
             ->patch(self::API.'/calendars/primary/events/'.rawurlencode((string) $session->provider_meeting_id), [
                 'summary' => $session->title,
                 'description' => $session->description,
@@ -69,7 +69,14 @@ final class GoogleMeetProvider implements LiveMeetingProvider
 
     public function sync(LiveSession $session): SyncResult
     {
-        return new SyncResult('synced', $session->provider_metadata ?? []);
+        $event = $this->client((int) $session->teacher_id)->get(self::API.'/calendars/primary/events/'.rawurlencode((string) $session->provider_meeting_id))
+            ->throw()->json();
+
+        return new SyncResult($event['status'] ?? 'confirmed', [
+            ...($session->provider_metadata ?? []),
+            'html_link' => $event['htmlLink'] ?? ($session->provider_metadata['html_link'] ?? null),
+            'external_updated_at' => $event['updated'] ?? null,
+        ]);
     }
 
     public function capabilities(): ProviderCapabilities
@@ -85,5 +92,13 @@ final class GoogleMeetProvider implements LiveMeetingProvider
     private function fromSession(LiveSession $s): ProviderMeeting
     {
         return new ProviderMeeting($s->room_name, $s->provider_meeting_id, $s->provider_join_url, $s->provider_host_url, $s->provider_status, $s->provider_metadata ?? []);
+    }
+
+    private function client(int $userId): PendingRequest
+    {
+        return Http::withToken($this->tokens->accessToken($userId, $this->key()))->acceptJson()
+            ->connectTimeout(config('live-providers.http.connect_timeout', 3))
+            ->timeout(config('live-providers.http.timeout', 10))
+            ->retry(config('live-providers.http.retries', 2), 200);
     }
 }

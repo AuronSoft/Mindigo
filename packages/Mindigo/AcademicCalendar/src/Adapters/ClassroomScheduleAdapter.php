@@ -2,6 +2,8 @@
 
 namespace Mindigo\AcademicCalendar\Adapters;
 
+use App\Support\AcademicCalendar\CalendarScope;
+use App\Support\AcademicCalendar\MapsCalendarStatus;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
@@ -11,8 +13,6 @@ use Mindigo\AcademicCalendar\Data\CalendarQuery;
 use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
 use Mindigo\AcademicCalendar\Enums\CalendarEventSource;
 use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;
-use Mindigo\AcademicCalendar\Support\CalendarScope;
-use Mindigo\AcademicCalendar\Support\MapsCalendarStatus;
 use Mindigo\TeacherClassroom\Models\ClassroomSchedule;
 
 final class ClassroomScheduleAdapter implements CalendarSourceAdapter

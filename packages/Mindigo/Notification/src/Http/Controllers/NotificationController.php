@@ -2,11 +2,11 @@
 
 namespace Mindigo\Notification\Http\Controllers;
 
+use App\Support\Notification\NotificationCategorization;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
-use Mindigo\Notification\Support\NotificationCategorization;
 
 class NotificationController extends Controller
 {

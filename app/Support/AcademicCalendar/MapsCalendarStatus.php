@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindigo\AcademicCalendar\Support;
+namespace App\Support\AcademicCalendar;
 
 use Carbon\CarbonImmutable;
 use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;

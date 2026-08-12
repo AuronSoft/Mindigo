@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support;
+namespace App\Support\Auth;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\RedirectResponse;

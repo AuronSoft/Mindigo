@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'datetime_placeholder' => 'Ngày/tháng/năm giờ:phút',
     'title' => 'Học trực tuyến',
     'subtitle' => 'Quản lý các buổi học trực tuyến của bạn',
     'teaching_live' => 'Nội dung giảng dạy',

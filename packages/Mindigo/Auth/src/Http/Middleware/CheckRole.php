@@ -2,7 +2,7 @@
 
 namespace Mindigo\Auth\Http\Middleware;
 
-use App\Support\RoleRedirector;
+use App\Support\Auth\RoleRedirector;
 use Closure;
 use Illuminate\Http\Request;
 
