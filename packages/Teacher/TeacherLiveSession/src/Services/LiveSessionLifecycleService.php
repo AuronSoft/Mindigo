@@ -8,6 +8,9 @@ use Mindigo\AuditLog\Services\AuditLogService;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionStatus;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
+use Mindigo\TeacherLiveSession\Models\LiveSessionBreakoutAssignment;
+use Mindigo\TeacherLiveSession\Models\LiveSessionBreakoutRoom;
+use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
 
 final class LiveSessionLifecycleService
 {
@@ -86,6 +89,12 @@ final class LiveSessionLifecycleService
                 throw ValidationException::withMessages(['status' => __('teacher-live-session::app.validation.invalid_transition')]);
             }
             $locked->update(['status' => $target->value, ...$attributes]);
+            if ($target->isTerminal()) {
+                $roomIds = $locked->breakoutRooms()->whereIn('status', ['draft', 'open'])->pluck('id');
+                LiveSessionParticipant::query()->where('live_session_id', $locked->id)->whereIn('breakout_room_id', $roomIds)->update(['breakout_room_id' => null]);
+                LiveSessionBreakoutAssignment::query()->whereIn('breakout_room_id', $roomIds)->whereNull('left_at')->update(['left_at' => now()]);
+                LiveSessionBreakoutRoom::query()->whereIn('id', $roomIds)->update(['status' => 'closed', 'closed_at' => now()]);
+            }
 
             return $locked->fresh();
         });

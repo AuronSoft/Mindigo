@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionBreakoutController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionCollaborationController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionRecordingConsentController;
@@ -49,6 +50,15 @@ Route::middleware(['web', 'throttle:30,1'])->prefix('live/guest')->name('live-gu
 });
 
 Route::middleware(['web', 'auth'])->group(function () {
+    Route::prefix('live-breakouts/{liveSession}')->name('live-breakouts.')->group(function () {
+        Route::post('/sync', [LiveSessionBreakoutController::class, 'sync'])->middleware('throttle:120,1')->name('sync');
+        Route::post('/', [LiveSessionBreakoutController::class, 'store'])->middleware('throttle:10,1')->name('store');
+        Route::post('/open', [LiveSessionBreakoutController::class, 'open'])->middleware('throttle:10,1')->name('open');
+        Route::post('/close', [LiveSessionBreakoutController::class, 'close'])->middleware('throttle:10,1')->name('close');
+        Route::post('/main', [LiveSessionBreakoutController::class, 'returnToMain'])->middleware('throttle:30,1')->name('main');
+        Route::post('/{room}/assign', [LiveSessionBreakoutController::class, 'assign'])->middleware('throttle:30,1')->name('assign');
+        Route::post('/{room}/visit', [LiveSessionBreakoutController::class, 'visit'])->middleware('throttle:30,1')->name('visit');
+    });
     Route::post('/live-recording-consent/{liveSession}', [LiveSessionRecordingConsentController::class, 'store'])->name('live-recording-consent.store');
     Route::post('/live-recordings/{liveSession}', [LiveSessionRecordingController::class, 'start'])->middleware('throttle:10,1')->name('live-recordings.start');
     Route::post('/live-recordings/{liveSession}/{recording}/chunks', [LiveSessionRecordingController::class, 'chunk'])->middleware('throttle:120,1')->name('live-recordings.chunk');

@@ -41,6 +41,7 @@ final class LiveSessionMediaController extends Controller
 
         $participants = $liveSession->participants()
             ->where('admission_status', ParticipantAdmissionStatus::Admitted->value)
+            ->where('breakout_room_id', $participant->breakout_room_id)
             ->where('last_seen_at', '>=', now()->subSeconds(20))
             ->with('user:id,name')
             ->get()
@@ -54,27 +55,30 @@ final class LiveSessionMediaController extends Controller
                 'screen_sharing' => $item->screen_sharing,
             ]);
 
-        $guests = LiveSessionGuest::query()->where('live_session_id', $liveSession->id)
-            ->where('admission_status', ParticipantAdmissionStatus::Admitted->value)
-            ->where('last_seen_at', '>=', now()->subSeconds(20))->get()
-            ->map(fn (LiveSessionGuest $guest) => [
-                'key' => 'guest:'.$guest->id, 'user_id' => null, 'name' => $guest->name, 'role' => 'guest',
-                'microphone_enabled' => $guest->microphone_enabled, 'camera_enabled' => $guest->camera_enabled,
-                'screen_sharing' => $guest->screen_sharing,
-            ]);
+        $guests = collect();
+        if ($participant->breakout_room_id === null) {
+            $guests = LiveSessionGuest::query()->where('live_session_id', $liveSession->id)
+                ->where('admission_status', ParticipantAdmissionStatus::Admitted->value)
+                ->where('last_seen_at', '>=', now()->subSeconds(20))->get()
+                ->map(fn (LiveSessionGuest $guest) => [
+                    'key' => 'guest:'.$guest->id, 'user_id' => null, 'name' => $guest->name, 'role' => 'guest',
+                    'microphone_enabled' => $guest->microphone_enabled, 'camera_enabled' => $guest->camera_enabled,
+                    'screen_sharing' => $guest->screen_sharing,
+                ]);
+        }
 
         return response()->json(['participants' => $participants->concat($guests)->values()]);
     }
 
     public function signal(MediaSignalRequest $request, LiveSession $liveSession): JsonResponse
     {
-        $this->participant($request, $liveSession);
+        $sender = $this->participant($request, $liveSession);
         $data = $request->validated();
         $recipientKey = $data['recipient_key'] ?? 'user:'.$data['recipient_id'];
         [$recipientType, $recipientId] = explode(':', $recipientKey, 2);
         $recipientExists = $recipientType === 'user'
-            ? $liveSession->participants()->where('user_id', $recipientId)->where('admission_status', ParticipantAdmissionStatus::Admitted->value)->exists()
-            : LiveSessionGuest::query()->where('live_session_id', $liveSession->id)->whereKey($recipientId)->where('admission_status', ParticipantAdmissionStatus::Admitted->value)->exists();
+            ? $liveSession->participants()->where('user_id', $recipientId)->where('breakout_room_id', $sender->breakout_room_id)->where('admission_status', ParticipantAdmissionStatus::Admitted->value)->exists()
+            : $sender->breakout_room_id === null && LiveSessionGuest::query()->where('live_session_id', $liveSession->id)->whereKey($recipientId)->where('admission_status', ParticipantAdmissionStatus::Admitted->value)->exists();
         abort_unless($recipientExists, 422);
 
         if ($recipientType === 'guest') {

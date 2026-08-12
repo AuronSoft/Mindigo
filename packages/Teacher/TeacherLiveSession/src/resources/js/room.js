@@ -23,6 +23,7 @@ if (root) {
     const recordedAudioTracks = new Set();
     let lastWhiteboardActionId = 0;
     const whiteboardActions = [];
+    let currentBreakoutRoomId;
 
     const request = async (url, payload) => {
         const response = await fetch(url, {
@@ -43,6 +44,19 @@ if (root) {
         const node = root.querySelector('[data-media-status]');
         node.textContent = message;
         node.classList.toggle('text-red-600', error);
+    };
+
+    const systemIcon = name => {
+        const paths = {
+            microphone: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 016 0v8.25a3 3 0 01-3 3z" />',
+            muted: '<path stroke-linecap="round" stroke-linejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25M12 18.75a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M9 6.75V4.5a3 3 0 016 0v4.875" />',
+            hand: '<path stroke-linecap="round" stroke-linejoin="round" d="M10.05 4.575a1.575 1.575 0 10-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 013.15 0v4.5m-3.15-3v4.5m3.15-4.5v-1.5a1.575 1.575 0 013.15 0v4.5m-3.15-3v3m3.15-1.5v-1.5a1.575 1.575 0 013.15 0v6.75a7.125 7.125 0 01-7.125 7.125h-1.5a7.125 7.125 0 01-7.125-7.125v-1.5a1.575 1.575 0 013.15 0v2.25" />',
+            remove: '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />',
+        };
+        const wrapper = document.createElement('span');
+        wrapper.className = 'inline-flex h-4 w-4 items-center justify-center';
+        wrapper.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" class="h-4 w-4">${paths[name] || paths.remove}</svg>`;
+        return wrapper;
     };
 
     const renderLocal = () => {
@@ -207,13 +221,13 @@ if (root) {
         info.append(name, state);
         row.append(avatar, info);
         if (participant.hand_raised) {
-            const hand = document.createElement('span'); hand.textContent = '✋'; hand.title = config.labels.handRaised; row.appendChild(hand);
+            const hand = systemIcon('hand'); hand.title = config.labels.handRaised; hand.classList.add('text-amber-500'); row.appendChild(hand);
         }
         if (canModerate && participant.user_id !== config.userId && participant.role === 'student') {
             const controls = document.createElement('div'); controls.className = 'flex gap-1';
-            const microphoneAction = participant.force_muted ? ['allow_microphone', '🎙️'] : ['mute', '🔇'];
-            for (const [action, label] of [microphoneAction, ['lower_hand', '✋'], ['remove', '×']]) {
-                const button = document.createElement('button'); button.type = 'button'; button.className = 'grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-xs hover:bg-slate-200'; button.textContent = label;
+            const microphoneAction = participant.force_muted ? ['allow_microphone', 'microphone'] : ['mute', 'muted'];
+            for (const [action, icon] of [microphoneAction, ['lower_hand', 'hand'], ['remove', 'remove']]) {
+                const button = document.createElement('button'); button.type = 'button'; button.className = 'grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200'; button.appendChild(systemIcon(icon));
                 button.addEventListener('click', () => request(config.moderateUrl, {target_user_id: participant.user_id, action}).catch(() => setStatus(config.labels.reconnecting, true)));
                 controls.appendChild(button);
             }
@@ -223,12 +237,12 @@ if (root) {
     };
 
     const showReaction = event => {
-        const emoji = {clap: '👏', heart: '❤️', celebrate: '🎉', question: '❓'}[event.payload?.reaction];
-        if (!emoji) return;
+        const sourceIcon = root.querySelector(`[data-reaction="${event.payload?.reaction}"] svg`);
+        if (!sourceIcon) return;
         const item = document.createElement('span');
-        item.className = 'absolute bottom-20 text-3xl transition-all duration-[2500ms]';
+        item.className = 'absolute bottom-20 grid h-10 w-10 place-items-center rounded-full bg-white text-green-600 shadow-lg transition-all duration-[2500ms]';
         item.style.left = `${10 + Math.random() * 80}%`;
-        item.textContent = emoji;
+        const icon = sourceIcon.cloneNode(true); icon.classList.remove('h-4', 'w-4'); icon.classList.add('h-6', 'w-6'); item.appendChild(icon);
         item.title = event.payload?.name || '';
         root.querySelector('[data-reaction-layer]').appendChild(item);
         requestAnimationFrame(() => { item.style.transform = 'translateY(-240px)'; item.style.opacity = '0'; });
@@ -314,6 +328,49 @@ if (root) {
         for (const action of data.actions) { whiteboardActions.push(action); lastWhiteboardActionId = Math.max(lastWhiteboardActionId, action.id); }
         if (data.actions.length) drawWhiteboard(); renderPoll(data.poll); renderResources(data.resources);
     };
+
+    const renderBreakouts = data => {
+        const list = root.querySelector('[data-breakout-list]');
+        if (!list) return;
+        if (currentBreakoutRoomId !== undefined && currentBreakoutRoomId !== data.current_room_id) {
+            [...peers.keys()].forEach(removePeer);
+        }
+        currentBreakoutRoomId = data.current_room_id;
+        const current = data.rooms.find(room => room.id === data.current_room_id);
+        root.querySelector('[data-breakout-current]').textContent = current?.name || config.labels.mainRoom;
+        list.replaceChildren();
+        if (!data.rooms.length) {
+            const empty = document.createElement('p'); empty.className = 'py-10 text-center text-sm font-semibold text-slate-400'; empty.textContent = config.labels.noBreakoutRooms; list.appendChild(empty); return;
+        }
+        data.rooms.forEach(room => {
+            const card = document.createElement('article'); card.className = `rounded-2xl border p-4 ${room.id === data.current_room_id ? 'border-green-400 bg-green-50' : 'border-slate-200'}`;
+            const header = document.createElement('div'); header.className = 'flex items-center justify-between';
+            const name = document.createElement('h3'); name.className = 'text-sm font-black text-slate-900'; name.textContent = room.name;
+            const status = document.createElement('span'); status.className = `rounded-full px-2 py-1 text-[10px] font-black ${room.status === 'open' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'}`; status.textContent = room.status;
+            header.append(name, status); card.appendChild(header);
+            const members = document.createElement('div'); members.className = 'mt-3 flex flex-wrap gap-1.5';
+            room.members.forEach(member => { const badge = document.createElement('span'); badge.className = `rounded-full px-2.5 py-1 text-xs font-bold ${member.joined ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-600'}`; badge.textContent = member.name || ''; members.appendChild(badge); });
+            card.appendChild(members); list.appendChild(card);
+            if (data.can_moderate && room.status === 'open') {
+                const visit = document.createElement('button'); visit.type = 'button'; visit.className = 'mt-3 rounded-xl border border-green-200 px-3 py-2 text-xs font-black text-green-700'; visit.textContent = room.id === data.current_room_id ? config.labels.mainRoom : config.labels.visitRoom;
+                visit.addEventListener('click', () => request(room.id === data.current_room_id ? config.breakoutMainUrl : config.breakoutVisitUrl.replace('__ROOM__', room.id), {}).then(pollBreakouts)); card.appendChild(visit);
+            }
+        });
+    };
+
+    const pollBreakouts = async () => {
+        if (!config.breakoutSyncUrl) return;
+        renderBreakouts(await request(config.breakoutSyncUrl, {}));
+    };
+
+    root.querySelector('[data-toggle-breakouts]')?.addEventListener('click', () => root.querySelector('[data-breakout-panel]').classList.replace('hidden', 'flex'));
+    root.querySelector('[data-close-breakouts]')?.addEventListener('click', () => root.querySelector('[data-breakout-panel]').classList.replace('flex', 'hidden'));
+    root.querySelector('[data-breakout-form]')?.addEventListener('submit', event => {
+        event.preventDefault();
+        request(config.breakoutCreateUrl, {room_count: Number(root.querySelector('[data-breakout-count]').value), duration_minutes: Number(root.querySelector('[data-breakout-duration]').value), auto_assign: root.querySelector('[data-breakout-auto]').checked}).then(pollBreakouts);
+    });
+    root.querySelector('[data-open-breakouts]')?.addEventListener('click', () => request(config.breakoutOpenUrl, {}).then(pollBreakouts));
+    root.querySelector('[data-close-all-breakouts]')?.addEventListener('click', () => request(config.breakoutCloseUrl, {}).then(pollBreakouts));
 
     root.querySelector('[data-toggle-teaching-tools]')?.addEventListener('click', () => { root.querySelector('[data-teaching-tools-panel]').classList.replace('hidden', 'flex'); window.setTimeout(drawWhiteboard); });
     root.querySelector('[data-close-teaching-tools]')?.addEventListener('click', () => root.querySelector('[data-teaching-tools-panel]').classList.replace('flex', 'hidden'));
@@ -435,7 +492,7 @@ if (root) {
 
     const loop = async () => {
         if (stopped) return;
-        try { if (config.joinTokenUrl) await refreshJoinToken(); await pollPresence(); await pollSignals(); if (config.collaborationSyncUrl) await pollCollaboration(); if (config.teachingToolsSyncUrl) await pollTeachingTools(); setStatus(config.labels.connected); }
+        try { if (config.joinTokenUrl) await refreshJoinToken(); if (config.breakoutSyncUrl) await pollBreakouts(); await pollPresence(); await pollSignals(); if (config.collaborationSyncUrl) await pollCollaboration(); if (config.teachingToolsSyncUrl) await pollTeachingTools(); setStatus(config.labels.connected); }
         catch (error) {
             if ([403, 404, 409].includes(error.status)) { stopped = true; window.location.assign(config.leaveUrl); return; }
             setStatus(config.labels.reconnecting, true);

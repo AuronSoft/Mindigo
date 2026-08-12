@@ -136,6 +136,11 @@ class LiveSession extends Model
         return $this->hasMany(LiveSessionResource::class);
     }
 
+    public function breakoutRooms(): HasMany
+    {
+        return $this->hasMany(LiveSessionBreakoutRoom::class);
+    }
+
     // Scopes
 
     public function scopeByTeacher($query, $teacherId)
