@@ -32,3 +32,8 @@ Schedule::command('live-sessions:prune-data')
     ->dailyAt('02:30')
     ->withoutOverlapping()
     ->onOneServer();
+
+Schedule::command('live-sessions:backup')
+    ->dailyAt('01:30')
+    ->withoutOverlapping()
+    ->onOneServer();

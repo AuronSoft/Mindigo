@@ -31,7 +31,11 @@ final class DoctorLiveSessionCommand extends Command
         $hasIceServer = collect(config('live-media.ice_servers', []))->contains(fn ($server) => filled($server['urls'] ?? null));
         $this->components->twoColumnDetail('WebRTC ICE servers', $hasIceServer ? '<fg=green>configured</>' : '<fg=yellow>missing</>');
         $this->components->twoColumnDetail('Scheduler', '<fg=green>commands registered</>');
-        $this->components->twoColumnDetail('Configured room capacity', (string) $configuration->value('live_max_participants'));
+        $capacity = (int) $configuration->value('live_max_participants');
+        $topology = (string) config('live-media.topology', 'mesh');
+        $safeMeshCapacity = (int) config('live-media.safe_mesh_capacity', 8);
+        $this->components->twoColumnDetail('Media topology', $topology);
+        $this->components->twoColumnDetail('Configured room capacity', (string) $capacity);
 
         foreach ($monitor->alerts() as $alert) {
             $this->warn("{$alert['code']}: {$alert['count']}");
@@ -39,6 +43,18 @@ final class DoctorLiveSessionCommand extends Command
 
         if (app()->isProduction() && ! $hasIceServer) {
             $this->error('Production requires STUN/TURN configuration for reliable Native WebRTC connectivity.');
+
+            return self::FAILURE;
+        }
+
+        if (app()->isProduction() && $topology === 'mesh' && $capacity > $safeMeshCapacity) {
+            $this->error("Mesh WebRTC is not production-safe above {$safeMeshCapacity} participants. Configure an SFU topology or lower the room capacity.");
+
+            return self::FAILURE;
+        }
+
+        if (app()->isProduction() && $topology === 'sfu' && blank(config('live-media.sfu_health_url'))) {
+            $this->error('SFU topology requires LIVE_MEDIA_SFU_HEALTH_URL for deployment health checks.');
 
             return self::FAILURE;
         }

@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'topology' => env('LIVE_MEDIA_TOPOLOGY', 'mesh'),
+    'sfu_health_url' => env('LIVE_MEDIA_SFU_HEALTH_URL'),
+    'safe_mesh_capacity' => (int) env('LIVE_MEDIA_SAFE_MESH_CAPACITY', 8),
     'ice_servers' => array_values(array_filter([
         env('LIVE_MEDIA_STUN_URL') ? ['urls' => [env('LIVE_MEDIA_STUN_URL')]] : null,
         env('LIVE_MEDIA_TURN_URL') ? [

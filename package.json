@@ -4,9 +4,14 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "test:e2e": "playwright test",
+        "test:e2e:chrome": "playwright test --project=chrome",
+        "test:e2e:edge": "playwright test --project=edge",
+        "test:e2e:firefox": "playwright test --project=firefox"
     },
     "devDependencies": {
+        "@playwright/test": "^1.62.1",
         "@tailwindcss/vite": "^4.2.4",
         "axios": "^1.8.2",
         "concurrently": "^9.0.1",
