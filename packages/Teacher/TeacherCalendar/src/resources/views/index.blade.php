@@ -32,6 +32,7 @@
             'kindLabel' => __('teacher-calendar::app.'.$event->kind->value),
             'time' => $event->startsAt->format('d/m/Y H:i').($event->endsAt ? ' – '.$event->endsAt->format('H:i') : ''),
             'classroom' => $event->metadata['classroom_name'] ?? null,
+            'provider' => $event->metadata['provider'] ?? null,
             'url' => $event->url,
             'cancelUrl' => $isSession && ! $locked && ($event->metadata['can_manage_session'] ?? false) ? route('teacher.calendar.sessions.cancel', $event->sourceId) : null,
             'updateUrl' => $isSession && ! $locked ? ($event->metadata['update_url'] ?? null) : null,
@@ -156,7 +157,7 @@
                                     $payload = $eventPayload($event);
                                 @endphp
                                 <button type="button" data-calendar-event='@json($payload)' class="teacher-calendar-event {{ $eventTone }}" style="top: {{ $eventTop }}%; height: {{ $eventHeight }}%">
-                                    <span class="calendar-event-meta"><x-dynamic-component :component="$event->kind === CalendarEventKind::LiveSession ? 'heroicon-o-video-camera' : 'heroicon-o-building-library'" class="h-3.5 w-3.5" /><i>{{ strtoupper(substr($event->metadata['classroom_name'] ?? 'LMS', 0, 2)) }}</i></span>
+                                    <span class="calendar-event-meta"><x-dynamic-component :component="($event->kind === CalendarEventKind::LiveSession || !empty($event->metadata['live_session_id'])) ? 'heroicon-o-video-camera' : 'heroicon-o-building-library'" class="h-3.5 w-3.5" /><i>{{ !empty($event->metadata['provider']) ? str($event->metadata['provider'])->replace('_', ' ')->headline() : strtoupper(substr($event->metadata['classroom_name'] ?? 'LMS', 0, 2)) }}</i></span>
                                     <strong>{{ $event->title }}</strong><small>{{ $event->startsAt->format('H:i') }} – {{ $event->endsAt?->format('H:i') }}</small>
                                 </button>
                             @endforeach

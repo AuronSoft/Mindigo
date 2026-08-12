@@ -7,6 +7,7 @@ return [
     'update_updated' => '“:session” has new information',
     'reminder_24h' => 'In 24 hours: :event',
     'reminder_60m' => 'Starting in one hour: :event',
+    'reminder_15m' => 'Starting in 15 minutes: :event',
     'exceptions_title' => 'Academic closures',
     'exceptions_subtitle' => 'Manage no-class dates across the platform and individual courses.',
     'create_exception' => 'Add closure',

@@ -2,6 +2,7 @@
 
 namespace Mindigo\StudentLiveSession\Http\Controllers;
 
+use App\Support\LiveSession\ExternalMeetingUrlPolicy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -46,6 +47,11 @@ class LiveSessionController extends Controller
         }
 
         $join = $this->service->join($liveSession, $request->user());
+        if (($join['mode'] ?? null) === 'redirect') {
+            abort_unless(app(ExternalMeetingUrlPolicy::class)->allows($liveSession->provider, $join['url'] ?? null), 502);
+
+            return redirect()->away($join['url']);
+        }
         $join['access_token'] = $this->tokens->issue($liveSession, $request->user(), $role);
 
         return view('student-live-session::room', [

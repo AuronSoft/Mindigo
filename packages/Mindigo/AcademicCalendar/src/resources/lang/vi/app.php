@@ -7,6 +7,7 @@ return [
     'update_updated' => 'Buổi “:session” có thông tin mới',
     'reminder_24h' => 'Còn 24 giờ: :event',
     'reminder_60m' => 'Sắp diễn ra trong 1 giờ: :event',
+    'reminder_15m' => 'Sắp bắt đầu trong 15 phút: :event',
     'exceptions_title' => 'Ngày nghỉ học vụ',
     'exceptions_subtitle' => 'Quản lý ngày không tổ chức học cho toàn hệ thống hoặc từng khóa học.',
     'create_exception' => 'Thêm ngày nghỉ',

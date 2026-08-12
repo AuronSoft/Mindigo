@@ -33,13 +33,14 @@
             CalendarEventKind::AssignmentDue => __('student-schedule::app.submit_assignment'),
             CalendarEventKind::ExamWindow => __('student-schedule::app.take_exam'),
             CalendarEventKind::LiveSession => __('student-schedule::app.join_class'),
-            default => ($event->metadata['meeting_url'] ?? null) ? __('student-schedule::app.join_class') : __('student-schedule::app.view_lesson'),
+            default => ($event->metadata['live_session_id'] ?? null) ? __('student-schedule::app.join_class') : __('student-schedule::app.view_lesson'),
         };
-        $url = (!$cancelled && $event->kind === CalendarEventKind::ClassSession && ($event->metadata['meeting_url'] ?? null)) ? $event->metadata['meeting_url'] : $event->url;
+        $url = $event->url;
         $context = collect([
             isset($event->metadata['session_type']) ? __('student-schedule::app.'.$event->metadata['session_type']) : null,
             isset($event->metadata['delivery_mode']) ? __('student-schedule::app.'.$event->metadata['delivery_mode']) : null,
             $event->metadata['location'] ?? null,
+            isset($event->metadata['provider']) ? str($event->metadata['provider'])->replace('_', ' ')->title() : null,
             $event->metadata['cancel_reason'] ?? $event->metadata['makeup_reason'] ?? null,
         ])->filter()->implode(' · ');
         return ['title' => $event->title, 'kind' => __('student-schedule::app.'.$event->kind->value), 'time' => $event->startsAt->format('d/m/Y H:i').($event->endsAt ? ' – '.$event->endsAt->format('H:i') : ''), 'classroom' => $event->metadata['classroom_name'] ?? null, 'context' => $context, 'url' => $url, 'action' => $action, 'cancelled' => $cancelled];

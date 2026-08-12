@@ -25,8 +25,9 @@ class DashboardController extends Controller
         $courseStats = $this->service->getCourseStats($student, $classroomIds);
         $weeklyActivity = $this->service->getWeeklyActivity($student);
         $recentActivity = $this->service->getRecentActivity($student);
-        $monthCalendar = $this->service->getMonthCalendar($activeTasks);
-        $todayTasks = $activeTasks->filter(fn ($task) => $task->at?->isToday())->values();
+        $calendarTasks = $this->service->getCalendarTasks($student);
+        $monthCalendar = $this->service->getMonthCalendar($calendarTasks);
+        $todayTasks = $calendarTasks->filter(fn ($task) => $task->at?->isToday())->sortBy('at')->values();
         $upcomingExams = $activeTasks->where('type', 'exam')->take(3)->values();
         $assignments = $activeTasks->where('type', 'assignment')->take(4)->values();
         $activeCourses = $this->service->activeCourses($student);

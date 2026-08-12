@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Mindigo\Auth\Models\User;
 use Mindigo\TeacherCourse\Models\Lesson;
+use Mindigo\TeacherLiveSession\Models\LiveSession;
 
 class ClassroomSchedule extends Model
 {
@@ -136,5 +137,10 @@ class ClassroomSchedule extends Model
     public function attendanceSession(): HasOne
     {
         return $this->hasOne(ClassroomAttendanceSession::class, 'classroom_schedule_id');
+    }
+
+    public function liveSession(): HasOne
+    {
+        return $this->hasOne(LiveSession::class, 'classroom_schedule_id')->latestOfMany();
     }
 }
