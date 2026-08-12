@@ -5,9 +5,9 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherLiveSession\Enums\LiveSessionProvider;
-use Mindigo\TeacherLiveSession\Exceptions\UnsupportedLiveMeetingProvider;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Mindigo\TeacherLiveSession\Providers\Meetings\MindigoNativeProvider;
+use Mindigo\TeacherLiveSession\Providers\Meetings\ZoomProvider;
 use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
 use Tests\TestCase;
 
@@ -22,8 +22,8 @@ class LiveSessionProviderFoundationTest extends TestCase
         $this->assertInstanceOf(MindigoNativeProvider::class, $registry->resolve(LiveSessionProvider::Native));
         $this->assertTrue($registry->resolve('native')->health()->available);
         $this->assertTrue($registry->resolve('native')->capabilities()->embedded);
-        $this->expectException(UnsupportedLiveMeetingProvider::class);
-        $registry->resolve(LiveSessionProvider::Zoom);
+        $this->assertInstanceOf(ZoomProvider::class, $registry->resolve(LiveSessionProvider::Zoom));
+        $this->assertFalse($registry->resolve(LiveSessionProvider::Zoom)->capabilities()->embedded);
     }
 
     public function test_teacher_creates_native_session_with_provider_identity(): void
@@ -73,6 +73,7 @@ class LiveSessionProviderFoundationTest extends TestCase
             'classroom_id' => $classroom->id,
             'provider' => LiveSessionProvider::Zoom->value,
             'scheduled_start' => now()->addDay()->format('Y-m-d H:i:s'),
+            'scheduled_end' => now()->addDay()->addHour()->format('Y-m-d H:i:s'),
         ]);
 
         $response->assertSessionHasErrors('provider');

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-labelledby="title">
+  <title id="title">Google Meet</title>
+  <path fill="#00832d" d="M4 12.5A4.5 4.5 0 0 1 8.5 8H20l5 5v22H8.5A4.5 4.5 0 0 1 4 30.5z"/>
+  <path fill="#00ac47" d="M4 19h21v16H8.5A4.5 4.5 0 0 1 4 30.5z"/>
+  <path fill="#ffba00" d="M20 8h8.5A4.5 4.5 0 0 1 33 12.5V19h-8z"/>
+  <path fill="#ffba00" d="M4 12.5A4.5 4.5 0 0 1 8.5 8H20v11H4z"/>
+  <path fill="#0066da" d="M25 19h8v12.5A3.5 3.5 0 0 1 29.5 35H25z"/>
+  <path fill="#00ac47" d="m33 20 8.2-6.2A1.75 1.75 0 0 1 44 15.2v16.6a1.75 1.75 0 0 1-2.8 1.4L33 27z"/>
+</svg>

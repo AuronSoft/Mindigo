@@ -243,6 +243,11 @@ return [
     'delete_confirm_title' => 'Delete session?',
     'delete_confirm_message' => 'Are you sure you want to delete this session? This cannot be undone.',
 
+    'provider_connected' => 'Provider connected.',
+    'provider_disconnected' => 'Provider disconnected.',
+    'provider_connect' => 'Connect account',
+    'provider_config_required' => 'Administrator configuration required',
+
     // Validation
     'validation' => [
         'title_required' => 'Please enter a session title.',
@@ -252,6 +257,7 @@ return [
         'end_after' => 'End time must be after start time.',
         'schedule_classroom' => 'The selected schedule does not belong to this classroom.',
         'provider_unavailable' => 'This live-classroom provider is not enabled.',
+        'provider_not_connected' => 'Connect your provider account before selecting it.',
         'end_required' => 'Please choose an end time.',
         'schedule_required_for_course' => 'A course classroom must be linked to an eligible schedule.',
         'standalone_flexible_only' => 'A standalone classroom only uses flexible sessions.',
