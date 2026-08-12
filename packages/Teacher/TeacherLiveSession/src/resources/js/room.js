@@ -24,6 +24,13 @@ if (root) {
     let lastWhiteboardActionId = 0;
     const whiteboardActions = [];
     let currentBreakoutRoomId;
+    let loopIteration = 0;
+    let loopRunning = false;
+    let loopTimer = null;
+    let whiteboardWritePending = false;
+    let layoutMode = 'grid';
+    const optimisticReactionCounts = new Map();
+    try { layoutMode = ['grid', 'speaker', 'sidebar', 'classroom'].includes(localStorage.getItem('mindigo-live-layout')) ? localStorage.getItem('mindigo-live-layout') : 'grid'; } catch {}
 
     const request = async (url, payload) => {
         const response = await fetch(url, {
@@ -46,6 +53,13 @@ if (root) {
         node.classList.toggle('text-red-600', error);
     };
 
+    const mediaErrorMessage = error => {
+        if (!window.isSecureContext || !navigator.mediaDevices) return config.labels.secureContextRequired;
+        if (error?.name === 'NotFoundError' || error?.name === 'OverconstrainedError') return config.labels.deviceNotFound;
+        if (error?.name === 'NotReadableError' || error?.name === 'AbortError') return config.labels.deviceBusy;
+        return config.labels.permissionDenied;
+    };
+
     const systemIcon = name => {
         const paths = {
             microphone: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 016 0v8.25a3 3 0 01-3 3z" />',
@@ -59,22 +73,122 @@ if (root) {
         return wrapper;
     };
 
+    const updateGridLayout = () => {
+        const grid = root.querySelector('[data-remote-grid]');
+        const screen = root.querySelector('[data-screen-preview]');
+        const projector = root.querySelector('[data-classroom-projector]');
+        const stage = root.querySelector('[data-classroom-stage]');
+        const projectionSlot = root.querySelector('[data-classroom-projection-slot]');
+        const teacherSlot = root.querySelector('[data-classroom-teacher-slot]');
+        const screenActive = !screen.classList.contains('hidden');
+
+        if (layoutMode === 'classroom') {
+            const teacherTile = grid.querySelector('[data-participant-role="host"]') || grid.querySelector('[data-self-tile]');
+            projectionSlot.append(projector, screen); if (teacherTile) teacherSlot.append(teacherTile);
+            if (teacherTile) {
+                teacherTile.style.gridColumn = 'auto'; teacherTile.style.gridRow = 'auto'; teacherTile.style.maxWidth = '220px';
+                teacherTile.style.maxHeight = '145px'; teacherTile.style.justifySelf = 'center'; teacherTile.style.borderBottom = '';
+                teacherTile.style.borderRadius = '1rem';
+            }
+            stage.classList.remove('hidden'); stage.classList.add('grid');
+        } else {
+            [...teacherSlot.querySelectorAll('[data-participant-tile]')].forEach(tile => grid.appendChild(tile));
+            if (screen.parentElement !== grid) grid.appendChild(screen);
+            stage.classList.add('hidden'); stage.classList.remove('grid');
+        }
+
+        const participantTiles = [...grid.querySelectorAll('[data-participant-tile]')];
+        const count = participantTiles.length;
+
+        projector.classList.toggle('hidden', layoutMode !== 'classroom' || screenActive);
+        screen.style.gridColumn = screenActive ? '1 / -1' : 'auto';
+        screen.style.maxHeight = screenActive ? (layoutMode === 'classroom' ? '58vh' : '55vh') : '';
+        screen.style.maxWidth = 'none'; screen.style.justifySelf = 'stretch'; screen.style.order = screenActive ? '-1' : '0';
+        screen.style.gridRow = 'auto';
+
+        participantTiles.forEach(tile => {
+            tile.style.gridColumn = 'auto'; tile.style.gridRow = 'auto'; tile.style.order = '0'; tile.style.justifySelf = 'center';
+            tile.style.maxWidth = 'none'; tile.style.maxHeight = '260px';
+            tile.style.borderBottom = ''; tile.style.borderRadius = '';
+        });
+
+        if (layoutMode === 'classroom') {
+            stage.style.gridColumn = '1 / -1'; stage.style.order = '-2';
+            grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(150px, 200px))';
+            participantTiles.forEach(tile => {
+                tile.style.maxWidth = '200px'; tile.style.maxHeight = '135px'; tile.style.borderRadius = '2rem 2rem 0.75rem 0.75rem'; tile.style.borderBottom = '12px solid #334155';
+            });
+        } else if (layoutMode === 'speaker') {
+            grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(180px, 240px))';
+            const focusTile = screenActive ? screen : participantTiles[0];
+            if (focusTile) {
+                focusTile.style.gridColumn = '1 / -1'; focusTile.style.order = '-1'; focusTile.style.maxWidth = '900px';
+                focusTile.style.maxHeight = '55vh'; focusTile.style.justifySelf = 'center';
+            }
+            participantTiles.filter(tile => tile !== focusTile).forEach(tile => { tile.style.maxWidth = '240px'; tile.style.maxHeight = '150px'; });
+        } else if (layoutMode === 'sidebar') {
+            grid.style.gridTemplateColumns = 'minmax(0, 1fr) 240px';
+            const focusTile = screenActive ? screen : participantTiles[0];
+            if (focusTile) {
+                focusTile.style.gridColumn = '1'; focusTile.style.gridRow = `1 / span ${Math.max(2, count)}`;
+                focusTile.style.maxWidth = 'none'; focusTile.style.maxHeight = '65vh'; focusTile.style.justifySelf = 'stretch';
+            }
+            participantTiles.filter(tile => tile !== focusTile).forEach(tile => {
+                tile.style.gridColumn = '2'; tile.style.maxWidth = '240px'; tile.style.maxHeight = '145px';
+            });
+        } else {
+            if (screenActive) grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(220px, 1fr))';
+            else if (count <= 1) grid.style.gridTemplateColumns = 'minmax(260px, 560px)';
+            else if (count === 2) grid.style.gridTemplateColumns = 'repeat(2, minmax(240px, 1fr))';
+            else grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(240px, 1fr))';
+            participantTiles.forEach(tile => {
+                tile.style.maxHeight = screenActive ? '180px' : (count <= 1 ? '315px' : '260px');
+                tile.style.maxWidth = screenActive ? '320px' : 'none';
+            });
+        }
+
+        root.querySelectorAll('[data-layout-mode]').forEach(button => {
+            const active = button.dataset.layoutMode === layoutMode; button.setAttribute('aria-pressed', String(active));
+            button.classList.toggle('bg-white', active); button.classList.toggle('text-slate-900', active); button.classList.toggle('text-white', !active);
+        });
+    };
+
+    root.querySelectorAll('[data-layout-mode]').forEach(button => button.addEventListener('click', () => {
+        layoutMode = button.dataset.layoutMode;
+        try { localStorage.setItem('mindigo-live-layout', layoutMode); } catch {}
+        updateGridLayout();
+    }));
+
     const renderLocal = () => {
         const video = root.querySelector('[data-local-video]');
         video.srcObject = localStream;
-        video.classList.toggle('hidden', localStream.getVideoTracks().length === 0);
-        root.querySelector('[data-local-placeholder]').classList.toggle('hidden', localStream.getVideoTracks().length > 0);
+        const cameraActive = localStream.getVideoTracks().some(track => track.enabled && track.readyState === 'live');
+        video.classList.toggle('hidden', !cameraActive);
+        root.querySelector('[data-local-placeholder]').classList.toggle('hidden', cameraActive);
+        updateGridLayout();
     };
 
-    const remoteTile = (userId, name = '') => {
+    const updateMediaButton = (button, active) => {
+        button.dataset.active = String(active); button.setAttribute('aria-pressed', String(active));
+        button.querySelector('[data-media-icon-on]')?.classList.toggle('hidden', !active);
+        button.querySelector('[data-media-icon-off]')?.classList.toggle('hidden', active);
+        button.classList.toggle('bg-green-600', active); button.classList.toggle('hover:bg-green-500', active);
+        button.classList.toggle('bg-slate-700', !active); button.classList.toggle('hover:bg-slate-600', !active);
+    };
+
+    const remoteTile = (userId, name = '', role = 'student') => {
         let tile = root.querySelector(`[data-remote-user="${userId}"]`);
-        if (tile) return tile;
+        if (tile) { tile.dataset.participantRole = role || tile.dataset.participantRole; return tile; }
         tile = document.createElement('article');
         tile.dataset.remoteUser = userId;
-        tile.className = 'relative min-h-48 overflow-hidden rounded-2xl bg-slate-900';
-        tile.innerHTML = `<video autoplay playsinline class="h-full w-full object-cover"></video><div class="absolute inset-x-0 bottom-0 bg-slate-950/70 px-3 py-2 text-xs font-bold text-white"></div>`;
-        tile.querySelector('div').textContent = name;
+        tile.dataset.participantTile = '';
+        tile.dataset.participantRole = role;
+        tile.className = 'relative aspect-video w-full overflow-hidden rounded-2xl bg-slate-900';
+        tile.innerHTML = `<video autoplay playsinline class="hidden h-full w-full object-cover"></video><div data-remote-placeholder class="grid h-full place-items-center bg-slate-800"><span class="grid h-14 w-14 place-items-center rounded-full bg-green-600 text-lg font-black text-white"></span></div><div data-remote-name class="absolute inset-x-0 bottom-0 bg-slate-950/70 px-3 py-2 text-xs font-bold text-white"></div>`;
+        tile.querySelector('[data-remote-name]').textContent = name;
+        tile.querySelector('[data-remote-placeholder] span').textContent = name?.slice(0, 1).toUpperCase() || '?';
         root.querySelector('[data-remote-grid]').appendChild(tile);
+        updateGridLayout();
         return tile;
     };
 
@@ -91,7 +205,7 @@ if (root) {
         return sender;
     };
 
-    const peerFor = (userId, name = '') => {
+    const peerFor = (userId, name = '', role = 'student') => {
         if (peers.has(userId)) return peers.get(userId);
         const peer = new RTCPeerConnection({iceServers: config.iceServers});
         localStream.getTracks().forEach(track => addTrack(peer, track));
@@ -100,7 +214,7 @@ if (root) {
             const stream = remoteStreams.get(userId) || new MediaStream();
             if (!stream.getTracks().some(track => track.id === event.track.id)) stream.addTrack(event.track);
             remoteStreams.set(userId, stream);
-            remoteTile(userId, name).querySelector('video').srcObject = stream;
+            remoteTile(userId, name, role).querySelector('video').srcObject = stream;
             connectRecordingAudio(stream);
         };
         peer.onconnectionstatechange = () => {
@@ -115,10 +229,11 @@ if (root) {
         peers.delete(userId);
         remoteStreams.delete(userId);
         root.querySelector(`[data-remote-user="${userId}"]`)?.remove();
+        updateGridLayout();
     };
 
     const createOffer = async participant => {
-        const peer = peerFor(participant.user_id, participant.name);
+        const peer = peerFor(participant.user_id, participant.name, participant.role);
         const offer = await peer.createOffer();
         await peer.setLocalDescription(offer);
         await sendSignal(participant.user_id, 'offer', offer);
@@ -134,9 +249,14 @@ if (root) {
         const {participants} = await request(config.presenceUrl, state);
         root.querySelector('[data-participant-count]').textContent = participants.length;
         for (const participant of participants) {
-            if (participant.key === config.participantKey || peers.has(participant.key)) continue;
+            if (participant.key === config.participantKey) continue;
+            const tile = remoteTile(participant.key, participant.name, participant.role);
+            const video = tile.querySelector('video'); const cameraActive = Boolean(participant.camera_enabled && video.srcObject);
+            video.classList.toggle('hidden', !cameraActive); tile.querySelector('[data-remote-placeholder]').classList.toggle('hidden', cameraActive);
+            if (peers.has(participant.key)) continue;
             if (config.participantKey.localeCompare(participant.key) < 0) await createOffer({...participant, user_id: participant.key});
         }
+        updateGridLayout();
         const onlineIds = new Set(participants.map(item => item.key));
         for (const userId of peers.keys()) if (!onlineIds.has(userId)) removePeer(userId);
     };
@@ -167,8 +287,9 @@ if (root) {
     };
 
     root.querySelector('[data-toggle-microphone]')?.addEventListener('click', async event => {
+        const button = event.currentTarget; button.disabled = true;
         try {
-            if (event.currentTarget.dataset.locked === 'true') {
+            if (button.dataset.locked === 'true') {
                 setStatus(config.labels.mutedByModerator);
                 return;
             }
@@ -179,12 +300,14 @@ if (root) {
                 localStream.addTrack(track);
                 peers.forEach(peer => addTrack(peer, track));
             } else track.enabled = !track.enabled;
-            event.currentTarget.dataset.active = String(track.enabled);
+            updateMediaButton(button, track.enabled);
             setStatus(track.enabled ? config.labels.microphoneOn : config.labels.microphoneOff);
-        } catch { setStatus(config.labels.permissionDenied, true); }
+        } catch (error) { updateMediaButton(button, false); setStatus(mediaErrorMessage(error), true); }
+        finally { button.disabled = false; }
     });
 
     root.querySelector('[data-toggle-camera]')?.addEventListener('click', async event => {
+        const button = event.currentTarget; button.disabled = true;
         try {
             let track = cameraStream?.getVideoTracks()[0];
             if (!track || track.readyState === 'ended') {
@@ -193,26 +316,36 @@ if (root) {
                 localStream.addTrack(track);
                 replaceVideoTrack(track);
             } else track.enabled = !track.enabled;
-            event.currentTarget.dataset.active = String(track.enabled);
-            renderLocal();
-        } catch { setStatus(config.labels.permissionDenied, true); }
+            updateMediaButton(button, track.enabled); renderLocal();
+            setStatus(track.enabled ? config.labels.cameraOn : config.labels.cameraOff);
+        } catch (error) { updateMediaButton(button, false); renderLocal(); setStatus(mediaErrorMessage(error), true); }
+        finally { button.disabled = false; }
     });
 
     root.querySelector('[data-toggle-screen]')?.addEventListener('click', async event => {
+        const button = event.currentTarget; button.disabled = true;
+        const preview = root.querySelector('[data-screen-preview]'); const previewVideo = root.querySelector('[data-screen-preview-video]');
+        const stopScreenSharing = () => {
+            screenStream?.getTracks().forEach(track => { track.onended = null; track.stop(); });
+            screenStream = null; previewVideo.srcObject = null; preview.classList.add('hidden');
+            replaceVideoTrack(cameraStream?.getVideoTracks()[0] || null); updateMediaButton(button, false);
+            updateGridLayout();
+            button.querySelector('[data-screen-button-label]').textContent = config.labels.shareScreen;
+            setStatus(config.labels.screenShareStopped);
+        };
         try {
             if (screenStream) {
-                screenStream.getTracks().forEach(track => track.stop());
-                screenStream = null;
-                replaceVideoTrack(cameraStream?.getVideoTracks()[0] || null);
-                event.currentTarget.dataset.active = 'false';
+                stopScreenSharing();
                 return;
             }
             screenStream = await navigator.mediaDevices.getDisplayMedia({video: true});
             const track = screenStream.getVideoTracks()[0];
-            replaceVideoTrack(track);
-            event.currentTarget.dataset.active = 'true';
-            track.onended = () => { screenStream = null; replaceVideoTrack(cameraStream?.getVideoTracks()[0] || null); };
-        } catch { setStatus(config.labels.permissionDenied, true); }
+            previewVideo.srcObject = screenStream; preview.classList.remove('hidden'); replaceVideoTrack(track); updateMediaButton(button, true);
+            updateGridLayout();
+            button.querySelector('[data-screen-button-label]').textContent = config.labels.stopScreenShare;
+            setStatus(config.labels.screenSharing); track.onended = stopScreenSharing;
+        } catch (error) { updateMediaButton(button, false); setStatus(mediaErrorMessage(error), true); }
+        finally { button.disabled = false; }
     });
 
     const participantRow = (participant, canModerate) => {
@@ -260,6 +393,14 @@ if (root) {
         window.setTimeout(() => item.remove(), 2600);
     };
 
+    const updateHandButton = raised => {
+        const button = root.querySelector('[data-toggle-hand]'); if (!button) return;
+        button.dataset.active = String(raised); button.setAttribute('aria-pressed', String(raised));
+        button.classList.toggle('bg-amber-500', raised); button.classList.toggle('hover:bg-amber-400', raised);
+        button.classList.toggle('bg-white/10', !raised); button.classList.toggle('hover:bg-white/20', !raised);
+        button.querySelector('[data-hand-label]').textContent = raised ? config.labels.lowerHand : config.labels.raiseHand;
+    };
+
     const appendMessage = message => {
         const wrapper = document.createElement('div');
         const meta = document.createElement('p'); meta.className = 'text-xs font-black text-slate-700'; meta.textContent = message.sender_name || '';
@@ -272,22 +413,27 @@ if (root) {
         for (const message of data.messages) { appendMessage(message); lastMessageId = Math.max(lastMessageId, message.id); }
         for (const event of data.events) {
             lastEventId = Math.max(lastEventId, event.id);
-            if (event.type === 'reaction') showReaction(event);
+            if (event.type === 'reaction') {
+                const reaction = event.payload?.reaction; const optimisticCount = optimisticReactionCounts.get(reaction) || 0;
+                if (event.actor_id === config.userId && optimisticCount > 0) optimisticReactionCounts.set(reaction, optimisticCount - 1);
+                else showReaction(event);
+            }
             if (event.type === 'mute') {
                 localStream.getAudioTracks().forEach(track => { track.enabled = false; });
-                root.querySelector('[data-toggle-microphone]').dataset.active = 'false';
+                updateMediaButton(root.querySelector('[data-toggle-microphone]'), false);
                 setStatus(config.labels.mutedByModerator);
             }
         }
         const list = root.querySelector('[data-panel-content="participants"]');
         list.replaceChildren(...data.participants.map(participant => participantRow(participant, data.can_moderate)));
-        const hand = root.querySelector('[data-toggle-hand]');
-        hand.dataset.active = String(data.self.hand_raised);
-        hand.classList.toggle('bg-amber-500', data.self.hand_raised);
+        updateHandButton(data.self.hand_raised);
         const microphone = root.querySelector('[data-toggle-microphone]');
         microphone.dataset.locked = String(data.self.force_muted);
         microphone.classList.toggle('opacity-50', data.self.force_muted);
-        if (data.self.force_muted) localStream.getAudioTracks().forEach(track => { track.enabled = false; });
+        if (data.self.force_muted) {
+            localStream.getAudioTracks().forEach(track => { track.enabled = false; });
+            updateMediaButton(microphone, false);
+        }
     };
 
     const refreshJoinToken = async () => {
@@ -310,6 +456,16 @@ if (root) {
             context.strokeStyle = action.payload.color; context.lineWidth = action.payload.width; context.lineCap = 'round'; context.lineJoin = 'round'; context.beginPath();
             points.forEach((point, index) => { const x = point.x * rect.width; const y = point.y * rect.height; index ? context.lineTo(x, y) : context.moveTo(x, y); }); context.stroke();
         }
+    };
+
+    const drawWhiteboardAction = action => {
+        const canvas = root.querySelector('[data-whiteboard]'); if (!canvas) return;
+        const rect = canvas.getBoundingClientRect(); const context = canvas.getContext('2d');
+        context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+        if (action.type === 'clear') { context.clearRect(0, 0, rect.width, rect.height); return; }
+        const points = action.payload?.points || []; if (points.length < 2) return;
+        context.strokeStyle = action.payload.color; context.lineWidth = action.payload.width; context.lineCap = 'round'; context.lineJoin = 'round'; context.beginPath();
+        points.forEach((point, index) => { const x = point.x * rect.width; const y = point.y * rect.height; index ? context.lineTo(x, y) : context.moveTo(x, y); }); context.stroke();
     };
 
     const renderPoll = poll => {
@@ -336,8 +492,10 @@ if (root) {
     const pollTeachingTools = async () => {
         if (!config.teachingToolsSyncUrl) return;
         const data = await request(config.teachingToolsSyncUrl, {after_action_id: lastWhiteboardActionId});
-        for (const action of data.actions) { whiteboardActions.push(action); lastWhiteboardActionId = Math.max(lastWhiteboardActionId, action.id); }
-        if (data.actions.length) drawWhiteboard(); renderPoll(data.poll); renderResources(data.resources);
+        for (const action of data.actions) {
+            whiteboardActions.push(action); lastWhiteboardActionId = Math.max(lastWhiteboardActionId, action.id); drawWhiteboardAction(action);
+        }
+        renderPoll(data.poll); renderResources(data.resources);
     };
 
     const renderBreakouts = data => {
@@ -374,7 +532,10 @@ if (root) {
         renderBreakouts(await request(config.breakoutSyncUrl, {}));
     };
 
-    root.querySelector('[data-toggle-breakouts]')?.addEventListener('click', () => root.querySelector('[data-breakout-panel]').classList.replace('hidden', 'flex'));
+    root.querySelector('[data-toggle-breakouts]')?.addEventListener('click', () => {
+        root.querySelector('[data-breakout-panel]').classList.replace('hidden', 'flex');
+        pollBreakouts().catch(() => {});
+    });
     root.querySelector('[data-close-breakouts]')?.addEventListener('click', () => root.querySelector('[data-breakout-panel]').classList.replace('flex', 'hidden'));
     root.querySelector('[data-breakout-form]')?.addEventListener('submit', event => {
         event.preventDefault();
@@ -383,15 +544,52 @@ if (root) {
     root.querySelector('[data-open-breakouts]')?.addEventListener('click', () => request(config.breakoutOpenUrl, {}).then(pollBreakouts));
     root.querySelector('[data-close-all-breakouts]')?.addEventListener('click', () => request(config.breakoutCloseUrl, {}).then(pollBreakouts));
 
-    root.querySelector('[data-toggle-teaching-tools]')?.addEventListener('click', () => { root.querySelector('[data-teaching-tools-panel]').classList.replace('hidden', 'flex'); window.setTimeout(drawWhiteboard); });
+    root.querySelector('[data-toggle-teaching-tools]')?.addEventListener('click', () => { root.querySelector('[data-teaching-tools-panel]').classList.replace('hidden', 'flex'); window.setTimeout(() => { drawWhiteboard(); pollTeachingTools().catch(() => {}); }); });
     root.querySelector('[data-close-teaching-tools]')?.addEventListener('click', () => root.querySelector('[data-teaching-tools-panel]').classList.replace('flex', 'hidden'));
     root.querySelectorAll('[data-tool-tab]').forEach(button => button.addEventListener('click', () => {
-        root.querySelectorAll('[data-tool-content]').forEach(panel => panel.classList.toggle('hidden', panel.dataset.toolContent !== button.dataset.toolTab)); if (button.dataset.toolTab === 'whiteboard') window.setTimeout(drawWhiteboard);
+        root.querySelectorAll('[data-tool-tab]').forEach(tab => {
+            const selected = tab === button; tab.setAttribute('aria-selected', String(selected));
+            tab.classList.toggle('bg-green-50', selected); tab.classList.toggle('text-green-700', selected);
+            tab.classList.toggle('bg-transparent', !selected); tab.classList.toggle('text-slate-500', !selected);
+        });
+        root.querySelectorAll('[data-tool-content]').forEach(panel => panel.classList.toggle('hidden', panel.dataset.toolContent !== button.dataset.toolTab));
+        if (button.dataset.toolTab === 'whiteboard') window.setTimeout(drawWhiteboard);
     }));
-    const board = root.querySelector('[data-whiteboard]'); let currentStroke = null;
-    board?.addEventListener('pointerdown', event => { board.setPointerCapture(event.pointerId); const rect = board.getBoundingClientRect(); currentStroke = {color: root.querySelector('[data-board-color]').value, width: Number(root.querySelector('[data-board-width]').value), points: [{x: (event.clientX - rect.left) / rect.width, y: (event.clientY - rect.top) / rect.height}]}; });
-    board?.addEventListener('pointermove', event => { if (!currentStroke) return; const rect = board.getBoundingClientRect(); currentStroke.points.push({x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)), y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))}); whiteboardActions.push({type: 'stroke', payload: currentStroke}); drawWhiteboard(); whiteboardActions.pop(); });
-    const finishStroke = async () => { if (!currentStroke) return; const stroke = currentStroke; currentStroke = null; if (stroke.points.length >= 2) await request(config.whiteboardUrl, {type: 'stroke', payload: stroke}); };
+    const board = root.querySelector('[data-whiteboard]'); let currentStroke = null; let lastDrawnPoint = null;
+    const boardPoint = event => {
+        const rect = board.getBoundingClientRect();
+        return {x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)), y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))};
+    };
+    const drawBoardSegment = (from, to, stroke) => {
+        const rect = board.getBoundingClientRect(); const context = board.getContext('2d');
+        context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+        context.strokeStyle = stroke.color; context.lineWidth = stroke.width; context.lineCap = 'round'; context.lineJoin = 'round';
+        context.beginPath(); context.moveTo(from.x * rect.width, from.y * rect.height); context.lineTo(to.x * rect.width, to.y * rect.height); context.stroke();
+    };
+    board?.addEventListener('pointerdown', event => {
+        board.setPointerCapture(event.pointerId); const point = boardPoint(event);
+        currentStroke = {color: root.querySelector('[data-board-color]').value, width: Number(root.querySelector('[data-board-width]').value), points: [point]}; lastDrawnPoint = point;
+    });
+    board?.addEventListener('pointermove', event => {
+        if (!currentStroke) return;
+        for (const sample of event.getCoalescedEvents?.() || [event]) {
+            const point = boardPoint(sample); const distance = Math.hypot(point.x - lastDrawnPoint.x, point.y - lastDrawnPoint.y);
+            if (distance < 0.0008) continue;
+            currentStroke.points.push(point); drawBoardSegment(lastDrawnPoint, point, currentStroke); lastDrawnPoint = point;
+        }
+    });
+    const finishStroke = async () => {
+        if (!currentStroke) return; const stroke = currentStroke; currentStroke = null; lastDrawnPoint = null;
+        if (stroke.points.length < 2) return;
+        if (stroke.points.length > 500) {
+            const step = Math.ceil(stroke.points.length / 499);
+            stroke.points = stroke.points.filter((point, index) => index % step === 0 || index === stroke.points.length - 1);
+        }
+        whiteboardWritePending = true;
+        try { await request(config.whiteboardUrl, {type: 'stroke', payload: stroke}); await pollTeachingTools(); }
+        catch { drawWhiteboard(); setStatus(config.labels.reconnecting, true); }
+        finally { whiteboardWritePending = false; }
+    };
     board?.addEventListener('pointerup', finishStroke); board?.addEventListener('pointercancel', finishStroke);
     root.querySelector('[data-clear-board]')?.addEventListener('click', () => request(config.whiteboardUrl, {type: 'clear'}).then(pollTeachingTools));
     root.querySelector('[data-poll-form]')?.addEventListener('submit', event => { event.preventDefault(); const question = root.querySelector('[data-poll-question]').value; const options = [...root.querySelectorAll('[data-poll-option]')].map(input => input.value.trim()); request(config.pollCreateUrl, {question, options}).then(() => { event.target.reset(); return pollTeachingTools(); }); });
@@ -498,24 +696,65 @@ if (root) {
         event.preventDefault(); const input = root.querySelector('[data-chat-input]'); const body = input.value.trim(); if (!body) return;
         await request(config.messageUrl, {body}); input.value = ''; await pollCollaboration();
     });
-    root.querySelector('[data-toggle-hand]')?.addEventListener('click', event => request(config.actionUrl, {action: event.currentTarget.dataset.active === 'true' ? 'lower_hand' : 'raise_hand'}).then(pollCollaboration));
-    root.querySelectorAll('[data-reaction]').forEach(button => button.addEventListener('click', () => request(config.actionUrl, {action: 'reaction', reaction: button.dataset.reaction})));
+    root.querySelector('[data-toggle-hand]')?.addEventListener('click', async event => {
+        const button = event.currentTarget; const wasRaised = button.dataset.active === 'true'; const nextRaised = !wasRaised;
+        button.disabled = true; updateHandButton(nextRaised);
+        try { await request(config.actionUrl, {action: nextRaised ? 'raise_hand' : 'lower_hand'}); await pollCollaboration(); }
+        catch { updateHandButton(wasRaised); setStatus(config.labels.reconnecting, true); }
+        finally { button.disabled = false; }
+    });
+    root.querySelectorAll('[data-reaction]').forEach(button => button.addEventListener('click', async () => {
+        const reaction = button.dataset.reaction; button.disabled = true;
+        button.classList.add('bg-green-600', 'text-white', 'scale-110');
+        showReaction({payload: {reaction}}); optimisticReactionCounts.set(reaction, (optimisticReactionCounts.get(reaction) || 0) + 1);
+        try { await request(config.actionUrl, {action: 'reaction', reaction}); setStatus(config.labels.reactionSent); }
+        catch {
+            optimisticReactionCounts.set(reaction, Math.max(0, (optimisticReactionCounts.get(reaction) || 1) - 1));
+            setStatus(config.labels.reconnecting, true);
+        }
+        finally {
+            window.setTimeout(() => { button.classList.remove('bg-green-600', 'text-white', 'scale-110'); button.disabled = false; }, 350);
+        }
+    }));
 
     const loop = async () => {
-        if (stopped) return;
-        try { if (config.joinTokenUrl) await refreshJoinToken(); if (config.breakoutSyncUrl) await pollBreakouts(); await pollPresence(); await pollSignals(); if (config.collaborationSyncUrl) await pollCollaboration(); if (config.teachingToolsSyncUrl) await pollTeachingTools(); setStatus(config.labels.connected); }
+        if (stopped || loopRunning) return;
+        loopRunning = true; loopIteration += 1;
+        try {
+            if (config.joinTokenUrl) await refreshJoinToken();
+            if (loopIteration === 1 || loopIteration % 4 === 0) await pollPresence();
+            await pollSignals();
+            setStatus(config.labels.connected);
+
+            if (config.collaborationSyncUrl && loopIteration % 3 === 0) await pollCollaboration().catch(() => {});
+            if (config.breakoutSyncUrl && loopIteration % 3 === 0 && !root.querySelector('[data-breakout-panel]')?.classList.contains('hidden')) await pollBreakouts().catch(() => {});
+            if (config.teachingToolsSyncUrl && loopIteration % 2 === 0 && !currentStroke && !whiteboardWritePending && !root.querySelector('[data-teaching-tools-panel]')?.classList.contains('hidden')) await pollTeachingTools().catch(() => {});
+        }
         catch (error) {
             if ([403, 404, 409].includes(error.status)) { stopped = true; window.location.assign(config.leaveUrl); return; }
             setStatus(config.labels.reconnecting, true);
         }
-        window.setTimeout(loop, 2000);
+        finally {
+            loopRunning = false;
+            if (!stopped) {
+                window.clearTimeout(loopTimer);
+                loopTimer = window.setTimeout(loop, document.hidden ? 5000 : 1000);
+            }
+        }
     };
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !stopped && !loopRunning) {
+            window.clearTimeout(loopTimer); loop();
+        }
+    });
 
     window.addEventListener('beforeunload', event => {
         if (recorder?.state === 'recording') { event.preventDefault(); event.returnValue = ''; }
         stopped = true;
+        window.clearTimeout(loopTimer);
         if (config.mediaLeaveUrl) fetch(config.mediaLeaveUrl, {method: 'POST', credentials: 'same-origin', keepalive: true, headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf}, body: JSON.stringify({token: config.token})}).catch(() => {});
-        localStream.getTracks().forEach(track => track.stop()); peers.forEach(peer => peer.close());
+        screenStream?.getTracks().forEach(track => track.stop()); localStream.getTracks().forEach(track => track.stop()); peers.forEach(peer => peer.close());
     });
     renderLocal();
     loop();

@@ -133,6 +133,13 @@ class TeacherLiveSessionController extends Controller
         $role = $this->access->roleFor($liveSession, $request->user());
         $participant = $this->admissions->requestEntry($liveSession, $request->user(), $role);
         abort_unless($participant->admission_status === ParticipantAdmissionStatus::Admitted, 403);
+        $management = $this->roomManagementData($liveSession, $request);
+        if ($liveSession->isWaiting()) {
+            return view('teacher-live-session::room', $management + compact('participant') + [
+                'session' => $liveSession,
+                'mediaConfig' => null,
+            ]);
+        }
         if (($liveSession->room_settings['recording_enabled'] ?? false) === true && $participant->recording_consented_at === null) {
             return view('teacher-live-session::recording-consent', ['session' => $liveSession]);
         }
@@ -144,6 +151,15 @@ class TeacherLiveSessionController extends Controller
             return redirect()->away($join['url']);
         }
         $join['access_token'] = $this->tokens->issue($liveSession, $request->user(), $role);
+
+        return view('teacher-live-session::room', $management + compact('join', 'participant') + [
+            'session' => $liveSession,
+            'mediaConfig' => $this->mediaConfig($liveSession, $join['access_token'], $request),
+        ]);
+    }
+
+    private function roomManagementData(LiveSession $liveSession, Request $request): array
+    {
         $waitingParticipants = $liveSession->participants()
             ->where('admission_status', ParticipantAdmissionStatus::Waiting->value)
             ->with('user:id,name,email')
@@ -157,10 +173,7 @@ class TeacherLiveSessionController extends Controller
             ->whereNull('revoked_at')->where('expires_at', '>', now())->latest()->get();
         $canManageGuestLinks = $this->access->canManage($liveSession, $request->user());
 
-        return view('teacher-live-session::room', compact('join', 'participant', 'waitingParticipants', 'waitingGuests', 'admittedGuests', 'guestLinks', 'canManageGuestLinks') + [
-            'session' => $liveSession,
-            'mediaConfig' => $this->mediaConfig($liveSession, $join['access_token'], $request),
-        ]);
+        return compact('waitingParticipants', 'waitingGuests', 'admittedGuests', 'guestLinks', 'canManageGuestLinks');
     }
 
     // Kết thúc buổi học
@@ -331,6 +344,7 @@ class TeacherLiveSessionController extends Controller
         return [
             'userId' => (int) $request->user()->id,
             'participantKey' => 'user:'.$request->user()->id,
+            'participantRole' => $this->access->roleFor($session, $request->user())->value,
             'connectionId' => (string) Str::uuid(),
             'token' => $token,
             'presenceUrl' => route('live-media.presence', $session),

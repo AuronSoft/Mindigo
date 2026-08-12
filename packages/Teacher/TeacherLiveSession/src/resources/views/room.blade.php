@@ -12,12 +12,28 @@
         <div class="flex flex-wrap gap-2">
             <form method="POST" action="{{ route($session->isLocked() ? 'teacher.live-sessions.unlock' : 'teacher.live-sessions.lock', $session) }}">@csrf<button class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-4 text-xs font-black text-slate-700"><x-dynamic-component :component="$session->isLocked() ? 'heroicon-o-lock-open' : 'heroicon-o-lock-closed'" class="h-4 w-4" />{{ $session->isLocked() ? __('teacher-live-session::app.unlock_room') : __('teacher-live-session::app.lock_room') }}</button></form>
             <a href="{{ route('teacher.live-sessions.index') }}" class="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-xs font-black text-slate-700 no-underline">@lang('teacher-live-session::app.leave_room')</a>
-            <form action="{{ route('teacher.live-sessions.end', $session) }}" method="POST">@csrf<button class="inline-flex h-10 items-center rounded-xl bg-red-600 px-4 text-xs font-black text-white">@lang('teacher-live-session::app.end')</button></form>
+            @if($session->isWaiting())
+                <form action="{{ route('teacher.live-sessions.start', $session) }}" method="POST">@csrf<button class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white"><x-heroicon-o-play class="h-4 w-4" />@lang('teacher-live-session::app.start')</button></form>
+            @else
+                <form action="{{ route('teacher.live-sessions.end', $session) }}" method="POST">@csrf<button class="inline-flex h-10 items-center rounded-xl bg-red-600 px-4 text-xs font-black text-white">@lang('teacher-live-session::app.end')</button></form>
+            @endif
         </div>
     </header>
 
     <div class="grid flex-1 gap-5 p-6 xl:grid-cols-[minmax(0,1fr)_320px]">
-        @include('teacher-live-session::partials.media-stage')
+        @if($mediaConfig)
+            @include('teacher-live-session::partials.media-stage')
+        @else
+            <section class="grid min-h-120 place-items-center rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+                <div class="max-w-lg">
+                    <span class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-green-50 text-green-700"><x-heroicon-o-user-group class="h-8 w-8" /></span>
+                    <p class="mt-5 text-xs font-black uppercase tracking-widest text-green-700">@lang('teacher-live-session::app.waiting_room')</p>
+                    <h2 class="mt-2 text-2xl font-black text-slate-950">@lang('teacher-live-session::app.waiting_room_management_title')</h2>
+                    <p class="mt-3 text-sm font-semibold leading-6 text-slate-500">@lang('teacher-live-session::app.waiting_room_management_hint')</p>
+                    <form action="{{ route('teacher.live-sessions.start', $session) }}" method="POST" class="mt-6">@csrf<button class="inline-flex h-11 items-center gap-2 rounded-xl bg-green-600 px-5 text-sm font-black text-white"><x-heroicon-o-play class="h-4 w-4" />@lang('teacher-live-session::app.start')</button></form>
+                </div>
+            </section>
+        @endif
 
         <aside class="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div class="border-b border-slate-100 p-4"><div class="flex items-center justify-between"><h2 class="text-sm font-black text-slate-950">@lang('teacher-live-session::app.waiting_participants')</h2><span class="rounded-full bg-amber-50 px-2 py-1 text-xs font-black text-amber-700">{{ $waitingParticipants->count() + $waitingGuests->count() }}</span></div><p class="mt-1 text-xs font-semibold text-slate-500">@lang('teacher-live-session::app.waiting_participants_hint')</p></div>

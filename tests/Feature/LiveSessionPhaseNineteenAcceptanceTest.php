@@ -61,6 +61,27 @@ class LiveSessionPhaseNineteenAcceptanceTest extends TestCase
             ->assertSee('aria-label=', false);
     }
 
+    public function test_waiting_room_does_not_start_media_until_teacher_starts_the_lesson(): void
+    {
+        [$session, $teacher] = $this->room();
+        $session->update([
+            'provider' => 'native',
+            'scheduled_start' => now()->addMinutes(5),
+            'scheduled_end' => now()->addHour(),
+        ]);
+
+        $this->actingAs($teacher)->post(route('teacher.live-sessions.open', $session))->assertRedirect();
+        $this->get(route('teacher.live-sessions.room', $session))
+            ->assertOk()
+            ->assertSee(__('teacher-live-session::app.waiting_room_management_title'))
+            ->assertDontSee('data-live-media-room', false);
+
+        $this->post(route('teacher.live-sessions.start', $session))->assertRedirect();
+        $this->get(route('teacher.live-sessions.room', $session))
+            ->assertOk()
+            ->assertSee('data-live-media-room', false);
+    }
+
     private function room(): array
     {
         $teacher = $this->createUser(['role' => 'teacher']);
