@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'live_room' => 'Live classroom', 'reactions' => 'Reactions', 'board_color' => 'Whiteboard pen color', 'board_width' => 'Whiteboard pen width',
     'configuration_title' => 'Live classroom configuration',
     'configuration_subtitle' => 'Control providers, platform quotas, media quality, recordings, and retention.',
     'configuration_saved' => 'Live classroom configuration saved.',
@@ -14,6 +15,8 @@ return [
     'live_recording_consent_required' => 'Require participant recording consent', 'sessions_this_month' => 'sessions this month',
     'oauth_connections' => 'OAuth connections', 'redacted_error_log' => 'Recent provider errors',
     'redacted_error_hint' => 'Credentials and sensitive tokens are automatically redacted.', 'no_provider_errors' => 'No provider errors recorded.',
+    'operational_alerts' => 'Operational alerts', 'alert_provider_sync_failures' => ':count provider sync failures in the last 24 hours.',
+    'alert_stale_live_rooms' => ':count live rooms remain open past their expected end.', 'alert_recording_failures' => ':count recordings failed in the last 24 hours.',
     'analytics_report' => 'Live learning reports', 'analytics_report_subtitle' => 'Attendance, duration, engagement, and connection quality reporting.',
     'back_to_sessions' => 'Live sessions', 'report_scope' => 'Report scope', 'all_providers' => 'All providers',
     'date_from' => 'From', 'date_to' => 'To', 'apply_filter' => 'Apply', 'report_details' => 'Report details',

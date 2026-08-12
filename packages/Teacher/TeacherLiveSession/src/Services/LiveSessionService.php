@@ -4,6 +4,7 @@ namespace Mindigo\TeacherLiveSession\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Mindigo\AuditLog\Services\AuditLogService;
@@ -41,8 +42,18 @@ final class LiveSessionService
 
     public function create(array $data, User $actor): LiveSession
     {
-        $providerKey = LiveSessionProvider::from($data['provider'] ?? LiveSessionProvider::Native->value);
         $idempotencyKey = $data['idempotency_key'] ?? (string) Str::uuid();
+
+        return Cache::lock('live-session:create:'.$idempotencyKey, 30)->block(10, function () use ($data, $actor, $idempotencyKey): LiveSession {
+            $existing = LiveSession::query()->where('idempotency_key', $idempotencyKey)->first();
+
+            return $existing ?? $this->createOnce($data, $actor, $idempotencyKey);
+        });
+    }
+
+    private function createOnce(array $data, User $actor, string $idempotencyKey): LiveSession
+    {
+        $providerKey = LiveSessionProvider::from($data['provider'] ?? LiveSessionProvider::Native->value);
         $context = new SessionContext(
             classroomId: (int) $data['classroom_id'],
             teacherId: (int) $actor->getKey(),

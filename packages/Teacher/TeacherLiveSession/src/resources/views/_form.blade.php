@@ -54,6 +54,7 @@
 @endphp
 
 <div data-live-session-form-tabs data-create-wizard="{{ $editing ? '0' : '1' }}" data-initial-tab-index="{{ $initialTabIndex }}" class="flex min-h-0 flex-1 flex-col gap-4">
+@unless($editing)<input type="hidden" name="idempotency_key" value="{{ old('idempotency_key', (string) \Illuminate\Support\Str::uuid()) }}">@endunless
 <nav role="tablist" class="flex shrink-0 gap-2 overflow-x-auto rounded-2xl border border-slate-200 bg-slate-50 p-1" aria-label="@lang('teacher-live-session::app.form_navigation')">
     @foreach($tabs as $tabKey => $tabLabel)
         <button type="button" role="tab" aria-selected="{{ $loop->index === $initialTabIndex ? 'true' : 'false' }}" aria-controls="live-session-panel-{{ $tabKey }}" data-live-session-form-tab="{{ $tabKey }}" data-tab-index="{{ $loop->index }}"
