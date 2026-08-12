@@ -195,6 +195,18 @@ return [
     'upload' => 'Upload',
     'no_poll' => 'No active poll.',
     'no_resources' => 'No classroom materials yet.',
+    'breakout_rooms' => 'Breakout rooms',
+    'breakout_rooms_hint' => 'Small-group discussions isolated from the main room',
+    'breakout_room_name' => 'Room :number',
+    'main_room' => 'Main room',
+    'no_breakout_rooms' => 'No active breakout rooms.',
+    'room_count' => 'Rooms',
+    'duration_minutes' => 'Minutes',
+    'auto_assign' => 'Automatically and evenly assign students',
+    'create_rooms' => 'Create',
+    'open_rooms' => 'Open',
+    'close_rooms' => 'Close all',
+    'visit_room' => 'Visit room',
 
     // Messages
     'created_success' => 'Live session created.',

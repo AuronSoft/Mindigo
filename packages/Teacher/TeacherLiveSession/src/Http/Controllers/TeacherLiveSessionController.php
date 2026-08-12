@@ -317,6 +317,13 @@ class TeacherLiveSessionController extends Controller
             'pollVoteUrl' => route('live-teaching-tools.polls.vote', [$session, '__POLL__']),
             'pollCloseUrl' => route('live-teaching-tools.polls.close', [$session, '__POLL__']),
             'resourceUploadUrl' => route('live-teaching-tools.resources.store', $session),
+            'breakoutSyncUrl' => route('live-breakouts.sync', $session),
+            'breakoutCreateUrl' => route('live-breakouts.store', $session),
+            'breakoutOpenUrl' => route('live-breakouts.open', $session),
+            'breakoutCloseUrl' => route('live-breakouts.close', $session),
+            'breakoutAssignUrl' => route('live-breakouts.assign', [$session, '__ROOM__']),
+            'breakoutVisitUrl' => route('live-breakouts.visit', [$session, '__ROOM__']),
+            'breakoutMainUrl' => route('live-breakouts.main', $session),
             'iceServers' => config('live-media.ice_servers', []),
         ];
     }

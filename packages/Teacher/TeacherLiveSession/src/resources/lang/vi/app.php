@@ -195,6 +195,18 @@ return [
     'upload' => 'Tải lên',
     'no_poll' => 'Hiện chưa có khảo sát.',
     'no_resources' => 'Chưa có tài liệu lớp học.',
+    'breakout_rooms' => 'Phòng thảo luận',
+    'breakout_rooms_hint' => 'Chia nhóm học tập tách biệt với phòng chính',
+    'breakout_room_name' => 'Phòng :number',
+    'main_room' => 'Phòng chính',
+    'no_breakout_rooms' => 'Chưa có phòng thảo luận đang hoạt động.',
+    'room_count' => 'Số phòng',
+    'duration_minutes' => 'Số phút',
+    'auto_assign' => 'Tự động chia đều học viên',
+    'create_rooms' => 'Tạo phòng',
+    'open_rooms' => 'Mở phòng',
+    'close_rooms' => 'Đóng tất cả',
+    'visit_room' => 'Vào phòng',
 
     // Messages
     'created_success' => 'Đã tạo buổi học trực tuyến.',

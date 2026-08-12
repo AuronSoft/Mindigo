@@ -68,6 +68,7 @@ class LiveSessionController extends Controller
                 'teachingToolsSyncUrl' => route('live-teaching-tools.sync', $liveSession),
                 'whiteboardUrl' => route('live-teaching-tools.whiteboard', $liveSession),
                 'pollVoteUrl' => route('live-teaching-tools.polls.vote', [$liveSession, '__POLL__']),
+                'breakoutSyncUrl' => route('live-breakouts.sync', $liveSession),
                 'iceServers' => config('live-media.ice_servers', []),
             ],
         ]);
