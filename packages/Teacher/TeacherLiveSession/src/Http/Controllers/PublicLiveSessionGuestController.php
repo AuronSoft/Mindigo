@@ -7,11 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Mindigo\TeacherLiveSession\Enums\ParticipantAdmissionStatus;
+use Mindigo\TeacherLiveSession\Services\LiveSessionConfigurationService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionGuestService;
 
 final class PublicLiveSessionGuestController extends Controller
 {
-    public function __construct(private readonly LiveSessionGuestService $guests) {}
+    public function __construct(
+        private readonly LiveSessionGuestService $guests,
+        private readonly LiveSessionConfigurationService $configuration,
+    ) {}
 
     public function show(string $token)
     {
@@ -46,6 +50,7 @@ final class PublicLiveSessionGuestController extends Controller
                 'signalUrl' => route('live-guest-media.signals.store', [$model->session, $model]),
                 'inboxUrl' => route('live-guest-media.signals.inbox', [$model->session, $model]),
                 'leaveUrl' => route('live-guest.status', $model), 'iceServers' => config('live-media.ice_servers', []),
+                'maxBitrateKbps' => (int) $this->configuration->value('live_max_bitrate_kbps'),
             ];
         }
 

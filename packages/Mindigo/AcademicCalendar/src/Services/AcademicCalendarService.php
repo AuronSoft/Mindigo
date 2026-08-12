@@ -9,8 +9,14 @@ use Mindigo\AcademicCalendar\Data\CalendarQuery;
 
 final class AcademicCalendarService
 {
+    /** @var array<int, CalendarSourceAdapter> */
+    private readonly array $adapters;
+
     /** @param iterable<CalendarSourceAdapter> $adapters */
-    public function __construct(private readonly iterable $adapters) {}
+    public function __construct(iterable $adapters)
+    {
+        $this->adapters = is_array($adapters) ? array_values($adapters) : iterator_to_array($adapters, false);
+    }
 
     /** @return Collection<int, CalendarEvent> */
     public function events(CalendarQuery $query): Collection

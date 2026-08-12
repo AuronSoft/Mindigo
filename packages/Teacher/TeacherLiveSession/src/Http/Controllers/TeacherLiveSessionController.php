@@ -25,6 +25,7 @@ use Mindigo\TeacherLiveSession\Services\LiveProviderFallbackService;
 use Mindigo\TeacherLiveSession\Services\LiveProviderOAuthService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAccessService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAdmissionService;
+use Mindigo\TeacherLiveSession\Services\LiveSessionConfigurationService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionGuestService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionJoinTokenService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionLifecycleService;
@@ -40,6 +41,7 @@ class TeacherLiveSessionController extends Controller
         protected LiveSessionJoinTokenService $tokens,
         protected LiveSessionLifecycleService $lifecycle,
         protected LiveSessionGuestService $guests,
+        protected LiveSessionConfigurationService $configuration,
     ) {}
 
     public function index(Request $request)
@@ -361,6 +363,7 @@ class TeacherLiveSessionController extends Controller
             'breakoutVisitUrl' => route('live-breakouts.visit', [$session, '__ROOM__']),
             'breakoutMainUrl' => route('live-breakouts.main', $session),
             'iceServers' => config('live-media.ice_servers', []),
+            'maxBitrateKbps' => (int) $this->configuration->value('live_max_bitrate_kbps'),
         ];
     }
 }

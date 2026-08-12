@@ -12,6 +12,7 @@ use Mindigo\TeacherLiveSession\Enums\ParticipantAdmissionStatus;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAccessService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAdmissionService;
+use Mindigo\TeacherLiveSession\Services\LiveSessionConfigurationService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionJoinTokenService;
 
 class LiveSessionController extends Controller
@@ -21,6 +22,7 @@ class LiveSessionController extends Controller
         protected LiveSessionAccessService $access,
         protected LiveSessionAdmissionService $admissions,
         protected LiveSessionJoinTokenService $tokens,
+        protected LiveSessionConfigurationService $configuration,
     ) {}
 
     public function index(Request $request)
@@ -77,6 +79,7 @@ class LiveSessionController extends Controller
                 'pollVoteUrl' => route('live-teaching-tools.polls.vote', [$liveSession, '__POLL__']),
                 'breakoutSyncUrl' => route('live-breakouts.sync', $liveSession),
                 'iceServers' => config('live-media.ice_servers', []),
+                'maxBitrateKbps' => (int) $this->configuration->value('live_max_bitrate_kbps'),
             ],
         ]);
     }

@@ -11,11 +11,17 @@ use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
 
 final class LiveSessionAdmissionService
 {
-    public function __construct(private readonly AuditLogService $audit) {}
+    public function __construct(
+        private readonly AuditLogService $audit,
+        private readonly LiveSessionConfigurationService $configuration,
+    ) {}
 
     public function requestEntry(LiveSession $session, User $user, LiveParticipantRole $role): LiveSessionParticipant
     {
         $autoAdmit = $role->canModerate() || ! (bool) data_get($session->room_settings, 'waiting_room_enabled', true);
+        if ($autoAdmit && ! $session->participants()->where('user_id', $user->id)->where('admission_status', ParticipantAdmissionStatus::Admitted->value)->exists()) {
+            $this->assertCapacity($session);
+        }
         $participant = LiveSessionParticipant::query()->firstOrCreate(
             ['live_session_id' => $session->id, 'user_id' => $user->id],
             [
@@ -36,6 +42,7 @@ final class LiveSessionAdmissionService
     public function admit(LiveSession $session, LiveSessionParticipant $participant, User $actor): LiveSessionParticipant
     {
         $this->ensureBelongsToSession($session, $participant);
+        $this->assertCapacity($session);
         $participant->update([
             'admission_status' => ParticipantAdmissionStatus::Admitted,
             'admitted_by' => $actor->id,
@@ -79,5 +86,12 @@ final class LiveSessionAdmissionService
             'participant_id' => $participant->id,
             'participant_user_id' => $participant->user_id,
         ], auditable: $session, user: $actor);
+    }
+
+    private function assertCapacity(LiveSession $session): void
+    {
+        $admitted = $session->participants()->where('admission_status', ParticipantAdmissionStatus::Admitted->value)->count()
+            + $session->guests()->where('admission_status', ParticipantAdmissionStatus::Admitted->value)->count();
+        abort_if($admitted >= (int) $this->configuration->value('live_max_participants'), 422, __('teacher-live-session::app.validation.room_capacity_reached'));
     }
 }

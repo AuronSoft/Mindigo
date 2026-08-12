@@ -14,6 +14,7 @@ use Mindigo\TeacherLiveSession\Models\LiveProviderConnection;
 use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Mindigo\TeacherLiveSession\Services\LiveMeetingProviderRegistry;
 use Mindigo\TeacherLiveSession\Services\LiveProviderOAuthService;
+use Mindigo\TeacherLiveSession\Services\LiveSessionConfigurationService;
 
 class LiveSessionRequest extends FormRequest
 {
@@ -99,8 +100,31 @@ class LiveSessionRequest extends FormRequest
 
             $this->validateAcademicContext($validator, $classroom, $schedule, $session);
             $this->validateProviderSettings($validator, app(LiveMeetingProviderRegistry::class));
+            $this->validatePlatformLimits($validator, app(LiveSessionConfigurationService::class));
             $this->validateConflicts($validator, $classroom, $session);
         }];
+    }
+
+    private function validatePlatformLimits(Validator $validator, LiveSessionConfigurationService $configuration): void
+    {
+        $start = Carbon::parse($this->input('scheduled_start'));
+        $end = Carbon::parse($this->input('scheduled_end'));
+        if ($start->diffInMinutes($end) > $configuration->value('live_max_duration_minutes')) {
+            $validator->errors()->add('scheduled_end', __('teacher-live-session::app.validation.duration_limit', ['minutes' => $configuration->value('live_max_duration_minutes')]));
+        }
+        if ($this->boolean('room_settings.recording_enabled') && ! $configuration->value('live_recording_enabled')) {
+            $validator->errors()->add('room_settings.recording_enabled', __('teacher-live-session::app.validation.recording_disabled'));
+        }
+
+        if (! $this->route('liveSession') instanceof LiveSession) {
+            $dailySessions = LiveSession::query()
+                ->where('teacher_id', $this->user()->getAuthIdentifier())
+                ->whereDate('scheduled_start', $start->toDateString())
+                ->count();
+            if ($dailySessions >= (int) $configuration->value('live_max_sessions_per_teacher_daily')) {
+                $validator->errors()->add('scheduled_start', __('teacher-live-session::app.validation.daily_session_limit'));
+            }
+        }
     }
 
     public function messages(): array

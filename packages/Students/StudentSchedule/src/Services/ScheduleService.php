@@ -27,7 +27,9 @@ class ScheduleService
             kinds: $kinds,
         ));
 
-        $agendaFrom = $anchor->isToday() ? CarbonImmutable::now()->subHour() : $anchor->startOfDay();
+        $agendaFrom = $view === 'schedule' || ! $anchor->isToday()
+            ? $anchor->startOfDay()
+            : CarbonImmutable::now()->subHour();
         $agenda = $this->calendar->events(new CalendarQuery(
             viewer: $student,
             from: $agendaFrom,

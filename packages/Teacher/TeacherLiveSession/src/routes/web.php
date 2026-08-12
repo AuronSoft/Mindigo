@@ -17,6 +17,8 @@ use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
 
 Route::middleware(['web', 'auth', 'role:admin'])->prefix('admin/live-providers')->name('admin.live-providers.')->group(function () {
     Route::get('/health', [AdminLiveProviderHealthController::class, 'index'])->name('health');
+    Route::get('/configuration', [AdminLiveProviderHealthController::class, 'configuration'])->name('configuration');
+    Route::put('/configuration', [AdminLiveProviderHealthController::class, 'updateConfiguration'])->name('configuration.update');
     Route::post('/health/{provider}/reset', [AdminLiveProviderHealthController::class, 'reset'])->middleware('throttle:10,1')->name('health.reset');
 });
 
