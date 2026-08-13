@@ -49,6 +49,8 @@ final class PublicLiveSessionGuestController extends Controller
                 'presenceUrl' => route('live-guest-media.presence', [$model->session, $model]),
                 'signalUrl' => route('live-guest-media.signals.store', [$model->session, $model]),
                 'inboxUrl' => route('live-guest-media.signals.inbox', [$model->session, $model]),
+                'topology' => config('live-media.topology', 'mesh'),
+                'gatewayTicketUrl' => route('live-guest-media.gateway-ticket', [$model->session, $model]),
                 'leaveUrl' => route('live-guest.status', $model), 'iceServers' => config('live-media.ice_servers', []),
                 'maxBitrateKbps' => (int) $this->configuration->value('live_max_bitrate_kbps'),
             ];

@@ -134,7 +134,7 @@ class TeacherLiveSessionController extends Controller
         $participant = $this->admissions->requestEntry($liveSession, $request->user(), $role);
         abort_unless($participant->admission_status === ParticipantAdmissionStatus::Admitted, 403);
         $management = $this->roomManagementData($liveSession, $request);
-        if ($liveSession->isWaiting()) {
+        if ($liveSession->isWaiting() && $liveSession->provider === LiveSessionProvider::Native) {
             return view('teacher-live-session::room', $management + compact('participant') + [
                 'session' => $liveSession,
                 'mediaConfig' => null,
@@ -357,6 +357,8 @@ class TeacherLiveSessionController extends Controller
             'moderateUrl' => route('live-collaboration.moderate', $session),
             'leaveUrl' => route('teacher.live-sessions.index'),
             'joinTokenUrl' => route('teacher.live-sessions.join-token', $session),
+            'topology' => config('live-media.topology', 'mesh'),
+            'gatewayTicketUrl' => route('live-media.gateway-ticket', $session),
             'recordingEnabled' => ($session->room_settings['recording_enabled'] ?? false) === true,
             'canRecord' => $this->access->canModerate($session, $request->user()),
             'recordingStartUrl' => route('live-recordings.start', $session),

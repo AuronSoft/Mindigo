@@ -1,0 +1,16 @@
+{
+  "name": "mindigo-live-media-gateway",
+  "private": true,
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "start:local": "node --env-file=../../.env src/server.js",
+    "check": "node --check src/server.js"
+  },
+  "dependencies": {
+    "ioredis": "^5.6.1",
+    "mediasoup": "^3.17.1",
+    "ws": "^8.18.3"
+  }
+}
