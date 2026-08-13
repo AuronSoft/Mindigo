@@ -34,6 +34,12 @@ if (root) {
     const usesSfu = config.topology === 'sfu' && Boolean(config.gatewayTicketUrl);
     let sfu = null;
     let turnRefreshTimer = null;
+    let prejoinStream = null;
+    let prejoinAudioContext = null;
+    let prejoinMeterFrame = null;
+    let captionsRecognition = null;
+    let captionsEnabled = false;
+    let backgroundEffect = 'none';
     const optimisticReactionCounts = new Map();
     try { layoutMode = ['grid', 'speaker', 'sidebar', 'classroom'].includes(localStorage.getItem('mindigo-live-layout')) ? localStorage.getItem('mindigo-live-layout') : 'grid'; } catch {}
 
@@ -76,6 +82,114 @@ if (root) {
         if (error?.name === 'NotReadableError' || error?.name === 'AbortError') return config.labels.deviceBusy;
         return config.labels.permissionDenied;
     };
+
+    const applyBackgroundEffect = video => {
+        video.classList.toggle('scale-105', backgroundEffect !== 'none');
+        video.style.filter = backgroundEffect === 'soft' ? 'blur(5px)' : (backgroundEffect === 'focus' ? 'contrast(1.08) saturate(.75)' : '');
+    };
+
+    const stopPrejoinMeter = () => {
+        window.cancelAnimationFrame(prejoinMeterFrame);
+        prejoinMeterFrame = null;
+        prejoinAudioContext?.close().catch(() => {});
+        prejoinAudioContext = null;
+    };
+
+    const startPrejoinMeter = stream => {
+        stopPrejoinMeter();
+        const track = stream.getAudioTracks()[0];
+        const fill = root.querySelector('[data-prejoin-meter] span');
+        if (!track || !fill) return;
+        prejoinAudioContext = new AudioContext();
+        const analyser = prejoinAudioContext.createAnalyser();
+        analyser.fftSize = 256;
+        prejoinAudioContext.createMediaStreamSource(new MediaStream([track])).connect(analyser);
+        const values = new Uint8Array(analyser.frequencyBinCount);
+        const draw = () => {
+            analyser.getByteFrequencyData(values);
+            const level = Math.min(100, Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 1.4));
+            fill.style.width = `${level}%`;
+            prejoinMeterFrame = window.requestAnimationFrame(draw);
+        };
+        draw();
+    };
+
+    const populateDeviceSelect = (select, devices, selectedId, fallback) => {
+        select.replaceChildren(...devices.map((device, index) => {
+            const option = document.createElement('option');
+            option.value = device.deviceId; option.textContent = device.label || `${fallback} ${index + 1}`;
+            option.selected = device.deviceId === selectedId;
+            return option;
+        }));
+        select.disabled = devices.length === 0;
+    };
+
+    const acquirePrejoinMedia = async () => {
+        const camera = root.querySelector('[data-prejoin-camera]');
+        const microphone = root.querySelector('[data-prejoin-microphone]');
+        const cameraEnabled = root.querySelector('[data-prejoin-camera-toggle]').getAttribute('aria-pressed') === 'true';
+        const microphoneEnabled = root.querySelector('[data-prejoin-microphone-toggle]').getAttribute('aria-pressed') === 'true';
+        prejoinStream?.getTracks().forEach(track => track.stop());
+        stopPrejoinMeter();
+        if (!cameraEnabled && !microphoneEnabled) {
+            prejoinStream = new MediaStream();
+        } else {
+            prejoinStream = await navigator.mediaDevices.getUserMedia({
+                video: cameraEnabled ? {deviceId: camera.value ? {exact: camera.value} : undefined} : false,
+                audio: microphoneEnabled ? {deviceId: microphone.value ? {exact: microphone.value} : undefined, echoCancellation: true, noiseSuppression: true} : false,
+            });
+        }
+        const preview = root.querySelector('[data-prejoin-video]');
+        preview.srcObject = prejoinStream; applyBackgroundEffect(preview);
+        const videoActive = prejoinStream.getVideoTracks().length > 0;
+        preview.classList.toggle('hidden', !videoActive);
+        root.querySelector('[data-prejoin-placeholder]').classList.toggle('hidden', videoActive);
+        startPrejoinMeter(prejoinStream);
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        populateDeviceSelect(camera, devices.filter(item => item.kind === 'videoinput'), prejoinStream.getVideoTracks()[0]?.getSettings().deviceId, config.labels.cameraOn);
+        populateDeviceSelect(microphone, devices.filter(item => item.kind === 'audioinput'), prejoinStream.getAudioTracks()[0]?.getSettings().deviceId, config.labels.microphoneOn);
+        root.querySelector('[data-prejoin-status]').textContent = config.labels.prejoinReady;
+    };
+
+    const setupPrejoin = async () => {
+        const dialog = root.querySelector('[data-prejoin]');
+        const status = root.querySelector('[data-prejoin-status]');
+        try {
+            if (!window.isSecureContext || !navigator.mediaDevices) throw new Error('secure-context-required');
+            await acquirePrejoinMedia();
+        } catch (error) {
+            status.textContent = error.message === 'secure-context-required' ? config.labels.secureContextRequired : mediaErrorMessage(error);
+            status.classList.add('text-amber-400');
+            prejoinStream = new MediaStream();
+        }
+        dialog.querySelector('[data-enter-room]').focus();
+    };
+
+    root.querySelector('[data-prejoin]')?.addEventListener('keydown', event => {
+        if (event.key !== 'Tab') return;
+        const controls = [...event.currentTarget.querySelectorAll('button:not([disabled]), select:not([disabled])')];
+        const first = controls[0]; const last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
+
+    root.querySelectorAll('[data-prejoin-camera], [data-prejoin-microphone]').forEach(select => select.addEventListener('change', () => acquirePrejoinMedia().catch(error => { root.querySelector('[data-prejoin-status]').textContent = mediaErrorMessage(error); })));
+    root.querySelectorAll('[data-prejoin-camera-toggle], [data-prejoin-microphone-toggle]').forEach(button => button.addEventListener('click', async () => {
+        const enabled = button.getAttribute('aria-pressed') !== 'true';
+        button.setAttribute('aria-pressed', String(enabled));
+        button.classList.toggle('bg-green-600', enabled); button.classList.toggle('bg-slate-700', !enabled);
+        await acquirePrejoinMedia().catch(error => { root.querySelector('[data-prejoin-status]').textContent = mediaErrorMessage(error); });
+    }));
+    root.querySelector('[data-prejoin-background]')?.addEventListener('change', event => {
+        backgroundEffect = event.target.value;
+        applyBackgroundEffect(root.querySelector('[data-prejoin-video]'));
+        applyBackgroundEffect(root.querySelector('[data-local-video]'));
+    });
+    root.querySelector('[data-test-speaker]')?.addEventListener('click', () => {
+        const context = new AudioContext(); const oscillator = context.createOscillator(); const gain = context.createGain();
+        gain.gain.value = 0.08; oscillator.frequency.value = 660; oscillator.connect(gain).connect(context.destination); oscillator.start(); oscillator.stop(context.currentTime + 0.35);
+        oscillator.onended = () => context.close(); root.querySelector('[data-prejoin-status]').textContent = config.labels.speakerTest;
+    });
 
     const systemIcon = name => {
         const paths = {
@@ -179,6 +293,7 @@ if (root) {
     const renderLocal = () => {
         const video = root.querySelector('[data-local-video]');
         video.srcObject = localStream;
+        applyBackgroundEffect(video);
         const cameraActive = localStream.getVideoTracks().some(track => track.enabled && track.readyState === 'live');
         video.classList.toggle('hidden', !cameraActive);
         root.querySelector('[data-local-placeholder]').classList.toggle('hidden', cameraActive);
@@ -374,6 +489,38 @@ if (root) {
             setStatus(config.labels.screenSharing); track.onended = stopScreenSharing;
         } catch (error) { updateMediaButton(button, false); setStatus(mediaErrorMessage(error), true); }
         finally { button.disabled = false; }
+    });
+
+    const stopCaptions = () => {
+        captionsEnabled = false;
+        captionsRecognition?.stop();
+        captionsRecognition = null;
+        const button = root.querySelector('[data-toggle-captions]');
+        const layer = root.querySelector('[data-live-caption]');
+        updateMediaButton(button, false);
+        button.querySelector('[data-caption-label]').textContent = config.labels.enableCaptions;
+        layer.classList.add('hidden'); layer.classList.remove('flex');
+        setStatus(config.labels.captionsOff);
+    };
+
+    root.querySelector('[data-toggle-captions]')?.addEventListener('click', () => {
+        if (captionsEnabled) { stopCaptions(); return; }
+        const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Recognition) { setStatus(config.labels.captionsUnsupported, true); return; }
+        const button = root.querySelector('[data-toggle-captions]');
+        const layer = root.querySelector('[data-live-caption]');
+        captionsRecognition = new Recognition();
+        captionsRecognition.continuous = true; captionsRecognition.interimResults = true; captionsRecognition.lang = document.documentElement.lang || 'vi-VN';
+        captionsRecognition.onresult = event => {
+            const transcript = [...event.results].slice(event.resultIndex).map(result => result[0]?.transcript || '').join(' ').trim();
+            if (!transcript) return;
+            layer.querySelector('p').textContent = transcript; layer.classList.remove('hidden'); layer.classList.add('flex');
+        };
+        captionsRecognition.onerror = () => stopCaptions();
+        captionsRecognition.onend = () => { if (captionsEnabled) captionsRecognition.start(); };
+        captionsEnabled = true; captionsRecognition.start(); updateMediaButton(button, true);
+        button.querySelector('[data-caption-label]').textContent = config.labels.disableCaptions;
+        setStatus(config.labels.captionsOn);
     });
 
     const participantRow = (participant, canModerate) => {
@@ -782,6 +929,7 @@ if (root) {
         stopped = true;
         window.clearTimeout(loopTimer);
         window.clearTimeout(turnRefreshTimer);
+        stopPrejoinMeter(); captionsRecognition?.stop();
         if (config.mediaLeaveUrl) fetch(config.mediaLeaveUrl, {method: 'POST', credentials: 'same-origin', keepalive: true, headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf}, body: JSON.stringify({token: config.token})}).catch(() => {});
         screenStream?.getTracks().forEach(track => track.stop()); localStream.getTracks().forEach(track => track.stop()); peers.forEach(peer => peer.close()); sfu?.close();
     });
@@ -806,8 +954,23 @@ if (root) {
                 onState: state => setStatus(state === 'connected' ? config.labels.connected : config.labels.reconnecting, state !== 'connected'),
             });
             await sfu.connect();
+            for (const track of localStream.getTracks()) {
+                await sfu.publish(track, track.kind === 'audio' ? 'microphone' : 'camera');
+            }
         }
         renderLocal(); loop();
     };
-    startMedia().catch(() => { setStatus(config.labels.reconnecting, true); sfu?.reconnect(); loop(); });
+    root.querySelector('[data-enter-room]')?.addEventListener('click', async event => {
+        const button = event.currentTarget; button.disabled = true;
+        stopPrejoinMeter();
+        localStream = prejoinStream || new MediaStream(); cameraStream = localStream;
+        const microphoneActive = localStream.getAudioTracks().some(track => track.enabled);
+        const cameraActive = localStream.getVideoTracks().some(track => track.enabled);
+        updateMediaButton(root.querySelector('[data-toggle-microphone]'), microphoneActive);
+        updateMediaButton(root.querySelector('[data-toggle-camera]'), cameraActive);
+        root.querySelector('[data-prejoin]').classList.add('hidden');
+        try { await startMedia(); }
+        catch { setStatus(config.labels.reconnecting, true); sfu?.reconnect(); loop(); }
+    });
+    setupPrejoin();
 }

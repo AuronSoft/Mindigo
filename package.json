@@ -12,6 +12,7 @@
         "live:media": "npm --prefix services/live-media-gateway run start:local"
     },
     "devDependencies": {
+        "@axe-core/playwright": "^4.13.0",
         "@playwright/test": "^1.62.1",
         "@tailwindcss/vite": "^4.2.4",
         "axios": "^1.8.2",
