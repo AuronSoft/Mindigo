@@ -22,7 +22,9 @@ test('student cannot cross into teacher live-session routes', async ({page}) => 
     await login(page, 'student@mindigo.com');
     const response = await page.goto('/teacher/live-sessions');
 
-    expect(response?.status()).toBe(403);
+    expect(response?.status()).toBe(200);
+    await expect(page).toHaveURL(/\/student(?:\/|$)/);
+    await expect(page).not.toHaveURL(/\/teacher\/live-sessions/);
 });
 
 test('native classroom prejoin is keyboard operable and exposes accessible media controls', async ({page}) => {

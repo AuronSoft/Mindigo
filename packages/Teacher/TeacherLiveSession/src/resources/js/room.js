@@ -99,7 +99,8 @@ if (root) {
     const startPrejoinMeter = stream => {
         stopPrejoinMeter();
         const track = stream.getAudioTracks()[0];
-        const fill = root.querySelector('[data-prejoin-meter] span');
+        const meter = root.querySelector('[data-prejoin-meter]');
+        const fill = meter?.querySelector('span');
         if (!track || !fill) return;
         prejoinAudioContext = new AudioContext();
         const analyser = prejoinAudioContext.createAnalyser();
@@ -110,6 +111,7 @@ if (root) {
             analyser.getByteFrequencyData(values);
             const level = Math.min(100, Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 1.4));
             fill.style.width = `${level}%`;
+            meter.setAttribute('aria-valuenow', String(level));
             prejoinMeterFrame = window.requestAnimationFrame(draw);
         };
         draw();

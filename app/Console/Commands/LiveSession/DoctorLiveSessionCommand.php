@@ -41,6 +41,12 @@ final class DoctorLiveSessionCommand extends Command
             && str_starts_with((string) config('live-providers.zoom.webhook_url'), 'https://');
         $this->components->twoColumnDetail('Google provider webhooks', $googleWebhookConfigured ? '<fg=green>configured</>' : '<fg=yellow>missing or non-HTTPS</>');
         $this->components->twoColumnDetail('Zoom provider webhooks', $zoomWebhookConfigured ? '<fg=green>configured</>' : '<fg=yellow>missing or non-HTTPS</>');
+        $drKey = base64_decode((string) config('live-disaster-recovery.encryption_key'), true);
+        $drKeyConfigured = extension_loaded('sodium') && is_string($drKey) && strlen($drKey) === 32;
+        $drDisk = (string) config('live-disaster-recovery.disk', 'local');
+        $drOffsite = $drDisk !== 'local';
+        $this->components->twoColumnDetail('Encrypted disaster recovery', $drKeyConfigured ? '<fg=green>configured</>' : '<fg=yellow>missing key</>');
+        $this->components->twoColumnDetail('Off-site recovery disk', $drOffsite ? "<fg=green>{$drDisk}</>" : '<fg=yellow>local only</>');
         $capacity = (int) $configuration->value('live_max_participants');
         $topology = (string) config('live-media.topology', 'mesh');
         $safeMeshCapacity = (int) config('live-media.safe_mesh_capacity', 8);
@@ -82,6 +88,12 @@ final class DoctorLiveSessionCommand extends Command
             || mb_strlen((string) config('live-media.gateway.secret')) < 32
         )) {
             $this->error('SFU topology requires health URLs, a public WebSocket URL, and a gateway secret of at least 32 characters.');
+
+            return self::FAILURE;
+        }
+
+        if (app()->isProduction() && (! $drKeyConfigured || (config('live-disaster-recovery.require_offsite_in_production') && ! $drOffsite))) {
+            $this->error('Production requires a dedicated 32-byte disaster-recovery key and an off-site filesystem disk.');
 
             return self::FAILURE;
         }
