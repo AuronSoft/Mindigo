@@ -13,6 +13,7 @@ use Mindigo\TeacherLiveSession\Models\LiveSessionGuest;
 use Mindigo\TeacherLiveSession\Models\LiveSessionGuestSignal;
 use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
 use Mindigo\TeacherLiveSession\Models\LiveSessionSignal;
+use Mindigo\TeacherLiveSession\Services\LiveMediaGatewayTicketService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAttendanceService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionJoinTokenService;
 
@@ -21,7 +22,26 @@ final class LiveSessionMediaController extends Controller
     public function __construct(
         private readonly LiveSessionJoinTokenService $tokens,
         private readonly LiveSessionAttendanceService $attendance,
+        private readonly LiveMediaGatewayTicketService $gatewayTickets,
     ) {}
+
+    public function gatewayTicket(Request $request, LiveSession $liveSession): JsonResponse
+    {
+        abort_unless(config('live-media.topology') === 'sfu', 409);
+        $participant = $this->participant($request, $liveSession);
+        $ticket = $this->gatewayTickets->issue(
+            (int) $liveSession->id,
+            'user:'.$request->user()->id,
+            $participant->role->value,
+            $participant->breakout_room_id,
+            $request->user()->name,
+        );
+
+        return response()->json($ticket + [
+            'gateway_url' => config('live-media.gateway.public_url'),
+            'topology' => 'sfu',
+        ]);
+    }
 
     public function presence(Request $request, LiveSession $liveSession): JsonResponse
     {

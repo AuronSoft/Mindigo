@@ -92,7 +92,52 @@ services:
       - mindigo
 
 # Volume bền vững (dữ liệu không mất khi container bị xoá)
+  live-redis:
+    image: redis:7.4-alpine
+    container_name: mindigo_live_redis
+    restart: unless-stopped
+    profiles: ["live-media"]
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - live_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - mindigo
+
+  live-media-gateway:
+    build:
+      context: ./services/live-media-gateway
+    container_name: mindigo_live_media_gateway
+    restart: unless-stopped
+    profiles: ["live-media"]
+    environment:
+      NODE_ENV: production
+      LIVE_MEDIA_GATEWAY_SECRET: ${LIVE_MEDIA_GATEWAY_SECRET}
+      LIVE_MEDIA_REDIS_URL: redis://live-redis:6379
+      LIVE_MEDIA_ANNOUNCED_IP: ${LIVE_MEDIA_ANNOUNCED_IP:-127.0.0.1}
+      LIVE_MEDIA_RTC_MIN_PORT: ${LIVE_MEDIA_RTC_MIN_PORT:-40000}
+      LIVE_MEDIA_RTC_MAX_PORT: ${LIVE_MEDIA_RTC_MAX_PORT:-40100}
+    depends_on:
+      live-redis:
+        condition: service_healthy
+    ports:
+      - "8090:8090"
+      - "8091:8091"
+      - "40000-40100:40000-40100/udp"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8091/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - mindigo
+
 volumes:
+  live_redis_data:
   db_data:        # dữ liệu MySQL
   storage_data:   # file upload của ứng dụng
   web_public:     # mã nguồn public cho nginx

@@ -12,11 +12,32 @@ use Mindigo\TeacherLiveSession\Models\LiveSession;
 use Mindigo\TeacherLiveSession\Models\LiveSessionGuest;
 use Mindigo\TeacherLiveSession\Models\LiveSessionGuestSignal;
 use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
+use Mindigo\TeacherLiveSession\Services\LiveMediaGatewayTicketService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionGuestService;
 
 final class PublicLiveSessionGuestMediaController extends Controller
 {
-    public function __construct(private readonly LiveSessionGuestService $guests) {}
+    public function __construct(
+        private readonly LiveSessionGuestService $guests,
+        private readonly LiveMediaGatewayTicketService $gatewayTickets,
+    ) {}
+
+    public function gatewayTicket(Request $request, LiveSession $liveSession, LiveSessionGuest $guest): JsonResponse
+    {
+        abort_unless(config('live-media.topology') === 'sfu', 409);
+        $guest = $this->guest($request, $liveSession, $guest);
+
+        return response()->json($this->gatewayTickets->issue(
+            (int) $liveSession->id,
+            'guest:'.$guest->id,
+            'guest',
+            null,
+            $guest->name,
+        ) + [
+            'gateway_url' => config('live-media.gateway.public_url'),
+            'topology' => 'sfu',
+        ]);
+    }
 
     public function presence(Request $request, LiveSession $liveSession, LiveSessionGuest $guest): JsonResponse
     {

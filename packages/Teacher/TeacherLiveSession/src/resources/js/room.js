@@ -1,3 +1,5 @@
+import {SfuMediaClient} from './sfu-media-client';
+
 const root = document.querySelector('[data-live-media-room]');
 
 if (root) {
@@ -29,6 +31,8 @@ if (root) {
     let loopTimer = null;
     let whiteboardWritePending = false;
     let layoutMode = 'grid';
+    const usesSfu = config.topology === 'sfu' && Boolean(config.gatewayTicketUrl);
+    let sfu = null;
     const optimisticReactionCounts = new Map();
     try { layoutMode = ['grid', 'speaker', 'sidebar', 'classroom'].includes(localStorage.getItem('mindigo-live-layout')) ? localStorage.getItem('mindigo-live-layout') : 'grid'; } catch {}
 
@@ -253,12 +257,13 @@ if (root) {
             const tile = remoteTile(participant.key, participant.name, participant.role);
             const video = tile.querySelector('video'); const cameraActive = Boolean(participant.camera_enabled && video.srcObject);
             video.classList.toggle('hidden', !cameraActive); tile.querySelector('[data-remote-placeholder]').classList.toggle('hidden', cameraActive);
+            if (usesSfu) continue;
             if (peers.has(participant.key)) continue;
             if (config.participantKey.localeCompare(participant.key) < 0) await createOffer({...participant, user_id: participant.key});
         }
         updateGridLayout();
         const onlineIds = new Set(participants.map(item => item.key));
-        for (const userId of peers.keys()) if (!onlineIds.has(userId)) removePeer(userId);
+        if (!usesSfu) for (const userId of peers.keys()) if (!onlineIds.has(userId)) removePeer(userId);
     };
 
     const pollSignals = async () => {
@@ -279,6 +284,10 @@ if (root) {
     };
 
     const replaceVideoTrack = track => {
+        if (usesSfu) {
+            if (track) sfu?.publish(track, screenStream ? 'screen' : 'camera').catch(() => setStatus(config.labels.reconnecting, true));
+            return;
+        }
         for (const peer of peers.values()) {
             const sender = peer.getSenders().find(item => item.track?.kind === 'video');
             if (sender) sender.replaceTrack(track);
@@ -298,7 +307,8 @@ if (root) {
                 cameraStream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
                 track = cameraStream.getAudioTracks()[0];
                 localStream.addTrack(track);
-                peers.forEach(peer => addTrack(peer, track));
+                if (usesSfu) await sfu.publish(track, 'microphone');
+                else peers.forEach(peer => addTrack(peer, track));
             } else track.enabled = !track.enabled;
             updateMediaButton(button, track.enabled);
             setStatus(track.enabled ? config.labels.microphoneOn : config.labels.microphoneOff);
@@ -328,7 +338,12 @@ if (root) {
         const stopScreenSharing = () => {
             screenStream?.getTracks().forEach(track => { track.onended = null; track.stop(); });
             screenStream = null; previewVideo.srcObject = null; preview.classList.add('hidden');
-            replaceVideoTrack(cameraStream?.getVideoTracks()[0] || null); updateMediaButton(button, false);
+            if (usesSfu) {
+                sfu?.unpublish('screen');
+                const cameraTrack = cameraStream?.getVideoTracks()[0];
+                if (cameraTrack) sfu?.publish(cameraTrack, 'camera');
+            } else replaceVideoTrack(cameraStream?.getVideoTracks()[0] || null);
+            updateMediaButton(button, false);
             updateGridLayout();
             button.querySelector('[data-screen-button-label]').textContent = config.labels.shareScreen;
             setStatus(config.labels.screenShareStopped);
@@ -723,8 +738,8 @@ if (root) {
         try {
             if (config.joinTokenUrl) await refreshJoinToken();
             if (loopIteration === 1 || loopIteration % 4 === 0) await pollPresence();
-            await pollSignals();
-            setStatus(config.labels.connected);
+            if (!usesSfu) await pollSignals();
+            if (!usesSfu) setStatus(config.labels.connected);
 
             if (config.collaborationSyncUrl && loopIteration % 3 === 0) await pollCollaboration().catch(() => {});
             if (config.breakoutSyncUrl && loopIteration % 3 === 0 && !root.querySelector('[data-breakout-panel]')?.classList.contains('hidden')) await pollBreakouts().catch(() => {});
@@ -754,8 +769,29 @@ if (root) {
         stopped = true;
         window.clearTimeout(loopTimer);
         if (config.mediaLeaveUrl) fetch(config.mediaLeaveUrl, {method: 'POST', credentials: 'same-origin', keepalive: true, headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf}, body: JSON.stringify({token: config.token})}).catch(() => {});
-        screenStream?.getTracks().forEach(track => track.stop()); localStream.getTracks().forEach(track => track.stop()); peers.forEach(peer => peer.close());
+        screenStream?.getTracks().forEach(track => track.stop()); localStream.getTracks().forEach(track => track.stop()); peers.forEach(peer => peer.close()); sfu?.close();
     });
-    renderLocal();
-    loop();
+    const startMedia = async () => {
+        if (usesSfu) {
+            sfu = new SfuMediaClient({
+                ticketProvider: () => request(config.gatewayTicketUrl, {}),
+                onParticipant: participant => {
+                    if (participant.participant_key !== config.participantKey) remoteTile(participant.participant_key, participant.name || participant.participant_key, participant.role);
+                },
+                onParticipantLeft: participantKey => removePeer(participantKey),
+                onTrack: (producer, track) => {
+                    const stream = remoteStreams.get(producer.participant_key) || new MediaStream();
+                    stream.addTrack(track); remoteStreams.set(producer.participant_key, stream);
+                    const tile = remoteTile(producer.participant_key, producer.participant_key);
+                    const video = tile.querySelector('video'); video.srcObject = stream; video.classList.remove('hidden');
+                    tile.querySelector('[data-remote-placeholder]').classList.add('hidden');
+                    connectRecordingAudio(stream); updateGridLayout();
+                },
+                onState: state => setStatus(state === 'connected' ? config.labels.connected : config.labels.reconnecting, state !== 'connected'),
+            });
+            await sfu.connect();
+        }
+        renderLocal(); loop();
+    };
+    startMedia().catch(() => { setStatus(config.labels.reconnecting, true); sfu?.reconnect(); loop(); });
 }

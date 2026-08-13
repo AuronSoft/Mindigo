@@ -36,6 +36,12 @@ final class DoctorLiveSessionCommand extends Command
         $safeMeshCapacity = (int) config('live-media.safe_mesh_capacity', 8);
         $this->components->twoColumnDetail('Media topology', $topology);
         $this->components->twoColumnDetail('Configured room capacity', (string) $capacity);
+        if ($topology === 'sfu') {
+            $gatewayConfigured = filled(config('live-media.gateway.public_url'))
+                && filled(config('live-media.gateway.health_url'))
+                && mb_strlen((string) config('live-media.gateway.secret')) >= 32;
+            $this->components->twoColumnDetail('SFU signaling gateway', $gatewayConfigured ? '<fg=green>configured</>' : '<fg=red>incomplete</>');
+        }
 
         foreach ($monitor->alerts() as $alert) {
             $this->warn("{$alert['code']}: {$alert['count']}");
@@ -53,8 +59,13 @@ final class DoctorLiveSessionCommand extends Command
             return self::FAILURE;
         }
 
-        if (app()->isProduction() && $topology === 'sfu' && blank(config('live-media.sfu_health_url'))) {
-            $this->error('SFU topology requires LIVE_MEDIA_SFU_HEALTH_URL for deployment health checks.');
+        if (app()->isProduction() && $topology === 'sfu' && (
+            blank(config('live-media.sfu_health_url'))
+            || blank(config('live-media.gateway.public_url'))
+            || blank(config('live-media.gateway.health_url'))
+            || mb_strlen((string) config('live-media.gateway.secret')) < 32
+        )) {
+            $this->error('SFU topology requires health URLs, a public WebSocket URL, and a gateway secret of at least 32 characters.');
 
             return self::FAILURE;
         }

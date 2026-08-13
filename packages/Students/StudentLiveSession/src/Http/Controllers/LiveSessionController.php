@@ -74,6 +74,8 @@ class LiveSessionController extends Controller
                 'moderateUrl' => route('live-collaboration.moderate', $liveSession),
                 'leaveUrl' => route('student.live-sessions.index'),
                 'joinTokenUrl' => route('student.live-sessions.join-token', $liveSession),
+                'topology' => config('live-media.topology', 'mesh'),
+                'gatewayTicketUrl' => route('live-media.gateway-ticket', $liveSession),
                 'teachingToolsSyncUrl' => route('live-teaching-tools.sync', $liveSession),
                 'whiteboardUrl' => route('live-teaching-tools.whiteboard', $liveSession),
                 'pollVoteUrl' => route('live-teaching-tools.polls.vote', [$liveSession, '__POLL__']),

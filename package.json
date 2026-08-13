@@ -8,7 +8,8 @@
         "test:e2e": "playwright test",
         "test:e2e:chrome": "playwright test --project=chrome",
         "test:e2e:edge": "playwright test --project=edge",
-        "test:e2e:firefox": "playwright test --project=firefox"
+        "test:e2e:firefox": "playwright test --project=firefox",
+        "live:media": "npm --prefix services/live-media-gateway run start:local"
     },
     "devDependencies": {
         "@playwright/test": "^1.62.1",
@@ -21,6 +22,7 @@
     },
     "dependencies": {
         "laravel-echo": "^2.4.0",
+        "mediasoup-client": "^3.18.7",
         "pusher-js": "^8.6.0"
     }
 }
