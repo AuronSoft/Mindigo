@@ -16,6 +16,7 @@ use Mindigo\TeacherLiveSession\Models\LiveSessionSignal;
 use Mindigo\TeacherLiveSession\Services\LiveMediaGatewayTicketService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionAttendanceService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionJoinTokenService;
+use Mindigo\TeacherLiveSession\Services\TurnCredentialService;
 
 final class LiveSessionMediaController extends Controller
 {
@@ -23,7 +24,18 @@ final class LiveSessionMediaController extends Controller
         private readonly LiveSessionJoinTokenService $tokens,
         private readonly LiveSessionAttendanceService $attendance,
         private readonly LiveMediaGatewayTicketService $gatewayTickets,
+        private readonly TurnCredentialService $turnCredentials,
     ) {}
+
+    public function iceServers(Request $request, LiveSession $liveSession): JsonResponse
+    {
+        $this->participant($request, $liveSession);
+
+        return response()->json($this->turnCredentials->issue(
+            (int) $liveSession->id,
+            'user:'.$request->user()->id,
+        ));
+    }
 
     public function gatewayTicket(Request $request, LiveSession $liveSession): JsonResponse
     {

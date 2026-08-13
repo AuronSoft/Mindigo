@@ -28,8 +28,12 @@ final class DoctorLiveSessionCommand extends Command
             })->all();
         $this->table(['Provider', 'Status', 'Details'], $rows);
 
-        $hasIceServer = collect(config('live-media.ice_servers', []))->contains(fn ($server) => filled($server['urls'] ?? null));
+        $hasStunServer = collect(config('live-media.static_ice_servers', []))->contains(fn ($server) => filled($server['urls'] ?? null));
+        $turnNodes = config('live-media.turn.nodes', []);
+        $turnConfigured = $turnNodes !== [] && mb_strlen((string) config('live-media.turn.auth_secret')) >= 32;
+        $hasIceServer = $hasStunServer || $turnConfigured;
         $this->components->twoColumnDetail('WebRTC ICE servers', $hasIceServer ? '<fg=green>configured</>' : '<fg=yellow>missing</>');
+        $this->components->twoColumnDetail('Dynamic TURN credentials', $turnConfigured ? '<fg=green>configured</>' : '<fg=yellow>missing</>');
         $this->components->twoColumnDetail('Scheduler', '<fg=green>commands registered</>');
         $capacity = (int) $configuration->value('live_max_participants');
         $topology = (string) config('live-media.topology', 'mesh');
@@ -49,6 +53,12 @@ final class DoctorLiveSessionCommand extends Command
 
         if (app()->isProduction() && ! $hasIceServer) {
             $this->error('Production requires STUN/TURN configuration for reliable Native WebRTC connectivity.');
+
+            return self::FAILURE;
+        }
+
+        if (app()->isProduction() && ! $turnConfigured) {
+            $this->error('Production Native media requires at least one TURN node and an auth secret of at least 32 characters.');
 
             return self::FAILURE;
         }

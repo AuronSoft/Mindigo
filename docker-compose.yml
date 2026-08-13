@@ -22,6 +22,23 @@ services:
       DB_DATABASE: mindigo
       DB_USERNAME: mindigo
       DB_PASSWORD: secret
+      LIVE_MEDIA_TOPOLOGY: ${LIVE_MEDIA_TOPOLOGY:-mesh}
+      LIVE_MEDIA_SFU_HEALTH_URL: ${LIVE_MEDIA_SFU_HEALTH_URL:-http://live-media-gateway:8091/health}
+      LIVE_MEDIA_GATEWAY_URL: ${LIVE_MEDIA_GATEWAY_URL:-ws://127.0.0.1:8090}
+      LIVE_MEDIA_GATEWAY_HEALTH_URL: ${LIVE_MEDIA_GATEWAY_HEALTH_URL:-http://live-media-gateway:8091/health}
+      LIVE_MEDIA_GATEWAY_SECRET: ${LIVE_MEDIA_GATEWAY_SECRET:-}
+      LIVE_MEDIA_GATEWAY_TICKET_TTL: ${LIVE_MEDIA_GATEWAY_TICKET_TTL:-120}
+      LIVE_MEDIA_STUN_URL: ${LIVE_MEDIA_STUN_URL:-}
+      LIVE_MEDIA_TURN_URLS: ${LIVE_MEDIA_TURN_URLS:-}
+      LIVE_MEDIA_TURN_FAILOVER_URLS: ${LIVE_MEDIA_TURN_FAILOVER_URLS:-}
+      LIVE_MEDIA_TURN_HEALTH_URL: ${LIVE_MEDIA_TURN_HEALTH_URL:-}
+      LIVE_MEDIA_TURN_FAILOVER_HEALTH_URL: ${LIVE_MEDIA_TURN_FAILOVER_HEALTH_URL:-}
+      LIVE_MEDIA_TURN_AUTH_SECRET: ${LIVE_MEDIA_TURN_AUTH_SECRET:-}
+      LIVE_MEDIA_TURN_REALM: ${LIVE_MEDIA_TURN_REALM:-mindigo.local}
+      LIVE_MEDIA_TURN_CREDENTIAL_TTL: ${LIVE_MEDIA_TURN_CREDENTIAL_TTL:-600}
+      LIVE_MEDIA_TURN_HEALTH_CACHE: ${LIVE_MEDIA_TURN_HEALTH_CACHE:-90}
+      LIVE_MEDIA_TURN_FAIL_OPEN: ${LIVE_MEDIA_TURN_FAIL_OPEN:-true}
+      LIVE_MEDIA_TURN_MAX_BITRATE_KBPS: ${LIVE_MEDIA_TURN_MAX_BITRATE_KBPS:-2500}
       # Sync public sang volume dùng chung cho nginx
       SHARED_PUBLIC_DIR: /shared/public
     depends_on:
@@ -130,6 +147,44 @@ services:
       - "40000-40100:40000-40100/udp"
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8091/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - mindigo
+
+  live-turn:
+    image: coturn/coturn:4.15.0-r0-alpine
+    container_name: mindigo_live_turn
+    restart: unless-stopped
+    profiles: ["live-media"]
+    command:
+      - -n
+      - --fingerprint
+      - --use-auth-secret
+      - --static-auth-secret=${LIVE_MEDIA_TURN_AUTH_SECRET}
+      - --realm=${LIVE_MEDIA_TURN_REALM:-mindigo.local}
+      - --external-ip=${LIVE_MEDIA_TURN_EXTERNAL_IP:-127.0.0.1}
+      - --min-port=${LIVE_MEDIA_TURN_MIN_PORT:-49160}
+      - --max-port=${LIVE_MEDIA_TURN_MAX_PORT:-49200}
+      - --max-bps=${LIVE_MEDIA_TURN_MAX_BPS:-312500}
+      - --bps-capacity=${LIVE_MEDIA_TURN_TOTAL_BPS:-50000000}
+      - --user-quota=${LIVE_MEDIA_TURN_USER_QUOTA:-4}
+      - --total-quota=${LIVE_MEDIA_TURN_TOTAL_QUOTA:-500}
+      - --no-multicast-peers
+      - --unauthorized-ratelimit
+      - --unauthorized-ratelimit-rps=10
+      - --stale-nonce
+      - --max-allocate-lifetime=600
+      - --no-tls
+      - --no-dtls
+      - --log-file=stdout
+    ports:
+      - "3478:3478"
+      - "3478:3478/udp"
+      - "49160-49200:49160-49200/udp"
+    healthcheck:
+      test: ["CMD-SHELL", "turnutils_stunclient 127.0.0.1 >/dev/null 2>&1"]
       interval: 10s
       timeout: 5s
       retries: 10

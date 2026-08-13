@@ -59,6 +59,7 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])->prefix('teacher/live-s
 });
 
 Route::middleware(['web', 'throttle:120,1'])->prefix('live/guest-media/{liveSession}/{guest}')->name('live-guest-media.')->scopeBindings()->group(function () {
+    Route::post('/ice-servers', [PublicLiveSessionGuestMediaController::class, 'iceServers'])->middleware('throttle:12,1')->name('ice-servers');
     Route::post('/gateway-ticket', [PublicLiveSessionGuestMediaController::class, 'gatewayTicket'])->middleware('throttle:30,1')->name('gateway-ticket');
     Route::post('/presence', [PublicLiveSessionGuestMediaController::class, 'presence'])->name('presence');
     Route::post('/signals', [PublicLiveSessionGuestMediaController::class, 'signal'])->name('signals.store');
@@ -107,6 +108,7 @@ Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('live-collaboration
 });
 
 Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('live-media/{liveSession}')->name('live-media.')->group(function () {
+    Route::post('/ice-servers', [LiveSessionMediaController::class, 'iceServers'])->middleware('throttle:12,1')->name('ice-servers');
     Route::post('/gateway-ticket', [LiveSessionMediaController::class, 'gatewayTicket'])->middleware('throttle:30,1')->name('gateway-ticket');
     Route::post('/presence', [LiveSessionMediaController::class, 'presence'])->name('presence');
     Route::post('/signals', [LiveSessionMediaController::class, 'signal'])->name('signals.store');

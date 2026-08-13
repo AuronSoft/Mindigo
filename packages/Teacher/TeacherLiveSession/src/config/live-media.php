@@ -10,12 +10,27 @@ return [
         'ticket_ttl_seconds' => (int) env('LIVE_MEDIA_GATEWAY_TICKET_TTL', 120),
     ],
     'safe_mesh_capacity' => (int) env('LIVE_MEDIA_SAFE_MESH_CAPACITY', 8),
-    'ice_servers' => array_values(array_filter([
+    'static_ice_servers' => array_values(array_filter([
         env('LIVE_MEDIA_STUN_URL') ? ['urls' => [env('LIVE_MEDIA_STUN_URL')]] : null,
-        env('LIVE_MEDIA_TURN_URL') ? [
-            'urls' => [env('LIVE_MEDIA_TURN_URL')],
-            'username' => env('LIVE_MEDIA_TURN_USERNAME'),
-            'credential' => env('LIVE_MEDIA_TURN_CREDENTIAL'),
-        ] : null,
     ])),
+    'turn' => [
+        'auth_secret' => env('LIVE_MEDIA_TURN_AUTH_SECRET'),
+        'realm' => env('LIVE_MEDIA_TURN_REALM', 'mindigo.local'),
+        'credential_ttl_seconds' => (int) env('LIVE_MEDIA_TURN_CREDENTIAL_TTL', 600),
+        'health_cache_seconds' => (int) env('LIVE_MEDIA_TURN_HEALTH_CACHE', 90),
+        'fail_open' => env('LIVE_MEDIA_TURN_FAIL_OPEN', true),
+        'max_bitrate_kbps' => (int) env('LIVE_MEDIA_TURN_MAX_BITRATE_KBPS', 2500),
+        'nodes' => array_values(array_filter([
+            env('LIVE_MEDIA_TURN_URLS') ? [
+                'id' => 'primary',
+                'urls' => array_values(array_filter(array_map('trim', explode(',', env('LIVE_MEDIA_TURN_URLS'))))),
+                'health_url' => env('LIVE_MEDIA_TURN_HEALTH_URL'),
+            ] : null,
+            env('LIVE_MEDIA_TURN_FAILOVER_URLS') ? [
+                'id' => 'failover',
+                'urls' => array_values(array_filter(array_map('trim', explode(',', env('LIVE_MEDIA_TURN_FAILOVER_URLS'))))),
+                'health_url' => env('LIVE_MEDIA_TURN_FAILOVER_HEALTH_URL'),
+            ] : null,
+        ])),
+    ],
 ];

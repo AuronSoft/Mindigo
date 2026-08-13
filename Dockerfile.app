@@ -4,7 +4,7 @@
 # Chứa toàn bộ mã nguồn + assets đã build. Nginx (Dockerfile.nginx) đọc public qua volume dùng chung.
 
 # Stage 1: build asset Vite
-FROM node:20-alpine AS assets
+FROM node:22-alpine AS assets
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
