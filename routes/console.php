@@ -23,6 +23,11 @@ Schedule::command('live-sessions:sync-providers')
     ->withoutOverlapping()
     ->onOneServer();
 
+Schedule::command('live-sessions:renew-provider-webhooks')
+    ->dailyAt('03:15')
+    ->withoutOverlapping()
+    ->onOneServer();
+
 Schedule::command('live-sessions:cleanup-realtime')
     ->hourly()
     ->withoutOverlapping()

@@ -7,6 +7,7 @@ use App\Console\Commands\LiveSession\CheckTurnHealthCommand;
 use App\Console\Commands\LiveSession\CleanupLiveRealtimeCommand;
 use App\Console\Commands\LiveSession\DoctorLiveSessionCommand;
 use App\Console\Commands\LiveSession\PruneLiveSessionDataCommand;
+use App\Console\Commands\LiveSession\RenewLiveProviderSubscriptionsCommand;
 use App\Console\Commands\LiveSession\RestoreLiveSessionDataCommand;
 use App\Console\Commands\LiveSession\SyncLiveProvidersCommand;
 use Illuminate\Support\ServiceProvider;
@@ -35,7 +36,7 @@ class TeacherLiveSessionServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([SyncLiveProvidersCommand::class, CleanupLiveRealtimeCommand::class, CheckTurnHealthCommand::class, DoctorLiveSessionCommand::class, PruneLiveSessionDataCommand::class, BackupLiveSessionDataCommand::class, RestoreLiveSessionDataCommand::class]);
+            $this->commands([SyncLiveProvidersCommand::class, CleanupLiveRealtimeCommand::class, CheckTurnHealthCommand::class, DoctorLiveSessionCommand::class, PruneLiveSessionDataCommand::class, BackupLiveSessionDataCommand::class, RestoreLiveSessionDataCommand::class, RenewLiveProviderSubscriptionsCommand::class]);
         }
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'teacher-live-session');

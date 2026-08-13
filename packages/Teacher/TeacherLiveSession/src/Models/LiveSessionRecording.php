@@ -9,7 +9,7 @@ use Mindigo\Auth\Models\User;
 
 final class LiveSessionRecording extends Model
 {
-    protected $fillable = ['live_session_id', 'initiated_by', 'status', 'mime_type', 'storage_disk', 'storage_path', 'size_bytes', 'duration_seconds', 'started_at', 'ended_at', 'failure_reason'];
+    protected $fillable = ['live_session_id', 'provider', 'provider_recording_id', 'provider_play_url', 'initiated_by', 'status', 'mime_type', 'storage_disk', 'storage_path', 'size_bytes', 'duration_seconds', 'started_at', 'ended_at', 'failure_reason'];
 
     protected $casts = ['started_at' => 'datetime', 'ended_at' => 'datetime'];
 
