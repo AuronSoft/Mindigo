@@ -47,3 +47,8 @@ Schedule::command('live-sessions:backup')
     ->dailyAt('01:30')
     ->withoutOverlapping()
     ->onOneServer();
+
+Schedule::command('live-sessions:dr-backup')
+    ->dailyAt('01:00')
+    ->withoutOverlapping(360)
+    ->onOneServer();
