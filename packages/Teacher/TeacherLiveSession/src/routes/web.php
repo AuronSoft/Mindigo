@@ -94,8 +94,11 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/live-recordings/{liveSession}', [LiveSessionRecordingController::class, 'start'])->middleware('throttle:10,1')->name('live-recordings.start');
     Route::post('/live-recordings/{liveSession}/{recording}/chunks', [LiveSessionRecordingController::class, 'chunk'])->middleware('throttle:120,1')->name('live-recordings.chunk');
     Route::post('/live-recordings/{liveSession}/{recording}/finalize', [LiveSessionRecordingController::class, 'finalize'])->middleware('throttle:10,1')->name('live-recordings.finalize');
+    Route::post('/live-recordings/{liveSession}/{recording}/stop', [LiveSessionRecordingController::class, 'stop'])->middleware('throttle:10,1')->name('live-recordings.stop');
     Route::post('/live-recordings/{liveSession}/{recording}/abort', [LiveSessionRecordingController::class, 'abort'])->middleware('throttle:10,1')->name('live-recordings.abort');
     Route::get('/live-recordings/play/{recording}', [LiveSessionRecordingController::class, 'stream'])->middleware('throttle:120,1')->name('live-recordings.stream');
+    Route::get('/live-recordings/status/{recording}', [LiveSessionRecordingController::class, 'status'])->middleware('throttle:120,1')->name('live-recordings.status');
+    Route::get('/live-recordings/hls/{recording}/{path}', [LiveSessionRecordingController::class, 'hls'])->where('path', '.*')->middleware('throttle:240,1')->name('live-recordings.hls');
     Route::prefix('live-teaching-tools/{liveSession}')->name('live-teaching-tools.')->group(function () {
         Route::post('/sync', [LiveSessionTeachingToolController::class, 'sync'])->middleware('throttle:120,1')->name('sync');
         Route::post('/whiteboard', [LiveSessionTeachingToolController::class, 'whiteboard'])->middleware('throttle:120,1')->name('whiteboard');

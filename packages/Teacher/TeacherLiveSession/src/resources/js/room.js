@@ -17,6 +17,7 @@ if (root) {
     let recorder = null;
     let recordingStartedAt = null;
     let recordingId = null;
+    let recordingCaptureMode = null;
     let recordingSequence = 0;
     let recordingUploads = Promise.resolve();
     let recordingFrameTimer = null;
@@ -823,9 +824,15 @@ if (root) {
     const startRecording = async button => {
         const mimeType = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']
             .find(type => MediaRecorder.isTypeSupported(type));
+        const response = await request(config.recordingStartUrl, {mime_type: mimeType || 'video/webm'});
+        recordingId = response.recording_id; recordingCaptureMode = response.capture_mode; recordingStartedAt = Date.now(); recordingSequence = 0;
+        if (recordingCaptureMode === 'server') {
+            button.dataset.active = 'true';
+            root.querySelector('[data-recording-label]').textContent = config.labels.stopRecording;
+            root.querySelector('[data-recording-indicator]').classList.replace('hidden', 'inline-flex');
+            return;
+        }
         if (!mimeType) throw new Error('MediaRecorder is not supported');
-        const response = await request(config.recordingStartUrl, {mime_type: mimeType});
-        recordingId = response.recording_id; recordingStartedAt = Date.now(); recordingSequence = 0;
         const stream = createRecordingStream(); recorder = new MediaRecorder(stream, {mimeType});
         recorder.ondataavailable = event => { if (event.data.size) recordingUploads = recordingUploads.then(() => uploadRecordingChunk(event.data)); };
         recorder.start(5000); button.dataset.active = 'true';
@@ -834,29 +841,47 @@ if (root) {
     };
 
     const stopRecording = async button => {
+        if (recordingCaptureMode === 'server') {
+            const completedId = recordingId;
+            await request(config.recordingStopUrl.replace('__RECORDING__', completedId), {});
+            recordingCaptureMode = null; recordingId = null; recordingStartedAt = null;
+            button.dataset.active = 'false'; root.querySelector('[data-recording-label]').textContent = config.labels.startRecording;
+            root.querySelector('[data-recording-indicator]').classList.replace('inline-flex', 'hidden');
+            setStatus(config.labels.recordingProcessing);
+            const watch = async () => {
+                const response = await fetch(config.recordingStatusUrl.replace('__RECORDING__', completedId), {credentials: 'same-origin', headers: {'Accept': 'application/json'}});
+                if (!response.ok) return;
+                const state = await response.json();
+                if (state.status === 'ready') setStatus(config.labels.recordingProcessed);
+                else if (state.status === 'failed') setStatus(config.labels.recordingFailed, true);
+                else window.setTimeout(watch, 3000);
+            };
+            window.setTimeout(watch, 1500);
+            return;
+        }
         await new Promise(resolve => { recorder.addEventListener('stop', resolve, {once: true}); recorder.stop(); });
         await recordingUploads;
         const duration = Math.max(1, Math.round((Date.now() - recordingStartedAt) / 1000));
         await request(config.recordingFinalizeUrl.replace('__RECORDING__', recordingId), {duration_seconds: duration, expected_chunks: recordingSequence});
         window.clearTimeout(recordingFrameTimer); recorder.stream.getTracks().forEach(track => track.stop()); await recordingAudioContext?.close();
-        recordingAudioContext = null; recordingAudioDestination = null; recordedAudioTracks.clear(); recorder = null; recordingId = null;
+        recordingAudioContext = null; recordingAudioDestination = null; recordedAudioTracks.clear(); recorder = null; recordingId = null; recordingCaptureMode = null; recordingStartedAt = null;
         button.dataset.active = 'false'; root.querySelector('[data-recording-label]').textContent = config.labels.startRecording;
         root.querySelector('[data-recording-indicator]').classList.replace('inline-flex', 'hidden');
     };
 
     root.querySelector('[data-toggle-recording]')?.addEventListener('click', async event => {
         event.currentTarget.disabled = true;
-        try { if (recorder?.state === 'recording') await stopRecording(event.currentTarget); else await startRecording(event.currentTarget); }
+        try { if (recordingId) await stopRecording(event.currentTarget); else await startRecording(event.currentTarget); }
         catch {
             if (recordingId) await request(config.recordingAbortUrl.replace('__RECORDING__', recordingId), {}).catch(() => {});
-            recorder?.stream?.getTracks().forEach(track => track.stop()); recorder = null; recordingId = null;
+            recorder?.stream?.getTracks().forEach(track => track.stop()); recorder = null; recordingId = null; recordingCaptureMode = null; recordingStartedAt = null;
             setStatus(config.labels.recordingFailed, true);
         }
         finally { event.currentTarget.disabled = false; }
     });
 
     window.setInterval(() => {
-        if (!recordingStartedAt || !recorder) return;
+        if (!recordingStartedAt || !recordingId) return;
         const seconds = Math.floor((Date.now() - recordingStartedAt) / 1000);
         root.querySelector('[data-recording-time]').textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
     }, 1000);
@@ -925,7 +950,7 @@ if (root) {
     });
 
     window.addEventListener('beforeunload', event => {
-        if (recorder?.state === 'recording') { event.preventDefault(); event.returnValue = ''; }
+        if (recordingId) { event.preventDefault(); event.returnValue = ''; }
         stopped = true;
         window.clearTimeout(loopTimer);
         window.clearTimeout(turnRefreshTimer);

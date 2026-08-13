@@ -8,6 +8,14 @@ return [
         'health_url' => env('LIVE_MEDIA_GATEWAY_HEALTH_URL', 'http://127.0.0.1:8091/health'),
         'secret' => env('LIVE_MEDIA_GATEWAY_SECRET'),
         'ticket_ttl_seconds' => (int) env('LIVE_MEDIA_GATEWAY_TICKET_TTL', 120),
+        'control_url' => env('LIVE_MEDIA_GATEWAY_CONTROL_URL', 'http://127.0.0.1:8091'),
+    ],
+    'recording' => [
+        'server_enabled' => env('LIVE_MEDIA_SERVER_RECORDING', true),
+        'disk' => env('LIVE_MEDIA_RECORDING_DISK', 'local'),
+        'monthly_quota_gb' => (int) env('LIVE_MEDIA_RECORDING_MONTHLY_QUOTA_GB', 20),
+        'ffmpeg_binary' => env('LIVE_MEDIA_FFMPEG_BINARY', 'ffmpeg'),
+        'hls_segment_seconds' => (int) env('LIVE_MEDIA_HLS_SEGMENT_SECONDS', 6),
     ],
     'safe_mesh_capacity' => (int) env('LIVE_MEDIA_SAFE_MESH_CAPACITY', 8),
     'static_ice_servers' => array_values(array_filter([
