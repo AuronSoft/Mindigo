@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\TeacherLiveSession\Http\Controllers\AdminLiveProviderHealthController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveProviderConnectionController;
+use Mindigo\TeacherLiveSession\Http\Controllers\LiveProviderWebhookController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionAttendanceReportController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionBreakoutController;
 use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionCollaborationController;
@@ -14,6 +15,12 @@ use Mindigo\TeacherLiveSession\Http\Controllers\LiveSessionTeachingToolControlle
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestController;
 use Mindigo\TeacherLiveSession\Http\Controllers\PublicLiveSessionGuestMediaController;
 use Mindigo\TeacherLiveSession\Http\Controllers\TeacherLiveSessionController;
+
+Route::middleware(['api', 'throttle:120,1'])->prefix('webhooks/live-providers')->name('webhooks.live-providers.')->group(function () {
+    Route::post('/zoom', [LiveProviderWebhookController::class, 'zoom'])->name('zoom');
+    Route::post('/google-calendar', [LiveProviderWebhookController::class, 'googleCalendar'])->name('google-calendar');
+    Route::post('/google-meet', [LiveProviderWebhookController::class, 'googleMeet'])->name('google-meet');
+});
 
 Route::middleware(['web', 'auth', 'role:admin'])->prefix('admin/live-providers')->name('admin.live-providers.')->group(function () {
     Route::get('/health', [AdminLiveProviderHealthController::class, 'index'])->name('health');

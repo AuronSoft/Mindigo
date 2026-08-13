@@ -35,6 +35,12 @@ final class DoctorLiveSessionCommand extends Command
         $this->components->twoColumnDetail('WebRTC ICE servers', $hasIceServer ? '<fg=green>configured</>' : '<fg=yellow>missing</>');
         $this->components->twoColumnDetail('Dynamic TURN credentials', $turnConfigured ? '<fg=green>configured</>' : '<fg=yellow>missing</>');
         $this->components->twoColumnDetail('Scheduler', '<fg=green>commands registered</>');
+        $googleWebhookConfigured = filled(config('live-providers.google_meet.webhook_token'))
+            && str_starts_with((string) config('live-providers.google_meet.calendar_webhook_url'), 'https://');
+        $zoomWebhookConfigured = filled(config('live-providers.zoom.webhook_secret'))
+            && str_starts_with((string) config('live-providers.zoom.webhook_url'), 'https://');
+        $this->components->twoColumnDetail('Google provider webhooks', $googleWebhookConfigured ? '<fg=green>configured</>' : '<fg=yellow>missing or non-HTTPS</>');
+        $this->components->twoColumnDetail('Zoom provider webhooks', $zoomWebhookConfigured ? '<fg=green>configured</>' : '<fg=yellow>missing or non-HTTPS</>');
         $capacity = (int) $configuration->value('live_max_participants');
         $topology = (string) config('live-media.topology', 'mesh');
         $safeMeshCapacity = (int) config('live-media.safe_mesh_capacity', 8);
@@ -76,6 +82,18 @@ final class DoctorLiveSessionCommand extends Command
             || mb_strlen((string) config('live-media.gateway.secret')) < 32
         )) {
             $this->error('SFU topology requires health URLs, a public WebSocket URL, and a gateway secret of at least 32 characters.');
+
+            return self::FAILURE;
+        }
+
+        if (app()->isProduction() && ($providers->resolve(LiveSessionProvider::GoogleMeet)->health()->available && ! $googleWebhookConfigured)) {
+            $this->error('Google Meet is enabled but its signed HTTPS webhook channel is incomplete.');
+
+            return self::FAILURE;
+        }
+
+        if (app()->isProduction() && ($providers->resolve(LiveSessionProvider::Zoom)->health()->available && ! $zoomWebhookConfigured)) {
+            $this->error('Zoom is enabled but its signed HTTPS webhook endpoint is incomplete.');
 
             return self::FAILURE;
         }

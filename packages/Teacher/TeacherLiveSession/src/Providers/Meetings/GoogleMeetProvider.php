@@ -37,7 +37,10 @@ final class GoogleMeetProvider implements LiveMeetingProvider
         ])->throw()->json();
         $url = $response['hangoutLink'] ?? collect($response['conferenceData']['entryPoints'] ?? [])->firstWhere('entryPointType', 'video')['uri'] ?? null;
 
-        return new ProviderMeeting('google-'.$response['id'], (string) $response['id'], $url, $url, $response['status'] ?? 'confirmed', ['html_link' => $response['htmlLink'] ?? null]);
+        return new ProviderMeeting('google-'.$response['id'], (string) $response['id'], $url, $url, $response['status'] ?? 'confirmed', [
+            'html_link' => $response['htmlLink'] ?? null,
+            'conference_id' => $response['conferenceData']['conferenceId'] ?? null,
+        ]);
     }
 
     public function update(LiveSession $session): ProviderMeeting
