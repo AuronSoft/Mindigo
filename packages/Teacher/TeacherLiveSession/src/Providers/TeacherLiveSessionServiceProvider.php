@@ -3,6 +3,7 @@
 namespace Mindigo\TeacherLiveSession\Providers;
 
 use App\Console\Commands\LiveSession\BackupLiveSessionDataCommand;
+use App\Console\Commands\LiveSession\CheckTurnHealthCommand;
 use App\Console\Commands\LiveSession\CleanupLiveRealtimeCommand;
 use App\Console\Commands\LiveSession\DoctorLiveSessionCommand;
 use App\Console\Commands\LiveSession\PruneLiveSessionDataCommand;
@@ -34,7 +35,7 @@ class TeacherLiveSessionServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([SyncLiveProvidersCommand::class, CleanupLiveRealtimeCommand::class, DoctorLiveSessionCommand::class, PruneLiveSessionDataCommand::class, BackupLiveSessionDataCommand::class, RestoreLiveSessionDataCommand::class]);
+            $this->commands([SyncLiveProvidersCommand::class, CleanupLiveRealtimeCommand::class, CheckTurnHealthCommand::class, DoctorLiveSessionCommand::class, PruneLiveSessionDataCommand::class, BackupLiveSessionDataCommand::class, RestoreLiveSessionDataCommand::class]);
         }
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'teacher-live-session');

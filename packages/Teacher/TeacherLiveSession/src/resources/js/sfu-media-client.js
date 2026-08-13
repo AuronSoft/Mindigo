@@ -1,12 +1,13 @@
 import {Device} from 'mediasoup-client';
 
 export class SfuMediaClient {
-    constructor({ticketProvider, onParticipant, onParticipantLeft, onTrack, onState}) {
+    constructor({ticketProvider, iceServers = [], onParticipant, onParticipantLeft, onTrack, onState}) {
         this.ticketProvider = ticketProvider;
         this.onParticipant = onParticipant;
         this.onParticipantLeft = onParticipantLeft;
         this.onTrack = onTrack;
         this.onState = onState;
+        this.iceServers = iceServers;
         this.pending = new Map();
         this.producers = new Map();
         this.publishedTracks = new Map();
@@ -56,7 +57,15 @@ export class SfuMediaClient {
     }
 
     transportOptions(data) {
-        return {id: data.id, iceParameters: data.ice_parameters, iceCandidates: data.ice_candidates, dtlsParameters: data.dtls_parameters, sctpParameters: data.sctp_parameters};
+        return {id: data.id, iceParameters: data.ice_parameters, iceCandidates: data.ice_candidates, dtlsParameters: data.dtls_parameters, sctpParameters: data.sctp_parameters, iceServers: this.iceServers};
+    }
+
+    async updateIceServers(iceServers) {
+        this.iceServers = iceServers;
+        await Promise.all([
+            this.sendTransport?.updateIceServers({iceServers}),
+            this.recvTransport?.updateIceServers({iceServers}),
+        ].filter(Boolean));
     }
 
     async publish(track, source = track.kind) {

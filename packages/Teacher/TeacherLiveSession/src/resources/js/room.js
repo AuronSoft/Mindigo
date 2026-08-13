@@ -33,6 +33,7 @@ if (root) {
     let layoutMode = 'grid';
     const usesSfu = config.topology === 'sfu' && Boolean(config.gatewayTicketUrl);
     let sfu = null;
+    let turnRefreshTimer = null;
     const optimisticReactionCounts = new Map();
     try { layoutMode = ['grid', 'speaker', 'sidebar', 'classroom'].includes(localStorage.getItem('mindigo-live-layout')) ? localStorage.getItem('mindigo-live-layout') : 'grid'; } catch {}
 
@@ -55,6 +56,18 @@ if (root) {
         const node = root.querySelector('[data-media-status]');
         node.textContent = message;
         node.classList.toggle('text-red-600', error);
+    };
+
+    const refreshIceServers = async () => {
+        if (!config.iceServersUrl) return;
+        const result = await request(config.iceServersUrl, {});
+        config.iceServers = result.ice_servers || [];
+        if (Number(result.max_bitrate_kbps) > 0) config.maxBitrateKbps = Math.min(Number(config.maxBitrateKbps || result.max_bitrate_kbps), Number(result.max_bitrate_kbps));
+        if (sfu) await sfu.updateIceServers(config.iceServers);
+        window.clearTimeout(turnRefreshTimer);
+        if (Number(result.expires_in) > 0) {
+            turnRefreshTimer = window.setTimeout(() => refreshIceServers().catch(() => {}), Math.max(30, Number(result.expires_in) - 60) * 1000);
+        }
     };
 
     const mediaErrorMessage = error => {
@@ -768,13 +781,16 @@ if (root) {
         if (recorder?.state === 'recording') { event.preventDefault(); event.returnValue = ''; }
         stopped = true;
         window.clearTimeout(loopTimer);
+        window.clearTimeout(turnRefreshTimer);
         if (config.mediaLeaveUrl) fetch(config.mediaLeaveUrl, {method: 'POST', credentials: 'same-origin', keepalive: true, headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf}, body: JSON.stringify({token: config.token})}).catch(() => {});
         screenStream?.getTracks().forEach(track => track.stop()); localStream.getTracks().forEach(track => track.stop()); peers.forEach(peer => peer.close()); sfu?.close();
     });
     const startMedia = async () => {
+        await refreshIceServers();
         if (usesSfu) {
             sfu = new SfuMediaClient({
                 ticketProvider: () => request(config.gatewayTicketUrl, {}),
+                iceServers: config.iceServers,
                 onParticipant: participant => {
                     if (participant.participant_key !== config.participantKey) remoteTile(participant.participant_key, participant.name || participant.participant_key, participant.role);
                 },

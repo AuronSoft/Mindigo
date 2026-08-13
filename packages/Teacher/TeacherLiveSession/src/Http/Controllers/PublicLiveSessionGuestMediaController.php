@@ -14,13 +14,25 @@ use Mindigo\TeacherLiveSession\Models\LiveSessionGuestSignal;
 use Mindigo\TeacherLiveSession\Models\LiveSessionParticipant;
 use Mindigo\TeacherLiveSession\Services\LiveMediaGatewayTicketService;
 use Mindigo\TeacherLiveSession\Services\LiveSessionGuestService;
+use Mindigo\TeacherLiveSession\Services\TurnCredentialService;
 
 final class PublicLiveSessionGuestMediaController extends Controller
 {
     public function __construct(
         private readonly LiveSessionGuestService $guests,
         private readonly LiveMediaGatewayTicketService $gatewayTickets,
+        private readonly TurnCredentialService $turnCredentials,
     ) {}
+
+    public function iceServers(Request $request, LiveSession $liveSession, LiveSessionGuest $guest): JsonResponse
+    {
+        $guest = $this->guest($request, $liveSession, $guest);
+
+        return response()->json($this->turnCredentials->issue(
+            (int) $liveSession->id,
+            'guest:'.$guest->id,
+        ));
+    }
 
     public function gatewayTicket(Request $request, LiveSession $liveSession, LiveSessionGuest $guest): JsonResponse
     {

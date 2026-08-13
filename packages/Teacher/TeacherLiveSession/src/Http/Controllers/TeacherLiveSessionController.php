@@ -359,6 +359,7 @@ class TeacherLiveSessionController extends Controller
             'joinTokenUrl' => route('teacher.live-sessions.join-token', $session),
             'topology' => config('live-media.topology', 'mesh'),
             'gatewayTicketUrl' => route('live-media.gateway-ticket', $session),
+            'iceServersUrl' => route('live-media.ice-servers', $session),
             'recordingEnabled' => ($session->room_settings['recording_enabled'] ?? false) === true,
             'canRecord' => $this->access->canModerate($session, $request->user()),
             'recordingStartUrl' => route('live-recordings.start', $session),
@@ -378,7 +379,7 @@ class TeacherLiveSessionController extends Controller
             'breakoutAssignUrl' => route('live-breakouts.assign', [$session, '__ROOM__']),
             'breakoutVisitUrl' => route('live-breakouts.visit', [$session, '__ROOM__']),
             'breakoutMainUrl' => route('live-breakouts.main', $session),
-            'iceServers' => config('live-media.ice_servers', []),
+            'iceServers' => config('live-media.static_ice_servers', []),
             'maxBitrateKbps' => (int) $this->configuration->value('live_max_bitrate_kbps'),
         ];
     }

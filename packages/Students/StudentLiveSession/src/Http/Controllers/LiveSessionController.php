@@ -76,11 +76,12 @@ class LiveSessionController extends Controller
                 'joinTokenUrl' => route('student.live-sessions.join-token', $liveSession),
                 'topology' => config('live-media.topology', 'mesh'),
                 'gatewayTicketUrl' => route('live-media.gateway-ticket', $liveSession),
+                'iceServersUrl' => route('live-media.ice-servers', $liveSession),
                 'teachingToolsSyncUrl' => route('live-teaching-tools.sync', $liveSession),
                 'whiteboardUrl' => route('live-teaching-tools.whiteboard', $liveSession),
                 'pollVoteUrl' => route('live-teaching-tools.polls.vote', [$liveSession, '__POLL__']),
                 'breakoutSyncUrl' => route('live-breakouts.sync', $liveSession),
-                'iceServers' => config('live-media.ice_servers', []),
+                'iceServers' => config('live-media.static_ice_servers', []),
                 'maxBitrateKbps' => (int) $this->configuration->value('live_max_bitrate_kbps'),
             ],
         ]);

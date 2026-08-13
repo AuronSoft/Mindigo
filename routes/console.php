@@ -28,6 +28,11 @@ Schedule::command('live-sessions:cleanup-realtime')
     ->withoutOverlapping()
     ->onOneServer();
 
+Schedule::command('live-sessions:check-turn')
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->onOneServer();
+
 Schedule::command('live-sessions:prune-data')
     ->dailyAt('02:30')
     ->withoutOverlapping()
