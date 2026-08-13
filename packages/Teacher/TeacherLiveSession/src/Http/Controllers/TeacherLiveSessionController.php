@@ -365,6 +365,8 @@ class TeacherLiveSessionController extends Controller
             'recordingStartUrl' => route('live-recordings.start', $session),
             'recordingChunkUrl' => route('live-recordings.chunk', [$session, '__RECORDING__']),
             'recordingFinalizeUrl' => route('live-recordings.finalize', [$session, '__RECORDING__']),
+            'recordingStopUrl' => route('live-recordings.stop', [$session, '__RECORDING__']),
+            'recordingStatusUrl' => route('live-recordings.status', '__RECORDING__'),
             'recordingAbortUrl' => route('live-recordings.abort', [$session, '__RECORDING__']),
             'teachingToolsSyncUrl' => route('live-teaching-tools.sync', $session),
             'whiteboardUrl' => route('live-teaching-tools.whiteboard', $session),

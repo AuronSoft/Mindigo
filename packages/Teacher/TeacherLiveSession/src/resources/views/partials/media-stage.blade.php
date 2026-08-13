@@ -23,6 +23,8 @@
         'startRecording' => __('teacher-live-session::app.start_recording'),
         'stopRecording' => __('teacher-live-session::app.stop_recording'),
         'recordingFailed' => __('teacher-live-session::app.recording_failed'),
+        'recordingProcessing' => __('teacher-live-session::app.recording_processing'),
+        'recordingProcessed' => __('teacher-live-session::app.recording_processed'),
         'noPoll' => __('teacher-live-session::app.no_poll'),
         'noResources' => __('teacher-live-session::app.no_resources'),
         'closePoll' => __('teacher-live-session::app.close_poll'),

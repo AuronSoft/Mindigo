@@ -28,6 +28,7 @@ services:
       LIVE_MEDIA_GATEWAY_HEALTH_URL: ${LIVE_MEDIA_GATEWAY_HEALTH_URL:-http://live-media-gateway:8091/health}
       LIVE_MEDIA_GATEWAY_SECRET: ${LIVE_MEDIA_GATEWAY_SECRET:-}
       LIVE_MEDIA_GATEWAY_TICKET_TTL: ${LIVE_MEDIA_GATEWAY_TICKET_TTL:-120}
+      LIVE_MEDIA_GATEWAY_CONTROL_URL: http://live-media-gateway:8091
       LIVE_MEDIA_STUN_URL: ${LIVE_MEDIA_STUN_URL:-}
       LIVE_MEDIA_TURN_URLS: ${LIVE_MEDIA_TURN_URLS:-}
       LIVE_MEDIA_TURN_FAILOVER_URLS: ${LIVE_MEDIA_TURN_FAILOVER_URLS:-}
@@ -49,6 +50,7 @@ services:
       - web_public:/shared
       # Lưu bền vững file người dùng upload (bài nộp, ảnh...) trên disk "public"
       - storage_data:/var/www/html/storage/app/public
+      - recording_data:/var/www/html/storage/app/private/server-recordings
     networks:
       - mindigo
 
@@ -138,6 +140,7 @@ services:
       LIVE_MEDIA_ANNOUNCED_IP: ${LIVE_MEDIA_ANNOUNCED_IP:-127.0.0.1}
       LIVE_MEDIA_RTC_MIN_PORT: ${LIVE_MEDIA_RTC_MIN_PORT:-40000}
       LIVE_MEDIA_RTC_MAX_PORT: ${LIVE_MEDIA_RTC_MAX_PORT:-40100}
+      LIVE_MEDIA_RECORDING_DIR: /recordings
     depends_on:
       live-redis:
         condition: service_healthy
@@ -145,6 +148,8 @@ services:
       - "8090:8090"
       - "8091:8091"
       - "40000-40100:40000-40100/udp"
+    volumes:
+      - recording_data:/recordings
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8091/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
       interval: 10s
@@ -193,6 +198,7 @@ services:
 
 volumes:
   live_redis_data:
+  recording_data:
   db_data:        # dữ liệu MySQL
   storage_data:   # file upload của ứng dụng
   web_public:     # mã nguồn public cho nginx
