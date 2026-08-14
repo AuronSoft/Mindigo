@@ -49,6 +49,7 @@ class ExamGradingService
             'user',
             'session.version.template',
             'answers' => fn ($query) => $query->with('question')->orderBy('id'),
+            'proctorEvents' => fn ($query) => $query->with('actor')->latest('occurred_at')->limit(100),
         ]);
     }
 

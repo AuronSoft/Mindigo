@@ -109,6 +109,13 @@ return [
     'too_many_answers' => 'Câu trả lời chứa quá nhiều giá trị.',
     'attempt_locked' => 'Lượt thi không còn cho phép chỉnh sửa. Bài đã lưu gần nhất vẫn được giữ lại.',
     'autosave_failed_retry' => 'Mất kết nối. Câu trả lời đang chờ sẽ tự lưu khi kết nối trở lại.',
+    'proctoring' => [
+        'enter_fullscreen' => 'Mở toàn màn hình',
+        'camera_title' => 'Giám sát camera tùy chọn',
+        'camera_description' => 'Nếu bạn đồng ý, ảnh định kỳ được lưu riêng tư để giáo viên rà soát. Từ chối không đồng nghĩa với gian lận.',
+        'allow' => 'Đồng ý bật camera',
+        'decline' => 'Từ chối',
+    ],
     'session_workspace' => [
         'title' => 'Kỳ thi của tôi', 'eyebrow' => 'Không gian học tập · Kỳ thi', 'description' => 'Theo dõi lịch thi, tiếp tục lượt đang làm và bắt đầu bài khi kỳ thi mở.',
         'upcoming' => 'Sắp diễn ra', 'available' => 'Có thể làm bài', 'completed' => 'Đã kết thúc', 'empty' => 'Không có kỳ thi trong nhóm này.',
