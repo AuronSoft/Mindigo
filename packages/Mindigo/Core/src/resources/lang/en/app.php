@@ -336,6 +336,8 @@ return [
         'draft' => 'Draft',
         'video_meta' => 'Video · 08:45',
         'document_meta' => 'Document · PDF',
+        'save_success' => 'Exam saved successfully',
+        'save_success' => 'Exam saved successfully',
     ],
 
     'cta' => [

@@ -336,6 +336,8 @@ return [
         'draft' => 'Bản nháp',
         'video_meta' => 'Video · 08:45',
         'document_meta' => 'Tài liệu · PDF',
+        'save_success' => 'Đã lưu đề thi thành công',
+        'save_success' => 'Đã lưu đề thi thành công',
     ],
 
     'cta' => [
