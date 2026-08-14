@@ -5,6 +5,141 @@
 @source "../js/**/*.js";
 
 @layer components {
+    .exam-foundation-shell {
+        @apply min-h-screen bg-slate-50 px-4 py-5 sm:px-6 lg:px-8;
+    }
+
+    .exam-foundation-container {
+        @apply mx-auto flex w-full max-w-[1500px] flex-col gap-6;
+    }
+
+    .exam-page-header {
+        @apply flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:flex-row lg:items-center lg:justify-between;
+    }
+
+    .exam-eyebrow {
+        @apply text-[11px] font-black uppercase tracking-[0.16em] text-green-700;
+    }
+
+    .exam-page-title {
+        @apply mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl;
+    }
+
+    .exam-page-description {
+        @apply mt-2 max-w-3xl text-sm font-semibold leading-6 text-slate-500;
+    }
+
+    .exam-actions {
+        @apply flex flex-wrap items-center gap-2;
+    }
+
+    .exam-button {
+        @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black no-underline transition focus:outline-none focus:ring-4 disabled:cursor-not-allowed disabled:opacity-50;
+    }
+
+    .exam-button-primary {
+        @apply bg-green-600 text-white shadow-sm shadow-green-200 hover:bg-green-700 focus:ring-green-100;
+    }
+
+    .exam-button-secondary {
+        @apply border border-slate-200 bg-white text-slate-700 hover:border-green-300 hover:bg-green-50 hover:text-green-700 focus:ring-slate-100;
+    }
+
+    .exam-button-danger {
+        @apply bg-rose-50 text-rose-700 hover:bg-rose-100 focus:ring-rose-100;
+    }
+
+    .exam-button-ghost {
+        @apply text-slate-600 hover:bg-slate-100 hover:text-slate-950 focus:ring-slate-100;
+    }
+
+    .exam-foundation-stat-grid {
+        @apply grid gap-4 sm:grid-cols-2 xl:grid-cols-4;
+    }
+
+    .exam-foundation-stat-card {
+        @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-sm;
+    }
+
+    .exam-stat-label {
+        @apply text-xs font-black uppercase tracking-wide text-slate-400;
+    }
+
+    .exam-stat-value {
+        @apply mt-2 block text-3xl font-black tracking-tight text-slate-950;
+    }
+
+    .exam-stat-icon {
+        @apply grid h-10 w-10 place-items-center rounded-xl bg-green-50 text-green-700;
+    }
+
+    .exam-stat-hint {
+        @apply mt-3 text-xs font-semibold text-slate-500;
+    }
+
+    .exam-panel {
+        @apply overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm;
+    }
+
+    .exam-panel-header {
+        @apply flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between;
+    }
+
+    .exam-panel-title {
+        @apply text-base font-black text-slate-950;
+    }
+
+    .exam-panel-description {
+        @apply mt-1 text-xs font-semibold leading-5 text-slate-400;
+    }
+
+    .exam-panel-body {
+        @apply p-5;
+    }
+
+    .exam-status {
+        @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-black;
+    }
+
+    .exam-status-dot {
+        @apply h-1.5 w-1.5 rounded-full bg-current;
+    }
+
+    .exam-status[data-tone="success"] { @apply border-green-200 bg-green-50 text-green-700; }
+    .exam-status[data-tone="info"] { @apply border-blue-200 bg-blue-50 text-blue-700; }
+    .exam-status[data-tone="warning"] { @apply border-amber-200 bg-amber-50 text-amber-700; }
+    .exam-status[data-tone="danger"] { @apply border-rose-200 bg-rose-50 text-rose-700; }
+    .exam-status[data-tone="neutral"] { @apply border-slate-200 bg-slate-100 text-slate-600; }
+    .exam-status[data-tone="draft"] { @apply border-violet-200 bg-violet-50 text-violet-700; }
+
+    .exam-empty-state {
+        @apply flex min-h-64 flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-12 text-center;
+    }
+
+    .exam-empty-icon {
+        @apply grid h-14 w-14 place-items-center rounded-2xl bg-green-100 text-green-700;
+    }
+
+    .exam-empty-title { @apply text-base font-black text-slate-900; }
+    .exam-empty-description { @apply mt-1 max-w-md text-sm font-semibold leading-6 text-slate-500; }
+
+    .exam-stepper {
+        @apply grid gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:grid-cols-3 lg:grid-cols-6;
+    }
+
+    .exam-step {
+        @apply flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-400;
+    }
+
+    .exam-step-number {
+        @apply grid h-7 w-7 shrink-0 place-items-center rounded-full bg-slate-100 text-[11px] font-black text-slate-500;
+    }
+
+    .exam-step[data-state="current"] { @apply bg-green-50 text-green-800; }
+    .exam-step[data-state="current"] .exam-step-number { @apply bg-green-600 text-white; }
+    .exam-step[data-state="complete"] { @apply text-green-700; }
+    .exam-step[data-state="complete"] .exam-step-number { @apply bg-green-100 text-green-700; }
+
     .exam-page {
         @apply w-full px-5 pb-10 pt-2 max-md:px-4;
     }

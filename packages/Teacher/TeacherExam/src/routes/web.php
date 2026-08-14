@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Mindigo\ExamManagement\Http\Controllers\ExamFoundationController;
 use Mindigo\TeacherExam\Http\Controllers\TeacherExamController;
 
-Route::middleware(['web', 'auth', 'role:teacher|admin'])
+Route::middleware(['web', 'auth', 'role:teacher'])
     ->prefix('teacher/exams')
     ->name('teacher.exams.')
     ->group(function () {
+        Route::get('/foundation-preview', ExamFoundationController::class)->name('foundation');
         Route::get('/', [TeacherExamController::class, 'index'])->name('index');
         Route::get('/create', [TeacherExamController::class, 'create'])->name('create');
         Route::post('/', [TeacherExamController::class, 'store'])->name('store');

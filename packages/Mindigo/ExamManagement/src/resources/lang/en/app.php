@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'foundation' => [
+        'foundation_title' => 'Exam workspace',
+        'foundation_subtitle' => 'Design, deliver and monitor assessments in one consistent workflow.',
+    ],
     'assigned_classrooms' => 'Assign to classrooms',
     'assigned_classrooms_help' => 'Only active students in selected classrooms can see and take this exam.',
     'students_unit' => 'students',
