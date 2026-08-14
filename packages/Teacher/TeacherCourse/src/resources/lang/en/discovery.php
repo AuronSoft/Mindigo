@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'featured' => 'Featured courses', 'featured_description' => 'Quality courses selected by Auronsoft.',
+    'featured' => 'Featured courses', 'featured_description' => 'Quality courses selected by Mindigo.',
     'trending' => 'Trending now', 'continue' => 'Continue discovering', 'recommended' => 'Recommended for you',
     'wishlist' => 'My wishlist', 'wishlist_description' => 'Save courses you want to explore and learn later.',
     'wishlist_added' => 'Course added to your wishlist.', 'wishlist_removed' => 'Course removed from your wishlist.',

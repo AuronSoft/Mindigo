@@ -51,7 +51,7 @@
                             <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b" stroke="#14532d" stroke-width="2"/>
                         </svg>
                     </span>
-                    <span class="text-lg font-black tracking-tight text-green-600">Auronsoft</span>
+                    <span class="text-lg font-black tracking-tight text-green-600">Mindigo</span>
                 </a>
 
                 <label class="relative hidden flex-1 md:block md:max-w-md">

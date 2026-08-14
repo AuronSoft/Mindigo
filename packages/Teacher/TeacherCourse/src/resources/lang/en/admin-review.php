@@ -50,6 +50,6 @@ return [
     'notification_submitted_title' => '“:course” is awaiting review',
     'notification_submitted_message' => ':teacher submitted a course for review.',
     'notification_approved_title' => '“:course” was approved',
-    'notification_approved_message' => 'The course is now published on Auronsoft.',
+    'notification_approved_message' => 'The course is now published on Mindigo.',
     'notification_changes_title' => '“:course” needs changes',
 ];

@@ -20,15 +20,15 @@ return [
     'contact' => [
         'faq_items' => [
             [
-                'q' => 'Is Auronsoft free to use?',
-                'a' => 'Auronsoft offers a free plan with all essential features. You can upgrade to Pro for advanced capabilities like AI exam generation, virtual exam rooms, and unlimited classroom management.',
+                'q' => 'Is Mindigo free to use?',
+                'a' => 'Mindigo offers a free plan with all essential features. You can upgrade to Pro for advanced capabilities like AI exam generation, virtual exam rooms, and unlimited classroom management.',
             ],
             [
                 'q' => 'Can I create exams from Word or PDF files?',
-                'a' => 'Yes. Auronsoft supports Word (.docx) and PDF uploads. AI will analyse the content and generate accurate multiple-choice questions in just a few minutes.',
+                'a' => 'Yes. Mindigo supports Word (.docx) and PDF uploads. AI will analyse the content and generate accurate multiple-choice questions in just a few minutes.',
             ],
             [
-                'q' => 'Does Auronsoft support online exams?',
+                'q' => 'Does Mindigo support online exams?',
                 'a' => 'Yes. The Virtual Exam Room lets you host exams for hundreds of participants at once, monitor progress in real time, and export detailed results.',
             ],
             [
@@ -36,8 +36,8 @@ return [
                 'a' => 'You can contact us via the toll-free hotline 1800 6868, email support@mindigo.vn, or send a message directly through the form on this page.',
             ],
             [
-                'q' => 'Is Auronsoft suitable for universities and businesses?',
-                'a' => 'Absolutely. Auronsoft already supports thousands of universities, training centres, and businesses across the country.',
+                'q' => 'Is Mindigo suitable for universities and businesses?',
+                'a' => 'Absolutely. Mindigo already supports thousands of universities, training centres, and businesses across the country.',
             ],
         ],
     ],

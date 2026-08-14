@@ -4,42 +4,42 @@ return [
     'hero' => [
         'badge' => 'Legal Center',
         'title' => 'Refund Policy',
-        'description' => 'This policy defines the conditions, scope, process, and handling timelines for refunds related to service plans, licenses, paid features, and payment transactions on Auronsoft.',
+        'description' => 'This policy defines the conditions, scope, process, and handling timelines for refunds related to service plans, licenses, paid features, and payment transactions on Mindigo.',
     ],
     'meta' => [
         'effective_date' => 'Effective date: July 1, 2026',
         'version' => 'Version: 1.0',
-        'scope' => 'Applies to individual users, teachers, organizations, and paid transactions on Auronsoft',
+        'scope' => 'Applies to individual users, teachers, organizations, and paid transactions on Mindigo',
     ],
     'toc_title' => 'Table of Contents',
     'intro' => [
-        'Auronsoft wants users to clearly understand refund rights, limits, and processes before subscribing to or renewing services.',
-        'This policy applies unless a contract, quotation, order form, or separate written agreement between Auronsoft and your organization states otherwise.',
+        'Mindigo wants users to clearly understand refund rights, limits, and processes before subscribing to or renewing services.',
+        'This policy applies unless a contract, quotation, order form, or separate written agreement between Mindigo and your organization states otherwise.',
     ],
     'sections' => [
         [
             'id' => 'scope',
             'title' => '1. Scope',
             'paragraphs' => [
-                'This Refund Policy applies to valid payments made directly to Auronsoft or through payment gateways designated by Auronsoft.',
+                'This Refund Policy applies to valid payments made directly to Mindigo or through payment gateways designated by Mindigo.',
             ],
             'items' => [
                 'Individual plans, teacher plans, organizational plans, or platform licenses.',
-                'Paid features, add-ons, storage, AI quotas, or expanded services if Auronsoft states that they are refundable.',
-                'It does not apply to transactions made through third parties if those parties have their own refund policies, unless Auronsoft states otherwise.',
+                'Paid features, add-ons, storage, AI quotas, or expanded services if Mindigo states that they are refundable.',
+                'It does not apply to transactions made through third parties if those parties have their own refund policies, unless Mindigo states otherwise.',
             ],
         ],
         [
             'id' => 'eligible',
             'title' => '2. Refund-eligible Cases',
             'paragraphs' => [
-                'Auronsoft may consider a full or partial refund in the cases below, depending on usage status, plan type, and transaction evidence.',
+                'Mindigo may consider a full or partial refund in the cases below, depending on usage status, plan type, and transaction evidence.',
             ],
             'items' => [
                 'You accidentally paid multiple times for the same service plan in the same usage period.',
                 'Your account was charged but the service was not activated due to a verified system or payment gateway error.',
                 'You request a refund within 7 days from the first payment date of a new plan and have not substantially used paid features.',
-                'Auronsoft cannot provide the core service as described and cannot fix the issue within a reasonable time after receiving a support request.',
+                'Mindigo cannot provide the core service as described and cannot fix the issue within a reasonable time after receiving a support request.',
             ],
         ],
         [
@@ -77,7 +77,7 @@ return [
             'items' => [
                 'Cancellation prevents future renewals but does not automatically refund time already paid for.',
                 'Some plans may remain usable until the end of the paid period after renewal is canceled.',
-                'If you believe the system renewed incorrectly, please submit a request with transaction evidence for Auronsoft to review.',
+                'If you believe the system renewed incorrectly, please submit a request with transaction evidence for Mindigo to review.',
             ],
         ],
         [
@@ -87,7 +87,7 @@ return [
                 'For schools, centers, businesses, or organizations purchasing multiple accounts, refund terms will prioritize the signed contract, quotation, order form, or service agreement.',
             ],
             'items' => [
-                'Setup, training, integration, data migration, or customization fees are generally non-refundable once Auronsoft has performed the work.',
+                'Setup, training, integration, data migration, or customization fees are generally non-refundable once Mindigo has performed the work.',
                 'Reducing account quantity, changing plans, or switching billing periods may be handled by credit adjustment or service credit if both parties agree.',
                 'Organizational refund requests must be submitted by an authorized representative or verified administrator account.',
             ],
@@ -96,36 +96,36 @@ return [
             'id' => 'request',
             'title' => '7. How to Request a Refund',
             'paragraphs' => [
-                'To request a refund, please submit complete information through Auronsoft’s official support channel. Missing information may delay processing.',
+                'To request a refund, please submit complete information through Mindigo’s official support channel. Missing information may delay processing.',
             ],
             'items' => [
-                'Auronsoft account email, organization name if any, and the requester’s role.',
+                'Mindigo account email, organization name if any, and the requester’s role.',
                 'Transaction ID, payment date, amount, payment method, and invoice or receipt if available.',
                 'Reason for refund, issue description, screenshots, or relevant evidence.',
-                'Contact information so Auronsoft can verify and respond with the result.',
+                'Contact information so Mindigo can verify and respond with the result.',
             ],
         ],
         [
             'id' => 'processing',
             'title' => '8. Processing Time and Method',
             'paragraphs' => [
-                'Auronsoft usually responds to refund requests within 5 business days after receiving all required information. The time for funds to arrive may depend on banks, e-wallets, payment gateways, or card issuers.',
+                'Mindigo usually responds to refund requests within 5 business days after receiving all required information. The time for funds to arrive may depend on banks, e-wallets, payment gateways, or card issuers.',
             ],
             'cards' => [
-                ['title' => 'Request verification', 'body' => 'Auronsoft reviews the account, usage history, transaction, plan activation status, and refund conditions.'],
+                ['title' => 'Request verification', 'body' => 'Mindigo reviews the account, usage history, transaction, plan activation status, and refund conditions.'],
                 ['title' => 'Processing result', 'body' => 'If approved, refunds may be returned to the original payment method or handled as service credit where appropriate.'],
-                ['title' => 'Receiving funds', 'body' => 'After Auronsoft confirms the refund, funds usually arrive within 5 to 15 business days depending on the payment provider.'],
-                ['title' => 'Transaction fees', 'body' => 'Bank fees, payment gateway fees, or exchange-rate differences may not be refunded if the third party does not return them to Auronsoft.'],
+                ['title' => 'Receiving funds', 'body' => 'After Mindigo confirms the refund, funds usually arrive within 5 to 15 business days depending on the payment provider.'],
+                ['title' => 'Transaction fees', 'body' => 'Bank fees, payment gateway fees, or exchange-rate differences may not be refunded if the third party does not return them to Mindigo.'],
             ],
         ],
         [
             'id' => 'chargebacks',
             'title' => '9. Payment Disputes and Fraud',
             'paragraphs' => [
-                'If you identify an unauthorized transaction, please contact Auronsoft promptly for review. Opening a dispute through a bank or payment gateway may temporarily restrict account access until the matter is clarified.',
+                'If you identify an unauthorized transaction, please contact Mindigo promptly for review. Opening a dispute through a bank or payment gateway may temporarily restrict account access until the matter is clarified.',
             ],
             'items' => [
-                'Auronsoft may deny a refund if fraud, policy abuse, continued service use after a refund request, or inaccurate information is detected.',
+                'Mindigo may deny a refund if fraud, policy abuse, continued service use after a refund request, or inaccurate information is detected.',
                 'Accounts related to chargebacks, fraud, or prolonged disputes may have access to paid features temporarily suspended.',
             ],
         ],
@@ -140,14 +140,14 @@ return [
             'id' => 'updates',
             'title' => '11. Policy Updates',
             'paragraphs' => [
-                'Auronsoft may update this Refund Policy to reflect product, payment method, legal, or business model changes. The new version will be published on the system and apply from the stated effective date.',
+                'Mindigo may update this Refund Policy to reflect product, payment method, legal, or business model changes. The new version will be published on the system and apply from the stated effective date.',
             ],
         ],
         [
             'id' => 'contact',
             'title' => '12. Contact',
             'paragraphs' => [
-                'If you have questions about payments, invoices, or refund requests, please contact Auronsoft through the official support channel.',
+                'If you have questions about payments, invoices, or refund requests, please contact Mindigo through the official support channel.',
             ],
             'cards' => [
                 ['title' => 'Payment support', 'body' => 'Email: support@mindigo.vn'],

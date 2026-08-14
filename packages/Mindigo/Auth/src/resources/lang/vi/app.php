@@ -3,14 +3,14 @@
 return [
 
     'brand' => [
-        'name' => 'AuronsoftID',
-        'powered_by' => 'Phát triển bởi Auronsoft',
+        'name' => 'MindigoID',
+        'copyright' => '© '.date('Y').' Auronsoft. All rights reserved.',
     ],
 
     'auth' => [
         'login_title' => 'Đăng nhập',
         'login_subtitle' => 'để tiếp tục với :platform',
-        'platform' => 'Auronsoft LMS',
+        'platform' => 'Mindigo LMS',
 
         'email' => 'Email',
         'email_placeholder' => 'student@example.com',
@@ -28,9 +28,9 @@ return [
         'confirm' => 'Xác nhận',
         'back' => 'Quay lại',
 
-        'login_with_Auronsoft_id' => 'Đăng nhập bằng Auronsoft ID',
+        'login_with_identity' => 'Đăng nhập bằng Mindigo ID',
 
-        'magic_link_sent' => 'Auronsoft ID đã gửi một liên kết đến',
+        'magic_link_sent' => 'Mindigo ID đã gửi một liên kết đến',
         'magic_link_check' => 'Vui lòng kiểm tra email để đăng nhập.',
         'resend' => 'Gửi lại',
         'resend_otp' => 'Gửi lại OTP',
@@ -200,8 +200,8 @@ return [
     ],
 
     'mail' => [
-        'magic_link_subject' => 'Liên kết đăng nhập AuronsoftID',
-        'otp_login_subject' => 'Mã OTP đăng nhập AuronsoftID — AuronsoftHRM',
-        'otp_forgot_password_subject' => 'Mã OTP đặt lại mật khẩu — AuronsoftHRM',
+        'magic_link_subject' => 'Liên kết đăng nhập MindigoID',
+        'otp_login_subject' => 'Mã OTP đăng nhập MindigoID — MindigoHRM',
+        'otp_forgot_password_subject' => 'Mã OTP đặt lại mật khẩu — MindigoHRM',
     ],
 ];

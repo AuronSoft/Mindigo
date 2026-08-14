@@ -53,7 +53,7 @@
             </span>
             <span class="hidden min-w-0 whitespace-nowrap" data-sidebar-text>
                 <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">@lang('Mindigo-dashboard::app.platform')</span>
-                <span class="block text-lg font-black tracking-tight text-slate-900">Auronsoft <span class="text-green-600">LMS</span></span>
+                <span class="block text-lg font-black tracking-tight text-slate-900">Mindigo <span class="text-green-600">LMS</span></span>
             </span>
         </a>
 

@@ -49,5 +49,5 @@ return [
     'waiting_room_message' => 'Your request to join has been sent to the teacher.',
     'waiting_room_refresh' => 'Check again after the teacher admits you.',
     'check_admission' => 'Check again',
-    'native_room_preparing' => 'The Auronsoft Native classroom media core is being prepared.',
+    'native_room_preparing' => 'The Mindigo Native classroom media core is being prepared.',
 ];

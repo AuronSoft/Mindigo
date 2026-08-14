@@ -32,10 +32,10 @@ return [
     ],
     'read_time' => ':minutes phút đọc',
     'fallback' => [
-        'author' => 'Thành viên Auronsoft',
+        'author' => 'Thành viên Mindigo',
     ],
     'hero' => [
-        'eyebrow' => 'Cộng đồng ôn thi của Auronsoft',
+        'eyebrow' => 'Cộng đồng ôn thi của Mindigo',
         'title' => 'Kinh nghiệm ôn thi',
         'highlight' => 'từ người đã trải qua',
         'description' => 'Tổng hợp các bài chia sẻ thực tế từ học sinh, sinh viên và người học đã vượt qua những kỳ thi quan trọng. Học từ phương pháp thật, lộ trình thật và sai lầm thật.',
@@ -65,7 +65,7 @@ return [
     ],
     'sidebar' => [
         'cta_title' => 'Bạn có kinh nghiệm muốn chia sẻ?',
-        'cta_text' => 'Xem bài viết thì không cần đăng nhập. Khi muốn chia sẻ kinh nghiệm hoặc bình luận, bạn chỉ cần đăng nhập tài khoản Auronsoft.',
+        'cta_text' => 'Xem bài viết thì không cần đăng nhập. Khi muốn chia sẻ kinh nghiệm hoặc bình luận, bạn chỉ cần đăng nhập tài khoản Mindigo.',
         'cta_button' => 'Viết bài ngay',
         'trending_title' => 'Chủ đề đang hot',
         'contributors_title' => 'Đóng góp nhiều nhất',

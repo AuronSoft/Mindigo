@@ -401,7 +401,7 @@
                             {{-- Left stat card --}}
                             <div class="rounded-3xl bg-linear-to-br from-green-700 to-emerald-500 p-5 text-white shadow-sm">
                                 <p class="text-xs font-black text-green-100">@lang('Mindigo-dashboard::app.qbank_overview')</p>
-                                <h4 class="mt-1 text-lg font-black">Auronsoft LMS</h4>
+                                <h4 class="mt-1 text-lg font-black">Mindigo LMS</h4>
                                 <div class="mt-7 space-y-4">
                                     <div>
                                         <p class="text-xs font-bold text-green-100">@lang('Mindigo-dashboard::app.standard_questions')</p>

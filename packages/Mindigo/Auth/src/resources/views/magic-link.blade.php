@@ -41,16 +41,16 @@
                 <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b"/>
                 <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706"/>
             </svg>
-            <h1>Auronsoft</h1>
+            <h1>Mindigo</h1>
         </div>
 
         {{-- Body --}}
         <div class="body">
             <p>Xin chào,</p>
-            <p>Bạn vừa yêu cầu <strong>đăng nhập</strong> vào Auronsoft bằng Auronsoft ID. Nhấn vào nút bên dưới để đăng nhập ngay — không cần mật khẩu.</p>
+            <p>Bạn vừa yêu cầu <strong>đăng nhập</strong> vào Mindigo bằng Mindigo ID. Nhấn vào nút bên dưới để đăng nhập ngay — không cần mật khẩu.</p>
 
             <div class="btn-wrap">
-                <a href="{{ $link }}" class="btn">Đăng nhập vào Auronsoft</a>
+                <a href="{{ $link }}" class="btn">Đăng nhập vào Mindigo</a>
             </div>
 
             <p class="expire-note">Liên kết có hiệu lực trong <strong>15 phút</strong> và chỉ dùng được 1 lần.</p>
@@ -69,7 +69,7 @@
 
         {{-- Footer --}}
         <div class="footer">
-            © {{ date('Y') }} <strong>Auronsoft</strong>. Nền tảng thi trắc nghiệm online tốt nhất.
+            © {{ date('Y') }} <strong>Auronsoft</strong>. All rights reserved.
         </div>
     </div>
 </body>

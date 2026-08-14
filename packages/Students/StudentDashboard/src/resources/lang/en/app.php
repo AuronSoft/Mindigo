@@ -4,8 +4,8 @@ return [
     'nav_courses' => 'My courses',
     'practice_analytics' => 'Practice analytics',
     // SEO / meta
-    'meta_title' => 'Student Dashboard · Auronsoft LMS',
-    'meta_description' => 'Student learning area on Auronsoft LMS: classrooms, assignments, exams, schedule, progress and results.',
+    'meta_title' => 'Student Dashboard · Mindigo LMS',
+    'meta_description' => 'Student learning area on Mindigo LMS: classrooms, assignments, exams, schedule, progress and results.',
 
     // Area
     'area' => 'Student',

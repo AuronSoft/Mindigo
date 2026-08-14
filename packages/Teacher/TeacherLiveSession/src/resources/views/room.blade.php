@@ -8,7 +8,7 @@
 @section('content')
 <main class="flex min-h-[calc(100vh-4rem)] flex-col bg-slate-50">
     <header class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-6 py-4">
-        <div class="min-w-0"><p class="text-xs font-black uppercase tracking-widest text-green-700">Auronsoft Live</p><h1 class="truncate text-lg font-black text-slate-950">{{ $session->title }}</h1><p class="text-xs font-semibold text-slate-500">{{ $session->classroom->name ?? '' }}</p></div>
+        <div class="min-w-0"><p class="text-xs font-black uppercase tracking-widest text-green-700">Mindigo Live</p><h1 class="truncate text-lg font-black text-slate-950">{{ $session->title }}</h1><p class="text-xs font-semibold text-slate-500">{{ $session->classroom->name ?? '' }}</p></div>
         <div class="flex flex-wrap gap-2">
             <form method="POST" action="{{ route($session->isLocked() ? 'teacher.live-sessions.unlock' : 'teacher.live-sessions.lock', $session) }}">@csrf<button class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-4 text-xs font-black text-slate-700"><x-dynamic-component :component="$session->isLocked() ? 'heroicon-o-lock-open' : 'heroicon-o-lock-closed'" class="h-4 w-4" />{{ $session->isLocked() ? __('teacher-live-session::app.unlock_room') : __('teacher-live-session::app.lock_room') }}</button></form>
             <a href="{{ route('teacher.live-sessions.index') }}" class="inline-flex h-10 items-center rounded-xl border border-slate-200 px-4 text-xs font-black text-slate-700 no-underline">@lang('teacher-live-session::app.leave_room')</a>

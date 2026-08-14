@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'featured' => 'Khóa học nổi bật', 'featured_description' => 'Những khóa học chất lượng được Auronsoft lựa chọn.',
+    'featured' => 'Khóa học nổi bật', 'featured_description' => 'Những khóa học chất lượng được Mindigo lựa chọn.',
     'trending' => 'Đang được quan tâm', 'continue' => 'Tiếp tục khám phá', 'recommended' => 'Gợi ý cho bạn',
     'wishlist' => 'Khóa học yêu thích', 'wishlist_description' => 'Lưu lại khóa học bạn muốn tìm hiểu và học sau.',
     'wishlist_added' => 'Đã thêm khóa học vào danh sách yêu thích.', 'wishlist_removed' => 'Đã xóa khóa học khỏi danh sách yêu thích.',

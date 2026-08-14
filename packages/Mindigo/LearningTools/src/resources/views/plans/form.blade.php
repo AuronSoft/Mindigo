@@ -1,5 +1,5 @@
 @extends('Mindigo-dashboard::layouts')
-@section('title', ($plan->exists ? __('learning-tools::app.plans.edit') : __('learning-tools::app.plans.new')) . ' · Auronsoft LMS')
+@section('title', ($plan->exists ? __('learning-tools::app.plans.edit') : __('learning-tools::app.plans.new')) . ' · Mindigo LMS')
 @section('styles')
     @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js'])
 @endsection

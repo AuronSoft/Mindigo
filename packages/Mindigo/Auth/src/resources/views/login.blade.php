@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@lang('Mindigo-auth::app.auth.login_title') — Auronsoft</title>
+    <title>@lang('Mindigo-auth::app.auth.login_title') — Mindigo</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=be-vietnam-pro:300,400,500,600,700,800,900" rel="stylesheet"/>
     <script>
@@ -47,7 +47,7 @@
                     <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b" stroke="#14532d" stroke-width="2"/>
                     <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706" stroke="#14532d" stroke-width="2"/>
                 </svg>
-                <span class="text-xl font-black text-green-600 tracking-tight">Auronsoft</span>
+                <span class="text-xl font-black text-green-600 tracking-tight">Mindigo</span>
             </a>
         </div>
 
@@ -112,7 +112,7 @@
                     </button>
                 </form>
 
-                {{-- Auronsoft ID --}}
+                {{-- Mindigo ID --}}
                 <a href="#" data-nid-action="open" class="mt-4 w-full flex items-center justify-center gap-2 border-2 border-green-500 text-green-600 font-black text-sm py-3 rounded-xl hover:bg-green-50 transition">
                     <svg width="18" height="18" viewBox="0 0 200 220" fill="none">
                         <circle cx="105" cy="145" r="90" fill="#22c55e" stroke="#14532d" stroke-width="3"/>
@@ -123,7 +123,7 @@
                         <circle cx="132" cy="138" r="12" fill="#14532d"/>
                         <circle cx="137" cy="132" r="5" fill="white"/>
                     </svg>
-                    @lang('Mindigo-auth::app.auth.login_with_Mindigo_id')
+                    @lang('Mindigo-auth::app.auth.login_with_identity')
                 </a>
 
                 {{-- Divider --}}

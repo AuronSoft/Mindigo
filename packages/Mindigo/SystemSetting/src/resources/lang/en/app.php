@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'System settings - Auronsoft',
+    'title' => 'System settings - Mindigo',
     'breadcrumb' => 'System settings',
     'heading' => 'System settings',
     'description' => 'Manage core settings for exams, users, notifications, AI, and security.',

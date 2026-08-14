@@ -14,8 +14,8 @@
                 <h1 class="text-5xl font-black text-gray-900 leading-tight">
                     @lang('core::app.hero.heading_1')
                 </h1>
-                <h2 class="text-5xl font-black text-green-600 leading-tight flex items-center gap-1">
-                    <span id="typewriter">@lang('core::app.hero.heading_2')</span><span class="inline-block w-0.5 h-11 bg-green-500 animate-pulse ml-0.5"></span>
+                <h2 class="text-5xl font-black leading-tight text-green-600">
+                    <span id="typewriter">@lang('core::app.hero.heading_2')</span><span class="ml-1 inline-block h-[0.85em] w-0.5 align-[-0.08em] bg-green-500 animate-pulse" aria-hidden="true"></span>
                 </h2>
                 <h3 class="text-5xl font-black text-gray-900 leading-tight">
                     @lang('core::app.hero.heading_3')
@@ -177,7 +177,7 @@
                             </div>
                         </div>
 
-                        {{-- Current Auronsoft LMS course workspace --}}
+                        {{-- Current Mindigo LMS course workspace --}}
                         <div class="min-w-0 flex-1 space-y-3">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0"><p class="truncate text-xs font-black text-gray-800">@lang('core::app.hero.course_name')</p><p class="mt-0.5 text-[9px] font-semibold text-gray-400">@lang('core::app.hero.course_meta')</p></div>

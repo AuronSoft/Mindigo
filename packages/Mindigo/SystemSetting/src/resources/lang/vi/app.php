@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Cấu hình hệ thống - Auronsoft',
+    'title' => 'Cấu hình hệ thống - Mindigo',
     'breadcrumb' => 'Cấu hình hệ thống',
     'heading' => 'Cấu hình hệ thống',
     'description' => 'Quản lý các thiết lập lõi cho hệ thống ôn thi trắc nghiệm, người dùng, thông báo, AI và bảo mật.',

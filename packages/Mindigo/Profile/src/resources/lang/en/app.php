@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'page_title' => 'My Account - Auronsoft',
+    'page_title' => 'My Account - Mindigo',
     'dashboard' => 'Dashboard',
     'my_account' => 'My Account',
     'back_to_dashboard' => 'Back to dashboard',

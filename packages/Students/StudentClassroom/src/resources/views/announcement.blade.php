@@ -1,5 +1,5 @@
 @extends('Mindigo-dashboard::layouts')
-@section('title', $announcement->title . ' · Auronsoft LMS')
+@section('title', $announcement->title . ' · Mindigo LMS')
 
 @section('styles')
     @vite([

@@ -23,7 +23,7 @@ class LiveSessionCreationWorkflowTest extends TestCase
         $response = $this->actingAs($teacher)->get(route('teacher.live-sessions.create'));
 
         $response->assertOk();
-        $response->assertSee('Auronsoft Live');
+        $response->assertSee('Mindigo Live');
         $response->assertSee($schedule->title);
         $response->assertSee('Google Meet');
         $response->assertSee('disabled', false);

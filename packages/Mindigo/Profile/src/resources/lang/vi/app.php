@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'page_title' => 'Tài khoản của tôi - Auronsoft',
+    'page_title' => 'Tài khoản của tôi - Mindigo',
     'dashboard' => 'Dashboard',
     'my_account' => 'Tài khoản của tôi',
     'back_to_dashboard' => 'Về dashboard',

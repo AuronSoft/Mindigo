@@ -4,16 +4,16 @@ return [
     'hero' => [
         'badge' => 'Legal Center',
         'title' => 'Chính sách Sử dụng Trợ lý AI',
-        'description' => 'Chính sách này quy định cách sử dụng các tính năng Trợ lý AI của Auronsoft một cách an toàn, minh bạch và phù hợp trong học tập, giảng dạy, ôn luyện, tạo câu hỏi và quản lý giáo dục.',
+        'description' => 'Chính sách này quy định cách sử dụng các tính năng Trợ lý AI của Mindigo một cách an toàn, minh bạch và phù hợp trong học tập, giảng dạy, ôn luyện, tạo câu hỏi và quản lý giáo dục.',
     ],
     'meta' => [
         'effective_date' => 'Ngày hiệu lực: 1 tháng 7 năm 2026',
         'version' => 'Phiên bản: 1.0',
-        'scope' => 'Áp dụng cho người học, giáo viên, quản trị viên, tổ chức và mọi tính năng AI trong Auronsoft',
+        'scope' => 'Áp dụng cho người học, giáo viên, quản trị viên, tổ chức và mọi tính năng AI trong Mindigo',
     ],
     'toc_title' => 'Mục lục',
     'intro' => [
-        'Trợ lý AI của Auronsoft được thiết kế để hỗ trợ học tập và vận hành giáo dục, không nhằm thay thế vai trò của giáo viên, chuyên gia, tổ chức đào tạo hoặc quyết định tự chịu trách nhiệm của người dùng.',
+        'Trợ lý AI của Mindigo được thiết kế để hỗ trợ học tập và vận hành giáo dục, không nhằm thay thế vai trò của giáo viên, chuyên gia, tổ chức đào tạo hoặc quyết định tự chịu trách nhiệm của người dùng.',
         'Bằng việc sử dụng tính năng AI, bạn đồng ý tuân thủ chính sách này, Điều khoản Sử dụng, Chính sách Bảo mật và các quy định riêng của tổ chức quản lý tài khoản nếu có.',
     ],
     'sections' => [
@@ -21,7 +21,7 @@ return [
             'id' => 'purpose',
             'title' => '1. Mục đích Sử dụng AI',
             'paragraphs' => [
-                'Auronsoft cung cấp AI để tăng hiệu quả học tập, giúp người dùng hiểu kiến thức tốt hơn, tiết kiệm thời gian chuẩn bị học liệu và hỗ trợ quản lý lớp học.',
+                'Mindigo cung cấp AI để tăng hiệu quả học tập, giúp người dùng hiểu kiến thức tốt hơn, tiết kiệm thời gian chuẩn bị học liệu và hỗ trợ quản lý lớp học.',
             ],
             'items' => [
                 'Gợi ý lộ trình ôn luyện, giải thích khái niệm, tóm tắt nội dung và tạo câu hỏi luyện tập.',
@@ -39,7 +39,7 @@ return [
             'items' => [
                 'Giáo viên và tổ chức chịu trách nhiệm rà soát câu hỏi, đáp án, lời giải, tiêu chí chấm điểm và nội dung học liệu do AI hỗ trợ tạo ra.',
                 'Người học không nên xem phản hồi AI là tư vấn chuyên môn tuyệt đối hoặc đáp án chính thức nếu chưa được xác nhận.',
-                'Auronsoft có thể cải tiến mô hình, bộ lọc và cơ chế hiển thị mà không đảm bảo mọi đầu ra luôn giống nhau ở các lần sử dụng.',
+                'Mindigo có thể cải tiến mô hình, bộ lọc và cơ chế hiển thị mà không đảm bảo mọi đầu ra luôn giống nhau ở các lần sử dụng.',
             ],
         ],
         [
@@ -72,7 +72,7 @@ return [
             'id' => 'prohibited',
             'title' => '5. Nội dung và Hành vi Bị cấm',
             'paragraphs' => [
-                'Auronsoft không cho phép sử dụng AI để tạo, hỗ trợ hoặc phát tán nội dung gây hại, trái pháp luật hoặc vi phạm quyền của người khác.',
+                'Mindigo không cho phép sử dụng AI để tạo, hỗ trợ hoặc phát tán nội dung gây hại, trái pháp luật hoặc vi phạm quyền của người khác.',
             ],
             'items' => [
                 'Nội dung thù ghét, quấy rối, bạo lực, tự hại, khiêu dâm, lừa đảo, mạo danh hoặc xâm phạm đời tư.',
@@ -98,7 +98,7 @@ return [
             'id' => 'monitoring',
             'title' => '7. Giám sát Lạm dụng và An toàn',
             'paragraphs' => [
-                'Auronsoft có thể áp dụng giới hạn sử dụng, bộ lọc an toàn, nhật ký kỹ thuật và cơ chế phát hiện lạm dụng nhằm bảo vệ người dùng, dữ liệu và hệ thống.',
+                'Mindigo có thể áp dụng giới hạn sử dụng, bộ lọc an toàn, nhật ký kỹ thuật và cơ chế phát hiện lạm dụng nhằm bảo vệ người dùng, dữ liệu và hệ thống.',
             ],
             'items' => [
                 'Yêu cầu vi phạm chính sách có thể bị từ chối, giới hạn hoặc ghi nhận để kiểm tra an toàn.',
@@ -110,7 +110,7 @@ return [
             'id' => 'third-party',
             'title' => '8. Nhà cung cấp Công nghệ AI',
             'paragraphs' => [
-                'Auronsoft có thể sử dụng mô hình, hạ tầng hoặc dịch vụ AI của bên thứ ba để cung cấp tính năng. Việc xử lý dữ liệu sẽ tuân thủ Chính sách Bảo mật của Auronsoft và các thỏa thuận phù hợp với nhà cung cấp.',
+                'Mindigo có thể sử dụng mô hình, hạ tầng hoặc dịch vụ AI của bên thứ ba để cung cấp tính năng. Việc xử lý dữ liệu sẽ tuân thủ Chính sách Bảo mật của Mindigo và các thỏa thuận phù hợp với nhà cung cấp.',
                 'Tính năng AI có thể thay đổi, bị giới hạn hoặc tạm ngưng nếu nhà cung cấp, quy định pháp luật hoặc yêu cầu an toàn thay đổi.',
             ],
         ],
@@ -123,28 +123,28 @@ return [
             'items' => [
                 'Không sử dụng đầu ra AI để vi phạm bản quyền, quyền riêng tư, bí mật kinh doanh hoặc quyền sở hữu trí tuệ của bên thứ ba.',
                 'Tổ chức có thể áp dụng quy định riêng về quyền sở hữu, lưu trữ, chia sẻ và sử dụng học liệu được AI hỗ trợ tạo ra.',
-                'Auronsoft có thể dùng phản hồi, thống kê và nhật ký kỹ thuật đã được xử lý phù hợp để cải thiện chất lượng sản phẩm.',
+                'Mindigo có thể dùng phản hồi, thống kê và nhật ký kỹ thuật đã được xử lý phù hợp để cải thiện chất lượng sản phẩm.',
             ],
         ],
         [
             'id' => 'availability',
             'title' => '10. Tính sẵn sàng và Giới hạn Dịch vụ',
             'paragraphs' => [
-                'Tính năng AI có thể phụ thuộc vào hạ tầng, giới hạn gói dịch vụ, lưu lượng hệ thống, kết nối mạng và nhà cung cấp mô hình. Auronsoft có thể áp dụng hạn mức, hàng đợi xử lý hoặc tạm dừng tính năng để bảo trì, bảo mật hoặc đảm bảo công bằng sử dụng.',
+                'Tính năng AI có thể phụ thuộc vào hạ tầng, giới hạn gói dịch vụ, lưu lượng hệ thống, kết nối mạng và nhà cung cấp mô hình. Mindigo có thể áp dụng hạn mức, hàng đợi xử lý hoặc tạm dừng tính năng để bảo trì, bảo mật hoặc đảm bảo công bằng sử dụng.',
             ],
         ],
         [
             'id' => 'updates',
             'title' => '11. Cập nhật Chính sách',
             'paragraphs' => [
-                'Auronsoft có thể cập nhật chính sách này để phù hợp với thay đổi về sản phẩm, mô hình AI, quy định pháp luật, yêu cầu an toàn hoặc chuẩn mực giáo dục. Phiên bản mới sẽ được công bố trên hệ thống và có hiệu lực từ ngày được nêu.',
+                'Mindigo có thể cập nhật chính sách này để phù hợp với thay đổi về sản phẩm, mô hình AI, quy định pháp luật, yêu cầu an toàn hoặc chuẩn mực giáo dục. Phiên bản mới sẽ được công bố trên hệ thống và có hiệu lực từ ngày được nêu.',
             ],
         ],
         [
             'id' => 'contact',
             'title' => '12. Liên hệ',
             'paragraphs' => [
-                'Nếu bạn có câu hỏi về việc sử dụng Trợ lý AI, báo cáo đầu ra không phù hợp hoặc cần hỗ trợ về dữ liệu liên quan đến AI, vui lòng liên hệ Auronsoft.',
+                'Nếu bạn có câu hỏi về việc sử dụng Trợ lý AI, báo cáo đầu ra không phù hợp hoặc cần hỗ trợ về dữ liệu liên quan đến AI, vui lòng liên hệ Mindigo.',
             ],
             'cards' => [
                 ['title' => 'Hỗ trợ sản phẩm AI', 'body' => 'Email: support@mindigo.vn'],
@@ -153,7 +153,7 @@ return [
         ],
     ],
     'footer' => [
-        'copyright' => '© '.date('Y').' Auronsoft. Đã đăng ký bản quyền.',
+        'copyright' => '© '.date('Y').' Auronsoft. All rights reserved.',
         'home' => 'Trang chủ',
         'terms' => 'Điều khoản sử dụng',
         'privacy' => 'Chính sách bảo mật',

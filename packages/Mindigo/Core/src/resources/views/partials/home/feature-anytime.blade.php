@@ -42,7 +42,7 @@
                                 <div class="w-5 h-5 bg-green-500 rounded-md flex items-center justify-center">
                                     <span class="text-white text-[7px] font-black">M</span>
                                 </div>
-                                <span class="text-[9px] font-black text-gray-600">Auronsoft</span>
+                                <span class="text-[9px] font-black text-gray-600">Mindigo</span>
                             </div>
                             <div class="flex-1 bg-white rounded-md h-5 mx-2 border border-gray-200 flex items-center px-2">
                                 <span class="text-[8px] text-gray-400">@lang('core::app.nav.url')</span>

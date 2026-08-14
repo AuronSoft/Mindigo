@@ -1,5 +1,5 @@
 @extends('Mindigo-dashboard::layouts')
-@section('title', __('student-leaderboard::app.title') . ' · Auronsoft LMS')
+@section('title', __('student-leaderboard::app.title') . ' · Mindigo LMS')
 @section('meta_description', __('student-leaderboard::app.subtitle'))
 
 @section('styles')

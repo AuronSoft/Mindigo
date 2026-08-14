@@ -113,18 +113,28 @@
                         <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b" stroke="#14532d" stroke-width="2"/>
                         <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706" stroke="#14532d" stroke-width="2"/>
                     </svg>
-                    <span class="text-xl font-black text-green-600 tracking-tight">Auronsoft</span>
+                    <span class="text-xl font-black text-green-600 tracking-tight">Mindigo</span>
                 </a>
                 <p class="text-gray-400 text-sm leading-relaxed">@lang('core::app.footer.tagline')</p>
                 <div class="flex items-center gap-3">
-                    <a href="#" class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-500 transition">
-                        <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+                    <a href="#" aria-label="Facebook" title="Facebook" class="flex h-9 w-9 items-center justify-center transition hover:-translate-y-0.5 hover:scale-110">
+                        <svg class="h-7 w-7" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="11" fill="#1877F2"/>
+                            <path fill="#fff" d="M13.52 20v-7.3h2.45l.37-2.85h-2.82V8.03c0-.82.23-1.38 1.41-1.38h1.5V4.11A20 20 0 0 0 14.24 4c-2.17 0-3.66 1.33-3.66 3.76v2.09H8.12v2.85h2.46V20h2.94Z"/>
+                        </svg>
                     </a>
-                    <a href="#" class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-500 transition">
-                        <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+                    <a href="#" aria-label="TikTok" title="TikTok" class="flex h-9 w-9 items-center justify-center transition hover:-translate-y-0.5 hover:scale-110">
+                        <svg class="h-7 w-7" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill="#25F4EE" d="M16.62 6.61a5.13 5.13 0 0 1-1.26-3.37h-3.08v12.39a2.58 2.58 0 1 1-2.58-2.58c.26 0 .51.04.75.11V10a5.75 5.75 0 1 0 4.91 5.69V9.4a8.2 8.2 0 0 0 4.79 1.53V7.86a5.1 5.1 0 0 1-3.53-1.25Z" transform="translate(-.7 .55)"/>
+                            <path fill="#FE2C55" d="M16.62 6.61a5.13 5.13 0 0 1-1.26-3.37h-3.08v12.39a2.58 2.58 0 1 1-2.58-2.58c.26 0 .51.04.75.11V10a5.75 5.75 0 1 0 4.91 5.69V9.4a8.2 8.2 0 0 0 4.79 1.53V7.86a5.1 5.1 0 0 1-3.53-1.25Z" transform="translate(.7 -.35)"/>
+                            <path fill="#000" d="M16.62 6.61a5.13 5.13 0 0 1-1.26-3.37h-3.08v12.39a2.58 2.58 0 1 1-2.58-2.58c.26 0 .51.04.75.11V10a5.75 5.75 0 1 0 4.91 5.69V9.4a8.2 8.2 0 0 0 4.79 1.53V7.86a5.1 5.1 0 0 1-3.53-1.25Z"/>
+                        </svg>
                     </a>
-                    <a href="#" class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-500 transition">
-                        <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+                    <a href="#" aria-label="YouTube" title="YouTube" class="flex h-9 w-9 items-center justify-center transition hover:-translate-y-0.5 hover:scale-110">
+                        <svg class="h-7 w-7" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill="#FF0000" d="M23.5 6.19a3 3 0 0 0-2.11-2.12C19.52 3.57 12 3.57 12 3.57s-7.52 0-9.39.5A3 3 0 0 0 .5 6.19 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.81 3 3 0 0 0 2.11 2.12c1.87.5 9.39.5 9.39.5s7.52 0 9.39-.5a3 3 0 0 0 2.11-2.12A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.81Z"/>
+                            <path fill="#fff" d="m9.6 15.6 6.23-3.6L9.6 8.4v7.2Z"/>
+                        </svg>
                     </a>
                 </div>
             </div>
@@ -174,7 +184,7 @@
 
         <div class="border-t border-gray-800 pt-6 flex items-center justify-center">
             <p class="text-gray-500 text-xs text-center">
-                Phát triển bởi <span class="text-green-500 font-black">Auronsoft</span>
+                @lang('core::app.footer.copyright')
             </p>
         </div>
     </div>

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'meta' => ['description' => 'Nền tảng quản lý học tập Auronsoft dành cho khóa học, luyện tập và thi trực tuyến.'],
+    'meta' => ['description' => 'Nền tảng quản lý học tập Mindigo dành cho khóa học, luyện tập và thi trực tuyến.'],
     'trust' => [
         'heading_1' => 'Được cộng đồng sinh viên, trường đại học và',
         'heading_2' => 'doanh nghiệp trên cả nước tin cậy',
@@ -31,13 +31,13 @@ return [
                 'name' => 'Nguyễn Thư',
                 'school' => 'Đại học Thương mại',
                 'seed' => 'Thu',
-                'review' => 'Đã sử dụng Auronsoft suốt và thực sự rất hài lòng. Tính năng làm bài thi giúp tiết kiệm được nhiều thời gian ôn luyện. Nhìn chung thì các bài tập đa dạng và giao diện trực quan khiến việc học trở nên thú vị hơn.',
+                'review' => 'Đã sử dụng Mindigo suốt và thực sự rất hài lòng. Tính năng làm bài thi giúp tiết kiệm được nhiều thời gian ôn luyện. Nhìn chung thì các bài tập đa dạng và giao diện trực quan khiến việc học trở nên thú vị hơn.',
             ],
             [
                 'name' => 'Gia Khánh',
                 'school' => 'Đại học Thương mại',
                 'seed' => 'Khanh',
-                'review' => 'Mình đã sử dụng Auronsoft suốt một thời gian dài và thật sự rất hài lòng. Tính năng thi thử giúp mình tiết kiệm được rất nhiều thời gian ôn tập, các bài tập đa dạng, giao diện trực quan khiến việc học trở nên hiệu quả.',
+                'review' => 'Mình đã sử dụng Mindigo suốt một thời gian dài và thật sự rất hài lòng. Tính năng thi thử giúp mình tiết kiệm được rất nhiều thời gian ôn tập, các bài tập đa dạng, giao diện trực quan khiến việc học trở nên hiệu quả.',
             ],
             [
                 'name' => 'Nguyễn Hà',
@@ -49,19 +49,19 @@ return [
                 'name' => 'Hùng Mai',
                 'school' => 'Đại học Kinh doanh và Công nghệ Hà Nội',
                 'seed' => 'Hung',
-                'review' => 'Trong quá trình sử dụng Auronsoft để học thi, Auronsoft đã giúp em dễ dàng ghi nhớ được những kiến thức vốn rất hàn lâm. Hơn nữa, em được tiếp cận với bộ đề thi đa dạng và giao diện làm bài trực quan.',
+                'review' => 'Trong quá trình sử dụng Mindigo để học thi, Mindigo đã giúp em dễ dàng ghi nhớ được những kiến thức vốn rất hàn lâm. Hơn nữa, em được tiếp cận với bộ đề thi đa dạng và giao diện làm bài trực quan.',
             ],
             [
                 'name' => 'Su Trà',
                 'school' => 'Học viện Công nghệ - Bưu chính Viễn thông',
                 'seed' => 'Su',
-                'review' => 'Em mới biết Auronsoft gần đây khi tìm kiếm đề ôn tập. Auronsoft đã giúp em rất nhiều trong việc tìm đáp án và câu hỏi ở nhiều chủ đề khác nhau.',
+                'review' => 'Em mới biết Mindigo gần đây khi tìm kiếm đề ôn tập. Mindigo đã giúp em rất nhiều trong việc tìm đáp án và câu hỏi ở nhiều chủ đề khác nhau.',
             ],
             [
                 'name' => 'Minh Tuấn',
                 'school' => 'Đại học Bách Khoa Hà Nội',
                 'seed' => 'Tuan',
-                'review' => 'Auronsoft thực sự là công cụ học tập tuyệt vời. Mình đặc biệt thích tính năng tạo đề thi tự động từ tài liệu, tiết kiệm rất nhiều thời gian chuẩn bị cho các kỳ thi.',
+                'review' => 'Mindigo thực sự là công cụ học tập tuyệt vời. Mình đặc biệt thích tính năng tạo đề thi tự động từ tài liệu, tiết kiệm rất nhiều thời gian chuẩn bị cho các kỳ thi.',
             ],
         ],
     ],
@@ -111,7 +111,7 @@ return [
         'heading_3' => 'trên nền tảng LMS',
         'heading_4' => 'xây dựng khóa học',
         'heading_5' => 'theo dõi tiến độ học viên',
-        'desc' => 'Auronsoft giúp tổ chức xây dựng khóa học, quản lý lớp học, phân phối tài liệu và theo dõi tiến độ học viên trong một hệ thống LMS trực quan.',
+        'desc' => 'Mindigo giúp tổ chức xây dựng khóa học, quản lý lớp học, phân phối tài liệu và theo dõi tiến độ học viên trong một hệ thống LMS trực quan.',
         'customers' => 'Hơn <strong class="text-green-600">200.000+</strong> khách hàng đã yêu thích sử dụng',
         'cta_create' => 'Khởi tạo LMS',
         'cta_search' => 'Khám phá khóa học',
@@ -169,7 +169,7 @@ return [
         'title_1' => 'Phòng thi ảo',
         'title_2' => 'trực tuyến',
         'desc_1' => 'Nền tảng cho phép tổ chức các kỳ thi, kiểm tra một cách an toàn, bảo mật và hiệu quả. Người làm bài thi có thể tham gia thi từ bất kỳ đâu có kết nối internet, không cần phải di chuyển đến địa điểm thi cụ thể.',
-        'desc_2' => 'Auronsoft sử dụng công nghệ tiên tiến để mô phỏng phòng thi truyền thống, đồng thời mang lại nhiều lợi ích vượt trội so với phương pháp thi cũ.',
+        'desc_2' => 'Mindigo sử dụng công nghệ tiên tiến để mô phỏng phòng thi truyền thống, đồng thời mang lại nhiều lợi ích vượt trội so với phương pháp thi cũ.',
         'cta' => 'Bắt đầu ngay',
         'url_room' => 'app.mindigo.vn/phong-thi',
         'url_manage' => 'app.mindigo.vn/quan-ly-ky-thi',
@@ -223,7 +223,7 @@ return [
         'title_1' => 'Thân thiện dễ sử dụng,',
         'title_2' => 'cá nhân hóa',
         'title_3' => 'việc học tập',
-        'desc_1' => 'Giao diện Auronsoft được thiết kế trực quan, thân thiện giúp người dùng thực hiện thao tác nhanh chóng và sử dụng được tối đa các tính năng hữu ích trên nền tảng.',
+        'desc_1' => 'Giao diện Mindigo được thiết kế trực quan, thân thiện giúp người dùng thực hiện thao tác nhanh chóng và sử dụng được tối đa các tính năng hữu ích trên nền tảng.',
         'desc_2' => 'Bằng cách cá nhân hóa, mỗi người dùng có trải nghiệm riêng và xây dựng lộ trình học tập phù hợp cho chính mình. Từ đó, kích thích tư duy độc lập, sáng tạo và đạt kết quả học tập tốt.',
         'cta' => 'Bắt đầu ngay',
         'label_easy' => 'Dễ sử dụng',
@@ -393,7 +393,7 @@ return [
         'legal_4' => 'Chính sách sử dụng "Trợ lý AI"',
         'legal_5' => 'Chính sách hoàn tiền',
         'legal_6' => 'Chính sách gia sư',
-        'copyright' => 'Phát triển bởi Auronsoft',
+        'copyright' => '© '.date('Y').' Auronsoft. All rights reserved.',
         'built_with' => 'Được xây dựng với ❤️ tại Việt Nam',
     ],
 
@@ -402,7 +402,7 @@ return [
         'header_badge' => 'LIÊN HỆ',
         'header_title' => 'Chúng tôi luôn sẵn sàng lắng nghe bạn',
         'header_title_highlight' => 'lắng nghe bạn',
-        'header_description' => 'Dù bạn có câu hỏi về sản phẩm, cần hỗ trợ kỹ thuật hay muốn hợp tác — đội ngũ Auronsoft luôn ở đây để giúp bạn.',
+        'header_description' => 'Dù bạn có câu hỏi về sản phẩm, cần hỗ trợ kỹ thuật hay muốn hợp tác — đội ngũ Mindigo luôn ở đây để giúp bạn.',
 
         'form_title' => 'Gửi tin nhắn cho chúng tôi',
         'label_name' => 'Họ và tên',
@@ -422,7 +422,7 @@ return [
         'button_send' => 'Gửi tin nhắn',
 
         'brand_tagline' => 'Nền tảng thi trắc nghiệm #1 Việt Nam',
-        'brand_name' => 'Auronsoft',
+        'brand_name' => 'Mindigo',
         'brand_description' => 'Giúp hơn 200.000+ học sinh, sinh viên và giảng viên tạo đề thi, ôn luyện và quản lý lớp học hiệu quả hơn mỗi ngày.',
         'brand_users' => '200.000+ người dùng',
         'brand_ai' => 'AI-powered',
@@ -539,7 +539,7 @@ return [
                     'a' => 'Có. Bạn có thể nâng cấp ngay lập tức. Khi hạ xuống gói thấp hơn, thay đổi sẽ có hiệu lực vào chu kỳ thanh toán tiếp theo.',
                 ],
                 [
-                    'q' => 'Auronsoft có hỗ trợ xuất hóa đơn VAT không?',
+                    'q' => 'Mindigo có hỗ trợ xuất hóa đơn VAT không?',
                     'a' => 'Có. Sau khi thanh toán, bạn có thể yêu cầu xuất hóa đơn VAT điện tử qua email support@mindigo.vn trong vòng 5 ngày làm việc.',
                 ],
                 [

@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title' => 'Nhật ký thao tác - Auronsoft',
-    'detail_title' => 'Chi tiết nhật ký - Auronsoft',
+    'title' => 'Nhật ký thao tác - Mindigo',
+    'detail_title' => 'Chi tiết nhật ký - Mindigo',
     'breadcrumb' => 'Nhật ký thao tác',
     'heading' => 'Nhật ký thao tác',
     'description' => 'Theo dõi các hành động quan trọng như đăng nhập, đăng xuất và thay đổi cấu hình hệ thống.',
