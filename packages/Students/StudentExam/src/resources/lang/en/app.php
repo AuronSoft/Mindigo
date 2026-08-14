@@ -109,4 +109,11 @@ return [
     'too_many_answers' => 'The answer contains too many values.',
     'attempt_locked' => 'This attempt is no longer editable. Your latest saved work is preserved.',
     'autosave_failed_retry' => 'Connection lost. Your pending answer will be saved automatically when the connection returns.',
+    'session_workspace' => [
+        'title' => 'My exam sessions', 'eyebrow' => 'Learning workspace · Exams', 'description' => 'Track schedules, resume active attempts, and start when an exam opens.',
+        'upcoming' => 'Upcoming', 'available' => 'Available now', 'completed' => 'Ended', 'empty' => 'There are no exams in this group.',
+        'starts_at' => 'Starts :time', 'ends_at' => 'Ends :time', 'duration' => ':minutes minutes', 'attempts' => 'Up to :count attempts',
+        'start' => 'Start attempt', 'continue' => 'Continue attempt', 'attempt' => 'Attempt :number', 'time_left' => 'Time remaining',
+        'question_progress' => 'Question :current / :total', 'previous' => 'Previous', 'next' => 'Next', 'submit_later' => 'Submission will be implemented in the next phase.',
+    ],
 ];

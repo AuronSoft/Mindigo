@@ -109,4 +109,11 @@ return [
     'too_many_answers' => 'Câu trả lời chứa quá nhiều giá trị.',
     'attempt_locked' => 'Lượt thi không còn cho phép chỉnh sửa. Bài đã lưu gần nhất vẫn được giữ lại.',
     'autosave_failed_retry' => 'Mất kết nối. Câu trả lời đang chờ sẽ tự lưu khi kết nối trở lại.',
+    'session_workspace' => [
+        'title' => 'Kỳ thi của tôi', 'eyebrow' => 'Không gian học tập · Kỳ thi', 'description' => 'Theo dõi lịch thi, tiếp tục lượt đang làm và bắt đầu bài khi kỳ thi mở.',
+        'upcoming' => 'Sắp diễn ra', 'available' => 'Có thể làm bài', 'completed' => 'Đã kết thúc', 'empty' => 'Không có kỳ thi trong nhóm này.',
+        'starts_at' => 'Bắt đầu :time', 'ends_at' => 'Kết thúc :time', 'duration' => ':minutes phút', 'attempts' => 'Tối đa :count lượt',
+        'start' => 'Bắt đầu làm bài', 'continue' => 'Tiếp tục làm bài', 'attempt' => 'Lượt :number', 'time_left' => 'Thời gian còn lại',
+        'question_progress' => 'Câu :current / :total', 'previous' => 'Câu trước', 'next' => 'Câu tiếp theo', 'submit_later' => 'Nộp bài sẽ được triển khai ở phase tiếp theo.',
+    ],
 ];

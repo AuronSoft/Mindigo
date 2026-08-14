@@ -55,6 +55,11 @@ class ExamSession extends Model
         return $this->hasMany(ExamCandidate::class);
     }
 
+    public function attempts(): HasMany
+    {
+        return $this->hasMany(ExamSessionAttempt::class);
+    }
+
     public function isMutable(): bool
     {
         return in_array($this->status, [self::STATUS_DRAFT, self::STATUS_SCHEDULED], true);
