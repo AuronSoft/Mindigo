@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'foundation' => [
+        'foundation_title' => 'Không gian kỳ thi',
+        'foundation_subtitle' => 'Thiết kế, tổ chức và theo dõi kỳ thi trong một quy trình thống nhất.',
+    ],
     'assigned_classrooms' => 'Giao đề cho lớp học',
     'assigned_classrooms_help' => 'Chỉ học sinh đang hoạt động trong các lớp được chọn mới nhìn thấy và làm đề này.',
     'students_unit' => 'học sinh',
