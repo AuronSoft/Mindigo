@@ -66,8 +66,8 @@ class LiveSessionCalendarIntegrationTest extends TestCase
     {
         return ClassroomSchedule::query()->create([
             'classroom_id' => $classroomId, 'type' => 'regular', 'delivery_mode' => 'online', 'status' => 'scheduled',
-            'title' => 'Linked online lesson', 'session_date' => today(), 'start_time' => now()->subHour()->format('H:i:s'),
-            'end_time' => now()->addHour()->format('H:i:s'), 'created_by' => $teacherId, 'updated_by' => $teacherId,
+            'title' => 'Linked online lesson', 'session_date' => today(), 'start_time' => '09:00:00',
+            'end_time' => '11:00:00', 'created_by' => $teacherId, 'updated_by' => $teacherId,
         ]);
     }
 
