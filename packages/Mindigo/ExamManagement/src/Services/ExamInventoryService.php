@@ -15,6 +15,13 @@ class ExamInventoryService
             'exam_questions',
             'exam_attempts',
             'exam_attempt_answers',
+            'exam_templates',
+            'exam_template_versions',
+            'exam_sections',
+            'exam_template_questions',
+            'exam_sessions',
+            'exam_assignments',
+            'exam_candidates',
         ];
 
         $counts = collect($tables)->mapWithKeys(fn (string $table): array => [
