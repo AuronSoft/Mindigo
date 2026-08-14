@@ -9,6 +9,14 @@ use Mindigo\Auth\Models\User;
 
 class ExamSessionAttempt extends Model
 {
+    public const GRADING_AUTO_GRADED = 'auto_graded';
+
+    public const GRADING_PENDING_MANUAL = 'pending_manual';
+
+    public const GRADING_COMPLETED = 'completed';
+
+    public const GRADING_RELEASED = 'released';
+
     public const STATUS_IN_PROGRESS = 'in_progress';
 
     public const STATUS_SUBMITTED = 'submitted';
@@ -94,6 +102,11 @@ class ExamSessionAttempt extends Model
     public function pausedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'paused_by');
+    }
+
+    public function appeals(): HasMany
+    {
+        return $this->hasMany(ExamGradeAppeal::class);
     }
 
     public function isActive(): bool

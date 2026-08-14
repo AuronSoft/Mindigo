@@ -125,5 +125,6 @@ return [
         'question_progress' => 'Câu :current / :total', 'previous' => 'Câu trước', 'next' => 'Câu tiếp theo', 'submit' => 'Nộp bài', 'confirm_submit' => 'Bạn chắc chắn muốn nộp bài?',
         'answer_placeholder' => 'Nhập câu trả lời của bạn', 'result' => 'Kết quả kỳ thi', 'score' => ':score / :max điểm', 'passed' => 'Đạt', 'failed' => 'Chưa đạt',
         'pending_review' => 'Đang chờ giáo viên chấm câu tự luận.', 'result_hidden' => 'Kết quả sẽ hiển thị theo thiết lập công bố của giáo viên.', 'back' => 'Quay lại danh sách kỳ thi',
+        'appeal' => 'Yêu cầu phúc khảo', 'appeal_reason' => 'Mô tả nội dung cần được xem lại', 'submit_appeal' => 'Gửi phúc khảo', 'appeal_submitted' => 'Đã gửi yêu cầu phúc khảo.', 'appeal_status' => 'Trạng thái phúc khảo: :status', 'appeal_statuses' => ['open' => 'Đang xem xét', 'upheld' => 'Được chấp nhận', 'rejected' => 'Bị từ chối'],
     ],
 ];

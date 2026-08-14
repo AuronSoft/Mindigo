@@ -18,6 +18,7 @@ Route::prefix('student/exam-sessions')
         Route::post('/attempts/{attempt}/camera-snapshot', [SessionAttemptController::class, 'cameraSnapshot'])->name('camera-snapshot');
         Route::post('/attempts/{attempt}/submit', [SessionAttemptController::class, 'submit'])->name('submit');
         Route::get('/attempts/{attempt}/result', [SessionAttemptController::class, 'result'])->name('result');
+        Route::post('/attempts/{attempt}/appeal', [SessionAttemptController::class, 'appeal'])->name('appeal');
     });
 
 Route::prefix('student/exams')

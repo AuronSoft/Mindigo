@@ -125,5 +125,6 @@ return [
         'question_progress' => 'Question :current / :total', 'previous' => 'Previous', 'next' => 'Next', 'submit' => 'Submit attempt', 'confirm_submit' => 'Are you sure you want to submit this attempt?',
         'answer_placeholder' => 'Enter your answer', 'result' => 'Exam result', 'score' => ':score / :max points', 'passed' => 'Passed', 'failed' => 'Not passed',
         'pending_review' => 'Your essay answers are awaiting teacher grading.', 'result_hidden' => 'The result will appear according to the teacher release settings.', 'back' => 'Back to exam sessions',
+        'appeal' => 'Request a score review', 'appeal_reason' => 'Explain what should be reviewed', 'submit_appeal' => 'Submit appeal', 'appeal_submitted' => 'Your appeal has been submitted.', 'appeal_status' => 'Appeal status: :status', 'appeal_statuses' => ['open' => 'Under review', 'upheld' => 'Upheld', 'rejected' => 'Rejected'],
     ],
 ];

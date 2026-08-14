@@ -35,6 +35,7 @@ class ExamTemplateRequest extends FormRequest
             'sections.*.questions' => ['required', 'array', 'min:1', 'max:200'],
             'sections.*.questions.*.id' => ['required', 'integer', 'distinct', Rule::exists('question_bank_questions', 'id')],
             'sections.*.questions.*.points' => ['required', 'numeric', 'gt:0', 'max:1000'],
+            'sections.*.questions.*.rubric_json' => ['nullable', 'json', 'max:10000'],
         ];
     }
 }

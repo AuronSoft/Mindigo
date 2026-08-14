@@ -27,6 +27,7 @@ class ExamSessionRequest extends FormRequest
             'result_policy' => ['required', 'in:immediately,after_end,after_release'],
             'shuffle_questions' => ['sometimes', 'boolean'],
             'shuffle_answers' => ['sometimes', 'boolean'],
+            'anonymous_grading' => ['sometimes', 'boolean'],
             'security_policy' => ['sometimes', 'array'],
             'security_policy.fullscreen' => ['sometimes', 'boolean'],
             'security_policy.tab_switch_detection' => ['sometimes', 'boolean'],

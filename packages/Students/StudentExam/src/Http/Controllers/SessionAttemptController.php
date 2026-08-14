@@ -9,11 +9,13 @@ use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Mindigo\ExamManagement\Models\ExamSession;
 use Mindigo\ExamManagement\Models\ExamSessionAttempt;
+use Mindigo\ExamManagement\Services\ExamAdvancedGradingService;
 use Mindigo\ExamManagement\Services\ExamCandidateAttemptService;
 use Mindigo\ExamManagement\Services\ExamProctoringService;
 use Mindigo\StudentExam\Http\Requests\AutosaveSessionAnswerRequest;
 use Mindigo\StudentExam\Http\Requests\CameraConsentRequest;
 use Mindigo\StudentExam\Http\Requests\CameraSnapshotRequest;
+use Mindigo\StudentExam\Http\Requests\RequestGradeAppealRequest;
 use Mindigo\StudentExam\Http\Requests\SessionSecurityEventRequest;
 use Mindigo\StudentExam\Http\Requests\SubmitSessionAttemptRequest;
 
@@ -22,6 +24,7 @@ class SessionAttemptController extends Controller
     public function __construct(
         private readonly ExamCandidateAttemptService $attempts,
         private readonly ExamProctoringService $proctoring,
+        private readonly ExamAdvancedGradingService $advancedGrading,
     ) {}
 
     public function index(Request $request): View
@@ -114,13 +117,20 @@ class SessionAttemptController extends Controller
     {
         abort_unless((int) $attempt->user_id === (int) $request->user()->getAuthIdentifier(), 403);
         abort_if($attempt->status === ExamSessionAttempt::STATUS_IN_PROGRESS, 409);
-        $attempt->load('session.version.template');
+        $attempt->load(['session.version.template', 'appeals']);
         $policy = $attempt->session->result_policy;
         $visible = $policy === 'immediately'
             || ($policy === 'after_end' && $attempt->session->ends_at?->isPast())
             || ($policy === 'after_release' && $attempt->released_at !== null);
 
         return view('student-exam::sessions.result', compact('attempt', 'visible'));
+    }
+
+    public function appeal(RequestGradeAppealRequest $request, ExamSessionAttempt $attempt): RedirectResponse
+    {
+        $this->advancedGrading->appeal($attempt, $request->user(), $request->validated('reason'));
+
+        return back()->with('success', __('student-exam::app.session_workspace.appeal_submitted'));
     }
 
     private function context(Request $request, array $data): array

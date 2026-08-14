@@ -65,6 +65,7 @@ class ExamSessionService
                 'result_policy' => $data['result_policy'],
                 'shuffle_questions' => $data['shuffle_questions'] ?? true,
                 'shuffle_answers' => $data['shuffle_answers'] ?? true,
+                'anonymous_grading' => $data['anonymous_grading'] ?? false,
                 'security_policy' => $data['security_policy'] ?? [],
                 'scheduled_at' => now(),
             ]);

@@ -18,11 +18,11 @@ class ExamGradingService
 
     public function attempts(ExamSession $session, User $teacher): LengthAwarePaginator
     {
-        $this->ensureOrganizer($session, $teacher);
+        $this->ensureGrader($session, $teacher);
 
         return $session->attempts()
-            ->whereIn('status', [ExamSessionAttempt::STATUS_SUBMITTED, ExamSessionAttempt::STATUS_EXPIRED])
-            ->with(['candidate', 'user'])
+            ->whereIn('status', [ExamSessionAttempt::STATUS_SUBMITTED, ExamSessionAttempt::STATUS_EXPIRED, ExamSessionAttempt::STATUS_TERMINATED])
+            ->with(['candidate', 'user', 'appeals'])
             ->orderByDesc('needs_review')
             ->orderByDesc('submitted_at')
             ->paginate(20);
@@ -30,25 +30,28 @@ class ExamGradingService
 
     public function summary(ExamSession $session, User $teacher): array
     {
-        $this->ensureOrganizer($session, $teacher);
-        $attempts = $session->attempts()->whereIn('status', [ExamSessionAttempt::STATUS_SUBMITTED, ExamSessionAttempt::STATUS_EXPIRED]);
+        $this->ensureGrader($session, $teacher);
+        $attempts = $session->attempts()->whereIn('status', [ExamSessionAttempt::STATUS_SUBMITTED, ExamSessionAttempt::STATUS_EXPIRED, ExamSessionAttempt::STATUS_TERMINATED]);
 
         return [
             'submissions' => (clone $attempts)->count(),
             'pending' => (clone $attempts)->where('needs_review', true)->count(),
+            'completed' => (clone $attempts)->where('grading_status', ExamSessionAttempt::GRADING_COMPLETED)->count(),
             'released' => (clone $attempts)->whereNotNull('released_at')->count(),
+            'appeals' => (clone $attempts)->whereHas('appeals', fn ($query) => $query->where('status', 'open'))->count(),
         ];
     }
 
     public function reviewWorkspace(ExamSessionAttempt $attempt, User $teacher): ExamSessionAttempt
     {
-        $this->ensureOrganizer($attempt->session, $teacher);
+        $this->ensureGrader($attempt->session, $teacher);
 
         return $attempt->load([
             'candidate',
             'user',
             'session.version.template',
-            'answers' => fn ($query) => $query->with('question')->orderBy('id'),
+            'answers' => fn ($query) => $query->with(['question', 'revisions.editor'])->orderBy('id'),
+            'appeals',
             'proctorEvents' => fn ($query) => $query->with('actor')->latest('occurred_at')->limit(100),
         ]);
     }
@@ -59,29 +62,53 @@ class ExamGradingService
         User $teacher,
         float $points,
         ?string $feedback,
+        array $rubricScores = [],
+        ?string $reason = null,
     ): ExamSessionAttempt {
-        return DB::transaction(function () use ($attempt, $answer, $teacher, $points, $feedback): ExamSessionAttempt {
+        return DB::transaction(function () use ($attempt, $answer, $teacher, $points, $feedback, $rubricScores, $reason): ExamSessionAttempt {
             $attempt = ExamSessionAttempt::query()->lockForUpdate()->with('session')->findOrFail($attempt->id);
-            $this->ensureOrganizer($attempt->session, $teacher);
+            $this->ensureGrader($attempt->session, $teacher);
             $answer = ExamSessionAttemptAnswer::query()->lockForUpdate()->with('question')->findOrFail($answer->id);
 
-            if ((int) $answer->exam_session_attempt_id !== (int) $attempt->id || ! $answer->needs_review) {
+            if ((int) $answer->exam_session_attempt_id !== (int) $attempt->id) {
                 throw ValidationException::withMessages(['answer' => __('Mindigo-exam-management::app.grading.invalid_answer')]);
             }
 
             $maximum = (float) $answer->question->points;
+            if ($rubricScores !== []) {
+                if (count($rubricScores) !== count($answer->question->rubric ?? [])) {
+                    throw ValidationException::withMessages(['rubric_scores' => __('Mindigo-exam-management::app.grading.invalid_rubric')]);
+                }
+                foreach ($answer->question->rubric ?? [] as $index => $criterion) {
+                    if ((float) ($rubricScores[$index] ?? 0) > (float) ($criterion['max_points'] ?? 0)) {
+                        throw ValidationException::withMessages(['rubric_scores' => __('Mindigo-exam-management::app.grading.invalid_rubric')]);
+                    }
+                }
+                $points = (float) collect($rubricScores)->sum();
+            }
             if ($points > $maximum) {
                 throw ValidationException::withMessages(['points_awarded' => __('Mindigo-exam-management::app.grading.points_exceeded', ['points' => $maximum])]);
             }
 
-            $oldValues = $answer->only(['points_awarded', 'feedback', 'needs_review', 'reviewed_by', 'reviewed_at']);
+            $oldValues = $answer->only(['points_awarded', 'feedback', 'rubric_scores', 'needs_review', 'reviewed_by', 'reviewed_at']);
             $answer->update([
                 'points_awarded' => $points,
                 'is_correct' => $points >= $maximum,
                 'needs_review' => false,
                 'feedback' => filled($feedback) ? trim($feedback) : null,
+                'rubric_scores' => $rubricScores ?: null,
                 'reviewed_by' => $teacher->getAuthIdentifier(),
                 'reviewed_at' => now(),
+            ]);
+            $answer->revisions()->create([
+                'changed_by' => $teacher->getAuthIdentifier(),
+                'previous_points' => $oldValues['points_awarded'] ?? 0,
+                'new_points' => $points,
+                'previous_feedback' => $oldValues['feedback'] ?? null,
+                'new_feedback' => $answer->feedback,
+                'previous_rubric_scores' => $oldValues['rubric_scores'] ?? null,
+                'new_rubric_scores' => $answer->rubric_scores,
+                'reason' => $reason,
             ]);
             $this->audit->record(
                 'exam_attempt_answer_graded',
@@ -100,13 +127,13 @@ class ExamGradingService
     {
         return DB::transaction(function () use ($attempt, $teacher): ExamSessionAttempt {
             $attempt = ExamSessionAttempt::query()->lockForUpdate()->with(['session', 'answers'])->findOrFail($attempt->id);
-            $this->ensureOrganizer($attempt->session, $teacher);
+            $this->ensureGrader($attempt->session, $teacher);
 
             if ($attempt->needs_review || $attempt->answers->contains('needs_review', true)) {
                 throw ValidationException::withMessages(['attempt' => __('Mindigo-exam-management::app.grading.review_required')]);
             }
 
-            if (! in_array($attempt->status, [ExamSessionAttempt::STATUS_SUBMITTED, ExamSessionAttempt::STATUS_EXPIRED], true)) {
+            if (! in_array($attempt->status, [ExamSessionAttempt::STATUS_SUBMITTED, ExamSessionAttempt::STATUS_EXPIRED, ExamSessionAttempt::STATUS_TERMINATED], true)) {
                 throw ValidationException::withMessages(['attempt' => __('Mindigo-exam-management::app.grading.not_releasable')]);
             }
 
@@ -115,6 +142,7 @@ class ExamGradingService
                 $attempt->update([
                     'released_by' => $teacher->getAuthIdentifier(),
                     'released_at' => now(),
+                    'grading_status' => ExamSessionAttempt::GRADING_RELEASED,
                 ]);
                 $this->audit->record(
                     'exam_attempt_result_released',
@@ -147,6 +175,7 @@ class ExamGradingService
             'percentage' => $maxScore > 0 ? round($score / $maxScore * 100, 2) : 0,
             'passed' => $needsReview ? null : $score >= (float) $attempt->session->passing_score,
             'needs_review' => $needsReview,
+            'grading_status' => $needsReview ? ExamSessionAttempt::GRADING_PENDING_MANUAL : ExamSessionAttempt::GRADING_COMPLETED,
             'reviewed_by' => $needsReview ? null : $teacher->getAuthIdentifier(),
             'reviewed_at' => $needsReview ? null : now(),
         ]);
@@ -158,9 +187,9 @@ class ExamGradingService
         return $attempt->fresh(['answers.question', 'session']);
     }
 
-    private function ensureOrganizer(ExamSession $session, User $teacher): void
+    public function ensureGrader(ExamSession $session, User $teacher): void
     {
-        if (! $teacher->isTeacher() || (int) $session->organizer_id !== (int) $teacher->getAuthIdentifier()) {
+        if (! $teacher->isTeacher() || ((int) $session->organizer_id !== (int) $teacher->getAuthIdentifier() && ! $session->gradingAssignments()->where('grader_id', $teacher->getAuthIdentifier())->exists())) {
             throw new AuthorizationException;
         }
     }
