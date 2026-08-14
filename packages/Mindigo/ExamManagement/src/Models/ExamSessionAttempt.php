@@ -15,7 +15,9 @@ class ExamSessionAttempt extends Model
 
     public const STATUS_EXPIRED = 'expired';
 
-    public const STATUSES = [self::STATUS_IN_PROGRESS, self::STATUS_SUBMITTED, self::STATUS_EXPIRED];
+    public const STATUS_TERMINATED = 'terminated';
+
+    public const STATUSES = [self::STATUS_IN_PROGRESS, self::STATUS_SUBMITTED, self::STATUS_EXPIRED, self::STATUS_TERMINATED];
 
     protected $guarded = ['id'];
 
@@ -36,6 +38,10 @@ class ExamSessionAttempt extends Model
             'needs_review' => 'boolean',
             'reviewed_at' => 'datetime',
             'released_at' => 'datetime',
+            'risk_score' => 'integer',
+            'camera_consent_at' => 'datetime',
+            'camera_consent_declined_at' => 'datetime',
+            'terminated_at' => 'datetime',
         ];
     }
 
@@ -67,6 +73,16 @@ class ExamSessionAttempt extends Model
     public function releaser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'released_by');
+    }
+
+    public function proctorEvents(): HasMany
+    {
+        return $this->hasMany(ExamProctorEvent::class);
+    }
+
+    public function terminator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'terminated_by');
     }
 
     public function isActive(): bool

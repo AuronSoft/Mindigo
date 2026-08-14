@@ -3,10 +3,9 @@
 namespace Mindigo\StudentExam\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Mindigo\ExamManagement\Models\ExamProctorEvent;
 use Mindigo\ExamManagement\Models\ExamSessionAttempt;
 
-class SessionSecurityEventRequest extends FormRequest
+class CameraConsentRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -18,11 +17,9 @@ class SessionSecurityEventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['required', 'in:'.implode(',', ExamProctorEvent::CLIENT_TYPES)],
-            'occurred_at' => ['nullable', 'date'],
-            'session_key' => ['sometimes', 'nullable', 'string', 'max:64'],
-            'device_key' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'metadata' => ['sometimes', 'array'],
+            'consented' => ['required', 'boolean'],
+            'session_key' => ['required', 'string', 'max:64'],
+            'device_key' => ['required', 'string', 'max:255'],
         ];
     }
 }

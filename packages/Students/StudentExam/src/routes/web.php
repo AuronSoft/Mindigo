@@ -14,6 +14,8 @@ Route::prefix('student/exam-sessions')
         Route::post('/attempts/{attempt}/autosave', [SessionAttemptController::class, 'autosave'])->name('autosave');
         Route::post('/attempts/{attempt}/heartbeat', [SessionAttemptController::class, 'heartbeat'])->name('heartbeat');
         Route::post('/attempts/{attempt}/security-event', [SessionAttemptController::class, 'securityEvent'])->name('security-event');
+        Route::post('/attempts/{attempt}/camera-consent', [SessionAttemptController::class, 'cameraConsent'])->name('camera-consent');
+        Route::post('/attempts/{attempt}/camera-snapshot', [SessionAttemptController::class, 'cameraSnapshot'])->name('camera-snapshot');
         Route::post('/attempts/{attempt}/submit', [SessionAttemptController::class, 'submit'])->name('submit');
         Route::get('/attempts/{attempt}/result', [SessionAttemptController::class, 'result'])->name('result');
     });

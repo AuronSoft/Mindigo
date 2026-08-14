@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Mindigo\ExamManagement\Http\Controllers\ExamAttemptController;
 use Mindigo\ExamManagement\Http\Controllers\ExamController;
 use Mindigo\ExamManagement\Http\Controllers\ExamGradingController;
+use Mindigo\ExamManagement\Http\Controllers\ExamProctorController;
 use Mindigo\ExamManagement\Http\Controllers\ExamSessionController;
 use Mindigo\ExamManagement\Http\Controllers\ExamTemplateController;
 use Mindigo\ExamManagement\Http\Middleware\EnsureExamBusinessRole;
@@ -31,6 +32,8 @@ Route::middleware(['web', 'auth', 'role:teacher'])
         Route::get('/{session}/grading/{attempt}', [ExamGradingController::class, 'show'])->name('grading.show');
         Route::put('/{session}/grading/{attempt}/answers/{answer}', [ExamGradingController::class, 'grade'])->name('grading.answers.update');
         Route::post('/{session}/grading/{attempt}/release', [ExamGradingController::class, 'release'])->name('grading.release');
+        Route::post('/{session}/attempts/{attempt}/proctor-note', [ExamProctorController::class, 'note'])->name('proctor.note');
+        Route::post('/{session}/attempts/{attempt}/terminate', [ExamProctorController::class, 'terminate'])->name('proctor.terminate');
     });
 
 Route::middleware([

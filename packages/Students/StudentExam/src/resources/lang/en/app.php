@@ -109,6 +109,13 @@ return [
     'too_many_answers' => 'The answer contains too many values.',
     'attempt_locked' => 'This attempt is no longer editable. Your latest saved work is preserved.',
     'autosave_failed_retry' => 'Connection lost. Your pending answer will be saved automatically when the connection returns.',
+    'proctoring' => [
+        'enter_fullscreen' => 'Enter fullscreen',
+        'camera_title' => 'Optional camera monitoring',
+        'camera_description' => 'If you agree, periodic snapshots are stored privately for teacher review. Declining is recorded but does not imply misconduct.',
+        'allow' => 'Allow camera',
+        'decline' => 'Decline',
+    ],
     'session_workspace' => [
         'title' => 'My exam sessions', 'eyebrow' => 'Learning workspace · Exams', 'description' => 'Track schedules, resume active attempts, and start when an exam opens.',
         'upcoming' => 'Upcoming', 'available' => 'Available now', 'completed' => 'Ended', 'empty' => 'There are no exams in this group.',
