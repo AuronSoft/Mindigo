@@ -11,6 +11,11 @@ Route::prefix('student/exam-sessions')
         Route::get('/', [SessionAttemptController::class, 'index'])->name('index');
         Route::post('/{session}/start', [SessionAttemptController::class, 'start'])->name('start');
         Route::get('/attempts/{attempt}', [SessionAttemptController::class, 'take'])->name('take');
+        Route::post('/attempts/{attempt}/autosave', [SessionAttemptController::class, 'autosave'])->name('autosave');
+        Route::post('/attempts/{attempt}/heartbeat', [SessionAttemptController::class, 'heartbeat'])->name('heartbeat');
+        Route::post('/attempts/{attempt}/security-event', [SessionAttemptController::class, 'securityEvent'])->name('security-event');
+        Route::post('/attempts/{attempt}/submit', [SessionAttemptController::class, 'submit'])->name('submit');
+        Route::get('/attempts/{attempt}/result', [SessionAttemptController::class, 'result'])->name('result');
     });
 
 Route::prefix('student/exams')

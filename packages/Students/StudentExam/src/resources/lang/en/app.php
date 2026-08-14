@@ -114,6 +114,8 @@ return [
         'upcoming' => 'Upcoming', 'available' => 'Available now', 'completed' => 'Ended', 'empty' => 'There are no exams in this group.',
         'starts_at' => 'Starts :time', 'ends_at' => 'Ends :time', 'duration' => ':minutes minutes', 'attempts' => 'Up to :count attempts',
         'start' => 'Start attempt', 'continue' => 'Continue attempt', 'attempt' => 'Attempt :number', 'time_left' => 'Time remaining',
-        'question_progress' => 'Question :current / :total', 'previous' => 'Previous', 'next' => 'Next', 'submit_later' => 'Submission will be implemented in the next phase.',
+        'question_progress' => 'Question :current / :total', 'previous' => 'Previous', 'next' => 'Next', 'submit' => 'Submit attempt', 'confirm_submit' => 'Are you sure you want to submit this attempt?',
+        'answer_placeholder' => 'Enter your answer', 'result' => 'Exam result', 'score' => ':score / :max points', 'passed' => 'Passed', 'failed' => 'Not passed',
+        'pending_review' => 'Your essay answers are awaiting teacher grading.', 'result_hidden' => 'The result will appear according to the teacher release settings.', 'back' => 'Back to exam sessions',
     ],
 ];
