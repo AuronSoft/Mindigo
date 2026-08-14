@@ -131,6 +131,13 @@ class ExamTemplateService
             foreach ($sectionData['questions'] as $item) {
                 $source = $questions->get($item['id']);
                 $points = (float) $item['points'];
+                $rubric = filled($item['rubric_json'] ?? null) ? json_decode($item['rubric_json'], true, 512, JSON_THROW_ON_ERROR) : null;
+                if ($rubric !== null && (! is_array($rubric) || collect($rubric)->contains(fn ($criterion) => ! is_array($criterion) || ! filled($criterion['label'] ?? null) || ! is_numeric($criterion['max_points'] ?? null) || (float) $criterion['max_points'] < 0))) {
+                    throw ValidationException::withMessages(['sections' => __('Mindigo-exam-management::app.template_builder.invalid_rubric')]);
+                }
+                if ($rubric && collect($rubric)->sum(fn ($criterion) => (float) ($criterion['max_points'] ?? 0)) > $points) {
+                    throw ValidationException::withMessages(['sections' => __('Mindigo-exam-management::app.template_builder.rubric_exceeds_points')]);
+                }
                 $version->questions()->create([
                     'exam_section_id' => $section->id,
                     'source_question_id' => $source->id,
@@ -141,6 +148,7 @@ class ExamTemplateService
                     'options' => $source->options,
                     'correct_answers' => $source->correct_answers,
                     'explanation' => $source->explanation,
+                    'rubric' => $rubric,
                     'points' => $points,
                 ]);
                 $totalPoints += $points;

@@ -32,7 +32,7 @@ class ExamSession extends Model
 
     protected function casts(): array
     {
-        return ['starts_at' => 'datetime', 'ends_at' => 'datetime', 'scheduled_at' => 'datetime', 'completed_at' => 'datetime', 'shuffle_questions' => 'boolean', 'shuffle_answers' => 'boolean', 'security_policy' => 'array', 'passing_score' => 'decimal:2'];
+        return ['starts_at' => 'datetime', 'ends_at' => 'datetime', 'scheduled_at' => 'datetime', 'completed_at' => 'datetime', 'shuffle_questions' => 'boolean', 'shuffle_answers' => 'boolean', 'anonymous_grading' => 'boolean', 'security_policy' => 'array', 'passing_score' => 'decimal:2'];
     }
 
     public function version(): BelongsTo
@@ -63,6 +63,11 @@ class ExamSession extends Model
     public function proctorEvents(): HasMany
     {
         return $this->hasMany(ExamProctorEvent::class);
+    }
+
+    public function gradingAssignments(): HasMany
+    {
+        return $this->hasMany(ExamGradingAssignment::class);
     }
 
     public function isMutable(): bool

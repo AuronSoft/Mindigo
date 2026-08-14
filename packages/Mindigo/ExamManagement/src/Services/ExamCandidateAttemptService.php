@@ -82,6 +82,7 @@ class ExamCandidateAttemptService
                 'question_order' => $questionIds,
                 'answer_order' => $this->answerOrder($session->version->questions, $session->shuffle_answers),
                 'security_events' => [],
+                'anonymous_code' => 'CAND-'.str()->upper(str()->random(10)),
             ]);
         });
         ExamMonitoringUpdated::dispatch($session->id, $attempt->id, 'attempt_started');
@@ -238,6 +239,7 @@ class ExamCandidateAttemptService
             'percentage' => $maxScore > 0 ? round($score / $maxScore * 100, 2) : 0,
             'passed' => $needsReview ? null : $score >= (float) $attempt->session->passing_score,
             'needs_review' => $needsReview,
+            'grading_status' => $needsReview ? ExamSessionAttempt::GRADING_PENDING_MANUAL : ExamSessionAttempt::GRADING_COMPLETED,
         ]);
     }
 

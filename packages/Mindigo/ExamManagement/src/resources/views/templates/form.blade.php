@@ -2,7 +2,7 @@
 @php
     $editing = $template->exists;
     $version = $editing ? $template->versions->first() : null;
-    $selected = collect(old('sections.0.questions', $version?->questions?->map(fn ($question) => ['id' => $question->source_question_id, 'points' => $question->points])->all() ?? []))->keyBy('id');
+    $selected = collect(old('sections.0.questions', $version?->questions?->map(fn ($question) => ['id' => $question->source_question_id, 'points' => $question->points, 'rubric_json' => $question->rubric ? json_encode($question->rubric, JSON_UNESCAPED_UNICODE) : null])->all() ?? []))->keyBy('id');
 @endphp
 @section('title', $editing ? __('Mindigo-exam-management::app.template_builder.edit_title') : __('Mindigo-exam-management::app.template_builder.create_title'))
 @section('styles')
@@ -25,7 +25,7 @@
         <x-exam::panel :title="__('Mindigo-exam-management::app.template_builder.questions_title')" :description="__('Mindigo-exam-management::app.template_builder.questions_description')">
             <input type="hidden" name="sections[0][title]" value="{{ old('sections.0.title', data_get($version, 'sections.0.title', __('Mindigo-exam-management::app.template_builder.default_section'))) }}">
             <div class="max-h-155 space-y-3 overflow-y-auto pr-1">@forelse($questions as $question) @php($item = $selected->get($question->id))
-                <label class="grid grid-cols-[auto_minmax(0,1fr)_90px] items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:border-green-300"><input type="checkbox" name="sections[0][questions][{{ $question->id }}][id]" value="{{ $question->id }}" @checked($item) data-template-question class="mt-1 rounded border-slate-300 text-green-600"><span><strong class="block text-sm text-slate-900">{{ $question->content }}</strong><small class="mt-1 block font-bold text-slate-400">@lang('Mindigo-exam-management::app.question_types.'.$question->type) · @lang('Mindigo-exam-management::app.difficulties.'.$question->difficulty) · @lang('Mindigo-exam-management::app.template_builder.question_statuses.'.$question->status)</small></span><span><small class="font-bold text-slate-500">@lang('Mindigo-exam-management::app.template_builder.points')</small><input type="number" min="0.25" step="0.25" name="sections[0][questions][{{ $question->id }}][points]" value="{{ data_get($item, 'points', 1) }}" @disabled(!$item) data-template-points class="exam-input mt-1"></span></label>
+                <label class="grid grid-cols-[auto_minmax(0,1fr)_90px] items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:border-green-300"><input type="checkbox" name="sections[0][questions][{{ $question->id }}][id]" value="{{ $question->id }}" @checked($item) data-template-question class="mt-1 rounded border-slate-300 text-green-600"><span><strong class="block text-sm text-slate-900">{{ $question->content }}</strong><small class="mt-1 block font-bold text-slate-400">@lang('Mindigo-exam-management::app.question_types.'.$question->type) · @lang('Mindigo-exam-management::app.difficulties.'.$question->difficulty) · @lang('Mindigo-exam-management::app.template_builder.question_statuses.'.$question->status)</small>@if($question->type === 'essay')<small class="mt-3 block font-bold text-slate-500">@lang('Mindigo-exam-management::app.template_builder.rubric_json')</small><textarea name="sections[0][questions][{{ $question->id }}][rubric_json]" @disabled(!$item) data-template-rubric class="exam-textarea mt-1 min-h-20 text-xs" placeholder='[{"label":"Accuracy","max_points":2}]'>{{ data_get($item, 'rubric_json') }}</textarea>@endif</span><span><small class="font-bold text-slate-500">@lang('Mindigo-exam-management::app.template_builder.points')</small><input type="number" min="0.25" step="0.25" name="sections[0][questions][{{ $question->id }}][points]" value="{{ data_get($item, 'points', 1) }}" @disabled(!$item) data-template-points class="exam-input mt-1"></span></label>
             @empty <x-exam::empty-state :title="__('Mindigo-exam-management::app.template_builder.no_questions')" :description="__('Mindigo-exam-management::app.template_builder.no_questions_description')" /> @endforelse</div>
         </x-exam::panel>
     </div>
@@ -37,7 +37,8 @@
 <script>
 document.querySelectorAll('[data-template-question]').forEach((checkbox) => {
     const points = checkbox.closest('label').querySelector('[data-template-points]');
-    checkbox.addEventListener('change', () => { points.disabled = ! checkbox.checked; });
+    const rubric = checkbox.closest('label').querySelector('[data-template-rubric]');
+    checkbox.addEventListener('change', () => { points.disabled = ! checkbox.checked; if (rubric) rubric.disabled = ! checkbox.checked; });
 });
 </script>
 @endsection

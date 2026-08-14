@@ -12,7 +12,7 @@ class ExamTemplateQuestion extends Model
 
     protected function casts(): array
     {
-        return ['options' => 'array', 'correct_answers' => 'array', 'points' => 'decimal:2'];
+        return ['options' => 'array', 'correct_answers' => 'array', 'rubric' => 'array', 'points' => 'decimal:2'];
     }
 
     public function version(): BelongsTo

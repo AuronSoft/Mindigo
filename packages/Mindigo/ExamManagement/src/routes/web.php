@@ -30,9 +30,16 @@ Route::middleware(['web', 'auth', 'role:teacher'])
         Route::get('/create', [ExamSessionController::class, 'create'])->name('create');
         Route::post('/', [ExamSessionController::class, 'store'])->name('store');
         Route::get('/{session}/grading', [ExamGradingController::class, 'index'])->name('grading.index');
+        Route::get('/{session}/grading/questions/{question}', [ExamGradingController::class, 'question'])->name('grading.question');
+        Route::get('/{session}/grading/export/excel', [ExamGradingController::class, 'excel'])->name('grading.export.excel');
+        Route::get('/{session}/grading/export/pdf', [ExamGradingController::class, 'pdf'])->name('grading.export.pdf');
         Route::get('/{session}/grading/{attempt}', [ExamGradingController::class, 'show'])->name('grading.show');
         Route::put('/{session}/grading/{attempt}/answers/{answer}', [ExamGradingController::class, 'grade'])->name('grading.answers.update');
+        Route::put('/{session}/grading/{attempt}/answers/{answer}/autosave', [ExamGradingController::class, 'autosave'])->name('grading.answers.autosave');
         Route::post('/{session}/grading/{attempt}/release', [ExamGradingController::class, 'release'])->name('grading.release');
+        Route::post('/{session}/grading/assign', [ExamGradingController::class, 'assign'])->name('grading.assign');
+        Route::post('/{session}/grading/regrade', [ExamGradingController::class, 'regrade'])->name('grading.regrade');
+        Route::post('/{session}/grading/appeals/{appeal}', [ExamGradingController::class, 'resolveAppeal'])->name('grading.appeals.resolve');
         Route::get('/{session}/monitoring', [ExamMonitoringController::class, 'index'])->name('monitoring.index');
         Route::get('/{session}/monitoring/data', [ExamMonitoringController::class, 'data'])->name('monitoring.data');
         Route::post('/{session}/attempts/{attempt}/add-time', [ExamMonitoringController::class, 'addTime'])->name('monitoring.add-time');
