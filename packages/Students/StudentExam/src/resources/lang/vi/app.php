@@ -114,6 +114,8 @@ return [
         'upcoming' => 'Sắp diễn ra', 'available' => 'Có thể làm bài', 'completed' => 'Đã kết thúc', 'empty' => 'Không có kỳ thi trong nhóm này.',
         'starts_at' => 'Bắt đầu :time', 'ends_at' => 'Kết thúc :time', 'duration' => ':minutes phút', 'attempts' => 'Tối đa :count lượt',
         'start' => 'Bắt đầu làm bài', 'continue' => 'Tiếp tục làm bài', 'attempt' => 'Lượt :number', 'time_left' => 'Thời gian còn lại',
-        'question_progress' => 'Câu :current / :total', 'previous' => 'Câu trước', 'next' => 'Câu tiếp theo', 'submit_later' => 'Nộp bài sẽ được triển khai ở phase tiếp theo.',
+        'question_progress' => 'Câu :current / :total', 'previous' => 'Câu trước', 'next' => 'Câu tiếp theo', 'submit' => 'Nộp bài', 'confirm_submit' => 'Bạn chắc chắn muốn nộp bài?',
+        'answer_placeholder' => 'Nhập câu trả lời của bạn', 'result' => 'Kết quả kỳ thi', 'score' => ':score / :max điểm', 'passed' => 'Đạt', 'failed' => 'Chưa đạt',
+        'pending_review' => 'Đang chờ giáo viên chấm câu tự luận.', 'result_hidden' => 'Kết quả sẽ hiển thị theo thiết lập công bố của giáo viên.', 'back' => 'Quay lại danh sách kỳ thi',
     ],
 ];

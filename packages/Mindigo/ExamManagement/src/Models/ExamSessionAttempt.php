@@ -4,6 +4,7 @@ namespace Mindigo\ExamManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mindigo\Auth\Models\User;
 
 class ExamSessionAttempt extends Model
@@ -28,6 +29,11 @@ class ExamSessionAttempt extends Model
             'question_order' => 'array',
             'answer_order' => 'array',
             'security_events' => 'array',
+            'score' => 'decimal:2',
+            'max_score' => 'decimal:2',
+            'percentage' => 'decimal:2',
+            'passed' => 'boolean',
+            'needs_review' => 'boolean',
         ];
     }
 
@@ -44,6 +50,11 @@ class ExamSessionAttempt extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function answers(): HasMany
+    {
+        return $this->hasMany(ExamSessionAttemptAnswer::class);
     }
 
     public function isActive(): bool
