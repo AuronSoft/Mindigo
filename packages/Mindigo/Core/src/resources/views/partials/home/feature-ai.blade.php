@@ -1,123 +1,149 @@
 {{-- Feature section --}}
-<section id="features" class="py-20 px-10 bg-green-50 border-t border-green-100 scroll-mt-20">
-    <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-            <p class="text-green-600 font-black text-3xl">@lang('core::app.feature.section_title')</p>
+<section id="features" class="scroll-mt-20 border-t border-green-100 bg-green-50 px-6 py-20 lg:px-10">
+    <div class="mx-auto max-w-7xl">
+        <div class="mb-16 text-center">
+            <p class="text-3xl font-black text-green-700">@lang('core::app.feature.section_title')</p>
         </div>
-        <div class="flex flex-col lg:flex-row items-center gap-20">
-            <div class="flex-1 flex flex-col gap-6">
-                <span class="bg-green-500 text-white text-xs font-black px-3 py-1 rounded-lg w-fit">@lang('core::app.feature.badge')</span>
-                <h2 class="text-4xl font-black text-gray-900 leading-tight">
-                    <span class="text-green-600">@lang('core::app.feature.heading_highlight')</span> @lang('core::app.feature.heading_rest')
+
+        <div class="flex flex-col items-center gap-16 lg:flex-row lg:gap-20">
+            <div class="flex flex-1 flex-col gap-6">
+                <span class="w-fit rounded-lg bg-green-700 px-3 py-1 text-xs font-black text-white">@lang('core::app.feature.badge')</span>
+                <h2 class="text-4xl font-black leading-tight text-gray-900">
+                    <span class="text-green-700">@lang('core::app.feature.heading_highlight')</span> @lang('core::app.feature.heading_rest')
                 </h2>
                 <div class="flex flex-col gap-5">
                     <div class="flex items-start gap-4">
-                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="12" rx="2" stroke="#16a34a" stroke-width="1.3"/><path d="M4 7h8M4 10h5" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        <div class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="14" height="12" rx="2" stroke="#15803d" stroke-width="1.3"/><path d="M4 7h8M4 10h5" stroke="#15803d" stroke-width="1.3" stroke-linecap="round"/></svg>
                         </div>
-                        <p class="text-gray-500 text-sm leading-relaxed">@lang('core::app.feature.feature_1')</p>
+                        <p class="text-sm leading-relaxed text-gray-500">@lang('core::app.feature.feature_1')</p>
                     </div>
                     <div class="flex items-start gap-4">
-                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 1v5M8 10v5M1 8h5M10 8h5" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        <div class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v5M8 10v5M1 8h5M10 8h5" stroke="#15803d" stroke-width="1.3" stroke-linecap="round"/></svg>
                         </div>
-                        <p class="text-gray-500 text-sm leading-relaxed">@lang('core::app.feature.feature_2')</p>
+                        <p class="text-sm leading-relaxed text-gray-500">@lang('core::app.feature.feature_2')</p>
                     </div>
                 </div>
-                <a href="#" class="bg-green-500 hover:bg-green-400 text-white font-black text-sm px-7 py-3.5 rounded-xl shadow-[0_4px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 transition-all w-fit">
+                <a href="#" class="w-fit rounded-xl bg-green-700 px-7 py-3.5 text-sm font-black text-white shadow-sm transition-colors hover:bg-green-800">
                     @lang('core::app.feature.cta')
                 </a>
             </div>
 
-            <div class="flex-1 relative min-h-105 flex items-center justify-center">
-                {{-- Card sau --}}
-                <div class="absolute top-0 right-0 bg-white rounded-2xl shadow-xl border border-gray-100 w-96 p-5 opacity-80 rotate-1 z-0">
-                    <div class="bg-gray-50 border-b border-gray-100 flex items-center gap-1.5 pb-2 mb-4">
-                        <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
-                        <span class="text-[10px] text-gray-400 ml-2 font-medium">@lang('core::app.ai_card.tab_input')</span>
-                        <span class="text-[10px] text-gray-400 ml-auto font-medium">@lang('core::app.ai_card.tab_review')</span>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg h-24 mb-4 border border-dashed border-gray-200 flex items-center justify-center">
-                        <span class="text-xs text-gray-300">@lang('core::app.ai_card.placeholder')</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <div class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-2 py-2">
-                            <p class="text-[9px] text-gray-400 mb-0.5">@lang('core::app.ai_card.question_count_label')</p>
-                            <p class="text-xs font-bold text-gray-700">@lang('core::app.ai_card.question_count_value')</p>
+            {{-- Product workspace preview --}}
+            <div class="group relative w-full flex-1 pb-24 sm:px-8 lg:px-0">
+                <div class="pointer-events-none absolute -right-3 top-8 h-32 w-32 rounded-full bg-green-200/45 blur-3xl" aria-hidden="true"></div>
+                <div class="pointer-events-none absolute -bottom-3 left-8 h-28 w-28 rounded-full bg-emerald-300/30 blur-3xl" aria-hidden="true"></div>
+                <div class="pointer-events-none absolute -top-4 right-16 z-20 grid h-12 w-12 place-items-center rounded-2xl border border-green-100 bg-white shadow-lg" style="animation: floatStar 3.4s ease-in-out infinite" aria-hidden="true">
+                    <svg class="h-7 w-7 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M9.75 3.75 8.6 7.2a2.25 2.25 0 0 1-1.42 1.42L3.75 9.75l3.43 1.14a2.25 2.25 0 0 1 1.42 1.42l1.15 3.44 1.14-3.44a2.25 2.25 0 0 1 1.42-1.42l3.44-1.14-3.44-1.15a2.25 2.25 0 0 1-1.42-1.42L9.75 3.75Zm7.5 10.5-.58 1.72a1.13 1.13 0 0 1-.7.7l-1.72.58 1.72.57c.33.11.6.38.7.71l.58 1.72.57-1.72c.11-.33.38-.6.71-.7l1.72-.58-1.72-.57a1.13 1.13 0 0 1-.7-.71l-.58-1.72Z"/></svg>
+                </div>
+                <div class="pointer-events-none absolute -right-2 top-24 z-30 hidden items-center gap-2 rounded-xl border border-green-100 bg-white px-3 py-2 shadow-lg sm:flex" style="animation: floatBadge 3.8s .5s ease-in-out infinite" aria-hidden="true">
+                    <span class="relative flex h-2.5 w-2.5"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60"></span><span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-600"></span></span>
+                    <span class="text-[9px] font-black text-slate-700">@lang('core::app.ai_card.ai_ready')</span>
+                </div>
+
+                <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_24px_60px_rgba(15,23,42,0.12)] transition duration-500 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_30px_72px_rgba(21,128,61,0.16)]">
+                    <div class="flex h-12 items-center gap-3 border-b border-slate-200 bg-slate-50 px-4">
+                        <div class="flex gap-1.5" aria-hidden="true">
+                            <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
                         </div>
-                        <div class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-2 py-2">
-                            <p class="text-[9px] text-gray-400 mb-0.5">@lang('core::app.ai_card.type_label')</p>
-                            <p class="text-xs font-bold text-gray-700">@lang('core::app.ai_card.type_value')</p>
+                        <div class="flex min-w-0 flex-1 items-center rounded-lg border border-slate-200 bg-white px-3 py-1.5">
+                            <svg class="mr-2 h-3.5 w-3.5 shrink-0 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"/></svg>
+                            <span class="truncate text-[10px] font-semibold text-slate-400">@lang('core::app.nav.url_display')</span>
                         </div>
-                        <div class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-2 py-2">
-                            <p class="text-[9px] text-gray-400 mb-0.5">@lang('core::app.ai_card.level_label')</p>
-                            <p class="text-xs font-bold text-gray-700">@lang('core::app.ai_card.level_value')</p>
+                        <span class="hidden rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[9px] font-bold text-slate-600 sm:block">@lang('core::app.nav.username')</span>
+                    </div>
+
+                    <div class="border-b border-slate-200 px-4 py-3 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-[9px] font-black uppercase tracking-wider text-green-700">@lang('core::app.ai_card.tab_input')</p>
+                            <p class="mt-0.5 text-xs font-black text-slate-900">@lang('core::app.ai_card.section_1_name')</p>
+                        </div>
+                        <div class="mt-2 flex gap-2 sm:mt-0">
+                            <span class="rounded-lg border border-slate-200 px-3 py-1.5 text-[9px] font-bold text-slate-600">@lang('core::app.ai_card.btn_return')</span>
+                            <span class="rounded-lg bg-green-700 px-3 py-1.5 text-[9px] font-black text-white">@lang('core::app.ai_card.btn_save')</span>
+                        </div>
+                    </div>
+
+                    <div class="grid min-h-80 grid-cols-[112px_minmax(0,1fr)] sm:grid-cols-[150px_minmax(0,1fr)]">
+                        <aside class="border-r border-slate-200 bg-slate-50 p-3">
+                            <p class="mb-2 text-[8px] font-black uppercase tracking-wide text-slate-400">@lang('core::app.ai_card.section_list_label')</p>
+                            <div class="rounded-lg bg-green-700 px-2.5 py-2 text-[9px] font-black text-white">@lang('core::app.ai_card.section_1_name')</div>
+                            <div class="mt-1 rounded-lg px-2.5 py-2 text-[9px] font-semibold text-slate-500">@lang('core::app.exam.section_2_title')</div>
+                            <div class="mt-5 border-t border-slate-200 pt-3">
+                                <div class="flex items-center justify-between text-[8px] font-bold text-slate-500"><span>@lang('core::app.ai_card.question_index_label')</span><span class="text-green-700">30%</span></div>
+                                <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200"><div class="h-full w-[30%] rounded-full bg-green-700"></div></div>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-1.5">
+                                @foreach(range(1, 8) as $question)
+                                    <span class="grid h-5 place-items-center rounded-md text-[7px] font-black {{ $question <= 3 ? 'bg-green-700 text-white' : 'border border-slate-200 bg-white text-slate-400' }}">{{ $question }}</span>
+                                @endforeach
+                            </div>
+                        </aside>
+
+                        <div class="space-y-3 p-3 sm:p-4">
+                            <div class="grid grid-cols-3 gap-2">
+                                <div class="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2"><p class="text-[7px] font-bold text-slate-400">@lang('core::app.ai_card.generated_label')</p><p class="mt-0.5 text-[11px] font-black text-slate-800">19</p></div>
+                                <div class="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2"><p class="text-[7px] font-bold text-slate-400">@lang('core::app.ai_card.reviewed_label')</p><p class="mt-0.5 text-[11px] font-black text-green-700">12</p></div>
+                                <div class="rounded-lg border border-green-100 bg-green-50 px-2.5 py-2"><p class="text-[7px] font-bold text-green-600">@lang('core::app.ai_card.accuracy_label')</p><p class="mt-0.5 text-[11px] font-black text-green-700">98%</p></div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-[9px] font-black uppercase tracking-wide text-slate-400">@lang('core::app.ai_card.question_list_label')</p>
+                                <span class="rounded-full bg-green-50 px-2 py-1 text-[8px] font-black text-green-700">2 @lang('core::app.question.answered')</span>
+                            </div>
+                            <article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition duration-300 group-hover:border-green-200">
+                                <div class="flex items-start justify-between gap-3"><div><p class="text-[10px] font-black text-slate-800">@lang('core::app.ai_card.question_1_label')</p><p class="mt-0.5 text-[8px] font-semibold text-slate-400">@lang('core::app.ai_card.video_meta')</p></div><span class="shrink-0 rounded-full bg-green-50 px-2 py-1 text-[8px] font-black text-green-700">@lang('core::app.question.answered')</span></div>
+                                <p class="mt-2 text-[8px] font-bold text-slate-600">@lang('core::app.ai_card.question_text')</p>
+                                <div class="mt-2 grid grid-cols-2 gap-1.5"><div class="rounded-md border border-slate-200 px-2 py-1.5 text-[7px] text-slate-500">@lang('core::app.ai_card.option_a')</div><div class="flex items-center justify-between rounded-md border border-green-200 bg-green-50 px-2 py-1.5 text-[7px] font-bold text-green-700"><span>@lang('core::app.ai_card.option_b')</span><span>✓</span></div></div>
+                            </article>
+                            <article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition duration-300 group-hover:border-green-200">
+                                <div class="flex items-start justify-between gap-3"><div><p class="text-[10px] font-black text-slate-800">@lang('core::app.ai_card.question_2_label')</p><p class="mt-0.5 text-[8px] font-semibold text-slate-400">@lang('core::app.ai_card.document_meta')</p></div><span class="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[8px] font-black text-slate-500">@lang('core::app.ai_card.draft')</span></div>
+                                <div class="mt-3 flex items-center justify-between gap-2"><div class="flex min-w-0 items-center gap-2"><span class="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-green-50 text-green-700"><svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z"/></svg></span><span class="truncate text-[8px] font-semibold text-slate-500">@lang('core::app.ai_card.source_value')</span></div><span class="shrink-0 text-[7px] font-black text-green-700">@lang('core::app.ai_card.correct_answer')</span></div>
+                            </article>
                         </div>
                     </div>
                 </div>
 
-                {{-- AI chip --}}
-                <div class="absolute left-0 top-1/3 z-30 w-16 h-16 bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 border border-purple-100 rounded-2xl flex items-center justify-center shadow-xl" style="animation:floatStar 3s ease-in-out infinite" aria-label="Gemini">
-                    <svg class="w-11 h-11" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="gemini-feature-gradient" x1="5" y1="27" x2="27" y2="5" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#1A73E8"/>
-                                <stop offset="0.38" stop-color="#7B61FF"/>
-                                <stop offset="0.68" stop-color="#D965C5"/>
-                                <stop offset="1" stop-color="#F7A43A"/>
-                            </linearGradient>
-                        </defs>
-                        <path d="M16 3.5C17.25 10.63 21.37 14.75 28.5 16C21.37 17.25 17.25 21.37 16 28.5C14.75 21.37 10.63 17.25 3.5 16C10.63 14.75 14.75 10.63 16 3.5Z" fill="url(#gemini-feature-gradient)"/>
-                    </svg>
-                </div>
-
-                {{-- Card trước --}}
-                <div class="relative bg-white rounded-2xl shadow-2xl border border-gray-100 w-96 mt-28 z-10">
-                    <div class="bg-gray-50 border-b border-gray-100 px-4 py-2.5 flex items-center gap-1.5 rounded-t-2xl">
-                        <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
-                        <span class="text-[10px] text-gray-400 ml-2 font-medium">@lang('core::app.ai_card.tab_input')</span>
-                        <span class="text-[10px] text-gray-400 ml-auto font-medium">@lang('core::app.ai_card.tab_review')</span>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex gap-2 mb-3">
-                            <span class="bg-red-100 text-red-400 text-xs font-black px-2 py-0.5 rounded">@lang('core::app.ai_card.btn_return')</span>
-                            <span class="bg-green-500 text-white text-xs font-black px-2 py-0.5 rounded">@lang('core::app.ai_card.btn_save')</span>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-28 shrink-0">
-                                <p class="text-[9px] font-black text-gray-400 mb-1">@lang('core::app.ai_card.section_list_label')</p>
-                                <div class="bg-green-500 text-white text-[9px] font-black px-2 py-1 rounded text-center mb-1">@lang('core::app.ai_card.section_1_name')</div>
-                                <p class="text-[9px] font-black text-gray-400 mt-2 mb-1">@lang('core::app.ai_card.question_index_label')</p>
-                                <div class="grid grid-cols-5 gap-0.5">
-                                    @foreach(range(1,10) as $n)
-                                    <div class="w-4 h-4 rounded text-[7px] font-bold flex items-center justify-center {{ $n <= 3 ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400' }}">{{ $n }}</div>
-                                    @endforeach
+                {{-- Mobile preview: same device language as the other product sections --}}
+                <div class="absolute -bottom-1 right-3 z-20 w-32 sm:-right-1 sm:w-36 lg:-right-3 lg:w-40" style="animation: floatBadge 4.5s ease-in-out infinite">
+                    <div class="relative bg-white shadow-2xl transition duration-500 ease-out group-hover:-translate-y-1" style="aspect-ratio: 9 / 18.5; border: 2px solid #34d399; border-radius: 2rem; transform: rotate(4deg);">
+                        <div class="flex h-full flex-col overflow-hidden bg-white" style="border-radius: calc(2rem - 2px);">
+                            <div class="flex justify-center pb-0 pt-2"><span class="h-3 w-10 rounded-full bg-slate-900"></span></div>
+                            <div class="flex items-center justify-between px-3 py-0.5">
+                                <span class="text-[7px] font-black text-slate-700">17:30</span>
+                                <div class="flex items-center gap-1 text-slate-600" aria-hidden="true">
+                                    <svg width="8" height="6" fill="currentColor" viewBox="0 0 10 8"><rect x="0" y="4" width="2" height="4" rx=".5"/><rect x="2.5" y="2.5" width="2" height="5.5" rx=".5"/><rect x="5" y="1" width="2" height="7" rx=".5"/><rect x="7.5" width="2" height="8" rx=".5"/></svg>
+                                    <svg width="9" height="6" fill="none" viewBox="0 0 12 8"><rect x=".5" y=".5" width="9" height="7" rx="1.5" stroke="currentColor"/><path d="M11 3v2" stroke="currentColor" stroke-linecap="round"/><rect x="2" y="2" width="6" height="4" rx=".7" fill="currentColor"/></svg>
                                 </div>
                             </div>
-                            <div class="flex-1 space-y-2">
-                                <p class="text-[9px] font-black text-gray-400">@lang('core::app.ai_card.question_list_label')</p>
-                                <div class="bg-gray-50 rounded-lg p-2">
-                                    <p class="text-[9px] font-black text-gray-700 mb-1">@lang('core::app.ai_card.question_1_label')</p>
-                                    <p class="text-[9px] text-gray-500 italic mb-1">What is the plural form of "child"?</p>
-                                    <div class="flex items-center gap-1 text-[9px] text-gray-500"><span class="text-red-400">✗</span> Childs</div>
-                                    <div class="flex items-center gap-1 text-[9px] text-green-600 font-bold"><span class="text-green-500">✓</span> Children</div>
-                                    <div class="mt-1 bg-green-50 rounded px-1.5 py-1 text-[8px] text-green-700 font-bold">The plural form of "child" is "children"</div>
-                                </div>
-                                <div class="bg-gray-50 rounded-lg p-2">
-                                    <p class="text-[9px] font-black text-gray-700 mb-1">@lang('core::app.ai_card.question_2_label')</p>
-                                    <p class="text-[9px] text-gray-500 italic">Choose the correct word: "I ___ to school by bus."</p>
-                                </div>
+
+                            <div class="bg-green-600 px-3 py-2 text-white">
+                                <div class="flex items-center justify-between"><p class="text-[7px] font-black">@lang('core::app.ai_card.section_1_name')</p><span class="text-[6px] font-bold text-green-100">2/5</span></div>
+                                <div class="mt-1 h-1 overflow-hidden rounded-full bg-green-700"><div class="h-full w-2/5 rounded-full bg-white"></div></div>
                             </div>
+
+                            <div class="flex flex-1 flex-col p-2.5">
+                                <div class="mb-2 flex items-start justify-between gap-1">
+                                    <div><p class="text-[7px] font-black text-slate-800">@lang('core::app.ai_card.question_1_label')</p><p class="text-[6px] font-semibold text-slate-400">@lang('core::app.question.single_choice')</p></div>
+                                    <span class="rounded-full bg-green-50 px-1.5 py-0.5 text-[5px] font-black text-green-700">@lang('core::app.question.answered')</span>
+                                </div>
+                                <p class="mb-2 text-[6px] font-bold leading-tight text-slate-600">@lang('core::app.ai_card.question_text')</p>
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-1.5 rounded-md border border-slate-200 px-1.5 py-1"><span class="h-2.5 w-2.5 rounded-full border border-slate-300"></span><span class="text-[6px] text-slate-500">@lang('core::app.ai_card.option_a')</span></div>
+                                    <div class="flex items-center gap-1.5 rounded-md border border-green-300 bg-green-50 px-1.5 py-1"><span class="grid h-2.5 w-2.5 place-items-center rounded-full bg-green-600"><span class="h-1 w-1 rounded-full bg-white"></span></span><span class="text-[6px] font-bold text-green-700">@lang('core::app.ai_card.option_b')</span></div>
+                                </div>
+                                <div class="mt-2 rounded-md border border-green-100 bg-green-50 p-1.5"><p class="text-[5.5px] font-semibold leading-tight text-green-700">@lang('core::app.mobile.explanation')</p></div>
+                                <div class="mt-auto flex gap-1 pt-2"><button type="button" class="flex-1 rounded-md bg-slate-100 py-1.5 text-[6px] font-bold text-slate-500">@lang('core::app.mobile.prev')</button><button type="button" class="flex-1 rounded-md bg-green-500 py-1.5 text-[6px] font-black text-white shadow-[0_1px_0_#15803d]">@lang('core::app.mobile.next')</button></div>
+                            </div>
+                            <div class="flex justify-center pb-1.5"><span class="h-0.5 w-8 rounded-full bg-slate-300"></span></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="absolute bottom-4 left-8 text-green-400 text-2xl" style="animation:floatStar 4s ease-in-out infinite">✦</div>
-                <div class="absolute top-4 right-4 text-green-300 text-lg" style="animation:floatStar 3s .5s ease-in-out infinite">✦</div>
+                <span class="pointer-events-none absolute bottom-8 left-3 text-2xl text-green-400" style="animation: floatStar 4s ease-in-out infinite" aria-hidden="true">&#10022;</span>
+                <span class="pointer-events-none absolute left-4 top-14 h-2.5 w-2.5 rounded-full bg-green-300/70" style="animation: floatStar 3.2s .4s ease-in-out infinite" aria-hidden="true"></span>
             </div>
         </div>
     </div>

@@ -166,11 +166,11 @@
 
                 {{-- Phone mockup (overlapping) --}}
                 <div class="absolute bottom-0 right-4 z-20" style="transform: rotate(4deg); width: 120px;">
-                    <div class="relative rounded-4xl shadow-2xl" style="background: linear-gradient(160deg, #d1fae5, #6ee7b7, #34d399); padding: 2px;">
+                    <div class="relative bg-white shadow-2xl" style="border: 2px solid #34d399; border-radius: 2rem;">
                         <div class="absolute top-10 h-5 rounded-l-full" style="left:-3px; width:3px; background:#86efac;"></div>
                         <div class="absolute top-18 h-7 rounded-l-full" style="left:-3px; width:3px; background:#86efac;"></div>
                         <div class="absolute top-14 h-8 rounded-r-full" style="right:-3px; width:3px; background:#86efac;"></div>
-                        <div class="bg-white overflow-hidden" style="border-radius: 1.8rem;">
+                        <div class="overflow-hidden bg-white" style="border-radius: calc(2rem - 2px);">
                             <div class="flex justify-center pt-2 pb-0">
                                 <div class="bg-gray-900 rounded-full" style="height:12px; width:40px;"></div>
                             </div>
