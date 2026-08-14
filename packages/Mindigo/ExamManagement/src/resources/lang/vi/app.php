@@ -203,4 +203,10 @@ return [
         'schedule' => 'Lập lịch kỳ thi', 'created' => 'Đã lập lịch và chốt danh sách thí sinh.', 'invalid_template' => 'Đề mẫu không hợp lệ, chưa khóa hoặc không thuộc giáo viên.', 'invalid_classroom' => 'Có lớp học không hoạt động hoặc không thuộc giáo viên.', 'duration_exceeds_window' => 'Thời lượng làm bài không được vượt quá khoảng thời gian mở kỳ thi.',
         'summary' => ':candidates thí sinh · :minutes phút', 'statuses' => ['draft' => 'Bản nháp', 'scheduled' => 'Đã lên lịch', 'live' => 'Đang diễn ra', 'ended' => 'Đã kết thúc', 'grading' => 'Đang chấm', 'completed' => 'Hoàn thành', 'archived' => 'Đã lưu trữ'],
     ],
+    'candidate_attempt' => [
+        'not_eligible' => 'Bạn không có trong danh sách thí sinh của kỳ thi này.',
+        'not_open' => 'Kỳ thi hiện chưa mở hoặc đã kết thúc.',
+        'limit_reached' => 'Bạn đã sử dụng hết số lượt làm bài.',
+        'not_active' => 'Lượt làm bài không còn hoạt động.',
+    ],
 ];

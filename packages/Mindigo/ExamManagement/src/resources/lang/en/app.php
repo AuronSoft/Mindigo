@@ -203,4 +203,10 @@ return [
         'schedule' => 'Schedule exam', 'created' => 'Exam scheduled and candidate list snapshotted.', 'invalid_template' => 'The template is invalid, unlocked, or owned by another teacher.', 'invalid_classroom' => 'A classroom is inactive or owned by another teacher.', 'duration_exceeds_window' => 'The attempt duration cannot exceed the exam availability window.',
         'summary' => ':candidates candidates · :minutes minutes', 'statuses' => ['draft' => 'Draft', 'scheduled' => 'Scheduled', 'live' => 'Live', 'ended' => 'Ended', 'grading' => 'Grading', 'completed' => 'Completed', 'archived' => 'Archived'],
     ],
+    'candidate_attempt' => [
+        'not_eligible' => 'You are not an eligible candidate for this exam.',
+        'not_open' => 'This exam is not open or has already ended.',
+        'limit_reached' => 'You have used all available attempts.',
+        'not_active' => 'This attempt is no longer active.',
+    ],
 ];

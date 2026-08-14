@@ -2,6 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use Mindigo\StudentExam\Http\Controllers\ExamController;
+use Mindigo\StudentExam\Http\Controllers\SessionAttemptController;
+
+Route::prefix('student/exam-sessions')
+    ->middleware(['web', 'auth', 'role:student'])
+    ->name('student.exam-sessions.')
+    ->group(function (): void {
+        Route::get('/', [SessionAttemptController::class, 'index'])->name('index');
+        Route::post('/{session}/start', [SessionAttemptController::class, 'start'])->name('start');
+        Route::get('/attempts/{attempt}', [SessionAttemptController::class, 'take'])->name('take');
+    });
 
 Route::prefix('student/exams')
     ->middleware(['web', 'auth', 'role:student'])

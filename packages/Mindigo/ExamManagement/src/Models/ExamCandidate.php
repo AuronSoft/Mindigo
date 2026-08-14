@@ -4,6 +4,7 @@ namespace Mindigo\ExamManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mindigo\Auth\Models\User;
 
 class ExamCandidate extends Model
@@ -29,5 +30,10 @@ class ExamCandidate extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function attempts(): HasMany
+    {
+        return $this->hasMany(ExamSessionAttempt::class);
     }
 }
