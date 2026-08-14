@@ -191,4 +191,16 @@ return [
         'statuses' => ['draft' => 'Draft', 'ready' => 'Ready', 'archived' => 'Archived'],
         'question_statuses' => ['draft' => 'Draft', 'reviewing' => 'In review', 'approved' => 'Shared', 'rejected' => 'Needs changes'],
     ],
+    'session_builder' => [
+        'title' => 'Exam sessions', 'workspace' => 'Teaching workspace', 'description' => 'Schedule an exam from a locked template and assign it directly to classrooms.',
+        'create' => 'Schedule exam', 'list' => 'My exam sessions', 'list_description' => 'Track exam schedules and snapshotted candidate lists.',
+        'empty' => 'No exam sessions yet', 'empty_description' => 'Choose a ready template to schedule the first exam.',
+        'template' => 'Template and version', 'select_template' => 'Select a template', 'version_summary' => ':title · v:version · :questions questions', 'information' => 'Exam information and schedule', 'name' => 'Exam name',
+        'starts_at' => 'Starts at', 'ends_at' => 'Ends at', 'duration' => 'Duration (minutes)', 'attempts' => 'Maximum attempts', 'passing_score' => 'Passing score',
+        'result_policy' => 'Result visibility', 'immediately' => 'Immediately after submission', 'after_end' => 'After the exam ends', 'after_release' => 'When released by the teacher',
+        'classrooms' => 'Assign classrooms', 'classrooms_description' => 'The system snapshots active learners when the exam is scheduled.', 'students' => ':count learners',
+        'security' => 'Attempt settings', 'shuffle_questions' => 'Shuffle questions', 'shuffle_answers' => 'Shuffle answers', 'fullscreen' => 'Require fullscreen', 'tab_switch_detection' => 'Record tab switches',
+        'schedule' => 'Schedule exam', 'created' => 'Exam scheduled and candidate list snapshotted.', 'invalid_template' => 'The template is invalid, unlocked, or owned by another teacher.', 'invalid_classroom' => 'A classroom is inactive or owned by another teacher.', 'duration_exceeds_window' => 'The attempt duration cannot exceed the exam availability window.',
+        'summary' => ':candidates candidates · :minutes minutes', 'statuses' => ['draft' => 'Draft', 'scheduled' => 'Scheduled', 'live' => 'Live', 'ended' => 'Ended', 'grading' => 'Grading', 'completed' => 'Completed', 'archived' => 'Archived'],
+    ],
 ];

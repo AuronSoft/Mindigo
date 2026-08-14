@@ -191,4 +191,16 @@ return [
         'statuses' => ['draft' => 'Bản nháp', 'ready' => 'Sẵn sàng', 'archived' => 'Đã lưu trữ'],
         'question_statuses' => ['draft' => 'Bản nháp', 'reviewing' => 'Đang rà soát', 'approved' => 'Đã chia sẻ', 'rejected' => 'Cần chỉnh sửa'],
     ],
+    'session_builder' => [
+        'title' => 'Kỳ thi', 'workspace' => 'Không gian giảng dạy', 'description' => 'Lập lịch kỳ thi từ đề mẫu đã khóa và giao trực tiếp cho lớp học.',
+        'create' => 'Tổ chức kỳ thi', 'list' => 'Kỳ thi do tôi tổ chức', 'list_description' => 'Theo dõi lịch thi và danh sách thí sinh đã được chốt.',
+        'empty' => 'Chưa có kỳ thi', 'empty_description' => 'Chọn một đề mẫu sẵn sàng để tổ chức kỳ thi đầu tiên.',
+        'template' => 'Đề mẫu và phiên bản', 'select_template' => 'Chọn đề mẫu', 'version_summary' => ':title · v:version · :questions câu', 'information' => 'Thông tin và lịch thi', 'name' => 'Tên kỳ thi',
+        'starts_at' => 'Bắt đầu', 'ends_at' => 'Kết thúc', 'duration' => 'Thời lượng (phút)', 'attempts' => 'Số lượt làm tối đa', 'passing_score' => 'Điểm đạt',
+        'result_policy' => 'Thời điểm hiển thị kết quả', 'immediately' => 'Ngay sau khi nộp', 'after_end' => 'Sau khi kỳ thi kết thúc', 'after_release' => 'Khi giáo viên công bố',
+        'classrooms' => 'Giao cho lớp học', 'classrooms_description' => 'Hệ thống chụp danh sách học viên đang hoạt động tại thời điểm lập lịch.', 'students' => ':count học viên',
+        'security' => 'Thiết lập làm bài', 'shuffle_questions' => 'Đảo thứ tự câu hỏi', 'shuffle_answers' => 'Đảo thứ tự đáp án', 'fullscreen' => 'Yêu cầu toàn màn hình', 'tab_switch_detection' => 'Ghi nhận chuyển tab',
+        'schedule' => 'Lập lịch kỳ thi', 'created' => 'Đã lập lịch và chốt danh sách thí sinh.', 'invalid_template' => 'Đề mẫu không hợp lệ, chưa khóa hoặc không thuộc giáo viên.', 'invalid_classroom' => 'Có lớp học không hoạt động hoặc không thuộc giáo viên.', 'duration_exceeds_window' => 'Thời lượng làm bài không được vượt quá khoảng thời gian mở kỳ thi.',
+        'summary' => ':candidates thí sinh · :minutes phút', 'statuses' => ['draft' => 'Bản nháp', 'scheduled' => 'Đã lên lịch', 'live' => 'Đang diễn ra', 'ended' => 'Đã kết thúc', 'grading' => 'Đang chấm', 'completed' => 'Hoàn thành', 'archived' => 'Đã lưu trữ'],
+    ],
 ];

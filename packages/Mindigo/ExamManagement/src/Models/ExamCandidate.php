@@ -8,6 +8,12 @@ use Mindigo\Auth\Models\User;
 
 class ExamCandidate extends Model
 {
+    public const STATUS_ELIGIBLE = 'eligible';
+
+    public const STATUS_EXCLUDED = 'excluded';
+
+    public const STATUSES = [self::STATUS_ELIGIBLE, self::STATUS_EXCLUDED];
+
     protected $guarded = ['id'];
 
     protected function casts(): array
