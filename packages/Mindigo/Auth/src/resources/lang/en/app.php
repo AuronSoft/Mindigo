@@ -4,13 +4,13 @@ return [
 
     'brand' => [
         'name' => 'MindigoID',
-        'powered_by' => 'Powered by Mindigo Education',
+        'powered_by' => 'Phát triển bởi Auronsoft',
     ],
 
     'auth' => [
         'login_title' => 'Sign in',
         'login_subtitle' => 'to continue to :platform',
-        'platform' => 'Mindingo LMS Platform',
+        'platform' => 'Phát triển bởi Auronsoft',
 
         'email' => 'Email',
         'email_placeholder' => 'student@example.com',

@@ -393,7 +393,7 @@ return [
         'legal_4' => 'Chính sách sử dụng "Trợ lý AI"',
         'legal_5' => 'Chính sách hoàn tiền',
         'legal_6' => 'Chính sách gia sư',
-        'copyright' => 'Powered by Auralis Education Auralis',
+        'copyright' => 'Phát triển bởi Auronsoft',
         'built_with' => 'Được xây dựng với ❤️ tại Việt Nam',
     ],
 

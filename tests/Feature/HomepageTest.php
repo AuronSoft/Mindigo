@@ -347,7 +347,7 @@ class HomepageTest extends TestCase
         $this->withSession(['locale' => 'en'])->get('/login')
             ->assertOk()
             ->assertSee('Sign in', false)
-            ->assertSee('Mindingo LMS Platform', false);
+            ->assertSee('Phát triển bởi Auronsoft', false);
     }
 
     /**

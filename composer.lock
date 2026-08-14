@@ -2946,7 +2946,7 @@
                     "Mindigo\\ExamManagement\\": "src/"
                 }
             },
-            "description": "Mindingo LMS management and online testing package",
+            "description": "LMS management and online testing package developed by Auronsoft",
             "transport-options": {
                 "relative": true
             }

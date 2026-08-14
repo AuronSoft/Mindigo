@@ -1,6 +1,6 @@
 {
     "name": "mindigo/exam-management",
-    "description": "Mindingo LMS management and online testing package",
+    "description": "LMS management and online testing package developed by Auronsoft",
     "type": "library",
     "minimum-stability": "dev",
     "require": {

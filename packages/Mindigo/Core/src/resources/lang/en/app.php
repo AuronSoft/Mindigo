@@ -393,7 +393,7 @@ return [
         'legal_4' => 'AI Assistant usage policy',
         'legal_5' => 'Refund policy',
         'legal_6' => 'Tutor policy',
-        'copyright' => 'Powered by Auralis Education Auralis',
+        'copyright' => 'Phát triển bởi Auronsoft',
         'built_with' => 'Built with ❤️ in Vietnam',
     ],
 

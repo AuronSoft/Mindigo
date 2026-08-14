@@ -174,7 +174,7 @@
 
         <div class="border-t border-gray-800 pt-6 flex items-center justify-center">
             <p class="text-gray-500 text-xs text-center">
-                Powered by Auralis Education <span class="text-green-500 font-black">Auralis</span>
+                Phát triển bởi <span class="text-green-500 font-black">Auronsoft</span>
             </p>
         </div>
     </div>
