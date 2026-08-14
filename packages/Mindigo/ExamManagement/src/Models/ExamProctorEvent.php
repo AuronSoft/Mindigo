@@ -50,6 +50,16 @@ class ExamProctorEvent extends Model
 
     public const TYPE_ATTEMPT_TERMINATED = 'attempt_terminated';
 
+    public const TYPE_TIME_ADDED = 'time_added';
+
+    public const TYPE_RETRY_ALLOWED = 'retry_allowed';
+
+    public const TYPE_WARNING_SENT = 'warning_sent';
+
+    public const TYPE_ATTEMPT_PAUSED = 'attempt_paused';
+
+    public const TYPE_ATTEMPT_RESUMED = 'attempt_resumed';
+
     public const CLIENT_TYPES = [
         self::TYPE_TAB_HIDDEN, self::TYPE_FULLSCREEN_EXITED, self::TYPE_COPY_ATTEMPT,
         self::TYPE_PASTE_ATTEMPT, self::TYPE_ABNORMAL_REFRESH,

@@ -5,6 +5,7 @@
 @endsection
 @section('content')
 <main class="min-h-screen bg-slate-50 p-4 sm:p-6"><div class="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[240px_minmax(0,1fr)]">
+    <div data-proctor-message class="fixed inset-x-4 top-4 z-50 mx-auto hidden max-w-xl rounded-2xl border border-amber-200 bg-amber-50 p-4 text-center text-sm font-black text-amber-900 shadow-xl"></div>
     <aside class="self-start rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p class="text-xs font-bold text-green-700">{{ __('student-exam::app.session_workspace.attempt', ['number' => $attempt->attempt_number]) }}</p><h1 class="mt-1 text-lg font-black text-slate-950">{{ $attempt->session->title }}</h1><p class="mt-4 text-xs font-bold text-slate-500">@lang('student-exam::app.session_workspace.time_left')</p><time class="mt-1 block text-xl font-black text-slate-900" datetime="{{ $attempt->expires_at->toIso8601String() }}" data-exam-deadline="{{ $attempt->expires_at->timestamp }}">--:--</time><div class="mt-5 grid grid-cols-5 gap-2">@foreach($questions as $number => $question)<a href="#question-{{ $question->id }}" class="flex aspect-square items-center justify-center rounded-lg bg-slate-100 text-xs font-black text-slate-600 no-underline">{{ $number + 1 }}</a>@endforeach</div>
         @if(data_get($attempt->session->security_policy, 'fullscreen'))<button type="button" data-enter-fullscreen class="mt-5 w-full rounded-xl border border-green-200 px-3 py-2 text-xs font-black text-green-700">@lang('student-exam::app.proctoring.enter_fullscreen')</button>@endif
         @if(data_get($attempt->session->security_policy, 'camera_enabled'))<div class="mt-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-900"><p class="font-black">@lang('student-exam::app.proctoring.camera_title')</p><p class="mt-1">@lang('student-exam::app.proctoring.camera_description')</p><div class="mt-3 flex gap-2"><button type="button" data-camera-consent="1" class="rounded-lg bg-green-600 px-3 py-2 font-black text-white">@lang('student-exam::app.proctoring.allow')</button><button type="button" data-camera-consent="0" class="rounded-lg border border-slate-300 px-3 py-2 font-black">@lang('student-exam::app.proctoring.decline')</button></div></div>@endif
@@ -43,9 +44,12 @@ form?.addEventListener('change', (event) => {
     const answer = controls[0].type === 'textarea' ? controls[0].value : controls.filter((control) => control.checked).map((control) => control.value);
     post(form.dataset.autosaveUrl, { question_id: Number(input.dataset.questionId), answer });
 });
+const proctorMessage = document.querySelector('[data-proctor-message]');
+let paused = @json($attempt->status === 'paused');
+let lastWarningAt = @json($attempt->latest_warning_at?->toIso8601String());
 const heartbeatInterval = Math.max(10, Number(policy.heartbeat_interval_seconds || 30)) * 1000;
-post(form.dataset.heartbeatUrl, {}).catch(() => null);
-window.setInterval(() => post(form.dataset.heartbeatUrl, {}).catch(() => null), heartbeatInterval);
+const heartbeat = async () => { try { const response = await post(form.dataset.heartbeatUrl, {}); if (! response.ok) return; const data = await response.json(); paused = data.status === 'paused'; if (data.expires_at) timer.dataset.examDeadline = data.expires_at; if (paused) { proctorMessage.textContent = @js(__('student-exam::app.proctoring.paused')); proctorMessage.classList.remove('hidden'); } else if (data.warning && data.warning_at !== lastWarningAt) { lastWarningAt = data.warning_at; proctorMessage.textContent = data.warning; proctorMessage.classList.remove('hidden'); } else proctorMessage.classList.add('hidden'); } catch (error) {} };
+heartbeat(); window.setInterval(heartbeat, heartbeatInterval);
 document.addEventListener('visibilitychange', () => { if (document.hidden && policy.tab_switch_detection) report('tab_hidden'); });
 document.addEventListener('fullscreenchange', () => { if (! document.fullscreenElement && policy.fullscreen) report('fullscreen_exited'); });
 document.querySelector('[data-enter-fullscreen]')?.addEventListener('click', () => document.documentElement.requestFullscreen?.());
@@ -81,6 +85,6 @@ document.querySelectorAll('[data-camera-consent]').forEach((button) => button.ad
         capture(); cameraTimer = window.setInterval(capture, Math.max(30, Number(policy.camera_capture_interval_seconds || 120)) * 1000);
     } catch (error) { await post(form.dataset.cameraConsentUrl, { consented: false }); }
 }));
-if (timer) { const render = () => { const seconds = Math.max(0, Number(timer.dataset.examDeadline) - Math.floor(Date.now() / 1000)); timer.textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`; }; render(); window.setInterval(render, 1000); }
+if (timer) { const render = () => { if (paused) return; const seconds = Math.max(0, Number(timer.dataset.examDeadline) - Math.floor(Date.now() / 1000)); timer.textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`; }; render(); window.setInterval(render, 1000); }
 </script>
 @endsection

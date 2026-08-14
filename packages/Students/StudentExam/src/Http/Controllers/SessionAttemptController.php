@@ -39,7 +39,7 @@ class SessionAttemptController extends Controller
     public function take(Request $request, ExamSessionAttempt $attempt): View
     {
         $questions = $this->attempts->questions($attempt, $request->user());
-        abort_unless($attempt->isActive(), 409, __('Mindigo-exam-management::app.candidate_attempt.not_active'));
+        abort_unless($attempt->isActive() || $attempt->status === ExamSessionAttempt::STATUS_PAUSED, 409, __('Mindigo-exam-management::app.candidate_attempt.not_active'));
         $attempt->load(['session.version.template', 'answers']);
 
         return view('student-exam::sessions.take', [
@@ -65,7 +65,15 @@ class SessionAttemptController extends Controller
         ]);
         $active = $this->proctoring->heartbeat($attempt, $request->user(), $this->context($request, $data));
 
-        return response()->json(['ok' => $active], $active ? 200 : 409);
+        $state = $attempt->fresh();
+
+        return response()->json([
+            'ok' => $active,
+            'status' => $state->status,
+            'warning' => $state->latest_warning,
+            'warning_at' => $state->latest_warning_at?->toIso8601String(),
+            'expires_at' => $state->expires_at?->timestamp,
+        ], $active ? 200 : 409);
     }
 
     public function securityEvent(SessionSecurityEventRequest $request, ExamSessionAttempt $attempt): JsonResponse

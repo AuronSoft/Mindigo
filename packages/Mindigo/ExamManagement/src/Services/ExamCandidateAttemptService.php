@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
+use Mindigo\ExamManagement\Events\ExamMonitoringUpdated;
 use Mindigo\ExamManagement\Models\ExamCandidate;
 use Mindigo\ExamManagement\Models\ExamSession;
 use Mindigo\ExamManagement\Models\ExamSessionAttempt;
@@ -31,7 +32,7 @@ class ExamCandidateAttemptService
 
     public function start(ExamSession $session, User $student): ExamSessionAttempt
     {
-        return DB::transaction(function () use ($session, $student): ExamSessionAttempt {
+        $attempt = DB::transaction(function () use ($session, $student): ExamSessionAttempt {
             $session = ExamSession::query()->lockForUpdate()->with('version.questions')->findOrFail($session->id);
             $candidate = ExamCandidate::query()->where('exam_session_id', $session->id)
                 ->where('user_id', $student->getAuthIdentifier())->lockForUpdate()->first();
@@ -83,6 +84,9 @@ class ExamCandidateAttemptService
                 'security_events' => [],
             ]);
         });
+        ExamMonitoringUpdated::dispatch($session->id, $attempt->id, 'attempt_started');
+
+        return $attempt;
     }
 
     public function questions(ExamSessionAttempt $attempt, User $student): Collection
@@ -139,7 +143,7 @@ class ExamCandidateAttemptService
 
     public function submit(ExamSessionAttempt $attempt, User $student, array $answers = []): ExamSessionAttempt
     {
-        return DB::transaction(function () use ($attempt, $student, $answers): ExamSessionAttempt {
+        $submittedAttempt = DB::transaction(function () use ($attempt, $student, $answers): ExamSessionAttempt {
             $attempt = $this->lockedOwnedAttempt($attempt, $student);
             if ($attempt->status !== ExamSessionAttempt::STATUS_IN_PROGRESS) {
                 return $attempt;
@@ -158,6 +162,9 @@ class ExamCandidateAttemptService
 
             return $attempt->fresh(['answers.question', 'session']);
         });
+        ExamMonitoringUpdated::dispatch($submittedAttempt->exam_session_id, $submittedAttempt->id, 'attempt_submitted');
+
+        return $submittedAttempt;
     }
 
     private function grade(ExamSessionAttempt $attempt): array

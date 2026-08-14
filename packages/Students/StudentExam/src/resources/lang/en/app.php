@@ -115,6 +115,7 @@ return [
         'camera_description' => 'If you agree, periodic snapshots are stored privately for teacher review. Declining is recorded but does not imply misconduct.',
         'allow' => 'Allow camera',
         'decline' => 'Decline',
+        'paused' => 'Your attempt has been paused by the teacher. Your timer is frozen until it is resumed.',
     ],
     'session_workspace' => [
         'title' => 'My exam sessions', 'eyebrow' => 'Learning workspace · Exams', 'description' => 'Track schedules, resume active attempts, and start when an exam opens.',

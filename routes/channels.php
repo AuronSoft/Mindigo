@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use Mindigo\ExamManagement\Models\ExamSession;
 use Mindigo\TeacherDiscussion\Models\DiscussionThread;
 
 /*
@@ -23,5 +24,12 @@ Broadcast::channel('private-discussion.{threadId}', function ($user, $threadId) 
     return DiscussionThread::query()
         ->whereKey($threadId)
         ->whereHas('participants', fn ($query) => $query->where('user_id', $user->id))
+        ->exists();
+});
+
+Broadcast::channel('exam-session.{sessionId}', function ($user, $sessionId) {
+    return $user->isTeacher() && ExamSession::query()
+        ->whereKey($sessionId)
+        ->where('organizer_id', $user->getAuthIdentifier())
         ->exists();
 });
