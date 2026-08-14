@@ -3,11 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\ExamManagement\Http\Controllers\ExamAttemptController;
 use Mindigo\ExamManagement\Http\Controllers\ExamController;
+use Mindigo\ExamManagement\Http\Middleware\EnsureExamBusinessRole;
 
 Route::middleware([
     'web',
     'auth',
-    \Mindigo\ExamManagement\Http\Middleware\EnsureExamBusinessRole::class,
+    EnsureExamBusinessRole::class,
 ])
     ->prefix('dashboard/exams')
     ->name('exams.')
