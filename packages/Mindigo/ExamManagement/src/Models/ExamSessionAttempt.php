@@ -34,6 +34,8 @@ class ExamSessionAttempt extends Model
             'percentage' => 'decimal:2',
             'passed' => 'boolean',
             'needs_review' => 'boolean',
+            'reviewed_at' => 'datetime',
+            'released_at' => 'datetime',
         ];
     }
 
@@ -55,6 +57,16 @@ class ExamSessionAttempt extends Model
     public function answers(): HasMany
     {
         return $this->hasMany(ExamSessionAttemptAnswer::class);
+    }
+
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function releaser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'released_by');
     }
 
     public function isActive(): bool

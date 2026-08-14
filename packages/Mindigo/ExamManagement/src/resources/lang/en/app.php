@@ -203,6 +203,17 @@ return [
         'schedule' => 'Schedule exam', 'created' => 'Exam scheduled and candidate list snapshotted.', 'invalid_template' => 'The template is invalid, unlocked, or owned by another teacher.', 'invalid_classroom' => 'A classroom is inactive or owned by another teacher.', 'duration_exceeds_window' => 'The attempt duration cannot exceed the exam availability window.',
         'summary' => ':candidates candidates · :minutes minutes', 'statuses' => ['draft' => 'Draft', 'scheduled' => 'Scheduled', 'live' => 'Live', 'ended' => 'Ended', 'grading' => 'Grading', 'completed' => 'Completed', 'archived' => 'Archived'],
     ],
+    'grading' => [
+        'title' => 'Grading and results', 'workspace' => 'Teacher workspace', 'description' => 'Review submissions and release results for :session.',
+        'back_sessions' => 'Back to exam sessions', 'open_queue' => 'Grade submissions', 'queue' => 'Submission queue', 'queue_description' => 'Submissions needing manual review appear first.',
+        'submissions' => 'Submissions', 'pending' => 'Pending grading', 'released_count' => 'Released', 'empty' => 'No submissions yet', 'empty_description' => 'Student submissions will appear here after they finish the exam.',
+        'candidate' => 'Candidate', 'submitted_at' => 'Submitted at', 'score' => 'Score', 'state' => 'Status', 'action' => 'Action', 'ready' => 'Ready to release', 'released' => 'Released', 'open' => 'Open submission',
+        'review_title' => 'Review submission', 'review_description' => ':candidate · :session', 'back_queue' => 'Back to grading queue', 'current_score' => 'Current score', 'percentage' => 'Percentage', 'security_events' => 'Security events',
+        'question' => 'Question :number', 'no_answer' => 'No answer submitted', 'points_awarded' => 'Points awarded', 'feedback' => 'Teacher feedback', 'feedback_placeholder' => 'Optional feedback for the learner', 'save_grade' => 'Save grade',
+        'release_title' => 'Release result', 'release_description' => 'Publishing makes this result visible when the session uses the teacher-release policy.', 'release_action' => 'Release result to learner', 'release_blocked' => 'Complete all manual grading before releasing this result.', 'released_at' => 'Released at :time',
+        'graded' => 'The answer has been graded.', 'review_required' => 'This submission still contains answers awaiting review.', 'not_releasable' => 'Only completed submissions can be released.', 'invalid_answer' => 'This answer does not belong to the submission or no longer needs review.', 'points_exceeded' => 'Points awarded cannot exceed :points.',
+        'result_notification_title' => 'Your exam result is available', 'result_notification_message' => 'The result for :session has been released.',
+    ],
     'candidate_attempt' => [
         'not_eligible' => 'You are not an eligible candidate for this exam.',
         'not_open' => 'This exam is not open or has already ended.',

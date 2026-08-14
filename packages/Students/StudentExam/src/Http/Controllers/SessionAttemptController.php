@@ -77,7 +77,9 @@ class SessionAttemptController extends Controller
         abort_if($attempt->status === ExamSessionAttempt::STATUS_IN_PROGRESS, 409);
         $attempt->load('session.version.template');
         $policy = $attempt->session->result_policy;
-        $visible = $policy === 'immediately' || ($policy === 'after_end' && $attempt->session->ends_at?->isPast());
+        $visible = $policy === 'immediately'
+            || ($policy === 'after_end' && $attempt->session->ends_at?->isPast())
+            || ($policy === 'after_release' && $attempt->released_at !== null);
 
         return view('student-exam::sessions.result', compact('attempt', 'visible'));
     }

@@ -203,6 +203,17 @@ return [
         'schedule' => 'Lập lịch kỳ thi', 'created' => 'Đã lập lịch và chốt danh sách thí sinh.', 'invalid_template' => 'Đề mẫu không hợp lệ, chưa khóa hoặc không thuộc giáo viên.', 'invalid_classroom' => 'Có lớp học không hoạt động hoặc không thuộc giáo viên.', 'duration_exceeds_window' => 'Thời lượng làm bài không được vượt quá khoảng thời gian mở kỳ thi.',
         'summary' => ':candidates thí sinh · :minutes phút', 'statuses' => ['draft' => 'Bản nháp', 'scheduled' => 'Đã lên lịch', 'live' => 'Đang diễn ra', 'ended' => 'Đã kết thúc', 'grading' => 'Đang chấm', 'completed' => 'Hoàn thành', 'archived' => 'Đã lưu trữ'],
     ],
+    'grading' => [
+        'title' => 'Chấm bài và kết quả', 'workspace' => 'Không gian giáo viên', 'description' => 'Rà soát bài nộp và công bố kết quả cho :session.',
+        'back_sessions' => 'Quay lại kỳ thi', 'open_queue' => 'Chấm bài', 'queue' => 'Danh sách bài nộp', 'queue_description' => 'Các bài còn câu tự luận cần chấm được ưu tiên hiển thị trước.',
+        'submissions' => 'Bài đã nộp', 'pending' => 'Chờ chấm', 'released_count' => 'Đã công bố', 'empty' => 'Chưa có bài nộp', 'empty_description' => 'Bài của học sinh sẽ xuất hiện sau khi hoàn thành kỳ thi.',
+        'candidate' => 'Thí sinh', 'submitted_at' => 'Thời gian nộp', 'score' => 'Điểm', 'state' => 'Trạng thái', 'action' => 'Thao tác', 'ready' => 'Sẵn sàng công bố', 'released' => 'Đã công bố', 'open' => 'Mở bài làm',
+        'review_title' => 'Chấm bài làm', 'review_description' => ':candidate · :session', 'back_queue' => 'Quay lại danh sách chấm', 'current_score' => 'Điểm hiện tại', 'percentage' => 'Tỷ lệ', 'security_events' => 'Sự kiện bảo mật',
+        'question' => 'Câu :number', 'no_answer' => 'Học sinh không trả lời', 'points_awarded' => 'Điểm được chấm', 'feedback' => 'Nhận xét của giáo viên', 'feedback_placeholder' => 'Nhận xét tùy chọn cho học sinh', 'save_grade' => 'Lưu điểm',
+        'release_title' => 'Công bố kết quả', 'release_description' => 'Kết quả sẽ hiển thị cho học sinh khi kỳ thi sử dụng chính sách giáo viên công bố.', 'release_action' => 'Công bố cho học sinh', 'release_blocked' => 'Hãy chấm xong toàn bộ câu tự luận trước khi công bố.', 'released_at' => 'Đã công bố lúc :time',
+        'graded' => 'Đã lưu điểm cho câu trả lời.', 'review_required' => 'Bài làm vẫn còn câu trả lời đang chờ chấm.', 'not_releasable' => 'Chỉ có thể công bố bài làm đã hoàn thành.', 'invalid_answer' => 'Câu trả lời không thuộc bài làm hoặc không còn cần chấm.', 'points_exceeded' => 'Điểm chấm không được vượt quá :points.',
+        'result_notification_title' => 'Kết quả bài thi đã sẵn sàng', 'result_notification_message' => 'Giáo viên đã công bố kết quả kỳ thi :session.',
+    ],
     'candidate_attempt' => [
         'not_eligible' => 'Bạn không có trong danh sách thí sinh của kỳ thi này.',
         'not_open' => 'Kỳ thi hiện chưa mở hoặc đã kết thúc.',
