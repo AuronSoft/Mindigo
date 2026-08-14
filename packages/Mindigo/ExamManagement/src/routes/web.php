@@ -3,7 +3,20 @@
 use Illuminate\Support\Facades\Route;
 use Mindigo\ExamManagement\Http\Controllers\ExamAttemptController;
 use Mindigo\ExamManagement\Http\Controllers\ExamController;
+use Mindigo\ExamManagement\Http\Controllers\ExamTemplateController;
 use Mindigo\ExamManagement\Http\Middleware\EnsureExamBusinessRole;
+
+Route::middleware(['web', 'auth', 'role:teacher'])
+    ->prefix('teacher/exams/templates')
+    ->name('teacher.exam-templates.')
+    ->group(function (): void {
+        Route::get('/', [ExamTemplateController::class, 'index'])->name('index');
+        Route::get('/create', [ExamTemplateController::class, 'create'])->name('create');
+        Route::post('/', [ExamTemplateController::class, 'store'])->name('store');
+        Route::get('/{template}/edit', [ExamTemplateController::class, 'edit'])->name('edit');
+        Route::put('/{template}', [ExamTemplateController::class, 'update'])->name('update');
+        Route::post('/{template}/ready', [ExamTemplateController::class, 'ready'])->name('ready');
+    });
 
 Route::middleware([
     'web',
