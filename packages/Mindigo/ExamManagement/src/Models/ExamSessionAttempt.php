@@ -17,7 +17,9 @@ class ExamSessionAttempt extends Model
 
     public const STATUS_TERMINATED = 'terminated';
 
-    public const STATUSES = [self::STATUS_IN_PROGRESS, self::STATUS_SUBMITTED, self::STATUS_EXPIRED, self::STATUS_TERMINATED];
+    public const STATUS_PAUSED = 'paused';
+
+    public const STATUSES = [self::STATUS_IN_PROGRESS, self::STATUS_SUBMITTED, self::STATUS_EXPIRED, self::STATUS_TERMINATED, self::STATUS_PAUSED];
 
     protected $guarded = ['id'];
 
@@ -27,6 +29,7 @@ class ExamSessionAttempt extends Model
             'started_at' => 'datetime',
             'expires_at' => 'datetime',
             'last_activity_at' => 'datetime',
+            'paused_at' => 'datetime',
             'submitted_at' => 'datetime',
             'question_order' => 'array',
             'answer_order' => 'array',
@@ -42,6 +45,9 @@ class ExamSessionAttempt extends Model
             'camera_consent_at' => 'datetime',
             'camera_consent_declined_at' => 'datetime',
             'terminated_at' => 'datetime',
+            'latest_warning_at' => 'datetime',
+            'pause_remaining_seconds' => 'integer',
+            'added_time_minutes' => 'integer',
         ];
     }
 
@@ -83,6 +89,11 @@ class ExamSessionAttempt extends Model
     public function terminator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'terminated_by');
+    }
+
+    public function pausedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'paused_by');
     }
 
     public function isActive(): bool

@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
+use Mindigo\ExamManagement\Events\ExamMonitoringUpdated;
 use Mindigo\ExamManagement\Models\ExamProctorEvent;
 use Mindigo\ExamManagement\Models\ExamSessionAttempt;
 
@@ -33,6 +34,10 @@ class ExamProctoringService
                 return false;
             }
 
+            if ($attempt->status === ExamSessionAttempt::STATUS_PAUSED) {
+                return true;
+            }
+
             $policy = $attempt->session->security_policy ?? [];
             $lastActivity = $attempt->last_activity_at;
             $gap = $lastActivity?->diffInSeconds(now()) ?? 0;
@@ -48,10 +53,14 @@ class ExamProctoringService
             }
 
             $this->inspectContext($attempt, $student, $context, $policy);
+            $currentQuestionId = $context['current_question_id'] ?? null;
             $attempt->update([
                 'last_activity_at' => now(),
-                'current_question_id' => $context['current_question_id'] ?? $attempt->current_question_id,
+                'current_question_id' => $currentQuestionId && in_array($currentQuestionId, $attempt->question_order ?? [], true)
+                    ? $currentQuestionId
+                    : $attempt->current_question_id,
             ]);
+            $this->broadcast($attempt, 'heartbeat');
 
             return true;
         });
@@ -124,13 +133,110 @@ class ExamProctoringService
         ));
     }
 
+    public function addTime(ExamSessionAttempt $attempt, User $teacher, int $minutes): ExamSessionAttempt
+    {
+        $this->authorizeOrganizer($attempt, $teacher);
+
+        return DB::transaction(function () use ($attempt, $teacher, $minutes): ExamSessionAttempt {
+            $attempt = ExamSessionAttempt::query()->lockForUpdate()->with('session')->findOrFail($attempt->id);
+            if (! in_array($attempt->status, [ExamSessionAttempt::STATUS_IN_PROGRESS, ExamSessionAttempt::STATUS_PAUSED], true)) {
+                throw ValidationException::withMessages(['attempt' => __('Mindigo-exam-management::app.proctoring.attempt_not_active')]);
+            }
+
+            $attempt->update([
+                'expires_at' => $attempt->expires_at->addMinutes($minutes),
+                'pause_remaining_seconds' => $attempt->pause_remaining_seconds === null ? null : $attempt->pause_remaining_seconds + ($minutes * 60),
+                'added_time_minutes' => $attempt->added_time_minutes + $minutes,
+            ]);
+            $this->record($attempt, ExamProctorEvent::TYPE_TIME_ADDED, ExamProctorEvent::SOURCE_PROCTOR, $teacher, [], ['minutes' => $minutes]);
+
+            return $attempt->fresh();
+        });
+    }
+
+    public function allowRetry(ExamSessionAttempt $attempt, User $teacher): void
+    {
+        $this->authorizeOrganizer($attempt, $teacher);
+
+        DB::transaction(function () use ($attempt, $teacher): void {
+            $attempt = ExamSessionAttempt::query()->lockForUpdate()->with(['session', 'candidate'])->findOrFail($attempt->id);
+            if (! in_array($attempt->status, [ExamSessionAttempt::STATUS_SUBMITTED, ExamSessionAttempt::STATUS_EXPIRED, ExamSessionAttempt::STATUS_TERMINATED], true)) {
+                throw ValidationException::withMessages(['attempt' => __('Mindigo-exam-management::app.proctoring.retry_not_available')]);
+            }
+            $used = $attempt->candidate->attempts()->count();
+            $currentLimit = $attempt->candidate->max_attempts_override ?? $attempt->session->max_attempts;
+            $attempt->candidate->update(['max_attempts_override' => max($used + 1, $currentLimit)]);
+            $this->record($attempt, ExamProctorEvent::TYPE_RETRY_ALLOWED, ExamProctorEvent::SOURCE_PROCTOR, $teacher, [], ['max_attempts' => max($used + 1, $currentLimit)]);
+        });
+    }
+
+    public function sendWarning(ExamSessionAttempt $attempt, User $teacher, string $message): ExamSessionAttempt
+    {
+        $this->authorizeOrganizer($attempt, $teacher);
+
+        return DB::transaction(function () use ($attempt, $teacher, $message): ExamSessionAttempt {
+            $attempt = ExamSessionAttempt::query()->lockForUpdate()->with('session')->findOrFail($attempt->id);
+            if (! in_array($attempt->status, [ExamSessionAttempt::STATUS_IN_PROGRESS, ExamSessionAttempt::STATUS_PAUSED], true)) {
+                throw ValidationException::withMessages(['attempt' => __('Mindigo-exam-management::app.proctoring.attempt_not_active')]);
+            }
+            $attempt->update(['latest_warning' => $message, 'latest_warning_at' => now()]);
+            $this->record($attempt, ExamProctorEvent::TYPE_WARNING_SENT, ExamProctorEvent::SOURCE_PROCTOR, $teacher, [], ['message' => $message]);
+
+            return $attempt->fresh();
+        });
+    }
+
+    public function pause(ExamSessionAttempt $attempt, User $teacher): ExamSessionAttempt
+    {
+        $this->authorizeOrganizer($attempt, $teacher);
+
+        return DB::transaction(function () use ($attempt, $teacher): ExamSessionAttempt {
+            $attempt = ExamSessionAttempt::query()->lockForUpdate()->with('session')->findOrFail($attempt->id);
+            if ($attempt->status !== ExamSessionAttempt::STATUS_IN_PROGRESS) {
+                throw ValidationException::withMessages(['attempt' => __('Mindigo-exam-management::app.proctoring.attempt_not_active')]);
+            }
+            $attempt->update([
+                'status' => ExamSessionAttempt::STATUS_PAUSED,
+                'paused_at' => now(),
+                'paused_by' => $teacher->getAuthIdentifier(),
+                'pause_remaining_seconds' => max(0, (int) now()->diffInSeconds($attempt->expires_at, false)),
+            ]);
+            $this->record($attempt, ExamProctorEvent::TYPE_ATTEMPT_PAUSED, ExamProctorEvent::SOURCE_PROCTOR, $teacher);
+
+            return $attempt->fresh();
+        });
+    }
+
+    public function resume(ExamSessionAttempt $attempt, User $teacher): ExamSessionAttempt
+    {
+        $this->authorizeOrganizer($attempt, $teacher);
+
+        return DB::transaction(function () use ($attempt, $teacher): ExamSessionAttempt {
+            $attempt = ExamSessionAttempt::query()->lockForUpdate()->with('session')->findOrFail($attempt->id);
+            if ($attempt->status !== ExamSessionAttempt::STATUS_PAUSED) {
+                throw ValidationException::withMessages(['attempt' => __('Mindigo-exam-management::app.proctoring.attempt_not_paused')]);
+            }
+            $attempt->update([
+                'status' => ExamSessionAttempt::STATUS_IN_PROGRESS,
+                'expires_at' => now()->addSeconds($attempt->pause_remaining_seconds ?? 0),
+                'paused_at' => null,
+                'paused_by' => null,
+                'pause_remaining_seconds' => null,
+                'last_activity_at' => now(),
+            ]);
+            $this->record($attempt, ExamProctorEvent::TYPE_ATTEMPT_RESUMED, ExamProctorEvent::SOURCE_PROCTOR, $teacher);
+
+            return $attempt->fresh();
+        });
+    }
+
     public function terminate(ExamSessionAttempt $attempt, User $teacher, string $reason): ExamSessionAttempt
     {
         $this->authorizeOrganizer($attempt, $teacher);
 
         return DB::transaction(function () use ($attempt, $teacher, $reason): ExamSessionAttempt {
             $attempt = ExamSessionAttempt::query()->lockForUpdate()->with('session')->findOrFail($attempt->id);
-            if ($attempt->status !== ExamSessionAttempt::STATUS_IN_PROGRESS) {
+            if (! in_array($attempt->status, [ExamSessionAttempt::STATUS_IN_PROGRESS, ExamSessionAttempt::STATUS_PAUSED], true)) {
                 throw ValidationException::withMessages(['attempt' => __('Mindigo-exam-management::app.proctoring.attempt_not_active')]);
             }
 
@@ -203,6 +309,8 @@ class ExamProctoringService
             $attempt->update(['risk_score' => $score, 'risk_level' => $level]);
         }
 
+        $this->broadcast($attempt, $type);
+
         return $event;
     }
 
@@ -218,7 +326,7 @@ class ExamProctoringService
             return null;
         }
 
-        return $attempt->isActive() ? $attempt : null;
+        return $attempt->isActive() || $attempt->status === ExamSessionAttempt::STATUS_PAUSED ? $attempt : null;
     }
 
     private function requireOwnedActiveAttempt(ExamSessionAttempt $attempt, User $student): ExamSessionAttempt
@@ -251,5 +359,10 @@ class ExamProctoringService
         };
 
         return $setting === null || (bool) data_get($attempt->session->security_policy, $setting, true);
+    }
+
+    private function broadcast(ExamSessionAttempt $attempt, string $reason): void
+    {
+        DB::afterCommit(fn () => ExamMonitoringUpdated::dispatch($attempt->exam_session_id, $attempt->id, $reason));
     }
 }

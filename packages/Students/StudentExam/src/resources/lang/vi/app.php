@@ -115,6 +115,7 @@ return [
         'camera_description' => 'Nếu bạn đồng ý, ảnh định kỳ được lưu riêng tư để giáo viên rà soát. Từ chối không đồng nghĩa với gian lận.',
         'allow' => 'Đồng ý bật camera',
         'decline' => 'Từ chối',
+        'paused' => 'Giáo viên đã tạm dừng lượt thi. Đồng hồ được giữ nguyên cho đến khi lượt thi tiếp tục.',
     ],
     'session_workspace' => [
         'title' => 'Kỳ thi của tôi', 'eyebrow' => 'Không gian học tập · Kỳ thi', 'description' => 'Theo dõi lịch thi, tiếp tục lượt đang làm và bắt đầu bài khi kỳ thi mở.',
