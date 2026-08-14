@@ -6,7 +6,7 @@
     <div class="max-w-7xl mx-auto px-10 py-20 flex flex-col lg:flex-row items-center gap-16 relative z-10">
 
         {{-- LEFT --}}
-        <div class="flex-1 flex flex-col items-start gap-5">
+        <div class="flex flex-1 flex-col items-start gap-5 lg:flex-[0.88]">
             <span class="bg-white border border-green-200 text-green-700 text-xs font-black px-4 py-1.5 rounded-full">
                 @lang('core::app.hero.badge')
             </span>
@@ -48,7 +48,7 @@
         </div>
 
         {{-- RIGHT --}}
-        <div class="flex-1 relative flex items-center justify-center min-h-120">
+        <div class="relative flex min-h-120 flex-1 items-center justify-center lg:-mr-20 lg:translate-x-8 lg:flex-[1.2]">
 
             {{-- Floating AI badge --}}
             <div class="absolute -top-4 left-6 bg-white border-2 border-green-200 rounded-2xl px-4 py-2.5 flex items-center gap-3 z-20"
@@ -83,16 +83,15 @@
             </div>
 
             {{-- Main card with 3D effect --}}
-            <div class="bg-white rounded-3xl w-full overflow-hidden mt-10"
+            <div class="hero-lms-demo relative mt-10 w-full overflow-hidden rounded-3xl bg-white"
                 style="
                 box-shadow:
-                    0 2px 0 #d1fae5,
-                    0 6px 0 #bbf7d0,
-                    0 12px 0 #86efac,
-                    0 20px 40px rgba(22,163,74,0.15),
-                    0 40px 80px rgba(0,0,0,0.08);
-                border: 1.5px solid #d1fae5;
-                transform: perspective(1200px) rotateX(2deg);
+                    0 1px 2px rgba(15,23,42,0.08),
+                    0 14px 28px rgba(15,23,42,0.12),
+                    0 34px 70px rgba(15,23,42,0.16),
+                    12px 18px 46px rgba(22,163,74,0.08);
+                border: 1px solid #e2e8f0;
+                transform: perspective(1200px) rotateX(1.5deg) rotateY(-1deg);
                 transform-style: preserve-3d;
                 ">
 
@@ -110,7 +109,7 @@
                 <div class="p-5">
                     {{-- Upload bar --}}
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="flex-1 bg-green-50 border-2 border-dashed border-green-300 rounded-xl px-3 py-2.5 text-xs font-bold text-green-700 flex items-center gap-2 hover:bg-green-100 transition cursor-pointer"
+                        <div class="hero-upload-zone flex flex-1 cursor-pointer items-center gap-2 rounded-xl border-2 border-dashed border-green-300 bg-green-50 px-3 py-2.5 text-xs font-bold text-green-700 transition hover:bg-green-100"
                             style="box-shadow: inset 0 2px 4px rgba(22,163,74,0.06);">
                             <svg width="14" height="14" fill="none" viewBox="0 0 14 14">
                                 <path d="M7 1v7M4.5 3.5L7 1l2.5 2.5" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/>
@@ -118,7 +117,7 @@
                             </svg>
                             @lang('core::app.hero.upload')
                         </div>
-                        <button class="text-white text-xs font-black px-4 py-2.5 rounded-xl whitespace-nowrap transition hover:brightness-110"
+                        <button type="button" class="hero-review-button whitespace-nowrap rounded-xl px-4 py-2.5 text-xs font-black text-white transition hover:brightness-110"
                                 style="background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 4px 0 #15803d, 0 6px 12px rgba(22,163,74,0.3);">
                             @lang('core::app.hero.review')
                         </button>
@@ -127,7 +126,7 @@
                     {{-- Action pills --}}
                     <div class="flex gap-2 mb-5">
                         <span class="bg-red-50 text-red-400 border border-red-100 text-xs font-black px-3 py-1 rounded-lg">@lang('core::app.hero.return')</span>
-                        <span class="text-white text-xs font-black px-3 py-1 rounded-lg"
+                        <span class="hero-save-action rounded-lg px-3 py-1 text-xs font-black text-white"
                             style="background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 3px 0 #15803d;">
                             @lang('core::app.hero.save')
                         </span>
@@ -178,44 +177,27 @@
                             </div>
                         </div>
 
-                        {{-- Question list --}}
-                        <div class="flex-1 space-y-3 min-w-0">
-                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-wide">@lang('core::app.hero.question_list')</p>
-
-                            {{-- Question 1 --}}
-                            <div class="rounded-xl p-3 space-y-1.5 border border-green-100 transition"
-                                style="background: linear-gradient(135deg, #f0fdf4, #f7fef9); box-shadow: 0 2px 8px rgba(22,163,74,0.08);">
-                                <div class="flex items-center justify-between mb-1">
-                                    <p class="text-xs font-black text-gray-700">@lang('core::app.hero.q1_title') <span class="text-gray-400 font-semibold">(@lang('core::app.hero.q1_type'))</span></p>
-                                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded-full border border-green-200">@lang('core::app.hero.has_answer')</span>
-                                </div>
-                                <p class="text-xs font-semibold text-gray-600 italic">@lang('core::app.hero.q1_prompt')</p>
-                                @foreach(trans('core::app.hero.q1_options') as $option)
-                                <div class="flex items-center gap-1.5 text-xs {{ $option['correct'] ? 'text-green-600 font-semibold' : 'text-gray-400' }}">
-                                    <span class="w-4 h-4 rounded-full font-black flex items-center justify-center text-[9px] {{ $option['correct'] ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-400' }}">{!! $option['correct'] ? '&#10003;' : '&#10007;' !!}</span>
-                                    {{ $option['text'] }}
-                                </div>
-                                @endforeach
+                        {{-- Current Mindigo LMS course workspace --}}
+                        <div class="min-w-0 flex-1 space-y-3">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0"><p class="truncate text-xs font-black text-gray-800">@lang('core::app.hero.course_name')</p><p class="mt-0.5 text-[9px] font-semibold text-gray-400">@lang('core::app.hero.course_meta')</p></div>
+                                <div class="hidden shrink-0 gap-1.5 sm:flex"><span class="rounded-lg bg-blue-50 px-2 py-1 text-[8px] font-black text-blue-600">248 @lang('core::app.hero.learners_label')</span><span class="rounded-lg bg-violet-50 px-2 py-1 text-[8px] font-black text-violet-600">76% @lang('core::app.hero.completion_label')</span></div>
                             </div>
 
-                            {{-- Question 2 --}}
-                            <div class="rounded-xl p-3 border border-gray-100 hover:border-green-200 transition"
-                                style="background: #fafafa; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
-                                <div class="flex items-center justify-between mb-1">
-                                    <p class="text-xs font-black text-gray-700">@lang('core::app.hero.q2_title') <span class="text-gray-400 font-semibold">(@lang('core::app.hero.q2_type'))</span></p>
-                                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded-full border border-green-200">@lang('core::app.hero.has_answer')</span>
-                                </div>
-                                <p class="text-xs text-gray-500 leading-relaxed">@lang('core::app.hero.q2_prompt')</p>
-                                @foreach(trans('core::app.hero.q2_options') as $index => $option)
-                                <div class="flex items-center gap-1.5 text-xs {{ $option['correct'] ? 'text-green-600 font-semibold' : 'text-gray-400' }} {{ $index === 0 ? 'mt-1.5' : '' }}">
-                                    <span class="w-4 h-4 rounded-full font-black flex items-center justify-center text-[9px] {{ $option['correct'] ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-400' }}">{!! $option['correct'] ? '&#10003;' : '&#10007;' !!}</span>
-                                    {{ $option['text'] }}
-                                </div>
-                                @endforeach
-                            </div>
+                            <article class="hero-lesson-one rounded-xl border border-green-100 bg-linear-to-br from-green-50 to-white p-3 shadow-sm">
+                                <div class="flex items-start gap-3"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-green-500 text-white shadow-[0_2px_0_#15803d]"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></svg></span><div class="min-w-0 flex-1"><div class="flex items-start justify-between gap-2"><div><p class="text-xs font-black text-gray-800">@lang('core::app.hero.lesson_1_name')</p><p class="mt-0.5 text-[9px] font-bold text-blue-500">@lang('core::app.hero.lesson_1_meta')</p></div><span class="shrink-0 rounded-full border border-green-200 bg-green-100 px-2 py-0.5 text-[8px] font-black text-green-700">@lang('core::app.hero.has_answer')</span></div><p class="mt-2 text-[9px] leading-relaxed text-gray-500">@lang('core::app.hero.lesson_1_desc')</p></div></div>
+                            </article>
+
+                            <article class="hero-lesson-two rounded-xl border border-gray-100 bg-gray-50 p-3 shadow-sm">
+                                <div class="flex items-start gap-3"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-100 text-amber-600"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l5 5v11a2 2 0 0 1-2 2Z"/></svg></span><div class="min-w-0 flex-1"><div class="flex items-start justify-between gap-2"><div><p class="text-xs font-black text-gray-800">@lang('core::app.hero.lesson_2_name')</p><p class="mt-0.5 text-[9px] font-bold text-amber-500">@lang('core::app.hero.lesson_2_meta')</p></div><span class="hero-publish-state shrink-0 rounded-full border px-2 py-0.5 text-[8px] font-black">@lang('core::app.hero.has_answer')</span></div><p class="mt-2 text-[9px] leading-relaxed text-gray-500">@lang('core::app.hero.lesson_2_desc')</p></div></div>
+                            </article>
                         </div>
                     </div>
                 </div>
+
+                <div class="hero-processing pointer-events-none absolute left-1/2 top-20 z-30 flex -translate-x-1/2 items-center gap-2 rounded-xl border border-violet-100 bg-white px-3 py-2 shadow-xl" aria-hidden="true"><span class="h-3 w-3 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600"></span><span class="whitespace-nowrap text-[9px] font-black text-violet-700">@lang('core::app.hero.ai_processing')</span></div>
+                <div class="hero-save-toast pointer-events-none absolute bottom-4 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-xl border border-green-100 bg-white px-3 py-2 shadow-xl" aria-hidden="true"><span class="grid h-5 w-5 place-items-center rounded-full bg-green-500 text-[9px] font-black text-white">✓</span><span class="whitespace-nowrap text-[9px] font-black text-gray-700">@lang('core::app.hero.save_success')</span></div>
+                <div class="hero-demo-cursor pointer-events-none absolute left-0 top-0 z-40 hidden sm:block" aria-hidden="true"><span class="hero-demo-click absolute -left-2 -top-2 h-7 w-7 rounded-full border-2 border-blue-400"></span><svg class="relative h-6 w-6 drop-shadow-md" viewBox="0 0 24 24" fill="none"><path d="M5 3.5 18.3 13l-6.1 1.1-3.6 5.1L5 3.5Z" fill="#2563eb" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
             </div>
 
             {{-- Phone mockup --}}
@@ -263,12 +245,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div>
+                                <p class="mb-0.5 text-[7px] font-black text-gray-400">@lang('core::app.hero.lesson_name_label')</p>
+                                <div class="rounded-lg border border-gray-200 bg-gray-50 px-2 py-1.5"><span class="hero-phone-typing inline-block max-w-full overflow-hidden whitespace-nowrap align-bottom text-[8px] font-bold text-gray-700">@lang('core::app.hero.lesson_name_value')</span></div>
+                            </div>
                             <div class="bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
                                 <p class="text-[7px] font-black text-gray-400 px-2 pt-1.5 pb-0.5">@lang('core::app.hero.q_type_label')</p>
                                 @foreach(__('core::app.hero.q_types') as $i => $type)
-                                <div class="px-2 py-1 {{ $i === 0 ? 'bg-green-50' : '' }} flex items-center justify-between border-t border-gray-50">
-                                    <span class="text-[8px] font-bold {{ $i === 0 ? 'text-green-600' : 'text-gray-600' }}">{{ $type }}</span>
-                                    @if($i === 0)<span class="text-green-500 text-[8px]">&#10003;</span>@endif
+                                <div class="hero-phone-option hero-phone-option-{{ $i }} flex items-center justify-between border-t border-gray-50 px-2 py-1 {{ $i === 0 ? 'bg-green-50' : '' }}">
+                                    <span class="hero-phone-option-label text-[8px] font-bold {{ $i === 0 ? 'text-green-600' : 'text-gray-600' }}">{{ $type }}</span>
+                                    <span class="hero-phone-option-check text-[8px] text-green-500 {{ $i === 0 ? '' : 'opacity-0' }}">&#10003;</span>
                                 </div>
                                 @endforeach
                                 <div class="px-2 py-1 border-t border-gray-100 flex items-center gap-1.5">
@@ -277,6 +263,7 @@
                                 </div>
                             </div>
                         </div>
+                        <span class="hero-phone-tap pointer-events-none absolute z-30 h-4 w-4 rounded-full border-2 border-blue-400 bg-blue-100/60" aria-hidden="true"></span>
                         <div class="flex justify-center py-2 bg-white">
                             <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
                         </div>

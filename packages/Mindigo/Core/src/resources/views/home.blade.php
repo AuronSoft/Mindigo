@@ -189,6 +189,85 @@
     0%, 100% { transform: translateY(0px); }
     50%       { transform: translateY(-6px); }
 }
+@keyframes heroDemoCursor {
+    0%, 8% { opacity: 0; transform: translate(110px, 78px); }
+    12%, 25% { opacity: 1; transform: translate(110px, 78px); }
+    34%, 47% { opacity: 1; transform: translate(535px, 78px); }
+    58%, 70% { opacity: 1; transform: translate(455px, 335px); }
+    80%, 92% { opacity: 1; transform: translate(130px, 128px); }
+    100% { opacity: 0; transform: translate(130px, 128px); }
+}
+@keyframes heroDemoClick {
+    0%, 10%, 25%, 32%, 47%, 56%, 70%, 78%, 92%, 100% { opacity: 0; transform: scale(.4); }
+    14%, 36%, 60%, 82% { opacity: .75; transform: scale(1); }
+}
+@keyframes heroUploadState {
+    0%, 10%, 100% { border-color: #86efac; background: #f0fdf4; transform: scale(1); }
+    14%, 30% { border-color: #60a5fa; background: #eff6ff; transform: scale(1.01); }
+}
+@keyframes heroProcessingState {
+    0%, 30%, 52%, 100% { opacity: 0; transform: translate(-50%, 8px) scale(.96); }
+    34%, 48% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+@keyframes heroLessonUpdate {
+    0%, 48%, 100% { opacity: .55; transform: translateY(3px); border-color: #f3f4f6; }
+    56%, 90% { opacity: 1; transform: translateY(0); border-color: #fde68a; background: #fffbeb; }
+}
+@keyframes heroPublishState {
+    0%, 48%, 100% { color: #64748b; border-color: #e2e8f0; background: #f8fafc; }
+    56%, 90% { color: #15803d; border-color: #bbf7d0; background: #dcfce7; }
+}
+@keyframes heroSaveAction {
+    0%, 77%, 100% { transform: translateY(0); filter: brightness(1); }
+    82%, 92% { transform: translateY(2px); filter: brightness(.95); box-shadow: 0 1px 0 #15803d; }
+}
+@keyframes heroSaveToast {
+    0%, 80%, 100% { opacity: 0; transform: translate(-50%, 10px) scale(.96); }
+    84%, 96% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+@keyframes heroPhoneTyping {
+    0%, 8% { width: 0; border-right-color: #16a34a; }
+    42%, 78% { width: 100%; border-right-color: #16a34a; }
+    88%, 100% { width: 100%; border-right-color: transparent; }
+}
+@keyframes heroPhoneTap {
+    0%, 42%, 100% { opacity: 0; transform: translate(78px, 176px) scale(.5); }
+    48%, 58% { opacity: .8; transform: translate(78px, 176px) scale(1); }
+    68%, 78% { opacity: .8; transform: translate(78px, 199px) scale(1); }
+    84% { opacity: 0; transform: translate(78px, 199px) scale(1.35); }
+}
+@keyframes heroPhoneOption {
+    0%, 58%, 100% { background: #fff; color: #4b5563; }
+    68%, 86% { background: #f0fdf4; color: #16a34a; }
+}
+@keyframes heroPhoneOptionInitial {
+    0%, 58%, 100% { background: #f0fdf4; color: #16a34a; }
+    68%, 86% { background: #fff; color: #4b5563; }
+}
+@keyframes heroPhoneCheckIn {
+    0%, 58%, 100% { opacity: 0; transform: scale(.4); }
+    68%, 86% { opacity: 1; transform: scale(1); }
+}
+@keyframes heroPhoneCheckOut {
+    0%, 58%, 100% { opacity: 1; transform: scale(1); }
+    68%, 86% { opacity: 0; transform: scale(.4); }
+}
+.hero-demo-cursor { animation: heroDemoCursor 10s ease-in-out infinite; }
+.hero-demo-click { animation: heroDemoClick 10s ease-out infinite; }
+.hero-upload-zone { animation: heroUploadState 10s ease-in-out infinite; }
+.hero-processing { opacity: 0; animation: heroProcessingState 10s ease-in-out infinite; }
+.hero-lesson-two { animation: heroLessonUpdate 10s ease-in-out infinite; }
+.hero-publish-state { animation: heroPublishState 10s ease-in-out infinite; }
+.hero-save-action { animation: heroSaveAction 10s ease-in-out infinite; }
+.hero-save-toast { opacity: 0; animation: heroSaveToast 10s ease-in-out infinite; }
+.hero-phone-typing { border-right: 1px solid #16a34a; animation: heroPhoneTyping 8s steps(30, end) infinite; }
+.hero-phone-tap { left: 0; top: 0; animation: heroPhoneTap 8s ease-in-out infinite; }
+.hero-phone-option-0 { animation: heroPhoneOptionInitial 8s ease-in-out infinite; }
+.hero-phone-option-1 { animation: heroPhoneOption 8s ease-in-out infinite; }
+.hero-phone-option-0 .hero-phone-option-label { animation: heroPhoneOptionInitial 8s ease-in-out infinite; }
+.hero-phone-option-1 .hero-phone-option-label { animation: heroPhoneOption 8s ease-in-out infinite; }
+.hero-phone-option-0 .hero-phone-option-check { animation: heroPhoneCheckOut 8s ease-in-out infinite; }
+.hero-phone-option-1 .hero-phone-option-check { animation: heroPhoneCheckIn 8s ease-in-out infinite; }
 @keyframes marquee {
     0%   { transform: translateX(0); }
     100% { transform: translateX(-50%); }
@@ -197,6 +276,13 @@
     display: flex;
     width: max-content;
     animation: marquee 30s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    .hero-demo-cursor, .hero-demo-click, .hero-upload-zone, .hero-processing, .hero-lesson-two, .hero-publish-state, .hero-save-action, .hero-save-toast, .hero-phone-typing, .hero-phone-tap, .hero-phone-option-0, .hero-phone-option-1, .hero-phone-option-label, .hero-phone-option-check { animation: none !important; }
+    .hero-demo-cursor, .hero-processing, .hero-save-toast, .hero-phone-tap { display: none !important; }
+    .hero-phone-typing { width: 100%; border-right-color: transparent; }
+    .hero-lesson-two { opacity: 1; transform: none; }
+    .hero-publish-state { color: #15803d; border-color: #bbf7d0; background: #dcfce7; }
 }
 </style>
 
