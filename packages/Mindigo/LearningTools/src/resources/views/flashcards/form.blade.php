@@ -1,5 +1,5 @@
 @extends('Mindigo-dashboard::layouts')
-@section('title', ($deck->exists ? __('learning-tools::app.flashcards.edit') : __('learning-tools::app.flashcards.new')) . ' · Mindigo LMS')
+@section('title', ($deck->exists ? __('learning-tools::app.flashcards.edit') : __('learning-tools::app.flashcards.new')) . ' · Auronsoft LMS')
 @section('styles')
     @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js'])
 @endsection

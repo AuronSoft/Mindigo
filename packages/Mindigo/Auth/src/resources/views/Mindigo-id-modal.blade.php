@@ -37,7 +37,7 @@
                     <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706" stroke="#14532d" stroke-width="2"/>
                 </svg>
             </div>
-            <span class="text-sm font-black text-green-600">mindigo<span class="text-gray-900">ID</span></span>
+            <span class="text-sm font-black text-green-600">Auronsoft<span class="text-gray-900">ID</span></span>
         </div>
         <button type="button" data-nid-action="close" class="bg-white/70 border border-black/10 rounded-xl w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-white transition">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4a6080" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -72,7 +72,7 @@
                             <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706" stroke="#14532d" stroke-width="2"/>
                         </svg>
                     </div>
-                    <span class="text-base font-black text-green-600">mindigo<span class="text-gray-900">ID</span></span>
+                    <span class="text-base font-black text-green-600">Auronsoft<span class="text-gray-900">ID</span></span>
                 </div>
                 <h2 class="text-3xl font-black text-gray-900 leading-tight mb-3">
                     @lang('Mindigo-auth::app.auth.login_title')
@@ -125,7 +125,7 @@
                         </svg>
                     </div>
                     <p class="text-sm text-gray-600 leading-relaxed mb-6">
-                        <strong class="text-gray-900">Mindigo ID</strong>
+                        <strong class="text-gray-900">Auronsoft ID</strong>
                         @lang('Mindigo-auth::app.auth.magic_link_sent')<br>
                         <strong id="nid-ml-email" class="text-green-600"></strong>.<br>
                         <span class="text-gray-400 text-xs">@lang('Mindigo-auth::app.auth.magic_link_check')</span>
@@ -174,7 +174,7 @@
                 {{-- Footer --}}
                 <div class="mt-6 flex items-center justify-center gap-1 flex-wrap">
                     <span class="text-xs text-gray-400">@lang('Mindigo-auth::app.footer.protected_by')</span>
-                    <span class="text-xs font-black text-green-600">mindigo</span>
+                    <span class="text-xs font-black text-green-600">Auronsoft</span>
                     <span class="text-xs font-black text-gray-900">ID</span>
                     <span class="text-gray-300 text-xs">·</span>
                     <a href="{{ route('terms', [], false) }}" class="text-xs text-gray-400 hover:text-green-600 transition">@lang('Mindigo-auth::app.footer.terms')</a>
@@ -193,7 +193,6 @@
         </select>
         <div class="flex items-center gap-1.5">
             <span class="text-xs text-gray-400">@lang('Mindigo-auth::app.brand.powered_by')</span>
-            <span class="text-xs font-black text-green-600">mindigo</span>
         </div>
         <div class="flex gap-5">
             <a href="#" class="text-xs text-gray-400 hover:text-green-600 transition">@lang('Mindigo-auth::app.footer.help')</a>

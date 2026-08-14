@@ -1,5 +1,5 @@
 @extends('Mindigo-dashboard::layouts')
-@section('title', __('learning-tools::app.admissions.title') . ' · Mindigo LMS')
+@section('title', __('learning-tools::app.admissions.title') . ' · Auronsoft LMS')
 @section('styles') @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js']) @endsection
 @section('content')
 <div class="flex min-h-screen flex-col bg-slate-50">@include('learning-tools::partials.header', ['eyebrow' => __('learning-tools::app.eyebrow'), 'title' => __('learning-tools::app.admissions.title'), 'subtitle' => __('learning-tools::app.admissions.subtitle')])<main class="p-6">

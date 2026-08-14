@@ -1,6 +1,6 @@
 @extends('core::layouts.home')
 
-@section('title', $course->name.' - Mindigo LMS')
+@section('title', $course->name.' - Auronsoft LMS')
 @section('meta_description', $course->description ?: __('teacher-course::catalog.no_description'))
 
 @section('content')
@@ -141,5 +141,5 @@
         </div>
     </main>
 </div>
-<script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@type' => 'Course', 'name' => $course->name, 'description' => $course->description, 'provider' => ['@type' => 'Organization', 'name' => 'Mindigo'], 'author' => ['@type' => 'Person', 'name' => $course->teacher->name]], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+<script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@type' => 'Course', 'name' => $course->name, 'description' => $course->description, 'provider' => ['@type' => 'Organization', 'name' => 'Auronsoft'], 'author' => ['@type' => 'Person', 'name' => $course->teacher->name]], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
 @endsection

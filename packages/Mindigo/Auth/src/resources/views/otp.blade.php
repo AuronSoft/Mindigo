@@ -40,7 +40,7 @@
                 <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b"/>
                 <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706"/>
             </svg>
-            <h1>mindigo</h1>
+            <h1>Auronsoft</h1>
         </div>
 
         {{-- Body --}}
@@ -50,7 +50,7 @@
             @if(($type ?? 'login') === 'forgot_password')
                 <p>Bạn vừa yêu cầu <strong>đặt lại mật khẩu</strong> cho tài khoản <strong>{{ $email }}</strong>. Sử dụng mã OTP bên dưới để tiếp tục:</p>
             @else
-                <p>Bạn vừa yêu cầu <strong>đăng nhập</strong> vào Mindigo bằng Mindigo ID với tài khoản <strong>{{ $email }}</strong>. Sử dụng mã OTP bên dưới để tiếp tục:</p>
+                <p>Bạn vừa yêu cầu <strong>đăng nhập</strong> vào Auronsoft bằng Auronsoft ID với tài khoản <strong>{{ $email }}</strong>. Sử dụng mã OTP bên dưới để tiếp tục:</p>
             @endif
 
             <div class="otp-box">
@@ -84,7 +84,7 @@
 
         {{-- Footer --}}
         <div class="footer">
-            © {{ date('Y') }} <strong>mindigo</strong>. Nền tảng thi trắc nghiệm online tốt nhất.
+            © {{ date('Y') }} <strong>Auronsoft</strong>. Nền tảng thi trắc nghiệm online tốt nhất.
         </div>
     </div>
 </body>

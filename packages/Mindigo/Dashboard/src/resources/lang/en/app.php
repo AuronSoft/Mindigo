@@ -142,7 +142,7 @@ return [
     'leads' => 'Leads',
     'win_loss' => 'W/L',
     'content_value' => 'Content value',
-    'product_name' => 'Mindigo LMS',
+    'product_name' => 'Auronsoft LMS',
     'standard_questions' => 'Qualified questions',
     'attempts' => 'Attempts',
     'win_rate' => 'Win rate',

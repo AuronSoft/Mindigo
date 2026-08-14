@@ -33,7 +33,7 @@
                     <circle cx="132" cy="138" r="12" fill="#14532d"/>
                     <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b" stroke="#14532d" stroke-width="2"/>
                 </svg>
-                <span class="text-xl font-black tracking-tight text-white">mindigo</span>
+                <span class="text-xl font-black tracking-tight text-white">Auronsoft</span>
             </a>
             <div class="flex items-center gap-3">
                 <div class="flex items-center gap-1 rounded-xl bg-white/10 p-1 ring-1 ring-white/20">

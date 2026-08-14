@@ -24,7 +24,7 @@ class LiveSessionAdministrationConfigurationTest extends TestCase
         $this->actingAs($teacher)->get(route('admin.live-providers.configuration'))->assertForbidden();
         $this->actingAs($admin)->get(route('admin.live-providers.configuration'))
             ->assertOk()
-            ->assertSee('Mindigo Live')
+            ->assertSee('Auronsoft Live')
             ->assertSee('Google Meet OAuth');
     }
 

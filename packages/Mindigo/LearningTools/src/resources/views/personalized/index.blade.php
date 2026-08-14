@@ -1,5 +1,5 @@
 @extends('Mindigo-dashboard::layouts')
-@section('title', __('learning-tools::app.personalized.title') . ' · Mindigo LMS')
+@section('title', __('learning-tools::app.personalized.title') . ' · Auronsoft LMS')
 @section('styles') @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js']) @endsection
 @section('content')
 <div class="flex min-h-screen flex-col bg-slate-50">

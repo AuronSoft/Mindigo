@@ -142,7 +142,7 @@ return [
     'leads' => 'Leads',
     'win_loss' => 'T/L',
     'content_value' => 'Giá trị nội dung',
-    'product_name' => 'Mindigo LMS',
+    'product_name' => 'Auronsoft LMS',
     'standard_questions' => 'Câu hỏi đạt chuẩn',
     'attempts' => 'Lượt làm bài',
     'win_rate' => 'Tỉ lệ thắng',

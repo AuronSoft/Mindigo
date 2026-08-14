@@ -58,7 +58,7 @@ class AuthenticatedCourseDetailTest extends TestCase
             ->assertOk()
             ->assertSee(__('teacher-course::catalog.preview_mode'))
             ->assertSee(route('courses.index'), false)
-            ->assertSee('mindigo', false);
+            ->assertSee('Auronsoft', false);
 
         $this->actingAs($owner)->get(route('courses.show', ['course' => $course->slug, 'from' => 'teacher']))
             ->assertOk()

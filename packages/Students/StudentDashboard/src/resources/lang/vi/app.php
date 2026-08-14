@@ -4,8 +4,8 @@ return [
     'nav_courses' => 'Khóa học của tôi',
     'practice_analytics' => 'Phân tích luyện tập',
     // SEO / meta
-    'meta_title' => 'Bảng điều khiển học sinh · Mindigo LMS',
-    'meta_description' => 'Khu vực học tập của học sinh trên Mindigo LMS: lớp học, bài tập, bài thi, lịch học, tiến độ và kết quả.',
+    'meta_title' => 'Bảng điều khiển học sinh · Auronsoft LMS',
+    'meta_description' => 'Khu vực học tập của học sinh trên Auronsoft LMS: lớp học, bài tập, bài thi, lịch học, tiến độ và kết quả.',
 
     // Khu vực
     'area' => 'Học sinh',

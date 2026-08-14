@@ -32,10 +32,10 @@ return [
     ],
     'read_time' => ':minutes min read',
     'fallback' => [
-        'author' => 'Mindigo member',
+        'author' => 'Auronsoft member',
     ],
     'hero' => [
-        'eyebrow' => 'Mindigo exam community',
+        'eyebrow' => 'Auronsoft exam community',
         'title' => 'Exam tips',
         'highlight' => 'from people who have been there',
         'description' => 'Practical stories from students and learners who have passed important exams. Learn from real methods, real study plans, and real mistakes.',
@@ -65,7 +65,7 @@ return [
     ],
     'sidebar' => [
         'cta_title' => 'Have an exam story to share?',
-        'cta_text' => 'Guests can read posts freely. To share an experience or leave a comment, sign in with your Mindigo account.',
+        'cta_text' => 'Guests can read posts freely. To share an experience or leave a comment, sign in with your Auronsoft account.',
         'cta_button' => 'Write now',
         'trending_title' => 'Trending topics',
         'contributors_title' => 'Top contributors',

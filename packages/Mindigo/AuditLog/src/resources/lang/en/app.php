@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title' => 'Audit logs - Mindigo',
-    'detail_title' => 'Audit log detail - Mindigo',
+    'title' => 'Audit logs - Auronsoft',
+    'detail_title' => 'Audit log detail - Auronsoft',
     'breadcrumb' => 'Audit logs',
     'heading' => 'Audit logs',
     'description' => 'Track important actions such as login, logout, and system setting changes.',

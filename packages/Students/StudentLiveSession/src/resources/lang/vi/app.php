@@ -49,5 +49,5 @@ return [
     'waiting_room_message' => 'Yêu cầu tham gia của bạn đã được gửi tới giáo viên.',
     'waiting_room_refresh' => 'Bạn có thể kiểm tra lại sau khi giáo viên cho phép vào phòng.',
     'check_admission' => 'Kiểm tra lại',
-    'native_room_preparing' => 'Hạ tầng media của phòng học Mindigo Native đang được chuẩn bị.',
+    'native_room_preparing' => 'Hạ tầng media của phòng học Auronsoft Native đang được chuẩn bị.',
 ];

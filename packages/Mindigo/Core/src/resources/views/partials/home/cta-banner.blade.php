@@ -113,7 +113,7 @@
                         <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b" stroke="#14532d" stroke-width="2"/>
                         <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706" stroke="#14532d" stroke-width="2"/>
                     </svg>
-                    <span class="text-xl font-black text-green-600 tracking-tight">mindigo</span>
+                    <span class="text-xl font-black text-green-600 tracking-tight">Auronsoft</span>
                 </a>
                 <p class="text-gray-400 text-sm leading-relaxed">@lang('core::app.footer.tagline')</p>
                 <div class="flex items-center gap-3">

@@ -54,7 +54,7 @@
                 {{-- Brand card --}}
                 <div class="bg-green-500 rounded-2xl overflow-hidden text-white relative">
                     <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
-                         alt="Mindigo"
+                         alt="Auronsoft"
                          class="w-full h-40 object-cover opacity-60" />
                     <div class="p-6">
                         <div class="text-xs opacity-80 mb-1">@lang('core::app.contact.brand_tagline')</div>

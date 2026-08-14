@@ -177,7 +177,7 @@
                             </div>
                         </div>
 
-                        {{-- Current Mindigo LMS course workspace --}}
+                        {{-- Current Auronsoft LMS course workspace --}}
                         <div class="min-w-0 flex-1 space-y-3">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0"><p class="truncate text-xs font-black text-gray-800">@lang('core::app.hero.course_name')</p><p class="mt-0.5 text-[9px] font-semibold text-gray-400">@lang('core::app.hero.course_meta')</p></div>

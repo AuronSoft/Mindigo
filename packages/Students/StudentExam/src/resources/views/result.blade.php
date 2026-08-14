@@ -1,6 +1,6 @@
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', __('student-exam::app.your_result') . ' - Mindigo LMS')
+@section('title', __('student-exam::app.your_result') . ' - Auronsoft LMS')
 
 @section('styles')
     @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js'])

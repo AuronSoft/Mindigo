@@ -2,7 +2,7 @@
 
 return [
     'breadcrumb' => 'Điều hướng', 'home' => 'Trang chủ', 'eyebrow' => 'Danh mục học tập', 'title' => 'Khám phá khóa học',
-    'subtitle' => 'Tìm các khóa học đã được xuất bản bởi giáo viên Mindigo, sắp xếp rõ ràng theo môn học, cấp học và mục tiêu.',
+    'subtitle' => 'Tìm các khóa học đã được xuất bản bởi giáo viên Auronsoft, sắp xếp rõ ràng theo môn học, cấp học và mục tiêu.',
     'search_label' => 'Tìm kiếm khóa học', 'search_placeholder' => 'Tìm theo khóa học, giáo viên, môn học hoặc danh mục...',
     'sort_label' => 'Sắp xếp khóa học', 'sorts' => ['newest' => 'Mới nhất', 'popular' => 'Phổ biến', 'rating' => 'Đánh giá cao', 'enrolled' => 'Nhiều học viên'],
     'apply' => 'Áp dụng', 'advanced_filters' => 'Bộ lọc mở rộng', 'subject' => 'Môn học', 'category' => 'Danh mục',
@@ -16,7 +16,7 @@ return [
     'learning_outcomes' => 'Bạn sẽ học được gì', 'requirements' => 'Yêu cầu đầu vào', 'target_learners' => 'Khóa học dành cho ai',
     'curriculum' => 'Chương trình khóa học', 'curriculum_summary' => ':chapters chương · :lessons bài học',
     'lesson_count' => '{0} Chưa có bài học|:count bài học', 'curriculum_empty' => 'Chương trình học đang được chuẩn bị.',
-    'enrollment_phase_notice' => 'Chức năng tham gia khóa học sẽ được mở ở phase tiếp theo.', 'instructor' => 'Giảng viên', 'instructor_default' => 'Giảng viên Mindigo',
+    'enrollment_phase_notice' => 'Chức năng tham gia khóa học sẽ được mở ở phase tiếp theo.', 'instructor' => 'Giảng viên', 'instructor_default' => 'Giảng viên Auronsoft',
     'detail_subtitle' => 'Xem tổng quan, chương trình học và các bài học được phép học thử.',
     'back_to_catalog' => 'Quay về danh mục khóa học', 'back_to_course' => 'Quay về chi tiết khóa học',
     'preview_mode' => 'Chế độ xem trước', 'preview' => 'Học thử', 'preview_lesson' => 'Cho phép học thử bài này',

@@ -4,42 +4,42 @@ return [
     'hero' => [
         'badge' => 'Legal Center',
         'title' => 'Chính sách Hoàn tiền',
-        'description' => 'Chính sách này quy định điều kiện, phạm vi, quy trình và thời gian xử lý hoàn tiền đối với các gói dịch vụ, giấy phép, tính năng trả phí và giao dịch thanh toán trên Mindigo.',
+        'description' => 'Chính sách này quy định điều kiện, phạm vi, quy trình và thời gian xử lý hoàn tiền đối với các gói dịch vụ, giấy phép, tính năng trả phí và giao dịch thanh toán trên Auronsoft.',
     ],
     'meta' => [
         'effective_date' => 'Ngày hiệu lực: 1 tháng 7 năm 2026',
         'version' => 'Phiên bản: 1.0',
-        'scope' => 'Áp dụng cho người dùng cá nhân, giáo viên, tổ chức và các giao dịch trả phí trên Mindigo',
+        'scope' => 'Áp dụng cho người dùng cá nhân, giáo viên, tổ chức và các giao dịch trả phí trên Auronsoft',
     ],
     'toc_title' => 'Mục lục',
     'intro' => [
-        'Mindigo mong muốn người dùng hiểu rõ quyền lợi, giới hạn và quy trình hoàn tiền trước khi đăng ký hoặc gia hạn dịch vụ.',
-        'Chính sách này áp dụng trừ khi hợp đồng, báo giá, đơn đặt hàng hoặc thỏa thuận riêng giữa Mindigo và tổ chức của bạn có quy định khác bằng văn bản.',
+        'Auronsoft mong muốn người dùng hiểu rõ quyền lợi, giới hạn và quy trình hoàn tiền trước khi đăng ký hoặc gia hạn dịch vụ.',
+        'Chính sách này áp dụng trừ khi hợp đồng, báo giá, đơn đặt hàng hoặc thỏa thuận riêng giữa Auronsoft và tổ chức của bạn có quy định khác bằng văn bản.',
     ],
     'sections' => [
         [
             'id' => 'scope',
             'title' => '1. Phạm vi Áp dụng',
             'paragraphs' => [
-                'Chính sách hoàn tiền áp dụng cho các khoản thanh toán hợp lệ được thực hiện trực tiếp cho Mindigo hoặc qua cổng thanh toán được Mindigo chỉ định.',
+                'Chính sách hoàn tiền áp dụng cho các khoản thanh toán hợp lệ được thực hiện trực tiếp cho Auronsoft hoặc qua cổng thanh toán được Auronsoft chỉ định.',
             ],
             'items' => [
                 'Gói dịch vụ cá nhân, gói giáo viên, gói tổ chức hoặc giấy phép sử dụng nền tảng.',
-                'Tính năng trả phí, tiện ích bổ sung, dung lượng, hạn mức AI hoặc dịch vụ mở rộng nếu được Mindigo công bố là có thể hoàn tiền.',
-                'Không áp dụng cho giao dịch thực hiện qua bên thứ ba nếu bên thứ ba đó có chính sách hoàn tiền riêng, trừ khi Mindigo có thông báo khác.',
+                'Tính năng trả phí, tiện ích bổ sung, dung lượng, hạn mức AI hoặc dịch vụ mở rộng nếu được Auronsoft công bố là có thể hoàn tiền.',
+                'Không áp dụng cho giao dịch thực hiện qua bên thứ ba nếu bên thứ ba đó có chính sách hoàn tiền riêng, trừ khi Auronsoft có thông báo khác.',
             ],
         ],
         [
             'id' => 'eligible',
             'title' => '2. Trường hợp Có thể Hoàn tiền',
             'paragraphs' => [
-                'Mindigo có thể xem xét hoàn tiền toàn bộ hoặc một phần trong các trường hợp dưới đây, tùy theo tình trạng sử dụng, loại gói và bằng chứng giao dịch.',
+                'Auronsoft có thể xem xét hoàn tiền toàn bộ hoặc một phần trong các trường hợp dưới đây, tùy theo tình trạng sử dụng, loại gói và bằng chứng giao dịch.',
             ],
             'items' => [
                 'Bạn thanh toán nhầm nhiều lần cho cùng một gói dịch vụ trong cùng một kỳ sử dụng.',
                 'Tài khoản bị trừ tiền nhưng dịch vụ không được kích hoạt do lỗi hệ thống hoặc lỗi cổng thanh toán được xác minh.',
                 'Bạn yêu cầu hoàn tiền trong vòng 7 ngày kể từ ngày thanh toán đầu tiên của gói mới và chưa sử dụng đáng kể các tính năng trả phí.',
-                'Mindigo không thể cung cấp dịch vụ cốt lõi như đã mô tả và không thể khắc phục trong thời gian hợp lý sau khi nhận yêu cầu hỗ trợ.',
+                'Auronsoft không thể cung cấp dịch vụ cốt lõi như đã mô tả và không thể khắc phục trong thời gian hợp lý sau khi nhận yêu cầu hỗ trợ.',
             ],
         ],
         [
@@ -77,7 +77,7 @@ return [
             'items' => [
                 'Hủy gói sẽ ngăn các lần gia hạn tiếp theo nhưng không tự động hoàn tiền cho thời gian đã thanh toán trước đó.',
                 'Một số gói có thể tiếp tục sử dụng đến hết kỳ đã thanh toán sau khi hủy gia hạn.',
-                'Nếu bạn cho rằng hệ thống gia hạn sai, vui lòng gửi yêu cầu kèm bằng chứng giao dịch để Mindigo kiểm tra.',
+                'Nếu bạn cho rằng hệ thống gia hạn sai, vui lòng gửi yêu cầu kèm bằng chứng giao dịch để Auronsoft kiểm tra.',
             ],
         ],
         [
@@ -87,7 +87,7 @@ return [
                 'Đối với trường học, trung tâm, doanh nghiệp hoặc tổ chức mua nhiều tài khoản, chính sách hoàn tiền sẽ ưu tiên theo hợp đồng, báo giá, đơn đặt hàng hoặc thỏa thuận dịch vụ đã ký.',
             ],
             'items' => [
-                'Phí thiết lập, đào tạo, tích hợp, chuyển dữ liệu hoặc tùy biến thường không hoàn lại sau khi Mindigo đã thực hiện.',
+                'Phí thiết lập, đào tạo, tích hợp, chuyển dữ liệu hoặc tùy biến thường không hoàn lại sau khi Auronsoft đã thực hiện.',
                 'Việc giảm số lượng tài khoản, thay đổi gói hoặc chuyển kỳ thanh toán có thể được xử lý bằng điều chỉnh công nợ hoặc tín dụng dịch vụ nếu hai bên thống nhất.',
                 'Yêu cầu hoàn tiền của tổ chức cần được gửi bởi người đại diện có thẩm quyền hoặc tài khoản quản trị được xác minh.',
             ],
@@ -96,36 +96,36 @@ return [
             'id' => 'request',
             'title' => '7. Cách Gửi Yêu cầu Hoàn tiền',
             'paragraphs' => [
-                'Để yêu cầu hoàn tiền, vui lòng gửi thông tin đầy đủ qua kênh hỗ trợ chính thức của Mindigo. Yêu cầu thiếu thông tin có thể làm chậm thời gian xử lý.',
+                'Để yêu cầu hoàn tiền, vui lòng gửi thông tin đầy đủ qua kênh hỗ trợ chính thức của Auronsoft. Yêu cầu thiếu thông tin có thể làm chậm thời gian xử lý.',
             ],
             'items' => [
-                'Email tài khoản Mindigo, tên tổ chức nếu có và vai trò của người yêu cầu.',
+                'Email tài khoản Auronsoft, tên tổ chức nếu có và vai trò của người yêu cầu.',
                 'Mã giao dịch, ngày thanh toán, số tiền, phương thức thanh toán và hóa đơn hoặc biên nhận nếu có.',
                 'Lý do yêu cầu hoàn tiền, mô tả sự cố, ảnh chụp màn hình hoặc bằng chứng liên quan.',
-                'Thông tin liên hệ để Mindigo xác minh và phản hồi kết quả xử lý.',
+                'Thông tin liên hệ để Auronsoft xác minh và phản hồi kết quả xử lý.',
             ],
         ],
         [
             'id' => 'processing',
             'title' => '8. Thời gian và Phương thức Xử lý',
             'paragraphs' => [
-                'Mindigo thường phản hồi yêu cầu hoàn tiền trong vòng 5 ngày làm việc kể từ khi nhận đủ thông tin cần thiết. Thời gian tiền về tài khoản có thể phụ thuộc vào ngân hàng, ví điện tử, cổng thanh toán hoặc đơn vị phát hành thẻ.',
+                'Auronsoft thường phản hồi yêu cầu hoàn tiền trong vòng 5 ngày làm việc kể từ khi nhận đủ thông tin cần thiết. Thời gian tiền về tài khoản có thể phụ thuộc vào ngân hàng, ví điện tử, cổng thanh toán hoặc đơn vị phát hành thẻ.',
             ],
             'cards' => [
-                ['title' => 'Xác minh yêu cầu', 'body' => 'Mindigo kiểm tra tài khoản, lịch sử sử dụng, giao dịch, tình trạng kích hoạt gói và điều kiện hoàn tiền.'],
+                ['title' => 'Xác minh yêu cầu', 'body' => 'Auronsoft kiểm tra tài khoản, lịch sử sử dụng, giao dịch, tình trạng kích hoạt gói và điều kiện hoàn tiền.'],
                 ['title' => 'Kết quả xử lý', 'body' => 'Nếu được chấp thuận, giao dịch có thể được hoàn về phương thức thanh toán ban đầu hoặc xử lý bằng tín dụng dịch vụ khi phù hợp.'],
-                ['title' => 'Thời gian nhận tiền', 'body' => 'Sau khi Mindigo xác nhận hoàn tiền, thời gian nhận tiền thường từ 5 đến 15 ngày làm việc tùy đơn vị thanh toán.'],
-                ['title' => 'Phí giao dịch', 'body' => 'Phí ngân hàng, phí cổng thanh toán hoặc chênh lệch tỷ giá có thể không được hoàn nếu bên thứ ba không hoàn lại cho Mindigo.'],
+                ['title' => 'Thời gian nhận tiền', 'body' => 'Sau khi Auronsoft xác nhận hoàn tiền, thời gian nhận tiền thường từ 5 đến 15 ngày làm việc tùy đơn vị thanh toán.'],
+                ['title' => 'Phí giao dịch', 'body' => 'Phí ngân hàng, phí cổng thanh toán hoặc chênh lệch tỷ giá có thể không được hoàn nếu bên thứ ba không hoàn lại cho Auronsoft.'],
             ],
         ],
         [
             'id' => 'chargebacks',
             'title' => '9. Tranh chấp Thanh toán và Gian lận',
             'paragraphs' => [
-                'Nếu bạn phát hiện giao dịch không được ủy quyền, vui lòng liên hệ Mindigo sớm để được kiểm tra. Việc mở tranh chấp thanh toán qua ngân hàng hoặc cổng thanh toán có thể khiến tài khoản tạm thời bị hạn chế cho đến khi sự việc được làm rõ.',
+                'Nếu bạn phát hiện giao dịch không được ủy quyền, vui lòng liên hệ Auronsoft sớm để được kiểm tra. Việc mở tranh chấp thanh toán qua ngân hàng hoặc cổng thanh toán có thể khiến tài khoản tạm thời bị hạn chế cho đến khi sự việc được làm rõ.',
             ],
             'items' => [
-                'Mindigo có thể từ chối hoàn tiền nếu phát hiện gian lận, lạm dụng chính sách, sử dụng dịch vụ sau khi yêu cầu hoàn tiền hoặc cung cấp thông tin sai lệch.',
+                'Auronsoft có thể từ chối hoàn tiền nếu phát hiện gian lận, lạm dụng chính sách, sử dụng dịch vụ sau khi yêu cầu hoàn tiền hoặc cung cấp thông tin sai lệch.',
                 'Tài khoản liên quan đến giao dịch bị hoàn trả cưỡng chế, gian lận hoặc tranh chấp kéo dài có thể bị tạm ngưng quyền truy cập vào tính năng trả phí.',
             ],
         ],
@@ -140,14 +140,14 @@ return [
             'id' => 'updates',
             'title' => '11. Cập nhật Chính sách',
             'paragraphs' => [
-                'Mindigo có thể cập nhật chính sách hoàn tiền để phù hợp với sản phẩm, phương thức thanh toán, yêu cầu pháp lý hoặc mô hình kinh doanh. Phiên bản mới sẽ được công bố trên hệ thống và áp dụng từ ngày hiệu lực được nêu.',
+                'Auronsoft có thể cập nhật chính sách hoàn tiền để phù hợp với sản phẩm, phương thức thanh toán, yêu cầu pháp lý hoặc mô hình kinh doanh. Phiên bản mới sẽ được công bố trên hệ thống và áp dụng từ ngày hiệu lực được nêu.',
             ],
         ],
         [
             'id' => 'contact',
             'title' => '12. Liên hệ',
             'paragraphs' => [
-                'Nếu bạn có câu hỏi về thanh toán, hóa đơn hoặc yêu cầu hoàn tiền, vui lòng liên hệ Mindigo qua kênh hỗ trợ chính thức.',
+                'Nếu bạn có câu hỏi về thanh toán, hóa đơn hoặc yêu cầu hoàn tiền, vui lòng liên hệ Auronsoft qua kênh hỗ trợ chính thức.',
             ],
             'cards' => [
                 ['title' => 'Hỗ trợ thanh toán', 'body' => 'Email: support@mindigo.vn'],
@@ -156,7 +156,7 @@ return [
         ],
     ],
     'footer' => [
-        'copyright' => '© '.date('Y').' Mindigo. All rights reserved.',
+        'copyright' => '© '.date('Y').' Auronsoft. Đã đăng ký bản quyền.',
         'home' => 'Trang chủ',
         'terms' => 'Điều khoản sử dụng',
         'privacy' => 'Chính sách bảo mật',

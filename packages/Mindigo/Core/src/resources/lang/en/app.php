@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'meta' => ['description' => 'Mindigo learning management platform for courses, practice, and exams.'],
+    'meta' => ['description' => 'Auronsoft learning management platform for courses, practice, and exams.'],
     'trust' => [
         'heading_1' => 'Trusted by students, universities and',
         'heading_2' => 'businesses across the country',
@@ -31,13 +31,13 @@ return [
                 'name' => 'Nguyễn Thư',
                 'school' => 'Thuong Mai University',
                 'seed' => 'Thu',
-                'review' => 'I have been using Mindigo and I am really satisfied. The exam feature saves a lot of study time. Overall, the diverse exercises and intuitive interface make learning more enjoyable.',
+                'review' => 'I have been using Auronsoft and I am really satisfied. The exam feature saves a lot of study time. Overall, the diverse exercises and intuitive interface make learning more enjoyable.',
             ],
             [
                 'name' => 'Gia Khánh',
                 'school' => 'Thuong Mai University',
                 'seed' => 'Khanh',
-                'review' => 'I have been using Mindigo for a long time and I am truly satisfied. The mock exam feature saves me a lot of revision time, the exercises are diverse, and the intuitive interface makes studying more effective.',
+                'review' => 'I have been using Auronsoft for a long time and I am truly satisfied. The mock exam feature saves me a lot of revision time, the exercises are diverse, and the intuitive interface makes studying more effective.',
             ],
             [
                 'name' => 'Nguyễn Hà',
@@ -49,19 +49,19 @@ return [
                 'name' => 'Hùng Mai',
                 'school' => 'Hanoi University of Business and Technology',
                 'seed' => 'Hung',
-                'review' => 'While using Mindigo to study for exams, it helped me easily memorize knowledge that was originally very academic. Moreover, I had access to a diverse set of exam questions and an intuitive interface.',
+                'review' => 'While using Auronsoft to study for exams, it helped me easily memorize knowledge that was originally very academic. Moreover, I had access to a diverse set of exam questions and an intuitive interface.',
             ],
             [
                 'name' => 'Su Trà',
                 'school' => 'Posts and Telecommunications Institute of Technology',
                 'seed' => 'Su',
-                'review' => 'I recently discovered Mindigo while searching for practice exams. Mindigo has helped me a lot in finding answers and questions on many different topics.',
+                'review' => 'I recently discovered Auronsoft while searching for practice exams. Auronsoft has helped me a lot in finding answers and questions on many different topics.',
             ],
             [
                 'name' => 'Minh Tuấn',
                 'school' => 'Hanoi University of Science and Technology',
                 'seed' => 'Tuan',
-                'review' => 'Mindigo is truly a great learning tool. I especially like the automatic exam generation feature from documents, saving a lot of preparation time for exams.',
+                'review' => 'Auronsoft is truly a great learning tool. I especially like the automatic exam generation feature from documents, saving a lot of preparation time for exams.',
             ],
         ],
     ],
@@ -69,7 +69,7 @@ return [
     'navbar' => [
         'features' => 'Features',
         'explore' => 'Explore Exams',
-        'become_teacher' => 'Teach with Mindigo',
+        'become_teacher' => 'Teach with Auronsoft',
         'exam_prep' => 'High School Exam Prep',
         'classroom' => 'Classroom Management',
         'pricing' => 'Pricing',
@@ -111,7 +111,7 @@ return [
         'heading_3' => 'on a modern LMS',
         'heading_4' => 'build courses',
         'heading_5' => 'track learner progress',
-        'desc' => 'Mindigo helps organizations build courses, manage classes, distribute learning materials and track learner progress in one intuitive LMS.',
+        'desc' => 'Auronsoft helps organizations build courses, manage classes, distribute learning materials and track learner progress in one intuitive LMS.',
         'customers' => 'Over <strong class="text-green-600">200,000+</strong> customers love using it',
         'cta_create' => 'Start your LMS',
         'cta_search' => 'Explore courses',
@@ -169,7 +169,7 @@ return [
         'title_1' => 'Virtual Exam Room',
         'title_2' => 'online',
         'desc_1' => 'The platform allows organizing exams and tests in a safe, secure, and efficient manner. Candidates can take exams from anywhere with an internet connection, without needing to travel to a specific exam location.',
-        'desc_2' => 'Mindigo uses advanced technology to simulate traditional exam rooms while delivering superior benefits compared to conventional methods.',
+        'desc_2' => 'Auronsoft uses advanced technology to simulate traditional exam rooms while delivering superior benefits compared to conventional methods.',
         'cta' => 'Get Started',
         'url_room' => 'app.mindigo.vn/exam-room',
         'url_manage' => 'app.mindigo.vn/manage-exams',
@@ -223,7 +223,7 @@ return [
         'title_1' => 'Friendly and easy to use,',
         'title_2' => 'personalize',
         'title_3' => 'your learning',
-        'desc_1' => 'Mindigo\'s interface is designed to be intuitive and user-friendly, helping users perform actions quickly and make the most of all useful features on the platform.',
+        'desc_1' => 'Auronsoft\'s interface is designed to be intuitive and user-friendly, helping users perform actions quickly and make the most of all useful features on the platform.',
         'desc_2' => 'Through personalization, each user has their own unique experience and builds a learning path that suits them. This stimulates independent thinking, creativity, and better academic results.',
         'cta' => 'Get Started',
         'label_easy' => 'Easy to use',
@@ -393,7 +393,7 @@ return [
         'legal_4' => 'AI Assistant usage policy',
         'legal_5' => 'Refund policy',
         'legal_6' => 'Tutor policy',
-        'copyright' => 'Phát triển bởi Auronsoft',
+        'copyright' => 'Developed by Auronsoft',
         'built_with' => 'Built with ❤️ in Vietnam',
     ],
 
@@ -402,7 +402,7 @@ return [
         'header_badge' => 'CONTACT',
         'header_title' => 'We are always ready to listen to you',
         'header_title_highlight' => 'listen to you',
-        'header_description' => 'Whether you have questions about our products, need technical support, or want to collaborate — the Mindigo team is always here to help you.',
+        'header_description' => 'Whether you have questions about our products, need technical support, or want to collaborate — the Auronsoft team is always here to help you.',
 
         'form_title' => 'Send us a message',
         'label_name' => 'Full name',
@@ -422,7 +422,7 @@ return [
         'button_send' => 'Send Message',
 
         'brand_tagline' => 'Vietnam\'s #1 Online Testing Platform',
-        'brand_name' => 'Mindigo',
+        'brand_name' => 'Auronsoft',
         'brand_description' => 'Helping over 200,000+ students, lecturers, and institutions create exams, practice, and manage classes more effectively every day.',
         'brand_users' => '200,000+ users',
         'brand_ai' => 'AI-powered',
@@ -539,7 +539,7 @@ return [
                     'a' => 'Yes. You can upgrade immediately. Downgrading will take effect at the next billing cycle.',
                 ],
                 [
-                    'q' => 'Does Mindigo support VAT invoices?',
+                    'q' => 'Does Auronsoft support VAT invoices?',
                     'a' => 'Yes. After payment, you can request a VAT e-invoice via support@mindigo.vn within 5 working days.',
                 ],
                 [

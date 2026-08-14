@@ -4,16 +4,16 @@ return [
     'hero' => [
         'badge' => 'Legal Center',
         'title' => 'AI Assistant Usage Policy',
-        'description' => 'This policy governs safe, transparent, and appropriate use of Mindigo AI Assistant features in learning, teaching, exam preparation, question generation, and education management.',
+        'description' => 'This policy governs safe, transparent, and appropriate use of Auronsoft AI Assistant features in learning, teaching, exam preparation, question generation, and education management.',
     ],
     'meta' => [
         'effective_date' => 'Effective date: July 1, 2026',
         'version' => 'Version: 1.0',
-        'scope' => 'Applies to learners, teachers, administrators, organizations, and all AI features in Mindigo',
+        'scope' => 'Applies to learners, teachers, administrators, organizations, and all AI features in Auronsoft',
     ],
     'toc_title' => 'Table of Contents',
     'intro' => [
-        'Mindigo AI Assistant is designed to support learning and education operations. It is not intended to replace teachers, experts, training organizations, or decisions for which users remain responsible.',
+        'Auronsoft AI Assistant is designed to support learning and education operations. It is not intended to replace teachers, experts, training organizations, or decisions for which users remain responsible.',
         'By using AI features, you agree to comply with this policy, the Terms of Use, the Privacy Policy, and any rules set by the organization managing your account.',
     ],
     'sections' => [
@@ -21,7 +21,7 @@ return [
             'id' => 'purpose',
             'title' => '1. Purpose of AI Use',
             'paragraphs' => [
-                'Mindigo provides AI to improve learning efficiency, help users understand knowledge, save time preparing learning materials, and support classroom management.',
+                'Auronsoft provides AI to improve learning efficiency, help users understand knowledge, save time preparing learning materials, and support classroom management.',
             ],
             'items' => [
                 'Suggest practice paths, explain concepts, summarize content, and create practice questions.',
@@ -39,7 +39,7 @@ return [
             'items' => [
                 'Teachers and organizations are responsible for reviewing AI-assisted questions, answers, explanations, grading criteria, and learning materials.',
                 'Learners should not treat AI responses as absolute expert advice or official answers unless confirmed.',
-                'Mindigo may improve models, filters, and display mechanisms without guaranteeing that outputs remain identical across uses.',
+                'Auronsoft may improve models, filters, and display mechanisms without guaranteeing that outputs remain identical across uses.',
             ],
         ],
         [
@@ -72,7 +72,7 @@ return [
             'id' => 'prohibited',
             'title' => '5. Prohibited Content and Conduct',
             'paragraphs' => [
-                'Mindigo does not allow AI to be used to create, support, or distribute harmful, unlawful, or rights-infringing content.',
+                'Auronsoft does not allow AI to be used to create, support, or distribute harmful, unlawful, or rights-infringing content.',
             ],
             'items' => [
                 'Hateful, harassing, violent, self-harm, sexual, fraudulent, impersonation, or privacy-invading content.',
@@ -98,7 +98,7 @@ return [
             'id' => 'monitoring',
             'title' => '7. Abuse Monitoring and Safety',
             'paragraphs' => [
-                'Mindigo may apply usage limits, safety filters, technical logs, and abuse detection mechanisms to protect users, data, and the system.',
+                'Auronsoft may apply usage limits, safety filters, technical logs, and abuse detection mechanisms to protect users, data, and the system.',
             ],
             'items' => [
                 'Requests that violate this policy may be refused, limited, or logged for safety review.',
@@ -110,7 +110,7 @@ return [
             'id' => 'third-party',
             'title' => '8. AI Technology Providers',
             'paragraphs' => [
-                'Mindigo may use third-party AI models, infrastructure, or services to provide features. Data processing will follow Mindigo’s Privacy Policy and appropriate agreements with providers.',
+                'Auronsoft may use third-party AI models, infrastructure, or services to provide features. Data processing will follow Auronsoft’s Privacy Policy and appropriate agreements with providers.',
                 'AI features may change, be limited, or be suspended if providers, legal requirements, or safety requirements change.',
             ],
         ],
@@ -123,28 +123,28 @@ return [
             'items' => [
                 'Do not use AI outputs to infringe copyright, privacy, trade secrets, or third-party intellectual property rights.',
                 'Organizations may apply their own rules on ownership, storage, sharing, and use of AI-assisted learning materials.',
-                'Mindigo may use appropriately processed feedback, statistics, and technical logs to improve product quality.',
+                'Auronsoft may use appropriately processed feedback, statistics, and technical logs to improve product quality.',
             ],
         ],
         [
             'id' => 'availability',
             'title' => '10. Availability and Service Limits',
             'paragraphs' => [
-                'AI features may depend on infrastructure, service plan limits, system traffic, network connectivity, and model providers. Mindigo may apply quotas, processing queues, or temporary suspensions for maintenance, security, or fair use.',
+                'AI features may depend on infrastructure, service plan limits, system traffic, network connectivity, and model providers. Auronsoft may apply quotas, processing queues, or temporary suspensions for maintenance, security, or fair use.',
             ],
         ],
         [
             'id' => 'updates',
             'title' => '11. Policy Updates',
             'paragraphs' => [
-                'Mindigo may update this policy to reflect changes in products, AI models, legal requirements, safety requirements, or education standards. The new version will be published on the system and take effect from the stated date.',
+                'Auronsoft may update this policy to reflect changes in products, AI models, legal requirements, safety requirements, or education standards. The new version will be published on the system and take effect from the stated date.',
             ],
         ],
         [
             'id' => 'contact',
             'title' => '12. Contact',
             'paragraphs' => [
-                'If you have questions about AI Assistant use, want to report inappropriate output, or need support with AI-related data, please contact Mindigo.',
+                'If you have questions about AI Assistant use, want to report inappropriate output, or need support with AI-related data, please contact Auronsoft.',
             ],
             'cards' => [
                 ['title' => 'AI product support', 'body' => 'Email: support@mindigo.vn'],
@@ -153,7 +153,7 @@ return [
         ],
     ],
     'footer' => [
-        'copyright' => '© '.date('Y').' Mindigo. All rights reserved.',
+        'copyright' => '© '.date('Y').' Auronsoft. All rights reserved.',
         'home' => 'Home',
         'terms' => 'Terms of use',
         'privacy' => 'Privacy policy',

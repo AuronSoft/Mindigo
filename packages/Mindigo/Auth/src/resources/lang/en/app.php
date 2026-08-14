@@ -3,14 +3,14 @@
 return [
 
     'brand' => [
-        'name' => 'MindigoID',
-        'powered_by' => 'Phát triển bởi Auronsoft',
+        'name' => 'AuronsoftID',
+        'powered_by' => 'Developed by Auronsoft',
     ],
 
     'auth' => [
         'login_title' => 'Sign in',
         'login_subtitle' => 'to continue to :platform',
-        'platform' => 'Phát triển bởi Auronsoft',
+        'platform' => 'Auronsoft LMS',
 
         'email' => 'Email',
         'email_placeholder' => 'student@example.com',
@@ -28,7 +28,7 @@ return [
         'confirm' => 'Confirm',
         'back' => 'Back',
 
-        'login_with_Mindigo_id' => 'Sign in with Mindigo ID',
+        'login_with_Auronsoft_id' => 'Sign in with Auronsoft ID',
 
         'magic_link_sent' => 'A sign-in link has been sent to',
         'magic_link_check' => 'Please check your email to continue.',
@@ -199,8 +199,8 @@ return [
     ],
 
     'mail' => [
-        'magic_link_subject' => 'Your MindigoID Sign-in Link',
-        'otp_login_subject' => 'MindigoID Login OTP — MindigoHRM',
-        'otp_forgot_password_subject' => 'Password Reset OTP — MindigoHRM',
+        'magic_link_subject' => 'Your AuronsoftID Sign-in Link',
+        'otp_login_subject' => 'AuronsoftID Login OTP — AuronsoftHRM',
+        'otp_forgot_password_subject' => 'Password Reset OTP — AuronsoftHRM',
     ],
 ];

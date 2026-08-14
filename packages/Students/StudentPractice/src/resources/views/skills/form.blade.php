@@ -1,6 +1,6 @@
 @extends('Mindigo-dashboard::layouts')
 
-@section('title', ($skill ? __('student-practice::app.skills.edit') : __('student-practice::app.skills.create')).' - Mindigo LMS')
+@section('title', ($skill ? __('student-practice::app.skills.edit') : __('student-practice::app.skills.create')).' - Auronsoft LMS')
 @section('styles')
     @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js'])
 @endsection

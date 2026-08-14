@@ -47,7 +47,7 @@
                             <div class="flex h-20 items-end gap-1.5" aria-hidden="true">
                                 <span class="h-7 w-6 rounded-t-lg bg-slate-100"></span>
                                 <span class="h-12 w-6 rounded-t-lg bg-green-100"></span>
-                                <span class="relative h-16 w-6 rounded-t-lg bg-green-300"><span class="absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap rounded bg-green-700 px-2 py-1 text-[8px] font-bold leading-none text-white">Mindigo</span></span>
+                                <span class="relative h-16 w-6 rounded-t-lg bg-green-300"><span class="absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap rounded bg-green-700 px-2 py-1 text-[8px] font-bold leading-none text-white">Auronsoft</span></span>
                                 <span class="h-8 w-6 rounded-t-lg bg-slate-100"></span>
                             </div>
                         </div>

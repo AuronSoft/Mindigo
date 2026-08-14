@@ -1,5 +1,5 @@
 @extends('Mindigo-dashboard::layouts')
-@section('title', __('learning-tools::app.personalized.new') . ' · Mindigo LMS')
+@section('title', __('learning-tools::app.personalized.new') . ' · Auronsoft LMS')
 @section('styles') @vite(['packages/Mindigo/Dashboard/src/resources/css/app.css', 'packages/Mindigo/Dashboard/src/resources/js/app.js']) @endsection
 @section('content')
 <div class="flex min-h-screen flex-col bg-slate-50">@include('learning-tools::partials.header', ['eyebrow' => __('learning-tools::app.eyebrow'), 'title' => __('learning-tools::app.personalized.new'), 'subtitle' => __('learning-tools::app.personalized.form_subtitle')])<main class="p-6"><form method="POST" action="{{ route('learning-tools.personalized.store') }}" class="mx-auto grid max-w-4xl gap-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-2">@csrf

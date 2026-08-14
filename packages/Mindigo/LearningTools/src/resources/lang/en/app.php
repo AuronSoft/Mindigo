@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'meta_title' => 'Learning tools · Mindigo LMS',
+    'meta_title' => 'Learning tools · Auronsoft LMS',
     'eyebrow' => 'Learning workspace',
     'title' => 'Learning tools',
     'subtitle' => 'One place for memory, practice, time management, and exam orientation tools.',
@@ -90,7 +90,7 @@ return [
         'general' => 'General knowledge',
         'empty' => 'No matching learning content yet.',
         'author' => 'Author',
-        'system' => 'Mindigo',
+        'system' => 'Auronsoft',
         'detail_subtitle' => 'Learning knowledge content.',
         'favorite' => 'Save favorite',
         'unfavorite' => 'Remove favorite',
@@ -162,7 +162,7 @@ return [
     ],
     'personalized' => [
         'title' => 'Personalized practice', 'subtitle' => 'Build focused question sets from topics, difficulty, or learning history.',
-        'new' => 'Create practice set', 'form_subtitle' => 'Choose the focus and Mindigo will select approved questions.',
+        'new' => 'Create practice set', 'form_subtitle' => 'Choose the focus and Auronsoft will select approved questions.',
         'source' => 'Question source', 'sources' => ['manual' => 'Selected filters', 'weak_topics' => 'Weak topics', 'mistakes' => 'Past mistakes'],
         'number_of_questions' => 'Number of questions', 'question_count' => '{1} :count question|[2,*] :count questions',
         'classroom' => 'Assign to classroom', 'personal' => 'Personal practice', 'all_difficulties' => 'All difficulties',
@@ -212,15 +212,15 @@ return [
         'created' => 'Score calculation saved.', 'deleted' => 'Score calculation deleted.',
     ],
     'ai' => [
-        'title' => 'MindigoBot', 'subtitle' => 'Learn with guided explanations, hints, review questions, and study planning with MindigoBot.',
+        'title' => 'AuronsoftBot', 'subtitle' => 'Learn with guided explanations, hints, review questions, and study planning with AuronsoftBot.',
         'new' => 'New learning conversation', 'conversation_title' => 'Conversation title', 'start' => 'Start conversation',
         'general' => 'General learning', 'all_conversations' => 'All conversations', 'message_count' => '{0} No messages|{1} :count message|[2,*] :count messages',
         'empty' => 'No AI learning conversations yet.', 'ask_first' => 'Ask your first learning question.', 'placeholder' => 'Ask for an explanation, hint, quiz, or study plan...',
         'send' => 'Send', 'failed' => 'This response could not be generated.', 'created' => 'AI conversation created.', 'deleted' => 'AI conversation deleted.',
         'privacy_notice' => 'Do not enter passwords, personal documents, confidential exams, or sensitive information.',
-        'disclaimer' => 'MindigoBot responses may be inaccurate. Verify important content with teachers and official materials.',
+        'disclaimer' => 'AuronsoftBot responses may be inaccurate. Verify important content with teachers and official materials.',
         'modes' => ['explain' => 'Explain', 'hint' => 'Give hints', 'quiz' => 'Practice quiz', 'review' => 'Review', 'plan' => 'Study plan'],
-        'errors' => ['not_configured' => 'MindigoBot has not been configured by the system administrator.', 'unsafe' => 'This request was blocked by the AI safety controls.', 'unavailable' => 'MindigoBot is temporarily unavailable. Please try again.', 'empty' => 'MindigoBot did not return a usable response.'],
+        'errors' => ['not_configured' => 'AuronsoftBot has not been configured by the system administrator.', 'unsafe' => 'This request was blocked by the AI safety controls.', 'unavailable' => 'AuronsoftBot is temporarily unavailable. Please try again.', 'empty' => 'AuronsoftBot did not return a usable response.'],
     ],
     'role_access' => ['student' => 'Student workspace', 'teacher' => 'Teacher workspace', 'admin' => 'Admin workspace'],
     'categories' => [
@@ -241,6 +241,6 @@ return [
         'knowledge_gaps' => ['name' => 'Knowledge gap analysis', 'description' => 'Identify weak topics and track improvement over time.'],
         'score_calculator' => ['name' => 'Exam score calculator', 'description' => 'Calculate admission combinations, priorities, and target scenarios.'],
         'admission_lookup' => ['name' => 'School and major lookup', 'description' => 'Explore majors, subject combinations, and admission data.'],
-        'ai_tutor' => ['name' => 'MindigoBot', 'description' => 'Get controlled explanations, hints, and learning content.'],
+        'ai_tutor' => ['name' => 'AuronsoftBot', 'description' => 'Get controlled explanations, hints, and learning content.'],
     ],
 ];

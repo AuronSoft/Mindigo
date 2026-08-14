@@ -2,7 +2,7 @@
 
 return [
     'breadcrumb' => 'Breadcrumb', 'home' => 'Home', 'eyebrow' => 'Learning catalog', 'title' => 'Explore courses',
-    'subtitle' => 'Find verified courses from Mindigo teachers, organized by subject, education level and learning goals.',
+    'subtitle' => 'Find verified courses from Auronsoft teachers, organized by subject, education level and learning goals.',
     'search_label' => 'Search courses', 'search_placeholder' => 'Search by course, teacher, subject or category...',
     'sort_label' => 'Sort courses', 'sorts' => ['newest' => 'Newest', 'popular' => 'Popular', 'rating' => 'Top rated', 'enrolled' => 'Most enrolled'],
     'apply' => 'Apply', 'advanced_filters' => 'More filters', 'subject' => 'Subject', 'category' => 'Category',
@@ -16,7 +16,7 @@ return [
     'learning_outcomes' => 'What you will learn', 'requirements' => 'Requirements', 'target_learners' => 'Who this course is for',
     'curriculum' => 'Course curriculum', 'curriculum_summary' => ':chapters chapters · :lessons lessons',
     'lesson_count' => '{0} No lessons|{1} :count lesson|[2,*] :count lessons', 'curriculum_empty' => 'The curriculum is being prepared.',
-    'enrollment_phase_notice' => 'Enrollment will be available in the next phase.', 'instructor' => 'Instructor', 'instructor_default' => 'Mindigo instructor',
+    'enrollment_phase_notice' => 'Enrollment will be available in the next phase.', 'instructor' => 'Instructor', 'instructor_default' => 'Auronsoft instructor',
     'detail_subtitle' => 'Review the course overview, curriculum, and available preview lessons.',
     'back_to_catalog' => 'Back to course catalog', 'back_to_course' => 'Back to course details',
     'preview_mode' => 'Preview mode', 'preview' => 'Preview', 'preview_lesson' => 'Allow lesson preview',

@@ -87,7 +87,7 @@ class HomepageTest extends TestCase
         $response = $this->get('/exam-tips');
 
         $response->assertOk();
-        $response->assertSee('Mindigo', false);
+        $response->assertSee('Auronsoft', false);
         $response->assertDontSee('Mindigo.vn', false);
         $response->assertSee('data-exam-tip-card', false);
         $response->assertSee('Lich hoc that tu cong dong', false);
@@ -243,7 +243,7 @@ class HomepageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('support@mindigo.vn', false);
-        $response->assertSee('Mindigo ID', false);
+        $response->assertSee('Auronsoft ID', false);
     }
 
     /**
@@ -291,7 +291,7 @@ class HomepageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('support@mindigo.vn', false);
-        $response->assertSee('Mindigo', false);
+        $response->assertSee('Auronsoft', false);
     }
 
     /**
@@ -347,7 +347,7 @@ class HomepageTest extends TestCase
         $this->withSession(['locale' => 'en'])->get('/login')
             ->assertOk()
             ->assertSee('Sign in', false)
-            ->assertSee('Phát triển bởi Auronsoft', false);
+            ->assertSee('Developed by Auronsoft', false);
     }
 
     /**

@@ -50,6 +50,6 @@ return [
     'notification_submitted_title' => 'Khóa học “:course” chờ duyệt',
     'notification_submitted_message' => ':teacher vừa gửi một khóa học để kiểm duyệt.',
     'notification_approved_title' => 'Khóa học “:course” đã được duyệt',
-    'notification_approved_message' => 'Khóa học đã được xuất bản trên Mindigo.',
+    'notification_approved_message' => 'Khóa học đã được xuất bản trên Auronsoft.',
     'notification_changes_title' => 'Khóa học “:course” cần chỉnh sửa',
 ];
