@@ -42,11 +42,12 @@ class ExamFoundationPhaseZeroOneTest extends TestCase
             ->assertRedirect();
     }
 
-    public function test_admin_cannot_enter_exam_business_routes(): void
+    public function test_admin_can_monitor_exam_list_but_cannot_enter_authoring_routes(): void
     {
         $admin = $this->createUser(['role' => 'admin']);
 
         $this->actingAs($admin)->get(route('teacher.exams.index'))->assertRedirect();
-        $this->actingAs($admin)->get(route('exams.index'))->assertForbidden();
+        $this->actingAs($admin)->get(route('exams.index'))->assertOk();
+        $this->actingAs($admin)->get(route('exams.create'))->assertForbidden();
     }
 }
