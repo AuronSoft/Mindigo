@@ -33,6 +33,50 @@ docker compose version
 
 Do not run `php artisan serve`, `composer dev`, local MySQL or local Redis.
 
+## Daily command reference
+
+Run every command from the repository root. The normal development day only
+needs the start and stop commands below.
+
+| Operation | Command |
+|---|---|
+| First start or Docker configuration changed | `docker compose -f docker-compose.dev.yml up -d --build` |
+| Normal daily start | `docker compose -f docker-compose.dev.yml up -d` |
+| Open the application | `http://localhost:8083` |
+| Check all services | `docker compose -f docker-compose.dev.yml ps` |
+| Follow all logs | `docker compose -f docker-compose.dev.yml logs -f` |
+| Follow application logs | `docker compose -f docker-compose.dev.yml logs -f app nginx` |
+| Follow background/realtime logs | `docker compose -f docker-compose.dev.yml logs -f queue scheduler reverb vite` |
+| Restart all services | `docker compose -f docker-compose.dev.yml restart` |
+| Restart one service | `docker compose -f docker-compose.dev.yml restart app` |
+| Stop and preserve data | `docker compose -f docker-compose.dev.yml down` |
+
+The standard daily flow is:
+
+```powershell
+# Start the complete LMS
+docker compose -f docker-compose.dev.yml up -d
+
+# Confirm that services are running
+docker compose -f docker-compose.dev.yml ps
+
+# Develop in the IDE, then stop at the end of the day
+docker compose -f docker-compose.dev.yml down
+```
+
+Do not run any of these host commands alongside the stack:
+
+```text
+php artisan serve
+npm run dev
+php artisan queue:work
+php artisan schedule:work
+php artisan reverb:start
+redis-server
+```
+
+Their corresponding processes are already managed by Docker Compose.
+
 ## First start
 
 ```powershell
@@ -87,6 +131,79 @@ docker compose -f docker-compose.dev.yml exec app composer test
 docker compose -f docker-compose.dev.yml exec app ./vendor/bin/pint --test
 docker compose -f docker-compose.dev.yml exec app bash
 docker compose -f docker-compose.dev.yml exec mysql mysql -umindigo -pmindigo_local mindigo
+```
+
+Common Laravel operations must also run inside `app`:
+
+```powershell
+# Run new migrations
+docker compose -f docker-compose.dev.yml exec app php artisan migrate
+
+# Create demo data
+docker compose -f docker-compose.dev.yml exec app php artisan db:seed
+
+# Clear Laravel caches
+docker compose -f docker-compose.dev.yml exec app php artisan optimize:clear
+
+# Run one test file
+docker compose -f docker-compose.dev.yml exec app php artisan test tests/Feature/ExampleTest.php
+```
+
+## When a rebuild is required
+
+Normal PHP, Blade, CSS and JavaScript edits do not require a rebuild. Rebuild
+only when changing one of the following:
+
+- `Dockerfile.dev`;
+- PHP extensions or operating-system packages;
+- `docker/entrypoint.sh`;
+- build-time Vite configuration;
+- Composer dependencies packaged into the base image.
+
+Use:
+
+```powershell
+docker compose -f docker-compose.dev.yml up -d --build
+```
+
+If only runtime Compose values changed, recreate without rebuilding:
+
+```powershell
+docker compose -f docker-compose.dev.yml up -d --force-recreate
+```
+
+## Troubleshooting workflow
+
+When the application does not start, use this order:
+
+```powershell
+# 1. Find the unhealthy or restarting service
+docker compose -f docker-compose.dev.yml ps
+
+# 2. Read its latest logs (replace app when necessary)
+docker compose -f docker-compose.dev.yml logs --tail=100 app
+
+# 3. Validate the resolved Compose configuration
+docker compose -f docker-compose.dev.yml config --quiet
+
+# 4. Recreate services after fixing configuration
+docker compose -f docker-compose.dev.yml up -d --force-recreate
+
+# 5. Verify the Laravel health endpoint
+curl.exe -I http://localhost:8083/up
+```
+
+For realtime issues, inspect both Reverb and queue logs:
+
+```powershell
+docker compose -f docker-compose.dev.yml logs --tail=100 reverb queue
+```
+
+For frontend HMR issues:
+
+```powershell
+docker compose -f docker-compose.dev.yml logs --tail=100 vite
+curl.exe -I http://localhost:5173/@vite/client
 ```
 
 ## Health verification
