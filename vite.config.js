@@ -7,9 +7,9 @@ export default defineConfig({
         host: "0.0.0.0",
         port: Number(process.env.VITE_DEV_SERVER_PORT ?? 5173),
         strictPort: true,
-        origin: process.env.VITE_DEV_SERVER_URL ?? "http://localhost:5173",
+        origin: process.env.VITE_DEV_SERVER_URL ?? "http://127.0.0.1:5173",
         hmr: {
-            host: process.env.VITE_DEV_SERVER_HOST ?? "localhost",
+            host: process.env.VITE_DEV_SERVER_HOST ?? "127.0.0.1",
             port: Number(process.env.VITE_DEV_SERVER_PORT ?? 5173),
         },
     },

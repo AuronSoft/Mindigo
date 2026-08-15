@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@lang('Mindigo-auth::app.title') — Mindigo</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=be-vietnam-pro:300,400,500,600,700,800,900" rel="stylesheet"/>
     @vite([
         'packages/Mindigo/Auth/src/resources/css/app.css',
         'packages/Mindigo/Auth/src/resources/js/app.js',
     ])
 </head>
-<body class="min-h-screen bg-white" style="font-family:'Be Vietnam Pro',sans-serif;">
+<body class="min-h-screen bg-white" style="font-family:Inter,'Segoe UI',Arial,sans-serif;">
 
 <div class="min-h-screen flex">
     <div class="w-full lg:w-1/2 flex flex-col min-h-screen bg-white">
@@ -217,11 +215,10 @@
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
 (function () {
     const stage = document.getElementById('floatStage');
-    if (!stage) return;
+    if (!stage || typeof gsap === 'undefined') return;
 
     function rand(a, b) { return a + Math.random() * (b - a); }
 

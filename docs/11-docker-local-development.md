@@ -1,22 +1,21 @@
 # Mindigo local development with isolated Docker images
 
 This environment runs the complete LMS without Laragon, host PHP, Composer,
-Node.js, MySQL or Redis. In development, the source directory is bind-mounted so
-code changes are visible immediately while dependencies and runtime data stay in
-Docker-managed volumes.
+Node.js, MySQL or Redis. Application code and frontend assets run from the same
+image on the container's Linux filesystem. This avoids slow Windows bind mounts
+and prevents Vite manifests from diverging between Laravel and Nginx.
 
 ## Services and isolation
 
 | Service | Responsibility | Host port |
 |---|---|---|
-| `nginx` | HTTP entry point | `127.0.0.1:8083` |
+| `nginx` | HTTP entry point | `127.0.0.1:8080` |
 | `app` | Laravel PHP-FPM | None |
 | `mysql` | MySQL 8.4 | None |
 | `redis` | Cache, sessions and queues | None |
 | `queue` | Background jobs | None |
 | `scheduler` | Scheduled commands | None |
 | `reverb` | Realtime WebSocket server | `127.0.0.1:8082` |
-| `vite` | Frontend HMR development server | `127.0.0.1:5173` |
 
 MySQL and Redis are reachable only through the private `backend` network. Only
 Nginx and Reverb publish loopback ports. Database data, Redis data, uploads and
@@ -42,7 +41,7 @@ needs the start and stop commands below.
 |---|---|
 | First start or Docker configuration changed | `docker compose -f docker-compose.dev.yml up -d --build` |
 | Normal daily start | `docker compose -f docker-compose.dev.yml up -d` |
-| Open the application | `http://localhost:8083` |
+| Open the application | `http://127.0.0.1:8080` |
 | Check all services | `docker compose -f docker-compose.dev.yml ps` |
 | Follow all logs | `docker compose -f docker-compose.dev.yml logs -f` |
 | Follow application logs | `docker compose -f docker-compose.dev.yml logs -f app nginx` |
@@ -86,8 +85,8 @@ docker compose -f docker-compose.dev.yml up -d
 docker compose -f docker-compose.dev.yml ps
 ```
 
-Open <http://localhost:8083>. The `app` service waits for MySQL, runs migrations,
-creates the storage link and copies built assets into the Nginx volume.
+Open <http://127.0.0.1:8080>. The `app` service waits for MySQL, runs migrations,
+seeds a fresh development database once and creates the storage link.
 
 Seed an empty database when required:
 
@@ -97,14 +96,13 @@ docker compose -f docker-compose.dev.yml exec app php artisan db:seed
 
 ## Development workflow
 
-PHP and Blade source changes are available immediately through the bind mount.
-Vite runs inside Docker and applies CSS/JavaScript changes through HMR. You do
-not run `php artisan serve` or `npm run dev` on the host.
+PHP, Blade, CSS and JavaScript are packaged together to keep the runtime
+consistent. You do not run `php artisan serve` or `npm run dev` on the host.
 
 Start the environment once:
 
 ```powershell
-docker compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml up -d --build --force-recreate
 ```
 
 Rebuild the app image only after changing `Dockerfile.dev`, PHP extensions or
@@ -190,7 +188,7 @@ docker compose -f docker-compose.dev.yml config --quiet
 docker compose -f docker-compose.dev.yml up -d --force-recreate
 
 # 5. Verify the Laravel health endpoint
-curl.exe -I http://localhost:8083/up
+curl.exe -I http://127.0.0.1:8080/up
 ```
 
 For realtime issues, inspect both Reverb and queue logs:
@@ -199,11 +197,11 @@ For realtime issues, inspect both Reverb and queue logs:
 docker compose -f docker-compose.dev.yml logs --tail=100 reverb queue
 ```
 
-For frontend HMR issues:
+For frontend asset issues:
 
 ```powershell
-docker compose -f docker-compose.dev.yml logs --tail=100 vite
-curl.exe -I http://localhost:5173/@vite/client
+docker compose -f docker-compose.dev.yml build app
+docker compose -f docker-compose.dev.yml up -d --force-recreate app nginx
 ```
 
 ## Health verification
@@ -211,17 +209,17 @@ curl.exe -I http://localhost:5173/@vite/client
 ```powershell
 docker compose -f docker-compose.dev.yml ps
 docker compose -f docker-compose.dev.yml exec redis redis-cli ping
-curl.exe -I http://localhost:8083/up
+curl.exe -I http://127.0.0.1:8080/up
 docker compose -f docker-compose.dev.yml logs --tail=50 reverb
 ```
 
 Expected: `app`, `mysql` and `redis` are healthy; Nginx, queue, scheduler and
-Reverb are running; `/up` returns HTTP 200. Port `8083` intentionally avoids
-the existing production-style local stack that may already use `8080`.
+Reverb are running; `/up` returns HTTP 200. Always access the dev application
+through `http://127.0.0.1:8080` so browser cookies use one consistent host.
 
 ## Ports
 
-Override the web port if `8083` is occupied:
+Override the web port if `8080` is occupied:
 
 ```powershell
 $env:DEV_HTTP_PORT = "8090"
@@ -246,8 +244,8 @@ The second command is destructive and should only be used for a clean reset.
 ## Security boundaries
 
 - The Compose project is named `mindigo-dev`.
-- Source code is mounted read/write for development; `.env`, Docker credentials
-  and the Docker socket are never mounted explicitly.
+- Source code and built assets are packaged in images; `.env`, Docker credentials
+  and the Docker socket are not mounted into application services.
 - MySQL and Redis have no host port mapping.
 - Runtime data is separated into named volumes.
 - Embedded credentials are local-only and must never be reused in production.

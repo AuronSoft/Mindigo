@@ -7,11 +7,9 @@
     <title>@yield('title', __('Mindigo-dashboard::app.title'))</title>
     <meta name="description" content="@yield('meta_description', __('Mindigo-dashboard::app.title'))">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=be-vietnam-pro:400,500,600,700,800,900" rel="stylesheet"/>
     @yield('styles')
 </head>
-<body class="bg-slate-50 font-['Be_Vietnam_Pro',ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased" data-user-id="{{ auth()->id() }}">
+<body class="bg-slate-50 font-[Inter,'Segoe_UI',Arial,ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased" data-user-id="{{ auth()->id() }}">
 @php
     $currentUser = Auth::user();
     $useNewExamModule = app(\Mindigo\ExamManagement\Services\ExamCutoverService::class)->prefersNew($currentUser);

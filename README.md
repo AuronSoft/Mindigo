@@ -199,7 +199,7 @@ Mindigo is organized as internal Composer path packages inside the `packages/` d
 | Database | MySQL 8.4 |
 | Realtime | Laravel Reverb |
 | Cache, sessions, queues | Redis 7.4, Laravel queue workers |
-| Local runtime | Docker Compose, Nginx, PHP-FPM, Vite HMR |
+| Local runtime | Docker Compose, Nginx, PHP-FPM, immutable built assets |
 | PDF/Export | `barryvdh/laravel-dompdf` |
 | Internal packages | Composer path repositories |
 
@@ -232,10 +232,10 @@ The stack starts:
 - MySQL and Redis on private Docker networks;
 - queue worker and scheduler;
 - Laravel Reverb;
-- Vite with HMR.
+- frontend assets built into the application image.
 
-Open the application at <http://localhost:8083>. Vite HMR is available at
-`127.0.0.1:5173`, and Reverb at `127.0.0.1:8082`.
+Open the application at <http://127.0.0.1:8080>. Reverb is available at
+`127.0.0.1:8082`.
 
 ### 3. Seed local data when required
 
@@ -245,9 +245,9 @@ docker compose -f docker-compose.dev.yml exec app php artisan db:seed
 
 ### 4. Develop normally
 
-The repository is bind-mounted into the application services. PHP and Blade
-changes are visible immediately, while CSS and JavaScript changes are handled
-by the Vite container. Do not run `php artisan serve`, `npm run dev`, Redis,
+PHP, Blade, CSS and JavaScript are built into one consistent application image.
+After source changes, rebuild the stack so Laravel and Nginx use the same asset
+manifest. Do not run `php artisan serve`, `npm run dev`, Redis,
 queue workers, the scheduler, or Reverb separately on the host.
 
 Useful checks:
@@ -255,7 +255,7 @@ Useful checks:
 ```powershell
 docker compose -f docker-compose.dev.yml logs -f app nginx queue reverb vite
 docker compose -f docker-compose.dev.yml exec app php artisan migrate:status
-curl.exe -I http://localhost:8083/up
+curl.exe -I http://127.0.0.1:8080/up
 ```
 
 See [docs/11-docker-local-development.md](docs/11-docker-local-development.md)

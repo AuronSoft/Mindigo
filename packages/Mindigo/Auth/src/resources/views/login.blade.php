@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@lang('Mindigo-auth::app.auth.login_title') — Mindigo</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=be-vietnam-pro:300,400,500,600,700,800,900" rel="stylesheet"/>
     <script>
         window.__routes = {
             MindigoIdSend:      "{{ route('Mindigo-id.send') }}",
@@ -18,7 +16,7 @@
         'packages/Mindigo/Auth/src/resources/js/app.js',
     ])
 </head>
-<body class="min-h-screen bg-white" style="font-family:'Be Vietnam Pro',sans-serif;">
+<body class="min-h-screen bg-white" style="font-family:Inter,'Segoe UI',Arial,sans-serif;">
 
 <div class="min-h-screen flex">
 
@@ -213,7 +211,6 @@
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
 (function () {
     const stage = document.getElementById('floatStage');
@@ -679,28 +676,19 @@
         stage.appendChild(el);
         const W = stage.offsetWidth, H = stage.offsetHeight;
 
-        gsap.set(el, {
-            x: W * xFrac - hw,
-            y: H * yFrac - hh,
-            rotation: baseRot,
-            scale: 0,
-            opacity: 0,
-            transformOrigin: 'center center',
-        });
-
-        gsap.to(el, {
-            scale: 1, opacity: 1,
-            duration: 0.7,
-            delay: delay,
-            ease: 'back.out(1.6)',
-        });
-
-        gsap.to(el, { y: `+=${floatAmpY}`, duration: dur,       repeat:-1, yoyo:true, ease:'sine.inOut', delay });
-        gsap.to(el, { x: `+=${floatAmpX}`, duration: dur * 1.3, repeat:-1, yoyo:true, ease:'sine.inOut', delay: delay + rand(0,0.8) });
-        gsap.to(el, {
-            rotation: baseRot + rand(-9, 9),
-            duration: dur * 1.7,
-            repeat:-1, yoyo:true, ease:'sine.inOut', delay
+        const x = W * xFrac - hw;
+        const y = H * yFrac - hh;
+        el.style.transformOrigin = 'center center';
+        el.animate([
+            { transform: `translate(${x}px, ${y}px) rotate(${baseRot}deg) scale(0)`, opacity: 0 },
+            { transform: `translate(${x}px, ${y}px) rotate(${baseRot}deg) scale(1)`, opacity: 1, offset: 0.16 },
+            { transform: `translate(${x + floatAmpX}px, ${y + floatAmpY}px) rotate(${baseRot + rand(-7, 7)}deg) scale(1)`, opacity: 1, offset: 0.58 },
+            { transform: `translate(${x}px, ${y}px) rotate(${baseRot}deg) scale(1)`, opacity: 1 },
+        ], {
+            duration: dur * 1700,
+            delay: delay * 1000,
+            iterations: Infinity,
+            easing: 'ease-in-out',
         });
     }
 

@@ -44,16 +44,36 @@ echo "==> DB đã sẵn sàng."
 echo "==> Chạy migrate"
 php artisan migrate --force
 
+# An isolated development database starts empty. Seed it once so local login
+# accounts exist, while keeping every later container start idempotent.
+if [ "${APP_SEED_DATABASE:-false}" = "true" ]; then
+    if php -r '
+        $pdo = new PDO(
+            "mysql:host=".getenv("DB_HOST").";port=".(getenv("DB_PORT") ?: "3306").";dbname=".getenv("DB_DATABASE"),
+            getenv("DB_USERNAME"),
+            getenv("DB_PASSWORD")
+        );
+        exit((int) $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn() === 0 ? 0 : 1);
+    '; then
+        echo "==> Seed fresh development database"
+        php artisan db:seed --force
+    fi
+fi
+
 # 5) Tạo symlink storage để phục vụ file public
 php artisan storage:link 2>/dev/null || true
 
 # 5b) Đồng bộ public/ sang volume dùng chung "web_public" để nginx phục vụ static.
 #     Volume được mount tại /shared (xem docker-compose). File upload trong
 #     storage/app/public được copy thành thư mục thật (vì nginx không có mã nguồn).
-SHARED_PUBLIC=/shared/public
-if [ -d "$SHARED_PUBLIC" ]; then
+SHARED_PUBLIC="${SHARED_PUBLIC_DIR:-/shared/public}"
+if [ -d "$(dirname "$SHARED_PUBLIC")" ]; then
     echo "==> Đồng bộ public/ sang volume nginx..."
     mkdir -p "$SHARED_PUBLIC"
+    # public/storage in the image is a symlink, while the shared volume may
+    # contain a directory from an older bootstrap. Remove only this published
+    # path before copying; uploaded files live in their separate Docker volume.
+    rm -rf "$SHARED_PUBLIC/storage"
     cp -rT /var/www/html/public "$SHARED_PUBLIC"
     # Đảm bảo storage (file upload) là thư mục thật cho nginx, không phải symlink
     if [ "${SYNC_PUBLIC_STORAGE:-true}" = "true" ]; then
