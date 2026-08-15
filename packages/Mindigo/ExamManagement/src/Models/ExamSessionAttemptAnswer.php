@@ -13,7 +13,7 @@ class ExamSessionAttemptAnswer extends Model
 
     protected function casts(): array
     {
-        return ['answer' => 'array', 'rubric_scores' => 'array', 'is_correct' => 'boolean', 'points_awarded' => 'decimal:2', 'needs_review' => 'boolean', 'reviewed_at' => 'datetime'];
+        return ['answer' => 'array', 'rubric_scores' => 'array', 'is_correct' => 'boolean', 'points_awarded' => 'decimal:2', 'needs_review' => 'boolean', 'answered_at' => 'datetime', 'reviewed_at' => 'datetime'];
     }
 
     public function attempt(): BelongsTo

@@ -345,7 +345,9 @@
                         </span>
                     </button>
                     <div class="sidebar-submenu hidden gap-1 py-1 pl-13" data-sidebar-submenu>
-                        <a href="#sessions" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exam_sessions')"><x-heroicon-o-clock class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.exam_sessions')</span></a>
+                        @if(Route::has('admin.exam-operations') && ($currentUser?->isAdmin() ?? false))
+                            <a href="{{ route('admin.exam-operations') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold {{ request()->routeIs('admin.exam-operations') ? 'bg-green-50 text-green-700' : 'text-slate-500 hover:bg-green-50 hover:text-green-700' }} no-underline" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.exam_sessions')"><x-heroicon-o-clock class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.exam_sessions')</span></a>
+                        @endif
                         @if(Route::has('reports.index'))
                         <a href="{{ route('reports.index') }}" class="sidebar-submenu-item flex min-h-9 items-center gap-2 rounded-xl px-3 text-xs font-extrabold text-slate-500 no-underline hover:bg-green-50 hover:text-green-700 {{ request()->routeIs('reports.*') ? 'bg-green-50 text-green-700' : '' }}" data-sidebar-search-item data-search-label="@lang('Mindigo-dashboard::app.reports')"><x-heroicon-o-chart-bar class="h-4 w-4 shrink-0" /><span>@lang('Mindigo-dashboard::app.reports')</span></a>
                         @else

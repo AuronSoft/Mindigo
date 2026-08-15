@@ -105,6 +105,7 @@ class ExamCandidateAttemptService
     {
         return DB::transaction(function () use ($attempt, $student, $questionId, $answer): bool {
             $attempt = $this->lockedOwnedAttempt($attempt, $student);
+            $responseSeconds = min(3600, max(0, (int) $attempt->last_activity_at?->diffInSeconds(now())));
             if (! $this->keepAlive($attempt)) {
                 return false;
             }
@@ -113,7 +114,7 @@ class ExamCandidateAttemptService
                 ->where('exam_template_version_id', $attempt->session->exam_template_version_id)->firstOrFail();
             ExamSessionAttemptAnswer::query()->updateOrCreate(
                 ['exam_session_attempt_id' => $attempt->id, 'exam_template_question_id' => $question->id],
-                ['type' => $question->type, 'answer' => $this->normalizeAnswer($answer)]
+                ['type' => $question->type, 'answer' => $this->normalizeAnswer($answer), 'response_seconds' => $responseSeconds, 'answered_at' => now()]
             );
 
             return true;
@@ -155,7 +156,7 @@ class ExamCandidateAttemptService
                     ->where('exam_template_version_id', $attempt->session->exam_template_version_id)->firstOrFail();
                 ExamSessionAttemptAnswer::query()->updateOrCreate(
                     ['exam_session_attempt_id' => $attempt->id, 'exam_template_question_id' => $question->id],
-                    ['type' => $question->type, 'answer' => $this->normalizeAnswer($answer)]
+                    ['type' => $question->type, 'answer' => $this->normalizeAnswer($answer), 'answered_at' => now()]
                 );
             }
 
