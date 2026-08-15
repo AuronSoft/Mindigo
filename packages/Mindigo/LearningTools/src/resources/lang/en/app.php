@@ -158,7 +158,7 @@ return [
         'unresolved_only' => 'Unresolved only', 'your_answer' => 'Your answer', 'correct_answer' => 'Correct answer',
         'note_placeholder' => 'Add a note about the mistake and how to avoid it...', 'resolved' => 'Mark as resolved',
         'empty' => 'No matching incorrect answers.', 'updated' => 'Mistake review updated.',
-        'sources' => ['practice' => 'Practice', 'exam' => 'Exam'],
+        'sources' => ['practice' => 'Practice', 'exam' => 'Legacy exam', 'exam_session' => 'Exam'],
     ],
     'personalized' => [
         'title' => 'Personalized practice', 'subtitle' => 'Build focused question sets from topics, difficulty, or learning history.',

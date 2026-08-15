@@ -158,7 +158,7 @@ return [
         'unresolved_only' => 'Chỉ câu chưa khắc phục', 'your_answer' => 'Câu trả lời của bạn', 'correct_answer' => 'Đáp án đúng',
         'note_placeholder' => 'Ghi lại nguyên nhân sai và cách tránh lặp lại...', 'resolved' => 'Đã khắc phục',
         'empty' => 'Không có câu sai phù hợp.', 'updated' => 'Đã cập nhật nội dung ôn lại.',
-        'sources' => ['practice' => 'Luyện tập', 'exam' => 'Bài thi'],
+        'sources' => ['practice' => 'Luyện tập', 'exam' => 'Bài thi cũ', 'exam_session' => 'Bài thi'],
     ],
     'personalized' => [
         'title' => 'Luyện tập cá nhân hóa', 'subtitle' => 'Tạo bộ câu hỏi tập trung theo chuyên đề, độ khó hoặc lịch sử học tập.',

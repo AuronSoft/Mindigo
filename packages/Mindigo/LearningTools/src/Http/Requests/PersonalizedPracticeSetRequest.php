@@ -4,12 +4,22 @@ namespace Mindigo\LearningTools\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class PersonalizedPracticeSetRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->hasPermissionTo('learning-tools.use') ?? false;
+        $user = $this->user();
+        if (! ($user?->hasPermissionTo('learning-tools.use') ?? false)) {
+            return false;
+        }
+        if (! $this->filled('classroom_id')) {
+            return true;
+        }
+
+        return $user->isTeacher()
+            && Classroom::query()->whereKey($this->integer('classroom_id'))->where('teacher_id', $user->getAuthIdentifier())->exists();
     }
 
     public function rules(): array

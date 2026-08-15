@@ -8,16 +8,20 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\ExamManagement\Services\ExamCutoverService;
 use Mindigo\StudentExam\Http\Requests\AutosaveExamAnswerRequest;
 use Mindigo\StudentExam\Http\Requests\SubmitExamRequest;
 use Mindigo\StudentExam\Services\ExamService;
 
 class ExamController extends Controller
 {
-    public function __construct(protected ExamService $service) {}
+    public function __construct(protected ExamService $service, private ExamCutoverService $cutover) {}
 
     public function index(Request $request)
     {
+        if ($this->cutover->prefersNew($request->user())) {
+            return redirect()->route('student.exam-sessions.index');
+        }
         $studentId = Auth::id();
 
         $data = $this->service->getExamsForStudent($studentId);
@@ -27,6 +31,7 @@ class ExamController extends Controller
 
     public function start(Exam $exam)
     {
+        $this->authorizeLegacyWrite();
         $studentId = Auth::id();
         $attempt = $this->service->startAttempt($exam, $studentId);
 
@@ -58,6 +63,7 @@ class ExamController extends Controller
 
     public function submit(SubmitExamRequest $request, ExamAttempt $attempt)
     {
+        $this->authorizeLegacyWrite();
         $attempt = $this->service->submitAttempt($attempt, $request->validated());
 
         if ($attempt->status === 'expired') {
@@ -86,6 +92,7 @@ class ExamController extends Controller
 
     public function autosave(AutosaveExamAnswerRequest $request, ExamAttempt $attempt): JsonResponse
     {
+        $this->authorizeLegacyWrite();
         $saved = $this->service->saveAnswer(
             $attempt,
             $request->integer('question_id'),
@@ -100,11 +107,17 @@ class ExamController extends Controller
 
     public function heartbeat(ExamAttempt $attempt): JsonResponse
     {
+        $this->authorizeLegacyWrite();
         abort_unless((int) $attempt->user_id === (int) Auth::id(), 403);
         abort_unless($attempt->status === 'in_progress', 422);
 
         $active = $this->service->recordActivity($attempt);
 
         return response()->json(['ok' => $active], $active ? 200 : 409);
+    }
+
+    private function authorizeLegacyWrite(): void
+    {
+        abort_unless($this->cutover->legacyWritable(Auth::user()), 423, 'The legacy exam module is read-only after cutover.');
     }
 }
