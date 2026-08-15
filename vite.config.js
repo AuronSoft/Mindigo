@@ -3,6 +3,16 @@ import laravel from "laravel-vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+    server: {
+        host: "0.0.0.0",
+        port: Number(process.env.VITE_DEV_SERVER_PORT ?? 5173),
+        strictPort: true,
+        origin: process.env.VITE_DEV_SERVER_URL ?? "http://localhost:5173",
+        hmr: {
+            host: process.env.VITE_DEV_SERVER_HOST ?? "localhost",
+            port: Number(process.env.VITE_DEV_SERVER_PORT ?? 5173),
+        },
+    },
     plugins: [
         laravel({
             input: [

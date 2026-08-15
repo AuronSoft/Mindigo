@@ -39,9 +39,9 @@
 
 **Mindigo LMS** is a modular learning management system built with Laravel. The application is organized around three main user experiences:
 
-- **Admin** manages platform data, users, subjects, classrooms, question banks, exams, reports, support tickets, and audit logs.
-- **Teachers** manage classes, courses, questions, exams, assignments, grading, reports, announcements, class discussions, and live sessions.
-- **Students** join classrooms, take exams, submit assignments, practice questions, track schedules and progress, view history and leaderboards, write notes, and participate in discussions or live sessions.
+- **Admin** operates the platform, users, permissions, system health, support, audit logs, and aggregate operational analytics. Admin does not approve exams or alter academic results.
+- **Teachers and tutors** own classrooms, courses, question banks, official exams, assignments, grading, reports, announcements, discussions, and live sessions.
+- **Students** join classrooms, take assigned exams, create separate practice sets, submit assignments, track schedules and progress, view released results, write notes, and join discussions or live sessions.
 
 The goal of the project is to provide a clear, extensible LMS foundation with consistent UI patterns and practical workflows for online learning.
 
@@ -54,8 +54,8 @@ The goal of the project is to provide a clear, extensible LMS foundation with co
 - Authentication, password recovery, OTP, and Mindigo ID flows.
 - User management, roles, permissions, and account status control.
 - Subject, topic, classroom, and classroom member management.
-- Question bank with folders, import flow, review status, and edit history.
-- Exam, exam attempt, result, and reporting management.
+- Operational monitoring for exam traffic, migration/cutover health, queues, storage, and aggregate reporting.
+- No academic approval workflow and no access to learner answers or grade editing.
 - System settings, profile management, support tickets, and audit logs.
 
 ### Teacher Workspace
@@ -63,7 +63,7 @@ The goal of the project is to provide a clear, extensible LMS foundation with co
 - Teacher dashboard focused on active classes, students, grading, reminders, schedules, and performance.
 - Classroom management with schedules, attendance, and student rosters.
 - Course management with chapters and lessons.
-- Teacher-owned question and exam management.
+- Teacher-owned exam templates, sessions, assignments, candidates, monitoring, grading, result release, analytics, import, and scanning workflows.
 - Assignment creation, submission review, grading, and feedback.
 - Result review by exam, by student, and by attempt.
 - Reports for classes, students, exams, and learning progress.
@@ -75,9 +75,9 @@ The goal of the project is to provide a clear, extensible LMS foundation with co
 
 - Student dashboard with assigned work, schedule, progress, and recent activity.
 - Classroom overview and related learning content.
-- Exam taking, result review, and attempt history.
+- Exam taking with autosave, realtime monitoring, configurable proctoring signals, released-result review, and attempt history.
 - Assignment receiving and submission through files or text.
-- Question practice workflows.
+- Student-owned practice sets separated from official exams and gradebooks.
 - Schedule, learning progress, and leaderboard pages.
 - Personal notebook.
 - Class discussions and live session participation.
@@ -149,8 +149,8 @@ Mindigo is organized as internal Composer path packages inside the `packages/` d
 | `SubjectManagement` | Subjects and topics |
 | `ClassroomManagement` | Platform-level classroom management |
 | `QuestionBank` | Question bank management |
-| `ExamManagement` | Base exam and attempt management |
-| `Report` | Admin, teacher, and student reports |
+| `ExamManagement` | Exam templates, sessions, candidates, attempts, proctoring, monitoring, grading, analytics, migration, and cutover |
+| `Report` | Role-scoped learning reports and aggregate operational reports |
 | `SupportManagement` | Support tickets |
 | `Profile` | Profile, security, and notification preferences |
 | `BlogManagement` | News and blog content |
@@ -193,16 +193,23 @@ Mindigo is organized as internal Composer path packages inside the `packages/` d
 
 | Layer | Technology |
 | ----- | ---------- |
-| Backend | Laravel 12, PHP 8.2+ |
+| Backend | Laravel 12, PHP 8.3 |
 | Frontend | Blade, Tailwind CSS 4, Vite |
 | UI Icons | Blade Heroicons |
-| Database | MySQL or MariaDB |
+| Database | MySQL 8.4 |
+| Realtime | Laravel Reverb |
+| Cache, sessions, queues | Redis 7.4, Laravel queue workers |
+| Local runtime | Docker Compose, Nginx, PHP-FPM, Vite HMR |
 | PDF/Export | `barryvdh/laravel-dompdf` |
 | Internal packages | Composer path repositories |
 
 ---
 
 ## Local Setup
+
+Docker Compose is the standard local runtime. Only Docker Desktop (or Docker
+Engine with the Compose plugin) is required. PHP, Composer, Node.js, MySQL and
+Redis do not need to be installed or started on the host.
 
 ### 1. Clone the repository
 
@@ -211,53 +218,48 @@ git clone https://github.com/scoppy9201/Mindigo.git
 cd Mindigo
 ```
 
-### 2. Install dependencies
+### 2. Start the complete development stack
 
-```bash
-composer install
-npm install
+```powershell
+docker compose -f docker-compose.dev.yml build
+docker compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml ps
 ```
 
-### 3. Create the environment file
+The stack starts:
 
-```bash
-cp .env.example .env
-php artisan key:generate
+- Nginx and PHP-FPM;
+- MySQL and Redis on private Docker networks;
+- queue worker and scheduler;
+- Laravel Reverb;
+- Vite with HMR.
+
+Open the application at <http://localhost:8083>. Vite HMR is available at
+`127.0.0.1:5173`, and Reverb at `127.0.0.1:8082`.
+
+### 3. Seed local data when required
+
+```powershell
+docker compose -f docker-compose.dev.yml exec app php artisan db:seed
 ```
 
-### 4. Configure the database in `.env`
+### 4. Develop normally
 
-```env
-APP_NAME=Mindigo
-APP_URL=http://127.0.0.1:8000
+The repository is bind-mounted into the application services. PHP and Blade
+changes are visible immediately, while CSS and JavaScript changes are handled
+by the Vite container. Do not run `php artisan serve`, `npm run dev`, Redis,
+queue workers, the scheduler, or Reverb separately on the host.
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=mindigo
-DB_USERNAME=root
-DB_PASSWORD=
+Useful checks:
+
+```powershell
+docker compose -f docker-compose.dev.yml logs -f app nginx queue reverb vite
+docker compose -f docker-compose.dev.yml exec app php artisan migrate:status
+curl.exe -I http://localhost:8083/up
 ```
 
-### 5. Run migrations and seeders
-
-```bash
-php artisan migrate --seed
-php artisan storage:link
-```
-
-### 6. Start the application
-
-```bash
-php artisan serve
-npm run dev
-```
-
-Open:
-
-```text
-http://127.0.0.1:8000
-```
+See [docs/11-docker-local-development.md](docs/11-docker-local-development.md)
+for volumes, ports, rebuilding, testing, troubleshooting, and reset commands.
 
 ---
 
@@ -445,30 +447,32 @@ The seeder also creates additional users with factories for list, permission, an
 
 ## Development Commands
 
-```bash
-# Run Vite
-npm run dev
+Run project tooling inside the application container:
 
-# Build production assets
-npm run build
+```powershell
+# Full test suite
+docker compose -f docker-compose.dev.yml exec app composer test
 
-# Run Laravel tests
-php artisan test
+# Laravel Pint
+docker compose -f docker-compose.dev.yml exec app ./vendor/bin/pint --test
 
-# Clear caches after changing config, providers, or language files
-php artisan optimize:clear
+# Clear application caches
+docker compose -f docker-compose.dev.yml exec app php artisan optimize:clear
 
-# Refresh autoload after adding packages or classes
-composer dump-autoload
+# Refresh Composer autoloading
+docker compose -f docker-compose.dev.yml exec app composer dump-autoload
+
+# Inspect all services
+docker compose -f docker-compose.dev.yml ps
 ```
 
-Composer also includes a combined development script:
+Rebuild the PHP image only after changing its Dockerfile, entrypoint, or PHP
+extensions:
 
-```bash
-composer run dev
+```powershell
+docker compose -f docker-compose.dev.yml build app
+docker compose -f docker-compose.dev.yml up -d --force-recreate app queue scheduler reverb
 ```
-
-This starts the Laravel server, queue listener, log tailing, and Vite together.
 
 ---
 
@@ -491,6 +495,6 @@ Mindigo LMS is released under the [MIT License](LICENSE).
 ---
 
 <p align="center">
-  Developed by <strong>Manh Hung</strong><br>
+  Developed by <strong>Auronsoft</strong><br>
   Mindigo LMS
 </p>

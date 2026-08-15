@@ -12,9 +12,15 @@ if [ ! -f .env ]; then
 fi
 
 # 2) Sinh APP_KEY nếu chưa có khoá hợp lệ
-if ! grep -q "^APP_KEY=base64:" .env; then
+if [[ "${APP_KEY:-}" != base64:* ]] && ! grep -q "^APP_KEY=base64:" .env; then
     echo "==> Sinh APP_KEY"
     php artisan key:generate --force
+fi
+
+# Queue, scheduler and Reverb share the immutable app image. Only the PHP-FPM
+# app container owns migrations and public asset bootstrap.
+if [ "${APP_BOOTSTRAP:-false}" != "true" ]; then
+    exec "$@"
 fi
 
 # 3) Chờ MySQL sẵn sàng (dùng thông tin từ biến môi trường)
@@ -50,9 +56,13 @@ if [ -d "$SHARED_PUBLIC" ]; then
     mkdir -p "$SHARED_PUBLIC"
     cp -rT /var/www/html/public "$SHARED_PUBLIC"
     # Đảm bảo storage (file upload) là thư mục thật cho nginx, không phải symlink
-    rm -rf "$SHARED_PUBLIC/storage"
-    mkdir -p "$SHARED_PUBLIC/storage"
-    cp -rT /var/www/html/storage/app/public "$SHARED_PUBLIC/storage"
+    if [ "${SYNC_PUBLIC_STORAGE:-true}" = "true" ]; then
+        rm -rf "$SHARED_PUBLIC/storage"
+        mkdir -p "$SHARED_PUBLIC/storage"
+        cp -rT /var/www/html/storage/app/public "$SHARED_PUBLIC/storage"
+    else
+        rm -f "$SHARED_PUBLIC/storage" 2>/dev/null || true
+    fi
     chown -R www-data:www-data "$SHARED_PUBLIC" || true
 fi
 
