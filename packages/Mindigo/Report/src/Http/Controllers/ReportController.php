@@ -6,12 +6,13 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
+use Mindigo\ExamManagement\Services\ExamCutoverService;
 use Mindigo\Report\Services\ReportService;
 use Mindigo\TeacherClassroom\Models\Classroom;
 
 class ReportController extends Controller
 {
-    public function __construct(private readonly ReportService $reportService) {}
+    public function __construct(private readonly ReportService $reportService, private readonly ExamCutoverService $cutover) {}
 
     public function index()
     {
@@ -30,6 +31,9 @@ class ReportController extends Controller
 
     public function exams()
     {
+        if ($this->cutover->mode() === ExamCutoverService::MODE_NEW) {
+            return redirect()->route('admin.exam-operations');
+        }
         $exams = $this->reportService->getAllExams(20);
         $topExams = $this->reportService->getTopExams(5);
 
@@ -38,6 +42,9 @@ class ReportController extends Controller
 
     public function examDetail(Exam $exam)
     {
+        if ($this->cutover->mode() === ExamCutoverService::MODE_NEW) {
+            return redirect()->route('admin.exam-operations');
+        }
         $report = $this->reportService->getExamReport($exam);
 
         return view('Mindigo-report::exam-detail', compact('exam', 'report'));

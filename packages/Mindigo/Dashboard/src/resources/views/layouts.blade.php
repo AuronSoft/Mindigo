@@ -14,6 +14,7 @@
 <body class="bg-slate-50 font-['Be_Vietnam_Pro',ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased" data-user-id="{{ auth()->id() }}">
 @php
     $currentUser = Auth::user();
+    $useNewExamModule = app(\Mindigo\ExamManagement\Services\ExamCutoverService::class)->prefersNew($currentUser);
 @endphp
 <div id="admin-shell" class="grid min-h-screen grid-cols-[5rem_minmax(0,1fr)] transition-[grid-template-columns] duration-200" data-compact-grid="grid-cols-[5rem_minmax(0,1fr)]">
     <aside
@@ -97,7 +98,7 @@
                             ['route' => 'student.classrooms.index', 'match' => 'student.classrooms.*', 'label' => __('student-dashboard::app.nav_classrooms'), 'icon' => 'heroicon-o-user-group'],
                             ['route' => 'student.courses.index', 'match' => 'student.courses.*', 'label' => __('student-dashboard::app.nav_courses'), 'icon' => 'heroicon-o-book-open'],
                             ['route' => 'student.assignments.index', 'match' => 'student.assignments.*', 'label' => __('student-dashboard::app.nav_assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
-                            ['route' => 'student.exams.index', 'match' => 'student.exams.*', 'label' => __('student-dashboard::app.nav_exams'), 'icon' => 'heroicon-o-document-text'],
+                            ['route' => $useNewExamModule ? 'student.exam-sessions.index' : 'student.exams.index', 'match' => $useNewExamModule ? 'student.exam-sessions.*' : 'student.exams.*', 'label' => __('student-dashboard::app.nav_exams'), 'icon' => 'heroicon-o-document-text'],
                             ['route' => 'student.practice.index', 'match' => 'student.practice.*', 'label' => __('student-dashboard::app.nav_practice'), 'icon' => 'heroicon-o-pencil-square'],
                         ],
                     ],
@@ -185,7 +186,7 @@
                             ['route' => 'teacher.courses.index', 'fallback_route' => 'teacher.classrooms.index', 'match' => 'teacher.courses.*', 'label' => __('teacher-dashboard::app.courses'), 'icon' => 'heroicon-o-book-open'],
                             ['route' => 'teacher.classrooms.index', 'match' => 'teacher.classrooms.*', 'label' => __('teacher-dashboard::app.my_classrooms'), 'icon' => 'heroicon-o-user-group'],
                             ['route' => 'teacher.calendar.index', 'match' => 'teacher.calendar.*', 'label' => __('teacher-dashboard::app.calendar'), 'icon' => 'heroicon-o-calendar-days'],
-                            ['route' => 'teacher.exams.index', 'match' => 'teacher.exams.*', 'label' => __('teacher-dashboard::app.my_exams'), 'icon' => 'heroicon-o-document-text'],
+                            ['route' => $useNewExamModule ? 'teacher.exam-sessions.index' : 'teacher.exams.index', 'match' => $useNewExamModule ? 'teacher.exam-*' : 'teacher.exams.*', 'label' => __('teacher-dashboard::app.my_exams'), 'icon' => 'heroicon-o-document-text'],
                             ['route' => 'teacher.assignments.index', 'match' => 'teacher.assignments.index', 'label' => __('teacher-dashboard::app.my_assignments'), 'icon' => 'heroicon-o-clipboard-document-list'],
                             ['route' => 'teacher.questions.index', 'match' => 'teacher.questions.*', 'label' => __('teacher-dashboard::app.my_questions'), 'icon' => 'heroicon-o-circle-stack'],
                             ['route' => 'teacher.live-sessions.index', 'match' => 'teacher.live-sessions.*', 'label' => __('teacher-dashboard::app.live_sessions'), 'icon' => 'heroicon-o-video-camera'],

@@ -4,6 +4,7 @@ namespace Mindigo\LearningTools\Services;
 
 use Illuminate\Support\Collection;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
+use Mindigo\ExamManagement\Models\ExamSessionAttemptAnswer;
 use Mindigo\LearningTools\Models\MistakeReview;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
@@ -23,8 +24,12 @@ class LearningAnalyticsService
             ->where('is_correct', false)
             ->whereHas('attempt', fn ($query) => $query->where('user_id', $userId)->whereIn('status', ['submitted', 'expired']))
             ->latest()->get()->map(fn ($answer) => $this->mistakeRow('exam', $answer->id, $answer->question, $answer->answer, $answer->created_at, $reviews));
+        $sessionExam = ExamSessionAttemptAnswer::with(['question.sourceQuestion', 'attempt'])
+            ->where('is_correct', false)
+            ->whereHas('attempt', fn ($query) => $query->where('user_id', $userId)->whereIn('status', ['submitted', 'expired', 'terminated']))
+            ->latest()->get()->map(fn ($answer) => $this->mistakeRow('exam_session', $answer->id, $answer->question, $answer->answer, $answer->answered_at ?? $answer->created_at, $reviews));
 
-        return $practice->concat($exam)->sortByDesc('answered_at')->values();
+        return $practice->concat($exam)->concat($sessionExam)->sortByDesc('answered_at')->values();
     }
 
     public function gapsForStudent(int $userId): Collection
@@ -39,6 +44,11 @@ class LearningAnalyticsService
             ->whereHas('attempt', fn ($query) => $query->where('user_id', $userId)->whereIn('status', ['submitted', 'expired']))
             ->get()->each(function ($answer) use ($rows): void {
                 $rows->push(['subject' => $answer->question?->subject, 'topic' => $answer->question?->topic, 'correct' => (bool) $answer->is_correct]);
+            });
+        ExamSessionAttemptAnswer::with(['question.sourceQuestion:id,subject,topic', 'attempt:id,user_id,status'])
+            ->whereHas('attempt', fn ($query) => $query->where('user_id', $userId)->whereIn('status', ['submitted', 'expired', 'terminated']))
+            ->get()->each(function ($answer) use ($rows): void {
+                $rows->push(['subject' => $answer->question?->sourceQuestion?->subject, 'topic' => $answer->question?->sourceQuestion?->topic, 'correct' => (bool) $answer->is_correct]);
             });
 
         return $rows->filter(fn ($row) => filled($row['subject']) || filled($row['topic']))
@@ -55,15 +65,16 @@ class LearningAnalyticsService
     private function mistakeRow(string $type, int $id, mixed $question, mixed $answer, mixed $answeredAt, Collection $reviews): array
     {
         $review = $reviews->get($type.':'.$id);
+        $source = $question?->sourceQuestion;
 
         return [
             'source_type' => $type,
             'source_answer_id' => $id,
-            'question_id' => $question?->question_id ?? $question?->id,
+            'question_id' => $question?->question_id ?? $question?->source_question_id ?? $question?->id,
             'content' => $question?->content,
-            'subject' => $question?->subject,
-            'topic' => $question?->topic,
-            'difficulty' => $question?->difficulty,
+            'subject' => $question?->subject ?? $source?->subject,
+            'topic' => $question?->topic ?? $source?->topic,
+            'difficulty' => $question?->difficulty ?? $source?->difficulty,
             'student_answer' => $answer,
             'correct_answers' => $question?->correct_answers,
             'explanation' => $question?->explanation,

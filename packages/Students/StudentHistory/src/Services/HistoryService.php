@@ -6,6 +6,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\ExamManagement\Models\ExamSessionAttempt;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 
 class HistoryService
@@ -79,6 +80,7 @@ class HistoryService
 
         if ($type === null || $type === 'exam') {
             ExamAttempt::query()
+                ->whereNotIn('id', ExamSessionAttempt::query()->whereNotNull('legacy_exam_attempt_id')->select('legacy_exam_attempt_id'))
                 ->where('user_id', $studentId)
                 ->whereNotNull('submitted_at')
                 ->with('exam:id,title,passing_score')
@@ -97,6 +99,27 @@ class HistoryService
                         'passed' => (bool) $a->passed,
                         'at' => $a->submitted_at,
                         'url' => Route::has('student.exams.index') ? route('student.exams.index') : null,
+                    ]);
+                });
+            ExamSessionAttempt::query()
+                ->where('user_id', $studentId)
+                ->whereNotNull('submitted_at')
+                ->with('session:id,title')
+                ->get()
+                ->each(function ($attempt) use ($events) {
+                    $events->push((object) [
+                        'type' => 'exam',
+                        'title' => $attempt->session?->title ?? __('student-history::app.deleted_exam'),
+                        'classroom' => null,
+                        'score' => $attempt->score,
+                        'max' => $attempt->max_score,
+                        'percent' => is_null($attempt->percentage) ? null : (int) round((float) $attempt->percentage),
+                        'status' => 'exam',
+                        'graded' => ! $attempt->needs_review,
+                        'is_late' => false,
+                        'passed' => $attempt->passed,
+                        'at' => $attempt->submitted_at,
+                        'url' => Route::has('student.exam-sessions.index') ? route('student.exam-sessions.index') : null,
                     ]);
                 });
         }

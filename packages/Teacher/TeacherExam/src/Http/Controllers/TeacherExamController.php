@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\ExamManagement\Services\ExamCutoverService;
 use Mindigo\TeacherExam\Http\Requests\GradeExamAttemptRequest;
 use Mindigo\TeacherExam\Http\Requests\MonitorExamRequest;
 use Mindigo\TeacherExam\Http\Requests\TeacherExamRequest;
@@ -19,10 +20,13 @@ use Mindigo\TeacherExam\Services\TeacherExamService;
 
 class TeacherExamController extends Controller
 {
-    public function __construct(private readonly TeacherExamService $service) {}
+    public function __construct(private readonly TeacherExamService $service, private readonly ExamCutoverService $cutover) {}
 
     public function index()
     {
+        if ($this->cutover->prefersNew(Auth::user())) {
+            return redirect()->route('teacher.exam-sessions.index');
+        }
         session()->forget('url.intended');
 
         /** @var User $teacher */
@@ -37,11 +41,14 @@ class TeacherExamController extends Controller
 
     public function create()
     {
+        $this->authorizeLegacyWrite();
+
         return view('teacher-exam::create', $this->service->formData(Auth::user()));
     }
 
     public function store(TeacherExamRequest $request): RedirectResponse
     {
+        $this->authorizeLegacyWrite();
         $exam = $this->service->create($request);
 
         return redirect()
@@ -61,6 +68,7 @@ class TeacherExamController extends Controller
 
     public function edit(Exam $exam)
     {
+        $this->authorizeLegacyWrite();
         $this->authorizeOwnership($exam);
 
         return view('teacher-exam::edit', [
@@ -71,6 +79,7 @@ class TeacherExamController extends Controller
 
     public function update(TeacherExamRequest $request, Exam $exam): RedirectResponse
     {
+        $this->authorizeLegacyWrite();
         $this->authorizeOwnership($exam);
 
         $this->service->update($exam, $request);
@@ -82,6 +91,7 @@ class TeacherExamController extends Controller
 
     public function publish(Exam $exam): RedirectResponse
     {
+        $this->authorizeLegacyWrite();
         $this->authorizeOwnership($exam);
 
         $this->service->publish($exam);
@@ -93,6 +103,7 @@ class TeacherExamController extends Controller
 
     public function close(Exam $exam): RedirectResponse
     {
+        $this->authorizeLegacyWrite();
         $this->authorizeOwnership($exam);
 
         $this->service->close($exam);
@@ -104,6 +115,7 @@ class TeacherExamController extends Controller
 
     public function destroy(Exam $exam): RedirectResponse
     {
+        $this->authorizeLegacyWrite();
         $this->authorizeOwnership($exam);
 
         $this->service->delete($exam);
@@ -124,6 +136,7 @@ class TeacherExamController extends Controller
 
     public function updateGrade(GradeExamAttemptRequest $request, Exam $exam, ExamAttempt $attempt): RedirectResponse
     {
+        $this->authorizeLegacyWrite();
         $this->authorizeOwnership($exam);
         abort_unless((int) $attempt->exam_id === (int) $exam->id, 404);
         abort_unless(in_array($attempt->status, ['submitted', 'expired'], true), 422);
@@ -171,6 +184,11 @@ class TeacherExamController extends Controller
             403,
             __('teacher-exam::app.unauthorized_exam')
         );
+    }
+
+    private function authorizeLegacyWrite(): void
+    {
+        abort_unless($this->cutover->legacyWritable(Auth::user()), 423, 'The legacy exam module is read-only after cutover.');
     }
 
     // in pdf

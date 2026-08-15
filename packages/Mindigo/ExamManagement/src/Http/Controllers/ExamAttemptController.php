@@ -11,14 +11,16 @@ use Mindigo\ExamManagement\Http\Requests\ExamAttemptAnswerRequest;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
 use Mindigo\ExamManagement\Services\ExamAttemptService;
+use Mindigo\ExamManagement\Services\ExamCutoverService;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExamAttemptController extends Controller
 {
-    public function __construct(private ExamAttemptService $attempts) {}
+    public function __construct(private ExamAttemptService $attempts, private ExamCutoverService $cutover) {}
 
     public function start(Request $request, Exam $exam): RedirectResponse
     {
+        $this->authorizeLegacyWrite($request);
         $this->authorizePermission($request->user(), 'exams.attempt');
 
         return redirect()->route('exams.attempts.take', $this->attempts->start($exam, $request->user()));
@@ -50,6 +52,7 @@ class ExamAttemptController extends Controller
 
     public function autosave(ExamAttemptAnswerRequest $request, ExamAttempt $attempt): JsonResponse
     {
+        $this->authorizeLegacyWrite($request);
         if ($attempt->status !== 'in_progress') {
             return response()->json(['ok' => false], Response::HTTP_CONFLICT);
         }
@@ -63,6 +66,7 @@ class ExamAttemptController extends Controller
 
     public function submit(ExamAttemptAnswerRequest $request, ExamAttempt $attempt): RedirectResponse
     {
+        $this->authorizeLegacyWrite($request);
         if ($attempt->status === 'in_progress') {
             $this->attempts->finalize($attempt, $request->answers(), 'submitted');
         }
@@ -72,6 +76,7 @@ class ExamAttemptController extends Controller
 
     public function logViolation(Request $request, ExamAttempt $attempt): JsonResponse
     {
+        $this->authorizeLegacyWrite($request);
         $this->authorizeAttempt($request, $attempt);
 
         return response()->json([
@@ -107,5 +112,10 @@ class ExamAttemptController extends Controller
         }
 
         abort(Response::HTTP_FORBIDDEN);
+    }
+
+    private function authorizeLegacyWrite(Request $request): void
+    {
+        abort_unless($this->cutover->legacyWritable($request->user()), Response::HTTP_LOCKED, 'The legacy exam module is read-only after cutover.');
     }
 }

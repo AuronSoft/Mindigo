@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
+use Mindigo\ExamManagement\Models\ExamSessionAttemptAnswer;
 use Mindigo\LearningTools\Models\MistakeReview;
 use Mindigo\LearningTools\Services\LearningAnalyticsService;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
@@ -28,14 +29,16 @@ class MistakeNotebookController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'source_type' => ['required', 'in:practice,exam'],
+            'source_type' => ['required', 'in:practice,exam,exam_session'],
             'source_answer_id' => ['required', 'integer'],
             'note' => ['nullable', 'string', 'max:2000'],
             'is_resolved' => ['nullable', 'boolean'],
         ]);
-        $owned = $data['source_type'] === 'practice'
-            ? PracticeAnswer::whereKey($data['source_answer_id'])->whereHas('attempt', fn ($query) => $query->where('student_id', $request->user()->getAuthIdentifier()))->exists()
-            : ExamAttemptAnswer::whereKey($data['source_answer_id'])->whereHas('attempt', fn ($query) => $query->where('user_id', $request->user()->getAuthIdentifier()))->exists();
+        $owned = match ($data['source_type']) {
+            'practice' => PracticeAnswer::whereKey($data['source_answer_id'])->whereHas('attempt', fn ($query) => $query->where('student_id', $request->user()->getAuthIdentifier()))->exists(),
+            'exam' => ExamAttemptAnswer::whereKey($data['source_answer_id'])->whereHas('attempt', fn ($query) => $query->where('user_id', $request->user()->getAuthIdentifier()))->exists(),
+            'exam_session' => ExamSessionAttemptAnswer::whereKey($data['source_answer_id'])->whereHas('attempt', fn ($query) => $query->where('user_id', $request->user()->getAuthIdentifier()))->exists(),
+        };
         abort_unless($owned, 403);
 
         MistakeReview::updateOrCreate(

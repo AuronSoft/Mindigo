@@ -13,6 +13,8 @@ use Mindigo\AcademicCalendar\Enums\CalendarEventKind;
 use Mindigo\AcademicCalendar\Enums\CalendarEventSource;
 use Mindigo\AcademicCalendar\Enums\CalendarEventStatus;
 use Mindigo\ExamManagement\Models\Exam;
+use Mindigo\ExamManagement\Models\ExamSession;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 final class ExamAdapter implements CalendarSourceAdapter
 {
@@ -26,7 +28,8 @@ final class ExamAdapter implements CalendarSourceAdapter
 
         $classroomIds = $this->scope->classroomIds($query)->all();
 
-        return Exam::query()
+        $legacy = Exam::query()
+            ->whereNotIn('id', ExamSession::query()->whereNotNull('legacy_exam_id')->select('legacy_exam_id'))
             ->whereNotNull('starts_at')
             ->where('starts_at', '<', $query->to->utc())
             ->where(fn ($builder) => $builder->whereNull('ends_at')->orWhere('ends_at', '>=', $query->from->utc()))
@@ -62,6 +65,44 @@ final class ExamAdapter implements CalendarSourceAdapter
                 );
             })
             ->values();
+
+        $sessions = ExamSession::query()
+            ->with('assignments')
+            ->whereNotNull('starts_at')
+            ->where('starts_at', '<', $query->to->utc())
+            ->where(fn ($builder) => $builder->whereNull('ends_at')->orWhere('ends_at', '>=', $query->from->utc()))
+            ->when($query->viewer->role === 'teacher', fn ($builder) => $builder->where('organizer_id', $query->viewer->id))
+            ->when($query->viewer->role === 'student', fn ($builder) => $builder->whereHas('candidates', fn ($candidates) => $candidates->where('user_id', $query->viewer->id)))
+            ->get()
+            ->map(function (ExamSession $session) use ($query, $classroomIds): CalendarEvent {
+                $startsAt = CarbonImmutable::instance($session->starts_at)->setTimezone($query->timezone);
+                $endsAt = $session->ends_at ? CarbonImmutable::instance($session->ends_at)->setTimezone($query->timezone) : null;
+                $assignedClassrooms = $session->assignments->where('assignable_type', Classroom::class)->pluck('assignable_id')->map(fn ($id): int => (int) $id)->intersect($classroomIds)->values()->all();
+                $status = match ($session->status) {
+                    ExamSession::STATUS_DRAFT => CalendarEventStatus::Draft,
+                    ExamSession::STATUS_ENDED, ExamSession::STATUS_COMPLETED, ExamSession::STATUS_ARCHIVED => CalendarEventStatus::Completed,
+                    default => CalendarEventStatus::Scheduled,
+                };
+
+                return new CalendarEvent(
+                    id: 'exam-session:'.$session->id,
+                    source: CalendarEventSource::Exam,
+                    sourceId: $session->id,
+                    kind: CalendarEventKind::ExamWindow,
+                    status: $status,
+                    title: $session->title,
+                    startsAt: $startsAt,
+                    endsAt: $endsAt,
+                    timezone: $query->timezone,
+                    classroomId: count($assignedClassrooms) === 1 ? $assignedClassrooms[0] : null,
+                    ownerId: $session->organizer_id,
+                    url: Route::has($query->viewer->role === 'student' ? 'student.exam-sessions.index' : 'teacher.exam-sessions.index') ? route($query->viewer->role === 'student' ? 'student.exam-sessions.index' : 'teacher.exam-sessions.index') : null,
+                    actions: $query->viewer->role === 'student' ? ['view', 'take'] : ['view', 'monitor'],
+                    metadata: ['classroom_ids' => $assignedClassrooms, 'duration_minutes' => $session->duration_minutes],
+                );
+            });
+
+        return $legacy->concat($sessions)->values();
     }
 
     /** @param list<int> $classroomIds */

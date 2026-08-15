@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
+use Mindigo\ExamManagement\Models\ExamSessionAttemptAnswer;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
@@ -151,8 +152,15 @@ class PracticeSetService
                 ->with('question:id,question_id')
                 ->get()
                 ->pluck('question.question_id');
+            $sessionExamIds = ExamSessionAttemptAnswer::query()
+                ->where('is_correct', false)
+                ->whereHas('attempt', fn (Builder $attempts) => $attempts->where('user_id', $user->getAuthIdentifier())->whereIn('status', ['submitted', 'expired', 'terminated']))
+                ->whereHas('question', fn (Builder $questions) => $questions->whereNotNull('source_question_id'))
+                ->with('question:id,source_question_id')
+                ->get()
+                ->pluck('question.source_question_id');
 
-            $query->whereIn('id', $practiceIds->concat($examIds)->filter()->unique());
+            $query->whereIn('id', $practiceIds->concat($examIds)->concat($sessionExamIds)->filter()->unique());
         }
 
         if (($data['source'] ?? 'manual') === 'weak_topics') {
