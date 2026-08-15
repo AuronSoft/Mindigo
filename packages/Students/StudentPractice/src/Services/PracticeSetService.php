@@ -4,8 +4,8 @@ namespace Mindigo\StudentPractice\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\ExamAttemptAnswer;
@@ -13,7 +13,7 @@ use Mindigo\QuestionBank\Models\Question;
 use Mindigo\StudentPractice\Models\PracticeAnswer;
 use Mindigo\StudentPractice\Models\PracticeAttempt;
 use Mindigo\StudentPractice\Models\PracticeSet;
-use Mindigo\TeacherClassroom\Models\Classroom;
+use Mindigo\StudentPractice\Models\StudentSkillProgress;
 
 class PracticeSetService
 {
@@ -42,19 +42,24 @@ class PracticeSetService
     public function formData(User $user): array
     {
         return [
-            'classrooms' => $this->classroomsFor($user),
             'subjects' => Question::query()
                 ->where('status', 'approved')
                 ->whereNotNull('subject')
                 ->distinct()
                 ->orderBy('subject')
                 ->pluck('subject'),
+            'skills' => StudentSkillProgress::query()
+                ->with('skill.subject')
+                ->where('student_id', $user->getAuthIdentifier())
+                ->orderBy('mastery_score')
+                ->get()
+                ->pluck('skill')
+                ->filter(),
         ];
     }
 
     public function create(User $creator, array $data): PracticeSet
     {
-        $this->ensureClassroomOwnership($creator, $data['classroom_id'] ?? null);
         $questions = $this->questionQuery($creator, $data)
             ->inRandomOrder()
             ->limit((int) $data['question_count'])
@@ -68,8 +73,9 @@ class PracticeSetService
 
         return DB::transaction(function () use ($creator, $data, $questions): PracticeSet {
             $set = PracticeSet::query()->create([
-                ...collect($data)->except('question_count')->all(),
+                ...collect($data)->except(['question_count', 'skill_id'])->all(),
                 'creator_id' => $creator->getAuthIdentifier(),
+                'classroom_id' => null,
                 'status' => PracticeSet::STATUS_READY,
             ]);
             $set->questions()->attach(
@@ -87,6 +93,26 @@ class PracticeSetService
     public function details(PracticeSet $set): PracticeSet
     {
         return $set->load(['creator', 'classroom', 'questions']);
+    }
+
+    public function findShared(string $token): PracticeSet
+    {
+        return PracticeSet::query()
+            ->with(['creator:id,name', 'questions'])
+            ->where('share_token', $token)
+            ->where('is_shared', true)
+            ->where('status', PracticeSet::STATUS_READY)
+            ->firstOrFail();
+    }
+
+    public function share(PracticeSet $set, bool $enabled): PracticeSet
+    {
+        $set->update([
+            'is_shared' => $enabled,
+            'share_token' => $enabled ? ($set->share_token ?: (string) Str::uuid()) : $set->share_token,
+        ]);
+
+        return $set->fresh();
     }
 
     public function delete(PracticeSet $set): void
@@ -129,33 +155,17 @@ class PracticeSetService
             $query->whereIn('id', $practiceIds->concat($examIds)->filter()->unique());
         }
 
+        if (($data['source'] ?? 'manual') === 'weak_topics') {
+            $skillId = $data['skill_id'] ?? StudentSkillProgress::query()
+                ->where('student_id', $user->getAuthIdentifier())
+                ->orderBy('mastery_score')
+                ->value('practice_skill_id');
+
+            $query->whereIn('id', DB::table('question_practice_skill')
+                ->select('question_id')
+                ->where('practice_skill_id', $skillId ?: 0));
+        }
+
         return $query;
-    }
-
-    private function classroomsFor(User $user): Collection
-    {
-        if (! $user->isTeacher()) {
-            return new Collection;
-        }
-
-        return Classroom::query()
-            ->where('teacher_id', $user->getAuthIdentifier())
-            ->where('status', 'active')
-            ->orderBy('name')
-            ->get();
-    }
-
-    private function ensureClassroomOwnership(User $user, mixed $classroomId): void
-    {
-        if (! $classroomId) {
-            return;
-        }
-
-        $ownsClassroom = $user->isTeacher() && Classroom::query()
-            ->whereKey($classroomId)
-            ->where('teacher_id', $user->getAuthIdentifier())
-            ->exists();
-
-        abort_unless($ownsClassroom, 403);
     }
 }

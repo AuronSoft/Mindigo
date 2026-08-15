@@ -25,7 +25,7 @@
                 </article>
             @endforeach
         </div>
-        <div class="mt-6 flex gap-3"><a href="{{ route('student.practice.index') }}" class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-black text-white no-underline">@lang('student-practice::app.start_new')</a><a href="{{ route('student.practice.history') }}" class="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-black text-slate-700 no-underline">@lang('student-practice::app.history')</a></div>
+        <div class="mt-6 flex flex-wrap gap-3">@if($details['attempt']->practice_set_id)<form action="{{ route('student.practice.sets.repeat', $details['attempt']->practice_set_id) }}" method="POST">@csrf<button class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-black text-white">@lang('student-practice::app.sets.repeat')</button></form>@endif<a href="{{ route('student.practice.index') }}" class="rounded-lg border border-green-200 bg-green-50 px-5 py-2.5 text-sm font-black text-green-700 no-underline">@lang('student-practice::app.start_new')</a><a href="{{ route('student.practice.history') }}" class="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-black text-slate-700 no-underline">@lang('student-practice::app.history')</a></div>
     </main>
 </div>
 @endsection

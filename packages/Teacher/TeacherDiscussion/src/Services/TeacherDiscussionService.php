@@ -723,7 +723,7 @@ class TeacherDiscussionService
     {
         if ($thread->type === DiscussionThread::TYPE_CLASS && $thread->classroom) {
             return User::query()
-                ->join('classroom_students', 'classroom_students.user_id', '=', 'users.id')
+                ->join('classroom_students', 'classroom_students.student_id', '=', 'users.id')
                 ->where('classroom_students.classroom_id', $thread->classroom->id)
                 ->where('classroom_students.status', 'active')
                 ->where('users.is_active', true)

@@ -134,6 +134,44 @@ document.addEventListener('DOMContentLoaded', () => {
         const countInputs = [...builder.querySelectorAll('[data-exam-count-input]')];
         const totalCount = builder.querySelector('[data-exam-total-count]');
         const progress = builder.querySelector('[data-exam-progress]');
+        const wizardProgress = builder.querySelector('[data-exam-wizard-progress]');
+        const previousButton = builder.querySelector('[data-exam-wizard-previous]');
+        const nextButton = builder.querySelector('[data-exam-wizard-next]');
+        const submitActions = builder.querySelector('.exam-studio-submit-actions');
+        const steps = partLinks.map((link) => link.dataset.examPartLink);
+        let activeStep = 0;
+
+        const visibleFieldsAreValid = (card) => [...card.querySelectorAll('input, select, textarea')]
+            .filter((field) => !field.disabled && field.type !== 'hidden')
+            .every((field) => field.reportValidity());
+
+        const validateStep = (index) => {
+            const card = partCards.find((item) => item.dataset.examPart === steps[index]);
+            if (!card) return true;
+
+            if (steps[index] === 'source') {
+                const count = countInputs.reduce((sum, input) => sum + Math.max(0, Number(input.value || 0)), 0);
+                if (count === 0) {
+                    window.alert(builder.dataset.countError || builder.dataset.stepError);
+                    countInputs[0]?.focus();
+                    return false;
+                }
+            }
+
+            return visibleFieldsAreValid(card);
+        };
+
+        const syncReview = () => {
+            const title = builder.closest('form')?.querySelector('[name="title"]')?.value?.trim() || '—';
+            const duration = builder.querySelector('[name="duration_minutes"]')?.value || '—';
+            const classrooms = builder.querySelectorAll('[name="classroom_ids[]"]:checked').length;
+            const questions = countInputs.reduce((sum, input) => sum + Math.max(0, Number(input.value || 0)), 0);
+            const values = { title, duration, classrooms, questions };
+            Object.entries(values).forEach(([name, value]) => {
+                const target = builder.querySelector(`[data-exam-review-${name}]`);
+                if (target) target.textContent = String(value);
+            });
+        };
 
         const setActivePart = (part) => {
             partLinks.forEach((link) => {
@@ -141,8 +179,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             partCards.forEach((card) => {
-                card.classList.toggle('is-highlight', card.dataset.examPart === part);
+                const active = card.dataset.examPart === part;
+                card.classList.toggle('is-highlight', active);
+                card.classList.toggle('is-active', active);
             });
+
+            activeStep = Math.max(0, steps.indexOf(part));
+            previousButton?.classList.toggle('hidden', activeStep === 0);
+            nextButton?.classList.toggle('hidden', activeStep === steps.length - 1);
+            submitActions?.classList.toggle('hidden', activeStep !== steps.length - 1);
+            if (wizardProgress) wizardProgress.style.width = `${((activeStep + 1) / steps.length) * 100}%`;
+            if (part === 'review') syncReview();
         };
 
         partLinks.forEach((link) => {
@@ -155,9 +202,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 event.preventDefault();
-                setActivePart(part);
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const targetIndex = steps.indexOf(part);
+                if (targetIndex > activeStep && !validateStep(activeStep)) return;
+                const allowedPart = targetIndex > activeStep + 1 ? steps[activeStep + 1] : part;
+                setActivePart(allowedPart);
+                builder.querySelector('.exam-studio-main')?.scrollTo({ top: 0, behavior: 'smooth' });
             });
+        });
+
+        previousButton?.addEventListener('click', () => {
+            if (activeStep > 0) setActivePart(steps[activeStep - 1]);
+        });
+
+        nextButton?.addEventListener('click', () => {
+            if (activeStep < steps.length - 1 && validateStep(activeStep)) {
+                setActivePart(steps[activeStep + 1]);
+            }
         });
 
         const renderQuestionIndex = () => {
