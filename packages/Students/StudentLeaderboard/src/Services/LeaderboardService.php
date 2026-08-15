@@ -5,11 +5,14 @@ namespace Mindigo\StudentLeaderboard\Services;
 use Illuminate\Support\Collection;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\ExamManagement\Services\ExamConvergenceService;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 use Mindigo\TeacherClassroom\Models\Classroom;
 
 class LeaderboardService
 {
+    public function __construct(private readonly ExamConvergenceService $examConvergence) {}
+
     /**
      * IDs of the classrooms the student is actively enrolled in
      * (soft-deleted classrooms are excluded by the default Eloquent scope).
@@ -75,10 +78,9 @@ class LeaderboardService
 
         // 1) Submitted exam attempts -> percentages keyed by user.
         $examPercents = [];
-        ExamAttempt::whereIn('user_id', $userIds)
-            ->whereNotNull('submitted_at')
-            ->whereNotNull('percentage')
-            ->get(['user_id', 'percentage'])
+        ($this->examConvergence->enabled($student)
+            ? $this->examConvergence->examPercentages($userIds)
+            : ExamAttempt::whereIn('user_id', $userIds)->whereNotNull('submitted_at')->whereNotNull('percentage')->get(['user_id', 'percentage']))
             ->each(function ($a) use (&$examPercents) {
                 $examPercents[(int) $a->user_id][] = (float) $a->percentage;
             });

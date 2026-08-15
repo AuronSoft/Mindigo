@@ -11,6 +11,8 @@ use Mindigo\AcademicCalendar\Services\AcademicCalendarService;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\ExamManagement\Models\ExamSession;
+use Mindigo\ExamManagement\Services\ExamConvergenceService;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 use Mindigo\TeacherClassroom\Models\Classroom;
@@ -18,7 +20,7 @@ use Mindigo\TeacherCourse\Models\CourseEnrollment;
 
 class DashboardService
 {
-    public function __construct(private readonly AcademicCalendarService $calendar) {}
+    public function __construct(private readonly AcademicCalendarService $calendar, private readonly ExamConvergenceService $examConvergence) {}
 
     public function getCalendarTasks(User $student, ?CarbonImmutable $anchor = null): Collection
     {
@@ -91,18 +93,16 @@ class DashboardService
         $assignmentDone = $submissions->count();
 
         // Bài thi đã làm / tổng đề đã xuất bản
-        $examTotal = Exam::query()->where('status', 'published')->count();
-        $examDone = ExamAttempt::query()
-            ->where('user_id', $student->id)
-            ->whereNotNull('submitted_at')
-            ->distinct('exam_id')
-            ->count('exam_id');
+        $examTotal = $this->examConvergence->enabled($student)
+            ? $this->examConvergence->studentAvailableSessionCount($student->id)
+            : Exam::query()->where('status', 'published')->count();
+        $examAttempts = $this->examConvergence->enabled($student)
+            ? $this->examConvergence->studentAttempts($student->id)
+            : ExamAttempt::query()->where('user_id', $student->id)->whereNotNull('submitted_at')->get();
+        $examDone = $examAttempts->pluck($this->examConvergence->enabled($student) ? 'exam_session_id' : 'exam_id')->unique()->count();
 
         // Điểm trung bình
-        $avgScore = (float) (ExamAttempt::query()
-            ->where('user_id', $student->id)
-            ->whereNotNull('submitted_at')
-            ->avg('percentage') ?? 0);
+        $avgScore = (float) ($examAttempts->avg('percentage') ?? 0);
 
         return [
             'assignments' => [
@@ -230,20 +230,16 @@ class DashboardService
                 ]));
         }
 
-        Exam::query()
-            ->where('status', 'published')
-            ->whereNotNull('ends_at')
-            ->where('ends_at', '>=', now())
-            ->orderBy('ends_at')
-            ->take(5)
-            ->get()
-            ->each(fn (Exam $e) => $tasks->push((object) [
-                'type' => 'exam',
-                'title' => $e->title,
-                'status' => __('student-dashboard::app.status_not_started'),
-                'at' => $e->ends_at,
-                'time_left' => $this->timeLeft($e->ends_at),
-            ]));
+        $exams = $this->examConvergence->enabled($student)
+            ? ExamSession::query()->whereHas('candidates', fn ($query) => $query->where('user_id', $student->id))->whereNotNull('ends_at')->where('ends_at', '>=', now())->orderBy('ends_at')->take(5)->get()
+            : Exam::query()->where('status', 'published')->whereNotNull('ends_at')->where('ends_at', '>=', now())->orderBy('ends_at')->take(5)->get();
+        $exams->each(fn ($e) => $tasks->push((object) [
+            'type' => 'exam',
+            'title' => $e->title,
+            'status' => __('student-dashboard::app.status_not_started'),
+            'at' => $e->ends_at,
+            'time_left' => $this->timeLeft($e->ends_at),
+        ]));
 
         return $tasks->sortBy('at')->take(4)->values();
     }
@@ -292,10 +288,9 @@ class DashboardService
                 $counts[Carbon::parse($d)->dayOfWeekIso]++;
             });
 
-        ExamAttempt::query()
-            ->where('user_id', $student->id)
-            ->whereBetween('submitted_at', [$start, $end])
-            ->pluck('submitted_at')
+        ($this->examConvergence->enabled($student)
+            ? $this->examConvergence->studentAttempts($student->id)->whereBetween('submitted_at', $start, $end)->pluck('submitted_at')
+            : ExamAttempt::query()->where('user_id', $student->id)->whereBetween('submitted_at', [$start, $end])->pluck('submitted_at'))
             ->each(function ($d) use (&$counts) {
                 $counts[Carbon::parse($d)->dayOfWeekIso]++;
             });
@@ -324,16 +319,12 @@ class DashboardService
                 'at' => $s->submitted_at,
             ]));
 
-        ExamAttempt::query()
-            ->where('user_id', $student->id)
-            ->whereNotNull('submitted_at')
-            ->with('exam')
-            ->latest('submitted_at')
-            ->take(5)
-            ->get()
+        ($this->examConvergence->enabled($student)
+            ? $this->examConvergence->studentAttempts($student->id)->load('session')->sortByDesc('submitted_at')->take(5)
+            : ExamAttempt::query()->where('user_id', $student->id)->whereNotNull('submitted_at')->with('exam')->latest('submitted_at')->take(5)->get())
             ->each(fn ($a) => $items->push((object) [
                 'type' => 'exam',
-                'text' => $a->exam?->title,
+                'text' => $a->session?->title ?? $a->exam?->title,
                 'action' => __('student-dashboard::app.act_finished_exam'),
                 'at' => $a->submitted_at,
             ]));

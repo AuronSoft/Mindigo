@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
+use Mindigo\ExamManagement\Services\ExamConvergenceService;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\SupportManagement\Models\SupportTicket;
 
 class SearchController extends Controller
 {
+    public function __construct(private readonly ExamConvergenceService $examConvergence) {}
+
     public function __invoke(Request $request): JsonResponse
     {
         $q = trim($request->get('q', ''));
@@ -23,18 +26,20 @@ class SearchController extends Controller
         $results = [];
 
         // Exams
-        $exams = Exam::where('title', 'like', "%{$q}%")
-            ->orWhere('subject', 'like', "%{$q}%")
-            ->orWhere('topic', 'like', "%{$q}%")
-            ->limit(5)
-            ->get(['id', 'title', 'subject', 'status']);
+        $exams = $this->examConvergence->enabled($request->user())
+            ? $this->examConvergence->searchSessions($q)
+            : Exam::where('title', 'like', "%{$q}%")
+                ->orWhere('subject', 'like', "%{$q}%")
+                ->orWhere('topic', 'like', "%{$q}%")
+                ->limit(5)
+                ->get(['id', 'title', 'subject', 'status']);
 
         foreach ($exams as $exam) {
             $results[] = [
                 'type' => 'exam',
                 'label' => $exam->title,
-                'sub' => $exam->subject ?: $exam->status,
-                'url' => route('exams.show', $exam->id),
+                'sub' => $exam->subject ?? $exam->status,
+                'url' => $this->examConvergence->enabled($request->user()) ? route('admin.exam-operations') : route('exams.show', $exam->id),
                 'icon' => 'document-text',
                 'badge' => $exam->status,
             ];

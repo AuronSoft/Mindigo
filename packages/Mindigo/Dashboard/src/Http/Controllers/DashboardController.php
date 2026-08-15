@@ -9,12 +9,13 @@ use Illuminate\Support\Str;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\ExamManagement\Services\ExamConvergenceService;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\TeacherCourse\Services\AdminCourseReviewService;
 
 class DashboardController extends Controller
 {
-    public function __construct(private readonly AdminCourseReviewService $courseReviews) {}
+    public function __construct(private readonly AdminCourseReviewService $courseReviews, private readonly ExamConvergenceService $examConvergence) {}
 
     public function index()
     {
@@ -119,6 +120,12 @@ class DashboardController extends Controller
             ->get();
 
         $totalSubjectAttempts = $topSubjects->sum('attempt_count') ?: 1;
+
+        if ($this->examConvergence->enabled(Auth::user())) {
+            foreach ($this->examConvergence->adminDashboard() as $key => $value) {
+                ${$key} = $value;
+            }
+        }
 
         $rankingLabels = $topPerformers->map(
             fn ($p) => mb_strlen($p->name) > 14 ? mb_substr($p->name, 0, 14).'…' : $p->name

@@ -281,6 +281,15 @@ return [
         'review_title' => 'Rà soát tính toàn vẹn', 'review_description' => 'Tín hiệu chỉ hỗ trợ con người rà soát và không phải kết luận gian lận.', 'note_placeholder' => 'Thêm ghi chú sự cố', 'add_note' => 'Thêm ghi chú', 'no_events' => 'Chưa ghi nhận sự kiện toàn vẹn.',
         'events' => ['tab_hidden' => 'Rời tab', 'fullscreen_exited' => 'Thoát toàn màn hình', 'copy_attempt' => 'Thao tác sao chép', 'paste_attempt' => 'Thao tác dán', 'concurrent_session' => 'Mở nhiều phiên', 'ip_changed' => 'Đổi IP', 'device_changed' => 'Đổi thiết bị', 'heartbeat_missed' => 'Mất heartbeat', 'connection_lost' => 'Mất kết nối kéo dài', 'abnormal_refresh' => 'Tải lại bất thường', 'camera_consent_granted' => 'Đồng ý camera', 'camera_consent_denied' => 'Từ chối camera', 'camera_snapshot' => 'Đã lưu ảnh camera', 'proctor_note' => 'Ghi chú giám thị', 'attempt_terminated' => 'Giáo viên kết thúc lượt thi', 'time_added' => 'Đã cộng thời gian', 'retry_allowed' => 'Đã cho thi lại', 'warning_sent' => 'Đã gửi cảnh báo', 'attempt_paused' => 'Đã tạm dừng lượt thi', 'attempt_resumed' => 'Đã tiếp tục lượt thi'],
     ],
+    'cutover' => [
+        'title' => 'Chuyển đổi nền tảng kỳ thi', 'workspace' => 'Không gian vận hành', 'description' => 'Chuyển dữ liệu đề thi cũ, đối chiếu dữ liệu và kiểm soát quá trình đưa hệ thống mới vào hoạt động.',
+        'mode' => 'Chế độ nền tảng', 'parallel' => 'Đối chiếu song song', 'new' => 'Chỉ sử dụng nền tảng mới', 'beta_teachers' => 'Giáo viên beta', 'beta_hint' => 'Giáo viên được chọn và thí sinh liên quan sẽ sử dụng không gian kỳ thi mới.',
+        'source_inventory' => 'Kiểm kê chuyển đổi', 'selected_exams' => 'Đề thi cũ', 'questions' => 'Câu hỏi', 'attempts' => 'Lượt làm', 'answers' => 'Câu trả lời', 'already_migrated' => 'Đã chuyển',
+        'comparison' => 'Đối chiếu dữ liệu', 'legacy' => 'Dữ liệu cũ', 'migrated' => 'Đã chuyển', 'matches' => 'Khớp', 'issues' => 'Vấn đề', 'no_issues' => 'Không phát hiện vấn đề chuyển đổi.',
+        'runs' => 'Lịch sử chuyển đổi', 'run' => 'Mã chạy', 'status' => 'Trạng thái', 'started' => 'Bắt đầu', 'initiator' => 'Người thực hiện',
+        'confirmation' => 'Xác nhận', 'cutover_confirmation' => 'Nhập CUTOVER để lưu chế độ.', 'migration_confirmation' => 'Nhập MIGRATE để chuyển toàn bộ đề thi còn lại.',
+        'save' => 'Lưu chế độ chuyển đổi', 'migrate' => 'Chạy chuyển đổi', 'updated' => 'Đã cập nhật cấu hình chuyển đổi kỳ thi.', 'migration_finished' => 'Chuyển đổi hoàn tất với trạng thái: :status.',
+    ],
     'candidate_attempt' => [
         'not_eligible' => 'Bạn không có trong danh sách thí sinh của kỳ thi này.',
         'not_open' => 'Kỳ thi hiện chưa mở hoặc đã kết thúc.',
