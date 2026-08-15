@@ -7,12 +7,15 @@ use Illuminate\Support\Collection;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\ExamManagement\Services\ExamConvergenceService;
 use Mindigo\TeacherAssignment\Models\Assignment;
 use Mindigo\TeacherAssignment\Models\AssignmentSubmission;
 use Mindigo\TeacherClassroom\Models\Classroom;
 
 class ProgressService
 {
+    public function __construct(private readonly ExamConvergenceService $examConvergence) {}
+
     // ID các lớp học sinh đang tham gia (status active)
     public function classroomIdsForStudent(int|string $studentId): Collection
     {
@@ -62,14 +65,15 @@ class ProgressService
             ->filter(fn ($s) => ! is_null($s->score));
 
         // Đề thi (toàn hệ thống, audience = student)
-        $examTotal = Exam::query()->where('status', 'published')->count();
-
-        $attempts = ExamAttempt::query()
-            ->where('user_id', $student->id)
-            ->whereNotNull('submitted_at')
-            ->get(['exam_id', 'percentage', 'submitted_at']);
-
-        $examDone = $attempts->pluck('exam_id')->unique()->count();
+        if ($this->examConvergence->enabled($student)) {
+            $examTotal = $this->examConvergence->studentAvailableSessionCount($student->id);
+            $attempts = $this->examConvergence->studentAttempts($student->id);
+            $examDone = $attempts->pluck('exam_session_id')->unique()->count();
+        } else {
+            $examTotal = Exam::query()->where('status', 'published')->count();
+            $attempts = ExamAttempt::query()->where('user_id', $student->id)->whereNotNull('submitted_at')->get(['exam_id', 'percentage', 'submitted_at']);
+            $examDone = $attempts->pluck('exam_id')->unique()->count();
+        }
 
         // Điểm trung bình (gộp % đề thi + % bài tập đã chấm)
         $scorePercents = collect()

@@ -281,6 +281,15 @@ return [
         'review_title' => 'Integrity review', 'review_description' => 'Signals support human review and are not a finding of misconduct.', 'note_placeholder' => 'Add an incident note', 'add_note' => 'Add note', 'no_events' => 'No integrity events recorded.',
         'events' => ['tab_hidden' => 'Tab left', 'fullscreen_exited' => 'Fullscreen exited', 'copy_attempt' => 'Copy action', 'paste_attempt' => 'Paste action', 'concurrent_session' => 'Concurrent session', 'ip_changed' => 'IP changed', 'device_changed' => 'Device changed', 'heartbeat_missed' => 'Heartbeat missed', 'connection_lost' => 'Extended connection loss', 'abnormal_refresh' => 'Abnormal refresh', 'camera_consent_granted' => 'Camera consent granted', 'camera_consent_denied' => 'Camera consent declined', 'camera_snapshot' => 'Camera snapshot stored', 'proctor_note' => 'Proctor note', 'attempt_terminated' => 'Attempt ended by teacher', 'time_added' => 'Additional time granted', 'retry_allowed' => 'Retry allowed', 'warning_sent' => 'Warning sent', 'attempt_paused' => 'Attempt paused', 'attempt_resumed' => 'Attempt resumed'],
     ],
+    'cutover' => [
+        'title' => 'Exam platform cutover', 'workspace' => 'Operations workspace', 'description' => 'Migrate legacy exams, reconcile data and control the production transition.',
+        'mode' => 'Platform mode', 'parallel' => 'Parallel validation', 'new' => 'New platform only', 'beta_teachers' => 'Beta teachers', 'beta_hint' => 'Selected teachers and their candidates use the new exam workspaces.',
+        'source_inventory' => 'Migration inventory', 'selected_exams' => 'Legacy exams', 'questions' => 'Questions', 'attempts' => 'Attempts', 'answers' => 'Answers', 'already_migrated' => 'Already migrated',
+        'comparison' => 'Data reconciliation', 'legacy' => 'Legacy', 'migrated' => 'Migrated', 'matches' => 'Match', 'issues' => 'Issues', 'no_issues' => 'No migration issues detected.',
+        'runs' => 'Recent migration runs', 'run' => 'Run', 'status' => 'Status', 'started' => 'Started', 'initiator' => 'Initiator',
+        'confirmation' => 'Confirmation', 'cutover_confirmation' => 'Type CUTOVER to save this mode.', 'migration_confirmation' => 'Type MIGRATE to migrate all remaining legacy exams.',
+        'save' => 'Save cutover mode', 'migrate' => 'Run migration', 'updated' => 'Exam cutover configuration updated.', 'migration_finished' => 'Migration finished with status: :status.',
+    ],
     'candidate_attempt' => [
         'not_eligible' => 'You are not an eligible candidate for this exam.',
         'not_open' => 'This exam is not open or has already ended.',

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Mindigo\ExamManagement\Http\Controllers\ExamAnalyticsController;
 use Mindigo\ExamManagement\Http\Controllers\ExamAttemptController;
 use Mindigo\ExamManagement\Http\Controllers\ExamController;
+use Mindigo\ExamManagement\Http\Controllers\ExamCutoverController;
 use Mindigo\ExamManagement\Http\Controllers\ExamGradingController;
 use Mindigo\ExamManagement\Http\Controllers\ExamMonitoringController;
 use Mindigo\ExamManagement\Http\Controllers\ExamProctorController;
@@ -55,8 +56,12 @@ Route::middleware(['web', 'auth', 'role:teacher'])
     });
 
 Route::middleware(['web', 'auth', 'role:admin'])
-    ->get('dashboard/exam-operations', [ExamAnalyticsController::class, 'operations'])
-    ->name('admin.exam-operations');
+    ->group(function (): void {
+        Route::get('dashboard/exam-operations', [ExamAnalyticsController::class, 'operations'])->name('admin.exam-operations');
+        Route::get('dashboard/exam-cutover', [ExamCutoverController::class, 'index'])->name('admin.exam-cutover.index');
+        Route::put('dashboard/exam-cutover', [ExamCutoverController::class, 'update'])->name('admin.exam-cutover.update');
+        Route::post('dashboard/exam-cutover/migrate', [ExamCutoverController::class, 'migrate'])->name('admin.exam-cutover.migrate');
+    });
 
 Route::middleware([
     'web',

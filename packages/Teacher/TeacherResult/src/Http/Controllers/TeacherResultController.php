@@ -8,15 +8,21 @@ use Illuminate\Support\Facades\Auth;
 use Mindigo\Auth\Models\User;
 use Mindigo\ExamManagement\Models\Exam;
 use Mindigo\ExamManagement\Models\ExamAttempt;
+use Mindigo\ExamManagement\Models\ExamSession;
+use Mindigo\ExamManagement\Models\ExamSessionAttempt;
+use Mindigo\ExamManagement\Services\ExamCutoverService;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Mindigo\TeacherResult\Services\TeacherResultService;
 
 class TeacherResultController extends Controller
 {
-    public function __construct(private readonly TeacherResultService $service) {}
+    public function __construct(private readonly TeacherResultService $service, private readonly ExamCutoverService $cutover) {}
 
     public function index()
     {
+        if ($this->cutover->prefersNew(Auth::user())) {
+            return redirect()->route('teacher.exam-sessions.index');
+        }
         session()->forget('url.intended');
 
         /** @var User $teacher */
@@ -42,6 +48,11 @@ class TeacherResultController extends Controller
 
     public function byExam(Exam $exam)
     {
+        if ($this->cutover->prefersNew(Auth::user())) {
+            $session = ExamSession::query()->where('legacy_exam_id', $exam->id)->firstOrFail();
+
+            return redirect()->route('teacher.exam-sessions.analytics.show', $session);
+        }
         /** @var User $teacher */
         $teacher = Auth::user();
         $classrooms = $this->service->getMyClassrooms($teacher);
@@ -53,6 +64,9 @@ class TeacherResultController extends Controller
 
     public function byStudent(User $user)
     {
+        if ($this->cutover->prefersNew(Auth::user())) {
+            return redirect()->route('teacher.exam-sessions.index');
+        }
         abort_if($user->role !== 'student', 404);
 
         /** @var User $teacher */
@@ -81,6 +95,11 @@ class TeacherResultController extends Controller
     // Chấm điểm thủ công
     public function reviewAttempt(ExamAttempt $attempt)
     {
+        if ($this->cutover->prefersNew(Auth::user())) {
+            $sessionAttempt = ExamSessionAttempt::query()->where('legacy_exam_attempt_id', $attempt->id)->firstOrFail();
+
+            return redirect()->route('teacher.exam-sessions.grading.show', [$sessionAttempt->exam_session_id, $sessionAttempt]);
+        }
         /** @var User $teacher */
         $teacher = Auth::user();
 
@@ -102,6 +121,7 @@ class TeacherResultController extends Controller
 
     public function gradeAttempt(ExamAttempt $attempt)
     {
+        abort_unless($this->cutover->legacyWritable(Auth::user()), 423, 'The legacy result module is read-only after cutover.');
         /** @var User $teacher */
         $teacher = Auth::user();
 

@@ -16,6 +16,10 @@ class ReportController extends Controller
 
     public function index()
     {
+        if ($this->usesOperationalExamReports()) {
+            return redirect()->route('admin.exam-operations');
+        }
+
         $overview = $this->reportService->getOverviewStats();
         $trend = $this->reportService->getAttemptTrend(30);
         $topExams = $this->reportService->getTopExams(5);
@@ -52,6 +56,10 @@ class ReportController extends Controller
 
     public function students()
     {
+        if ($this->usesOperationalExamReports()) {
+            return redirect()->route('admin.exam-operations');
+        }
+
         $students = $this->reportService->getAllStudents(20);
         $topStudents = $this->reportService->getTopStudents(5);
 
@@ -60,6 +68,10 @@ class ReportController extends Controller
 
     public function studentDetail(User $user)
     {
+        if ($this->usesOperationalExamReports()) {
+            return redirect()->route('admin.exam-operations');
+        }
+
         abort_if($user->role !== 'student', 404);
         $report = $this->reportService->getStudentReport($user);
 
@@ -98,5 +110,10 @@ class ReportController extends Controller
             ->where('teacher_id', $teacher->getAuthIdentifier())
             ->whereKey($classroomId)
             ->firstOrFail();
+    }
+
+    private function usesOperationalExamReports(): bool
+    {
+        return $this->cutover->mode() === ExamCutoverService::MODE_NEW;
     }
 }
