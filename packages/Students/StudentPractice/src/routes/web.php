@@ -4,10 +4,11 @@ use Illuminate\Support\Facades\Route;
 use Mindigo\StudentPractice\Http\Controllers\AdaptivePracticeController;
 use Mindigo\StudentPractice\Http\Controllers\PracticeAnalyticsController;
 use Mindigo\StudentPractice\Http\Controllers\PracticeController;
+use Mindigo\StudentPractice\Http\Controllers\PracticeSetController;
 use Mindigo\StudentPractice\Http\Controllers\PracticeSkillController;
 use Mindigo\StudentPractice\Http\Controllers\SkillPracticeController;
 
-Route::middleware(['web', 'auth', 'role:teacher|admin'])
+Route::middleware(['web', 'auth', 'role:teacher'])
     ->prefix('practice/skills')
     ->name('practice.skills.')
     ->group(function (): void {
@@ -19,10 +20,19 @@ Route::middleware(['web', 'auth', 'role:teacher|admin'])
         Route::delete('/{skill}', [PracticeSkillController::class, 'destroy'])->name('destroy');
     });
 
-Route::middleware(['web', 'auth', 'role:student|admin'])->prefix('student')->name('student.')->group(function () {
+Route::middleware('web')->get('/practice/shared/{token}', [PracticeSetController::class, 'shared'])->name('practice.shared');
+
+Route::middleware(['web', 'auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
     Route::prefix('practice')->name('practice.')->group(function () {
         Route::get('/', [PracticeController::class, 'index'])->name('index');
         Route::get('/history', [PracticeController::class, 'history'])->name('history');
+        Route::get('/sets', [PracticeSetController::class, 'index'])->name('sets.index');
+        Route::post('/sets', [PracticeSetController::class, 'store'])->name('sets.store');
+        Route::get('/sets/{set}', [PracticeSetController::class, 'show'])->name('sets.show')->whereNumber('set');
+        Route::post('/sets/{set}/start', [PracticeSetController::class, 'start'])->name('sets.start')->whereNumber('set');
+        Route::post('/sets/{set}/repeat', [PracticeSetController::class, 'repeat'])->name('sets.repeat')->whereNumber('set');
+        Route::patch('/sets/{set}/share', [PracticeSetController::class, 'share'])->name('sets.share')->whereNumber('set');
+        Route::delete('/sets/{set}', [PracticeSetController::class, 'destroy'])->name('sets.destroy')->whereNumber('set');
         Route::get('/analytics', [PracticeAnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('/adaptive', [AdaptivePracticeController::class, 'index'])->name('adaptive.index');
         Route::post('/adaptive/{skill}/start', [AdaptivePracticeController::class, 'start'])->name('adaptive.start')->whereNumber('skill');

@@ -293,7 +293,27 @@
     }
 
     .exam-studio {
-        @apply flex flex-col rounded-[2rem] bg-white;
+        @apply flex min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50;
+    }
+
+    .exam-wizard-header {
+        @apply flex flex-col gap-4 border-b border-slate-100 px-5 py-4 md:flex-row md:items-center md:justify-between;
+    }
+
+    .exam-wizard-header h2 {
+        @apply text-lg font-black text-slate-950;
+    }
+
+    .exam-wizard-header p:not(.exam-studio-label) {
+        @apply mt-1 text-xs font-semibold text-slate-500;
+    }
+
+    .exam-wizard-progress {
+        @apply h-2 w-full max-w-64 overflow-hidden rounded-full bg-slate-100;
+    }
+
+    .exam-wizard-progress span {
+        @apply block h-full rounded-full bg-green-600 transition-all duration-300;
     }
 
     .exam-upload-button {
@@ -302,7 +322,15 @@
 
     .exam-review-button,
     .exam-save-chip {
-        @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-green-600 px-5 text-sm font-black text-white shadow-[0_4px_0_#15803d,0_10px_20px_rgba(22,163,74,0.25)] transition hover:-translate-y-0.5 hover:bg-green-500;
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-black transition focus:outline-none focus:ring-4;
+    }
+
+    .exam-save-chip {
+        @apply bg-green-600 text-white shadow-sm hover:bg-green-700 focus:ring-green-100;
+    }
+
+    .exam-review-button {
+        @apply border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-green-300 hover:bg-green-50 hover:text-green-700 focus:ring-slate-100;
     }
 
     .exam-return-button {
@@ -310,15 +338,15 @@
     }
 
     .exam-studio-layout {
-        @apply grid gap-5 rounded-t-[2rem] border border-green-100 bg-white p-5 xl:grid-cols-[13rem_minmax(0,1fr)];
+        @apply grid min-h-[34rem] gap-5 bg-white p-5 xl:h-[calc(100vh-20rem)] xl:max-h-[48rem] xl:min-h-[38rem] xl:grid-cols-[14rem_minmax(0,1fr)];
     }
 
     .exam-studio-footer {
-        @apply flex justify-end rounded-b-[2rem] border border-t-0 border-green-100 bg-white px-5 pb-5 shadow-[0_2px_0_#dcfce7,0_8px_0_#bbf7d0,0_24px_50px_rgba(22,163,74,0.12)];
+        @apply flex items-center gap-3 border-t border-slate-100 bg-white p-4;
     }
 
     .exam-studio-submit-actions {
-        @apply flex flex-col gap-2 sm:flex-row sm:items-center;
+        @apply flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:justify-end;
     }
 
     .exam-studio-sidebar {
@@ -375,7 +403,25 @@
     }
 
     .exam-studio-main {
-        @apply min-w-0 space-y-4;
+        @apply min-w-0 overflow-y-auto pr-1;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .exam-studio-main::-webkit-scrollbar {
+        display: none;
+    }
+
+    .exam-required {
+        @apply ml-0.5 text-base font-black text-rose-600;
+    }
+
+    .exam-studio-main > [data-exam-part] {
+        @apply hidden;
+    }
+
+    .exam-studio-main > [data-exam-part].is-active {
+        @apply block;
     }
 
     .exam-panel-card {
@@ -383,7 +429,47 @@
     }
 
     .exam-panel-card.is-highlight {
-        @apply bg-green-50/40;
+        @apply bg-white;
+    }
+
+    .exam-source-tools {
+        @apply grid gap-3 md:grid-cols-3;
+    }
+
+    .exam-source-tool {
+        @apply grid min-h-32 grid-cols-[auto_1fr] content-start gap-x-3 rounded-2xl border border-slate-200 bg-white p-4 text-left no-underline transition hover:-translate-y-0.5 hover:border-green-300 hover:shadow-md;
+    }
+
+    .exam-source-tool > span {
+        @apply row-span-2 grid h-10 w-10 place-items-center rounded-xl;
+    }
+
+    .exam-source-tool strong {
+        @apply text-sm font-black text-slate-900;
+    }
+
+    .exam-source-tool small {
+        @apply mt-1 text-xs font-semibold leading-5 text-slate-500;
+    }
+
+    .exam-source-tool.is-active {
+        @apply border-green-300 bg-green-50/50 ring-2 ring-green-100;
+    }
+
+    .exam-review-grid {
+        @apply grid gap-3 sm:grid-cols-2;
+    }
+
+    .exam-review-grid > div {
+        @apply rounded-2xl border border-slate-200 bg-slate-50 p-4;
+    }
+
+    .exam-review-grid span {
+        @apply block text-xs font-black uppercase tracking-wide text-slate-400;
+    }
+
+    .exam-review-grid strong {
+        @apply mt-2 block text-lg font-black text-slate-950;
     }
 
     .exam-subject-panel {

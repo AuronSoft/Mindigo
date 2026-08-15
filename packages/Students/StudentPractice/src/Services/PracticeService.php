@@ -108,7 +108,7 @@ class PracticeService implements PracticeServiceInterface
         ]);
     }
 
-    public function startPracticeSet(User $student, PracticeSet $set): PracticeAttempt
+    public function startPracticeSet(User $student, PracticeSet $set, bool $forceNew = false): PracticeAttempt
     {
         $set->loadMissing('questions');
 
@@ -121,6 +121,7 @@ class PracticeService implements PracticeServiceInterface
             'topic' => $set->topic,
             'difficulty' => $set->difficulty,
             'question_count' => $set->questions->count(),
+            'force_new' => $forceNew,
         ]);
     }
 
@@ -341,7 +342,7 @@ class PracticeService implements PracticeServiceInterface
         return DB::transaction(function () use ($student, $questions, $data): PracticeAttempt {
             User::query()->whereKey($student->getAuthIdentifier())->lockForUpdate()->firstOrFail();
             $fingerprint = $this->requestFingerprint($data);
-            $activeAttempt = PracticeAttempt::query()
+            $activeAttempt = ($data['force_new'] ?? false) ? null : PracticeAttempt::query()
                 ->where('student_id', $student->getAuthIdentifier())
                 ->where('status', PracticeAttempt::STATUS_IN_PROGRESS)
                 ->where('request_fingerprint', $fingerprint)

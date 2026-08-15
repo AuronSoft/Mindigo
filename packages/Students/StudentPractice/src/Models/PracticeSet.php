@@ -29,12 +29,20 @@ class PracticeSet extends Model
         'creator_id',
         'classroom_id',
         'title',
+        'description',
         'subject',
         'topic',
         'difficulty',
         'source',
         'status',
+        'share_token',
+        'is_shared',
     ];
+
+    protected function casts(): array
+    {
+        return ['is_shared' => 'boolean'];
+    }
 
     public function creator(): BelongsTo
     {
