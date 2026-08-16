@@ -112,6 +112,9 @@ class StudentPracticePhaseElevenTest extends TestCase
         $this->assertStringContainsString('data-exam-part="review"', $view);
         $this->assertStringContainsString("route('teacher.questions.import')", $view);
         $this->assertStringContainsString('data-exam-blueprint', $view);
+        $this->assertStringContainsString('data-exam-compact-dropdown', $view);
+        $this->assertStringContainsString('exam-compact-trigger', $css);
+        $this->assertStringNotContainsString('exam-blueprint-card', $view);
         $this->assertStringContainsString("'final' => ['single_choice' => 50", $view);
         $this->assertStringContainsString('exam-question-index-section', $view);
         $this->assertStringContainsString('overflow-y-auto overscroll-contain', $css);

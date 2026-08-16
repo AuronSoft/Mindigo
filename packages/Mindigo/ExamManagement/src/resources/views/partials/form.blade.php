@@ -7,6 +7,13 @@
     $selectedSubject = old('subject', $exam->subject ?? '');
     $selectedGenerationSubject = old('generation_subject', $config['subject'] ?? '');
     $selectedAssessmentPurpose = old('assessment_purpose', $config['assessment_purpose'] ?? 'formative');
+    $assessmentBlueprints = [
+        'diagnostic' => ['single_choice' => 12, 'multiple_choice' => 0, 'true_false' => 8, 'short_answer' => 0, 'essay' => 0, 'duration' => 20, 'passing' => 0],
+        'formative' => ['single_choice' => 20, 'multiple_choice' => 5, 'true_false' => 5, 'short_answer' => 0, 'essay' => 0, 'duration' => 30, 'passing' => 7],
+        'summative' => ['single_choice' => 30, 'multiple_choice' => 10, 'true_false' => 10, 'short_answer' => 5, 'essay' => 5, 'duration' => 90, 'passing' => 30],
+        'final' => ['single_choice' => 50, 'multiple_choice' => 15, 'true_false' => 15, 'short_answer' => 10, 'essay' => 10, 'duration' => 120, 'passing' => 50],
+    ];
+    $activeBlueprint = $assessmentBlueprints[$selectedAssessmentPurpose] ?? $assessmentBlueprints['formative'];
     $selectedClassroomIds = collect(old('classroom_ids', $exam->audience['classrooms'] ?? []))->map(fn ($id) => (int) $id);
     $formatDateTimeInput = static function ($value): string {
         if (blank($value)) {
@@ -75,24 +82,26 @@
 
             <article class="exam-builder-card exam-panel-card is-highlight" id="exam-part-source" data-exam-part="source">
                 <div class="exam-section-head"><span>01</span><div><h2>@lang('Mindigo-exam-management::app.generation')</h2><p>@lang('Mindigo-exam-management::app.generation_desc')</p></div></div>
-                <div class="mt-5">
-                    <div class="flex flex-wrap items-end justify-between gap-3"><div><h3 class="text-sm font-black text-slate-800">@lang('Mindigo-exam-management::app.assessment_blueprints')</h3><p class="mt-1 text-xs font-semibold text-slate-500">@lang('Mindigo-exam-management::app.assessment_blueprints_desc')</p></div><span class="rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-black text-slate-500">@lang('Mindigo-exam-management::app.customizable_after_apply')</span></div>
+                <div class="exam-builder-toolbar mt-5">
                     <input type="hidden" name="assessment_purpose" value="{{ $selectedAssessmentPurpose }}" data-exam-assessment-purpose>
-                    <div class="exam-blueprint-grid mt-3">
-                        @foreach([
-                            'diagnostic' => ['single_choice' => 12, 'multiple_choice' => 0, 'true_false' => 8, 'short_answer' => 0, 'essay' => 0, 'duration' => 20, 'passing' => 0],
-                            'formative' => ['single_choice' => 20, 'multiple_choice' => 5, 'true_false' => 5, 'short_answer' => 0, 'essay' => 0, 'duration' => 30, 'passing' => 7],
-                            'summative' => ['single_choice' => 30, 'multiple_choice' => 10, 'true_false' => 10, 'short_answer' => 5, 'essay' => 5, 'duration' => 90, 'passing' => 30],
-                            'final' => ['single_choice' => 50, 'multiple_choice' => 15, 'true_false' => 15, 'short_answer' => 10, 'essay' => 10, 'duration' => 120, 'passing' => 50],
-                        ] as $purpose => $blueprint)
-                            <button type="button" class="exam-blueprint-card {{ $selectedAssessmentPurpose === $purpose ? 'is-active' : '' }}" data-exam-blueprint data-purpose="{{ $purpose }}" data-counts='@json(collect($blueprint)->except(['duration', 'passing']))' data-duration="{{ $blueprint['duration'] }}" data-passing="{{ $blueprint['passing'] }}"><span>@lang('Mindigo-exam-management::app.assessment_purposes.'.$purpose)</span><strong>@lang('Mindigo-exam-management::app.assessment_blueprint_questions', ['count' => collect($blueprint)->except(['duration', 'passing'])->sum()])</strong><small>@lang('Mindigo-exam-management::app.assessment_blueprint_minutes', ['minutes' => $blueprint['duration']])</small></button>
-                        @endforeach
+                    <div class="exam-compact-picker" data-exam-compact-dropdown>
+                        <span class="exam-compact-label">@lang('Mindigo-exam-management::app.assessment_blueprints')</span>
+                        <button type="button" class="exam-compact-trigger" data-exam-dropdown-trigger><span class="exam-compact-icon bg-green-50 text-green-700"><x-heroicon-o-academic-cap class="h-5 w-5" /></span><span class="min-w-0 flex-1"><strong data-exam-blueprint-label>@lang('Mindigo-exam-management::app.assessment_purposes.'.$selectedAssessmentPurpose)</strong><small data-exam-blueprint-meta>@lang('Mindigo-exam-management::app.assessment_blueprint_summary', ['count' => collect($activeBlueprint)->except(['duration', 'passing'])->sum(), 'minutes' => $activeBlueprint['duration']])</small></span><x-heroicon-o-chevron-down class="h-4 w-4 shrink-0 text-slate-400" /></button>
+                        <div class="exam-compact-menu hidden" data-exam-dropdown-menu>
+                            @foreach($assessmentBlueprints as $purpose => $blueprint)
+                                <button type="button" class="exam-compact-option {{ $selectedAssessmentPurpose === $purpose ? 'is-active' : '' }}" data-exam-blueprint data-purpose="{{ $purpose }}" data-label="@lang('Mindigo-exam-management::app.assessment_purposes.'.$purpose)" data-meta="@lang('Mindigo-exam-management::app.assessment_blueprint_summary', ['count' => collect($blueprint)->except(['duration', 'passing'])->sum(), 'minutes' => $blueprint['duration']])" data-counts='@json(collect($blueprint)->except(['duration', 'passing']))' data-duration="{{ $blueprint['duration'] }}" data-passing="{{ $blueprint['passing'] }}"><span class="exam-compact-icon bg-green-50 text-green-700"><x-heroicon-o-clipboard-document-check class="h-5 w-5" /></span><span><strong>@lang('Mindigo-exam-management::app.assessment_purposes.'.$purpose)</strong><small>@lang('Mindigo-exam-management::app.assessment_blueprint_summary', ['count' => collect($blueprint)->except(['duration', 'passing'])->sum(), 'minutes' => $blueprint['duration']])</small></span><x-heroicon-o-check class="ml-auto h-4 w-4 text-green-600" /></button>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
-                <div class="exam-source-tools mt-5">
-                    <button type="button" class="exam-source-tool is-active" data-exam-source-mode="bank"><span class="bg-green-50 text-green-700"><x-heroicon-o-circle-stack class="h-5 w-5" /></span><strong>@lang('Mindigo-exam-management::app.source_bank')</strong><small>@lang('Mindigo-exam-management::app.source_bank_desc')</small></button>
-                    @if(Route::has('teacher.questions.import'))<a href="{{ route('teacher.questions.import') }}" class="exam-source-tool"><span class="bg-sky-50 text-sky-700"><x-heroicon-o-arrow-up-tray class="h-5 w-5" /></span><strong>@lang('Mindigo-exam-management::app.source_import')</strong><small>@lang('Mindigo-exam-management::app.source_import_desc')</small></a>@endif
-                    @if(Route::has('teacher.questions.create'))<a href="{{ route('teacher.questions.create') }}" class="exam-source-tool"><span class="bg-violet-50 text-violet-700"><x-heroicon-o-pencil-square class="h-5 w-5" /></span><strong>@lang('Mindigo-exam-management::app.source_manual')</strong><small>@lang('Mindigo-exam-management::app.source_manual_desc')</small></a>@endif
+                    <div class="exam-compact-picker" data-exam-compact-dropdown>
+                        <span class="exam-compact-label">@lang('Mindigo-exam-management::app.question_source')</span>
+                        <button type="button" class="exam-compact-trigger" data-exam-dropdown-trigger><span class="exam-compact-icon bg-sky-50 text-sky-700"><x-heroicon-o-circle-stack class="h-5 w-5" /></span><span class="min-w-0 flex-1"><strong>@lang('Mindigo-exam-management::app.source_bank')</strong><small>@lang('Mindigo-exam-management::app.source_bank_compact_desc')</small></span><x-heroicon-o-chevron-down class="h-4 w-4 shrink-0 text-slate-400" /></button>
+                        <div class="exam-compact-menu hidden" data-exam-dropdown-menu>
+                            <button type="button" class="exam-compact-option is-active" data-exam-source-mode="bank"><span class="exam-compact-icon bg-green-50 text-green-700"><x-heroicon-o-circle-stack class="h-5 w-5" /></span><span><strong>@lang('Mindigo-exam-management::app.source_bank')</strong><small>@lang('Mindigo-exam-management::app.source_bank_desc')</small></span><x-heroicon-o-check class="ml-auto h-4 w-4 text-green-600" /></button>
+                            @if(Route::has('teacher.questions.import'))<a href="{{ route('teacher.questions.import') }}" class="exam-compact-option"><span class="exam-compact-icon bg-sky-50 text-sky-700"><x-heroicon-o-arrow-up-tray class="h-5 w-5" /></span><span><strong>@lang('Mindigo-exam-management::app.source_import')</strong><small>@lang('Mindigo-exam-management::app.source_import_desc')</small></span></a>@endif
+                            @if(Route::has('teacher.questions.create'))<a href="{{ route('teacher.questions.create') }}" class="exam-compact-option"><span class="exam-compact-icon bg-violet-50 text-violet-700"><x-heroicon-o-pencil-square class="h-5 w-5" /></span><span><strong>@lang('Mindigo-exam-management::app.source_manual')</strong><small>@lang('Mindigo-exam-management::app.source_manual_desc')</small></span></a>@endif
+                        </div>
+                    </div>
                 </div>
                 <div class="exam-form-grid mt-5">
                     <label class="exam-field"><span>@lang('Mindigo-exam-management::app.folder')</span><select name="folder_id" class="exam-select"><option value="">@lang('Mindigo-exam-management::app.any_folder')</option>@foreach($folders as $folder)<option value="{{ $folder->id }}" @selected((string) old('folder_id', $config['folder_id'] ?? '') === (string) $folder->id)>{{ $folder->name }} ({{ $folder->questions_count }})</option>@endforeach</select></label>
