@@ -14,6 +14,8 @@ class ExamRequest extends FormRequest
 
     public const DIFFICULTIES = ['easy', 'medium', 'hard'];
 
+    public const ASSESSMENT_PURPOSES = ['diagnostic', 'formative', 'summative', 'final'];
+
     public function authorize(): bool
     {
         $permission = $this->route('exam') ? 'exams.update' : 'exams.create';
@@ -49,6 +51,7 @@ class ExamRequest extends FormRequest
             'generation_subject' => ['nullable', 'string', 'max:150'],
             'generation_topic' => ['nullable', 'string', 'max:150'],
             'generation_difficulty' => ['nullable', Rule::in(self::DIFFICULTIES)],
+            'assessment_purpose' => ['nullable', Rule::in(self::ASSESSMENT_PURPOSES)],
             'counts' => ['required', 'array'],
             'points' => ['required', 'array'],
             ...$this->typeRules('counts', ['nullable', 'integer', 'min:0', 'max:200']),
@@ -156,6 +159,7 @@ class ExamRequest extends FormRequest
             'subject' => $validated['generation_subject'] ?? null,
             'topic' => $validated['generation_topic'] ?? null,
             'difficulty' => $validated['generation_difficulty'] ?? null,
+            'assessment_purpose' => $validated['assessment_purpose'] ?? 'formative',
             'counts' => $this->generationCounts(),
             'points' => collect($validated['points'] ?? [])
                 ->only(self::TYPES)

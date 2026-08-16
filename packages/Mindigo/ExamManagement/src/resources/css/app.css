@@ -338,7 +338,7 @@
     }
 
     .exam-studio-layout {
-        @apply grid min-h-[34rem] gap-5 bg-white p-5 xl:h-[calc(100vh-20rem)] xl:max-h-[48rem] xl:min-h-[38rem] xl:grid-cols-[14rem_minmax(0,1fr)];
+        @apply grid min-h-[34rem] gap-5 bg-white p-5 xl:h-[calc(100vh-20rem)] xl:max-h-[48rem] xl:min-h-[38rem] xl:grid-cols-[14rem_minmax(0,1fr)] xl:overflow-hidden;
     }
 
     .exam-studio-footer {
@@ -350,7 +350,11 @@
     }
 
     .exam-studio-sidebar {
-        @apply flex flex-col gap-5;
+        @apply flex min-h-0 flex-col gap-5 overflow-hidden;
+    }
+
+    .exam-question-index-section {
+        @apply flex min-h-0 flex-1 flex-col;
     }
 
     .exam-studio-label {
@@ -370,7 +374,13 @@
     }
 
     .exam-question-index {
-        @apply grid grid-cols-5 gap-2;
+        @apply grid min-h-0 flex-1 content-start grid-cols-5 gap-2 overflow-y-auto overscroll-contain pr-1;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .exam-question-index::-webkit-scrollbar {
+        display: none;
     }
 
     .exam-question-index button {
@@ -403,7 +413,7 @@
     }
 
     .exam-studio-main {
-        @apply min-w-0 overflow-y-auto pr-1;
+        @apply min-h-0 min-w-0 overflow-y-auto overscroll-contain pr-1;
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
@@ -434,6 +444,56 @@
 
     .exam-source-tools {
         @apply grid gap-3 md:grid-cols-3;
+    }
+
+    .exam-blueprint-grid {
+        @apply grid gap-3 sm:grid-cols-2 2xl:grid-cols-4;
+    }
+
+    .exam-blueprint-card {
+        @apply flex min-h-28 flex-col items-start rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left transition hover:-translate-y-0.5 hover:border-green-300 hover:bg-white hover:shadow-md;
+    }
+
+    .exam-blueprint-card span {
+        @apply text-xs font-black uppercase tracking-wide text-slate-500;
+    }
+
+    .exam-blueprint-card strong {
+        @apply mt-3 text-base font-black text-slate-900;
+    }
+
+    .exam-blueprint-card small {
+        @apply mt-1 text-xs font-bold text-slate-400;
+    }
+
+    .exam-blueprint-card.is-active {
+        @apply border-green-400 bg-green-50 shadow-[0_3px_0_#16a34a,0_10px_24px_rgba(22,163,74,0.12)];
+    }
+
+    .exam-blueprint-card.is-active span,
+    .exam-blueprint-card.is-active small {
+        @apply text-green-700;
+    }
+
+    .exam-structure-summary {
+        @apply grid gap-3 rounded-2xl border border-slate-200 bg-white p-3 sm:grid-cols-3;
+    }
+
+    .exam-structure-summary > span {
+        @apply rounded-xl bg-slate-50 px-4 py-3;
+    }
+
+    .exam-structure-summary small,
+    .exam-structure-summary strong {
+        @apply block;
+    }
+
+    .exam-structure-summary small {
+        @apply text-[11px] font-black uppercase tracking-wide text-slate-400;
+    }
+
+    .exam-structure-summary strong {
+        @apply mt-1 text-lg font-black text-slate-900;
     }
 
     .exam-source-tool {
