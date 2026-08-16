@@ -40,7 +40,7 @@ class ExamController extends Controller
         $this->authorizeLegacyWrite($request);
         $this->authorizePermission($request->user(), 'exams.create');
 
-        return view('Mindigo-exam-management::create', $this->exams->formData());
+        return view('Mindigo-exam-management::create', $this->exams->formData($request->user()));
     }
 
     public function store(ExamRequest $request): RedirectResponse
@@ -69,7 +69,7 @@ class ExamController extends Controller
         $this->authorizeExam($request->user(), $exam, 'exams.update');
         $exam->load('questions');
 
-        return view('Mindigo-exam-management::edit', array_merge($this->exams->formData(), [
+        return view('Mindigo-exam-management::edit', array_merge($this->exams->formData($request->user()), [
             'exam' => $exam,
         ]));
     }

@@ -248,14 +248,7 @@ class TeacherExamService
 
     public function formData(User $teacher): array
     {
-        $classrooms = Classroom::query()
-            ->when(! $teacher->isAdmin(), fn ($query) => $query->where('teacher_id', $teacher->getAuthIdentifier()))
-            ->where('status', 'active')
-            ->withCount(['students' => fn ($query) => $query->where('classroom_students.status', 'active')])
-            ->orderBy('name')
-            ->get();
-
-        return [...$this->exams->formData(), 'classrooms' => $classrooms];
+        return $this->exams->formData($teacher);
     }
 
     /**
