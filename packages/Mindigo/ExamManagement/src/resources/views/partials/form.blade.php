@@ -7,6 +7,32 @@
     $selectedSubject = old('subject', $exam->subject ?? '');
     $selectedGenerationSubject = old('generation_subject', $config['subject'] ?? '');
     $selectedClassroomIds = collect(old('classroom_ids', $exam->audience['classrooms'] ?? []))->map(fn ($id) => (int) $id);
+    $formatDateTimeInput = static function ($value): string {
+        if (blank($value)) {
+            return '';
+        }
+
+        if (is_string($value) && preg_match('/^\d{2}\/\d{2}\/\d{4}\s\d{2}:\d{2}$/', $value)) {
+            return $value;
+        }
+
+        try {
+            return \Carbon\Carbon::parse($value)->format('d/m/Y H:i');
+        } catch (\Throwable) {
+            return (string) $value;
+        }
+    };
+    $formatDateTimePicker = static function ($value) use ($formatDateTimeInput): string {
+        if (blank($value)) {
+            return '';
+        }
+
+        try {
+            return \Carbon\Carbon::createFromFormat('d/m/Y H:i', $formatDateTimeInput($value))->format('Y-m-d\TH:i');
+        } catch (\Throwable) {
+            return '';
+        }
+    };
 @endphp
 
 <script type="application/json" data-exam-subject-topics>@json($subjectTopics ?? [])</script>
@@ -108,8 +134,10 @@
                     <label class="exam-field"><span>@lang('Mindigo-exam-management::app.duration_minutes') <span class="exam-required" aria-hidden="true">*</span></span><input type="number" min="1" max="600" name="duration_minutes" value="{{ old('duration_minutes', $exam->duration_minutes ?? 45) }}" class="exam-input" required></label>
                     <label class="exam-field"><span>@lang('Mindigo-exam-management::app.max_attempts') <span class="exam-required" aria-hidden="true">*</span></span><input type="number" min="1" max="20" name="max_attempts" value="{{ old('max_attempts', $exam->max_attempts ?? 1) }}" class="exam-input" required></label>
                     <label class="exam-field"><span>@lang('Mindigo-exam-management::app.passing_score') <span class="exam-required" aria-hidden="true">*</span></span><input type="number" min="0" step="0.25" name="passing_score" value="{{ old('passing_score', $exam->passing_score ?? 0) }}" class="exam-input" required></label>
-                    <label class="exam-field"><span>@lang('Mindigo-exam-management::app.starts_at')</span><input type="datetime-local" name="starts_at" value="{{ old('starts_at', isset($exam) && $exam->starts_at ? $exam->starts_at->format('Y-m-d\TH:i') : '') }}" class="exam-input"></label>
-                    <label class="exam-field"><span>@lang('Mindigo-exam-management::app.ends_at')</span><input type="datetime-local" name="ends_at" value="{{ old('ends_at', isset($exam) && $exam->ends_at ? $exam->ends_at->format('Y-m-d\TH:i') : '') }}" class="exam-input"></label>
+                    @foreach(['starts_at', 'ends_at'] as $dateTimeField)
+                        @php($dateTimeValue = old($dateTimeField, $exam->{$dateTimeField} ?? null))
+                        <label class="exam-field"><span>@lang('Mindigo-exam-management::app.'.$dateTimeField)</span><span class="relative block" data-exam-datetime-field><input type="text" name="{{ $dateTimeField }}" value="{{ $formatDateTimeInput($dateTimeValue) }}" class="exam-input cursor-pointer pr-11" placeholder="@lang('Mindigo-exam-management::app.datetime_placeholder')" readonly data-exam-datetime-display><input type="datetime-local" value="{{ $formatDateTimePicker($dateTimeValue) }}" class="pointer-events-none absolute bottom-0 right-0 h-px w-px opacity-0" tabindex="-1" aria-hidden="true" data-exam-datetime-picker><button type="button" class="absolute inset-y-0 right-0 grid w-11 place-items-center text-slate-400 transition hover:text-green-700" aria-label="@lang('Mindigo-exam-management::app.pick_datetime')" data-exam-datetime-trigger><x-heroicon-o-calendar-days class="h-5 w-5" /></button></span><small>@lang('Mindigo-exam-management::app.datetime_hint')</small></label>
+                    @endforeach
                     <div class="exam-toggle-grid md:col-span-2">
                         @foreach(['shuffle_questions', 'shuffle_answers', 'show_results'] as $toggle)
                             <label class="exam-toggle"><input type="checkbox" name="{{ $toggle }}" value="1" @checked(old($toggle, $exam->{$toggle} ?? true))><span></span><strong>@lang('Mindigo-exam-management::app.' . $toggle)</strong></label>

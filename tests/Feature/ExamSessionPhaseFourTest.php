@@ -98,6 +98,23 @@ class ExamSessionPhaseFourTest extends TestCase
         $this->assertDatabaseCount('exam_sessions', 0);
     }
 
+    public function test_teacher_can_schedule_session_with_day_month_year_dates(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        [, $version] = $this->readyTemplate($teacher);
+        $classroom = $this->classroom($teacher, 'Localized dates');
+        $payload = $this->payload($version, [$classroom]);
+        $payload['starts_at'] = '16/08/2026 08:30';
+        $payload['ends_at'] = '16/08/2026 10:30';
+
+        $this->actingAs($teacher)->post(route('teacher.exam-sessions.store'), $payload)
+            ->assertRedirect(route('teacher.exam-sessions.index'));
+
+        $session = ExamSession::query()->firstOrFail();
+        $this->assertSame('2026-08-16 08:30', $session->starts_at->format('Y-m-d H:i'));
+        $this->assertSame('2026-08-16 10:30', $session->ends_at->format('Y-m-d H:i'));
+    }
+
     private function readyTemplate(User $teacher, string $title = 'Ready template'): array
     {
         $slug = str($title)->slug().'-'.str()->lower(str()->random(6));

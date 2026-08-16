@@ -2,6 +2,7 @@
 
 namespace Mindigo\ExamManagement\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -45,6 +46,58 @@ class ExamRequest extends FormRequest
             'points' => ['required', 'array'],
             ...$this->typeRules('counts', ['nullable', 'integer', 'min:0', 'max:200']),
             ...$this->typeRules('points', ['nullable', 'numeric', 'min:0', 'max:100']),
+        ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'starts_at' => $this->normalizeLocalizedDateTime($this->input('starts_at')),
+            'ends_at' => $this->normalizeLocalizedDateTime($this->input('ends_at')),
+        ]);
+    }
+
+    public function messages(): array
+    {
+        return [
+            'title.required' => __('Mindigo-exam-management::app.validation.title_required'),
+            'duration_minutes.required' => __('Mindigo-exam-management::app.validation.duration_required'),
+            'duration_minutes.min' => __('Mindigo-exam-management::app.validation.duration_min'),
+            'max_attempts.required' => __('Mindigo-exam-management::app.validation.attempts_required'),
+            'passing_score.required' => __('Mindigo-exam-management::app.validation.passing_score_required'),
+            'classroom_ids.required' => __('Mindigo-exam-management::app.validation.classroom_required'),
+            'classroom_ids.min' => __('Mindigo-exam-management::app.validation.classroom_required'),
+            'counts.required' => __('Mindigo-exam-management::app.validation.question_structure_required'),
+            'starts_at.date' => __('Mindigo-exam-management::app.validation.datetime_format'),
+            'ends_at.date' => __('Mindigo-exam-management::app.validation.datetime_format'),
+            'ends_at.after_or_equal' => __('Mindigo-exam-management::app.validation.ends_after_start'),
+            '*.string' => __('Mindigo-exam-management::app.validation.string'),
+            '*.integer' => __('Mindigo-exam-management::app.validation.integer'),
+            '*.numeric' => __('Mindigo-exam-management::app.validation.numeric'),
+            '*.array' => __('Mindigo-exam-management::app.validation.array'),
+            '*.boolean' => __('Mindigo-exam-management::app.validation.boolean'),
+            '*.max' => __('Mindigo-exam-management::app.validation.max'),
+            '*.exists' => __('Mindigo-exam-management::app.validation.exists'),
+            '*.distinct' => __('Mindigo-exam-management::app.validation.distinct'),
+            '*.in' => __('Mindigo-exam-management::app.validation.in'),
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'title' => __('Mindigo-exam-management::app.title_field'),
+            'subject' => __('Mindigo-exam-management::app.subject'),
+            'topic' => __('Mindigo-exam-management::app.topic'),
+            'description' => __('Mindigo-exam-management::app.description'),
+            'duration_minutes' => __('Mindigo-exam-management::app.duration_minutes'),
+            'starts_at' => __('Mindigo-exam-management::app.starts_at'),
+            'ends_at' => __('Mindigo-exam-management::app.ends_at'),
+            'max_attempts' => __('Mindigo-exam-management::app.max_attempts'),
+            'passing_score' => __('Mindigo-exam-management::app.passing_score'),
+            'classroom_ids' => __('Mindigo-exam-management::app.assigned_classrooms'),
+            'counts' => __('Mindigo-exam-management::app.question_structure'),
+            'points' => __('Mindigo-exam-management::app.points'),
         ];
     }
 
@@ -127,5 +180,23 @@ class ExamRequest extends FormRequest
         return collect(self::TYPES)
             ->mapWithKeys(fn ($type) => ["{$field}.{$type}" => $rules])
             ->all();
+    }
+
+    private function normalizeLocalizedDateTime(mixed $value): mixed
+    {
+        if (! is_string($value) || trim($value) === '') {
+            return null;
+        }
+
+        foreach (['d/m/Y H:i', 'Y-m-d\\TH:i', 'Y-m-d H:i:s', 'Y-m-d H:i'] as $format) {
+            try {
+                return Carbon::createFromFormat($format, trim($value))->format('Y-m-d H:i:s');
+            } catch (\Throwable) {
+                // Keep trying supported formats before returning the original
+                // value so Laravel can produce the localized validation error.
+            }
+        }
+
+        return $value;
     }
 }

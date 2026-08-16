@@ -9,6 +9,14 @@ use Mindigo\ExamManagement\Models\ExamSession;
 
 class ExamSessionRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'starts_at' => $this->normalizeLocalizedDateTime($this->input('starts_at')),
+            'ends_at' => $this->normalizeLocalizedDateTime($this->input('ends_at')),
+        ]);
+    }
+
     public function authorize(): bool
     {
         return $this->user()?->can('create', ExamSession::class) === true;
@@ -59,5 +67,31 @@ class ExamSessionRequest extends FormRequest
                 $validator->errors()->add('duration_minutes', __('Mindigo-exam-management::app.session_builder.duration_exceeds_window'));
             }
         }];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'starts_at.date' => __('Mindigo-exam-management::app.validation.datetime_format'),
+            'ends_at.date' => __('Mindigo-exam-management::app.validation.datetime_format'),
+            'ends_at.after' => __('Mindigo-exam-management::app.validation.ends_after_start'),
+        ];
+    }
+
+    private function normalizeLocalizedDateTime(mixed $value): mixed
+    {
+        if (! is_string($value) || trim($value) === '') {
+            return $value;
+        }
+
+        foreach (['d/m/Y H:i', 'Y-m-d\\TH:i', 'Y-m-d H:i:s', 'Y-m-d H:i'] as $format) {
+            try {
+                return Carbon::createFromFormat($format, trim($value))->format('Y-m-d H:i:s');
+            } catch (\Throwable) {
+                // Try every supported input format before validation reports an error.
+            }
+        }
+
+        return $value;
     }
 }
