@@ -442,37 +442,65 @@
         @apply bg-white;
     }
 
-    .exam-source-tools {
-        @apply grid gap-3 md:grid-cols-3;
+    .exam-builder-toolbar {
+        @apply relative z-20 grid gap-3 lg:grid-cols-2;
     }
 
-    .exam-blueprint-grid {
-        @apply grid gap-3 sm:grid-cols-2 2xl:grid-cols-4;
+    .exam-compact-picker {
+        @apply relative min-w-0;
     }
 
-    .exam-blueprint-card {
-        @apply flex min-h-28 flex-col items-start rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left transition hover:-translate-y-0.5 hover:border-green-300 hover:bg-white hover:shadow-md;
+    .exam-compact-label {
+        @apply mb-1.5 block text-[11px] font-black uppercase tracking-wide text-slate-400;
     }
 
-    .exam-blueprint-card span {
-        @apply text-xs font-black uppercase tracking-wide text-slate-500;
+    .exam-compact-trigger {
+        @apply flex min-h-14 w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 text-left transition hover:border-green-300 hover:shadow-sm;
     }
 
-    .exam-blueprint-card strong {
-        @apply mt-3 text-base font-black text-slate-900;
+    .exam-compact-icon {
+        @apply grid h-9 w-9 shrink-0 place-items-center rounded-lg;
     }
 
-    .exam-blueprint-card small {
-        @apply mt-1 text-xs font-bold text-slate-400;
+    .exam-compact-trigger strong,
+    .exam-compact-trigger small,
+    .exam-compact-option strong,
+    .exam-compact-option small {
+        @apply block truncate;
     }
 
-    .exam-blueprint-card.is-active {
-        @apply border-green-400 bg-green-50 shadow-[0_3px_0_#16a34a,0_10px_24px_rgba(22,163,74,0.12)];
+    .exam-compact-trigger strong,
+    .exam-compact-option strong {
+        @apply text-sm font-black text-slate-800;
     }
 
-    .exam-blueprint-card.is-active span,
-    .exam-blueprint-card.is-active small {
-        @apply text-green-700;
+    .exam-compact-trigger small,
+    .exam-compact-option small {
+        @apply mt-0.5 text-xs font-semibold text-slate-400;
+    }
+
+    .exam-compact-menu {
+        @apply absolute inset-x-0 top-full z-50 mt-2 max-h-72 space-y-1 overflow-y-auto rounded-xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-300/40;
+    }
+
+    .exam-compact-option {
+        @apply flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left no-underline transition hover:bg-slate-50;
+    }
+
+    .exam-compact-option > span:nth-child(2) {
+        @apply min-w-0 flex-1;
+    }
+
+    .exam-compact-option > svg:last-child {
+        @apply invisible;
+    }
+
+    .exam-compact-option.is-active {
+        @apply bg-green-50;
+    }
+
+    .exam-compact-option.is-active > svg:last-child {
+        @apply visible;
     }
 
     .exam-structure-summary {
@@ -494,26 +522,6 @@
 
     .exam-structure-summary strong {
         @apply mt-1 text-lg font-black text-slate-900;
-    }
-
-    .exam-source-tool {
-        @apply grid min-h-32 grid-cols-[auto_1fr] content-start gap-x-3 rounded-2xl border border-slate-200 bg-white p-4 text-left no-underline transition hover:-translate-y-0.5 hover:border-green-300 hover:shadow-md;
-    }
-
-    .exam-source-tool > span {
-        @apply row-span-2 grid h-10 w-10 place-items-center rounded-xl;
-    }
-
-    .exam-source-tool strong {
-        @apply text-sm font-black text-slate-900;
-    }
-
-    .exam-source-tool small {
-        @apply mt-1 text-xs font-semibold leading-5 text-slate-500;
-    }
-
-    .exam-source-tool.is-active {
-        @apply border-green-300 bg-green-50/50 ring-2 ring-green-100;
     }
 
     .exam-review-grid {

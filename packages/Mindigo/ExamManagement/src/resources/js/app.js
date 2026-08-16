@@ -1,6 +1,26 @@
 import '../../../../Core/src/resources/js/mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    const compactDropdowns = [...document.querySelectorAll('[data-exam-compact-dropdown]')];
+    compactDropdowns.forEach((dropdown) => {
+        const trigger = dropdown.querySelector('[data-exam-dropdown-trigger]');
+        const menu = dropdown.querySelector('[data-exam-dropdown-menu]');
+
+        trigger?.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const willOpen = menu?.classList.contains('hidden');
+            compactDropdowns.forEach((item) => item.querySelector('[data-exam-dropdown-menu]')?.classList.add('hidden'));
+            menu?.classList.toggle('hidden', !willOpen);
+        });
+        menu?.addEventListener('click', (event) => event.stopPropagation());
+    });
+    document.addEventListener('click', () => compactDropdowns.forEach((dropdown) => {
+        dropdown.querySelector('[data-exam-dropdown-menu]')?.classList.add('hidden');
+    }));
+    document.querySelectorAll('[data-exam-source-mode]').forEach((option) => option.addEventListener('click', () => {
+        option.closest('[data-exam-compact-dropdown]')?.querySelector('[data-exam-dropdown-menu]')?.classList.add('hidden');
+    }));
+
     document.querySelectorAll('[data-exam-classrooms-toggle]').forEach((button) => {
         const list = button.parentElement?.nextElementSibling;
         const checkboxes = [...(list?.querySelectorAll('input[name="classroom_ids[]"]') || [])];
@@ -365,6 +385,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (passingScoreInput) passingScoreInput.value = button.dataset.passing || passingScoreInput.value;
             if (assessmentPurpose) assessmentPurpose.value = button.dataset.purpose || 'formative';
             blueprintButtons.forEach((item) => item.classList.toggle('is-active', item === button));
+            const dropdown = button.closest('[data-exam-compact-dropdown]');
+            const blueprintLabel = dropdown?.querySelector('[data-exam-blueprint-label]');
+            const blueprintMeta = dropdown?.querySelector('[data-exam-blueprint-meta]');
+            if (blueprintLabel) blueprintLabel.textContent = button.dataset.label || '';
+            if (blueprintMeta) blueprintMeta.textContent = button.dataset.meta || '';
+            dropdown?.querySelector('[data-exam-dropdown-menu]')?.classList.add('hidden');
             syncCounts();
         }));
         setActivePart('source');
