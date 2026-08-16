@@ -1,6 +1,35 @@
 import '../../../../Core/src/resources/js/mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-exam-datetime-field]').forEach((field) => {
+        const display = field.querySelector('[data-exam-datetime-display]');
+        const picker = field.querySelector('[data-exam-datetime-picker]');
+        const trigger = field.querySelector('[data-exam-datetime-trigger]');
+
+        const openPicker = () => {
+            if (typeof picker?.showPicker === 'function') {
+                picker.showPicker();
+                return;
+            }
+
+            picker?.click();
+        };
+
+        display?.addEventListener('click', openPicker);
+        trigger?.addEventListener('click', openPicker);
+        picker?.addEventListener('change', () => {
+            if (!display || !picker.value) {
+                if (display) display.value = '';
+                return;
+            }
+
+            const [date, time = '00:00'] = picker.value.split('T');
+            const [year, month, day] = date.split('-');
+            display.value = `${day}/${month}/${year} ${time.slice(0, 5)}`;
+            display.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    });
+
     const topicsSource = document.querySelector('[data-exam-subject-topics]');
     if (topicsSource) {
         const topicsBySubject = JSON.parse(topicsSource.textContent || '{}');

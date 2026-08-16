@@ -7,6 +7,16 @@
     <title>@yield('title', __('Mindigo-dashboard::app.title'))</title>
     <meta name="description" content="@yield('meta_description', __('Mindigo-dashboard::app.title'))">
     <meta name="robots" content="noindex, nofollow">
+    <script>
+        window.__dashboardMessages = {
+            ...(window.__dashboardMessages || {}),
+            logout_title: {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.logout_title')) }},
+            logout_message: {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.logout_message')) }},
+            logout_confirm: {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.logout_confirm')) }},
+            logout_cancel: {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.logout_cancel')) }},
+            logging_out: {{ Illuminate\Support\Js::from(__('Mindigo-dashboard::app.logging_out')) }},
+        };
+    </script>
     @yield('styles')
 </head>
 <body class="bg-slate-50 font-[Inter,'Segoe_UI',Arial,ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased" data-user-id="{{ auth()->id() }}">
