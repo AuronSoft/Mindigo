@@ -1,6 +1,27 @@
 import '../../../../Core/src/resources/js/mindigo-ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-exam-classrooms-toggle]').forEach((button) => {
+        const list = button.parentElement?.nextElementSibling;
+        const checkboxes = [...(list?.querySelectorAll('input[name="classroom_ids[]"]') || [])];
+
+        const refresh = () => {
+            const allSelected = checkboxes.length > 0 && checkboxes.every((checkbox) => checkbox.checked);
+            button.textContent = allSelected ? button.dataset.clearLabel : button.dataset.selectLabel;
+        };
+
+        button.addEventListener('click', () => {
+            const shouldSelect = !checkboxes.every((checkbox) => checkbox.checked);
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = shouldSelect;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            refresh();
+        });
+        checkboxes.forEach((checkbox) => checkbox.addEventListener('change', refresh));
+        refresh();
+    });
+
     document.querySelectorAll('[data-exam-datetime-field]').forEach((field) => {
         const display = field.querySelector('[data-exam-datetime-display]');
         const picker = field.querySelector('[data-exam-datetime-picker]');

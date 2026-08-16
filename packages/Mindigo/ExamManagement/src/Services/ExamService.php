@@ -12,6 +12,7 @@ use Mindigo\ExamManagement\Models\ExamQuestion;
 use Mindigo\QuestionBank\Models\Question;
 use Mindigo\QuestionBank\Models\QuestionFolder;
 use Mindigo\SubjectManagement\Models\Subject;
+use Mindigo\TeacherClassroom\Models\Classroom;
 
 class ExamService
 {
@@ -146,7 +147,7 @@ class ExamService
         return $query->paginate(12)->withQueryString();
     }
 
-    public function formData(): array
+    public function formData(User $teacher): array
     {
         return [
             'folders' => QuestionFolder::query()->withCount('questions')->orderBy('name')->get(),
@@ -154,6 +155,12 @@ class ExamService
             'subjectTopics' => $this->topicsBySubject(),
             'types' => ExamRequest::TYPES,
             'difficulties' => ExamRequest::DIFFICULTIES,
+            'classrooms' => Classroom::query()
+                ->where('teacher_id', $teacher->getAuthIdentifier())
+                ->where('status', 'active')
+                ->withCount(['students' => fn ($query) => $query->where('classroom_students.status', 'active')])
+                ->orderBy('name')
+                ->get(),
         ];
     }
 

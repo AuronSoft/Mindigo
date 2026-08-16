@@ -152,14 +152,27 @@
                     <fieldset class="exam-field md:col-span-2">
                         <legend>@lang('Mindigo-exam-management::app.assigned_classrooms') <span class="exam-required" aria-hidden="true">*</span></legend>
                         <p class="mt-1 text-xs font-semibold text-slate-400">@lang('Mindigo-exam-management::app.assigned_classrooms_help')</p>
-                        <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                            @foreach($classrooms ?? [] as $classroom)
-                                <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 hover:border-green-300">
-                                    <input type="checkbox" name="classroom_ids[]" value="{{ $classroom->id }}" class="h-4 w-4 accent-green-600" @checked($selectedClassroomIds->contains($classroom->id))>
-                                    <span class="min-w-0"><strong class="block truncate text-sm text-slate-800">{{ $classroom->name }}</strong><small class="text-xs font-semibold text-slate-400">{{ $classroom->students_count }} @lang('Mindigo-exam-management::app.students_unit')</small></span>
-                                </label>
-                            @endforeach
-                        </div>
+                        @if(($classrooms ?? collect())->isNotEmpty())
+                            <div class="mt-3 flex items-center justify-between gap-3">
+                                <span class="text-xs font-bold text-slate-500">{{ trans_choice('Mindigo-exam-management::app.classrooms_available', $classrooms->count(), ['count' => $classrooms->count()]) }}</span>
+                                <button type="button" class="text-xs font-black text-green-700 hover:text-green-800" data-exam-classrooms-toggle data-select-label="@lang('Mindigo-exam-management::app.select_all')" data-clear-label="@lang('Mindigo-exam-management::app.clear_selection')">@lang('Mindigo-exam-management::app.select_all')</button>
+                            </div>
+                            <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-exam-classroom-list>
+                                @foreach($classrooms as $classroom)
+                                    <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 transition hover:border-green-300 has-checked:border-green-400 has-checked:bg-green-50">
+                                        <input type="checkbox" name="classroom_ids[]" value="{{ $classroom->id }}" class="h-4 w-4 accent-green-600" @checked($selectedClassroomIds->contains($classroom->id))>
+                                        <span class="min-w-0"><strong class="block truncate text-sm text-slate-800">{{ $classroom->name }}</strong><small class="text-xs font-semibold text-slate-400">{{ $classroom->students_count }} @lang('Mindigo-exam-management::app.students_unit') · {{ $classroom->code }}</small></span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="mt-3 flex flex-col items-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-7 text-center">
+                                <span class="grid h-11 w-11 place-items-center rounded-xl bg-white text-slate-400 shadow-sm"><x-heroicon-o-user-group class="h-6 w-6" /></span>
+                                <strong class="mt-3 text-sm text-slate-800">@lang('Mindigo-exam-management::app.no_active_classrooms')</strong>
+                                <p class="mt-1 max-w-md text-xs font-semibold leading-5 text-slate-500">@lang('Mindigo-exam-management::app.no_active_classrooms_help')</p>
+                                @if(Route::has('teacher.classrooms.create'))<a href="{{ route('teacher.classrooms.create') }}" class="mt-4 inline-flex h-9 items-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-black text-white no-underline hover:bg-green-700"><x-heroicon-o-plus class="h-4 w-4" />@lang('Mindigo-exam-management::app.create_classroom')</a>@endif
+                            </div>
+                        @endif
                         @error('classroom_ids')<span class="mt-2 block text-xs font-bold text-red-600">{{ $message }}</span>@enderror
                     </fieldset>
                     <label class="exam-field md:col-span-2"><span>@lang('Mindigo-exam-management::app.title_field') <span class="exam-required" aria-hidden="true">*</span></span><input name="title" value="{{ old('title', $exam->title ?? '') }}" class="exam-input" required></label>
