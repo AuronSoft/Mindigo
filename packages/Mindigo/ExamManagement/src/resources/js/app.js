@@ -182,6 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const partCards = [...builder.querySelectorAll('[data-exam-part]')];
         const questionIndex = builder.querySelector('[data-exam-question-index]');
         const countInputs = [...builder.querySelectorAll('[data-exam-count-input]')];
+        const pointInputs = [...builder.querySelectorAll('input[name^="points["]')];
+        const blueprintButtons = [...builder.querySelectorAll('[data-exam-blueprint]')];
+        const assessmentPurpose = builder.querySelector('[data-exam-assessment-purpose]');
+        const durationInput = builder.querySelector('[name="duration_minutes"]');
+        const passingScoreInput = builder.querySelector('[name="passing_score"]');
         const totalCount = builder.querySelector('[data-exam-total-count]');
         const progress = builder.querySelector('[data-exam-progress]');
         const wizardProgress = builder.querySelector('[data-exam-wizard-progress]');
@@ -319,6 +324,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const syncCounts = () => {
             const total = countInputs.reduce((sum, input) => sum + Math.max(0, Number(input.value || 0)), 0);
+            const objectiveTypes = new Set(['single_choice', 'multiple_choice', 'true_false']);
+            const objectiveTotal = countInputs.reduce((sum, input) => {
+                const type = input.name.match(/counts\[([^\]]+)]/)?.[1];
+                return sum + (objectiveTypes.has(type) ? Math.max(0, Number(input.value || 0)) : 0);
+            }, 0);
+            const totalPoints = countInputs.reduce((sum, input) => {
+                const type = input.name.match(/counts\[([^\]]+)]/)?.[1];
+                const points = pointInputs.find((pointInput) => pointInput.name === `points[${type}]`);
+                return sum + (Math.max(0, Number(input.value || 0)) * Math.max(0, Number(points?.value || 0)));
+            }, 0);
 
             if (totalCount) {
                 totalCount.textContent = String(total);
@@ -328,10 +343,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 progress.style.width = `${Math.min(100, Math.max(12, total * 3))}%`;
             }
 
+            const structureTotal = builder.querySelector('[data-exam-structure-total]');
+            const structurePoints = builder.querySelector('[data-exam-structure-points]');
+            const objectiveRatio = builder.querySelector('[data-exam-objective-ratio]');
+            if (structureTotal) structureTotal.textContent = String(total);
+            if (structurePoints) structurePoints.textContent = String(Number(totalPoints.toFixed(2)));
+            if (objectiveRatio) objectiveRatio.textContent = `${total > 0 ? Math.round((objectiveTotal / total) * 100) : 0}%`;
+
             renderQuestionIndex();
         };
 
         countInputs.forEach((input) => input.addEventListener('input', syncCounts));
+        pointInputs.forEach((input) => input.addEventListener('input', syncCounts));
+        blueprintButtons.forEach((button) => button.addEventListener('click', () => {
+            const counts = JSON.parse(button.dataset.counts || '{}');
+            countInputs.forEach((input) => {
+                const type = input.name.match(/counts\[([^\]]+)]/)?.[1];
+                input.value = String(counts[type] ?? 0);
+            });
+            if (durationInput) durationInput.value = button.dataset.duration || durationInput.value;
+            if (passingScoreInput) passingScoreInput.value = button.dataset.passing || passingScoreInput.value;
+            if (assessmentPurpose) assessmentPurpose.value = button.dataset.purpose || 'formative';
+            blueprintButtons.forEach((item) => item.classList.toggle('is-active', item === button));
+            syncCounts();
+        }));
         setActivePart('source');
         syncCounts();
     });

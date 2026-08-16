@@ -100,6 +100,7 @@ class StudentPracticePhaseElevenTest extends TestCase
     public function test_exam_builder_uses_neutral_footer_and_balanced_actions(): void
     {
         $css = file_get_contents(base_path('packages/Mindigo/ExamManagement/src/resources/css/app.css'));
+        $javascript = file_get_contents(base_path('packages/Mindigo/ExamManagement/src/resources/js/app.js'));
         $view = file_get_contents(base_path('packages/Mindigo/ExamManagement/src/resources/views/partials/form.blade.php'));
 
         $this->assertStringContainsString('border-slate-200 bg-white p-5 shadow-sm', $css);
@@ -110,6 +111,12 @@ class StudentPracticePhaseElevenTest extends TestCase
         $this->assertStringContainsString('data-exam-wizard', $view);
         $this->assertStringContainsString('data-exam-part="review"', $view);
         $this->assertStringContainsString("route('teacher.questions.import')", $view);
+        $this->assertStringContainsString('data-exam-blueprint', $view);
+        $this->assertStringContainsString("'final' => ['single_choice' => 50", $view);
+        $this->assertStringContainsString('exam-question-index-section', $view);
+        $this->assertStringContainsString('overflow-y-auto overscroll-contain', $css);
+        $this->assertStringContainsString('assessmentPurpose.value = button.dataset.purpose', $javascript);
+        $this->assertStringContainsString('data-exam-objective-ratio', $view);
     }
 
     private function student(): User

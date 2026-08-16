@@ -155,6 +155,7 @@ class ExamService
             'subjectTopics' => $this->topicsBySubject(),
             'types' => ExamRequest::TYPES,
             'difficulties' => ExamRequest::DIFFICULTIES,
+            'assessmentPurposes' => ExamRequest::ASSESSMENT_PURPOSES,
             'classrooms' => Classroom::query()
                 ->where('teacher_id', $teacher->getAuthIdentifier())
                 ->where('status', 'active')

@@ -6,6 +6,7 @@
     $totalRequested = collect($types)->sum(fn ($type) => (int) ($counts[$type] ?? 0));
     $selectedSubject = old('subject', $exam->subject ?? '');
     $selectedGenerationSubject = old('generation_subject', $config['subject'] ?? '');
+    $selectedAssessmentPurpose = old('assessment_purpose', $config['assessment_purpose'] ?? 'formative');
     $selectedClassroomIds = collect(old('classroom_ids', $exam->audience['classrooms'] ?? []))->map(fn ($id) => (int) $id);
     $formatDateTimeInput = static function ($value): string {
         if (blank($value)) {
@@ -54,7 +55,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="exam-question-index-section">
                 <p class="exam-studio-label">@lang('Mindigo-exam-management::app.question_index_label')</p>
                 <div class="exam-question-index" data-exam-question-index></div>
             </div>
@@ -74,6 +75,20 @@
 
             <article class="exam-builder-card exam-panel-card is-highlight" id="exam-part-source" data-exam-part="source">
                 <div class="exam-section-head"><span>01</span><div><h2>@lang('Mindigo-exam-management::app.generation')</h2><p>@lang('Mindigo-exam-management::app.generation_desc')</p></div></div>
+                <div class="mt-5">
+                    <div class="flex flex-wrap items-end justify-between gap-3"><div><h3 class="text-sm font-black text-slate-800">@lang('Mindigo-exam-management::app.assessment_blueprints')</h3><p class="mt-1 text-xs font-semibold text-slate-500">@lang('Mindigo-exam-management::app.assessment_blueprints_desc')</p></div><span class="rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-black text-slate-500">@lang('Mindigo-exam-management::app.customizable_after_apply')</span></div>
+                    <input type="hidden" name="assessment_purpose" value="{{ $selectedAssessmentPurpose }}" data-exam-assessment-purpose>
+                    <div class="exam-blueprint-grid mt-3">
+                        @foreach([
+                            'diagnostic' => ['single_choice' => 12, 'multiple_choice' => 0, 'true_false' => 8, 'short_answer' => 0, 'essay' => 0, 'duration' => 20, 'passing' => 0],
+                            'formative' => ['single_choice' => 20, 'multiple_choice' => 5, 'true_false' => 5, 'short_answer' => 0, 'essay' => 0, 'duration' => 30, 'passing' => 7],
+                            'summative' => ['single_choice' => 30, 'multiple_choice' => 10, 'true_false' => 10, 'short_answer' => 5, 'essay' => 5, 'duration' => 90, 'passing' => 30],
+                            'final' => ['single_choice' => 50, 'multiple_choice' => 15, 'true_false' => 15, 'short_answer' => 10, 'essay' => 10, 'duration' => 120, 'passing' => 50],
+                        ] as $purpose => $blueprint)
+                            <button type="button" class="exam-blueprint-card {{ $selectedAssessmentPurpose === $purpose ? 'is-active' : '' }}" data-exam-blueprint data-purpose="{{ $purpose }}" data-counts='@json(collect($blueprint)->except(['duration', 'passing']))' data-duration="{{ $blueprint['duration'] }}" data-passing="{{ $blueprint['passing'] }}"><span>@lang('Mindigo-exam-management::app.assessment_purposes.'.$purpose)</span><strong>@lang('Mindigo-exam-management::app.assessment_blueprint_questions', ['count' => collect($blueprint)->except(['duration', 'passing'])->sum()])</strong><small>@lang('Mindigo-exam-management::app.assessment_blueprint_minutes', ['minutes' => $blueprint['duration']])</small></button>
+                        @endforeach
+                    </div>
+                </div>
                 <div class="exam-source-tools mt-5">
                     <button type="button" class="exam-source-tool is-active" data-exam-source-mode="bank"><span class="bg-green-50 text-green-700"><x-heroicon-o-circle-stack class="h-5 w-5" /></span><strong>@lang('Mindigo-exam-management::app.source_bank')</strong><small>@lang('Mindigo-exam-management::app.source_bank_desc')</small></button>
                     @if(Route::has('teacher.questions.import'))<a href="{{ route('teacher.questions.import') }}" class="exam-source-tool"><span class="bg-sky-50 text-sky-700"><x-heroicon-o-arrow-up-tray class="h-5 w-5" /></span><strong>@lang('Mindigo-exam-management::app.source_import')</strong><small>@lang('Mindigo-exam-management::app.source_import_desc')</small></a>@endif
@@ -109,7 +124,7 @@
                     <label class="exam-field"><span>@lang('Mindigo-exam-management::app.generation_difficulty')</span><select name="generation_difficulty" class="exam-select"><option value="">@lang('Mindigo-exam-management::app.any_difficulty')</option>@foreach($difficulties as $difficulty)<option value="{{ $difficulty }}" @selected(old('generation_difficulty', $config['difficulty'] ?? '') === $difficulty)>@lang('Mindigo-exam-management::app.difficulties.' . $difficulty)</option>@endforeach</select></label>
                 </div>
 
-                <div class="mt-5 flex items-center justify-between gap-3"><h3 class="text-sm font-black text-slate-800">@lang('Mindigo-exam-management::app.question_structure') <span class="exam-required" aria-hidden="true">*</span></h3><span class="text-xs font-semibold text-slate-400">@lang('Mindigo-exam-management::app.required_hint')</span></div>
+                <div class="mt-5 flex items-center justify-between gap-3"><div><h3 class="text-sm font-black text-slate-800">@lang('Mindigo-exam-management::app.question_structure') <span class="exam-required" aria-hidden="true">*</span></h3><p class="mt-1 text-xs font-semibold text-slate-500">@lang('Mindigo-exam-management::app.question_structure_help')</p></div><span class="text-xs font-semibold text-slate-400">@lang('Mindigo-exam-management::app.required_hint')</span></div>
                 <div class="exam-type-grid mt-3">
                     @foreach($types as $type)
                         <article class="exam-type-card" id="exam-type-{{ $type }}" data-exam-question-target>
@@ -122,6 +137,7 @@
                         </article>
                     @endforeach
                 </div>
+                <div class="exam-structure-summary mt-4"><span><small>@lang('Mindigo-exam-management::app.total_questions')</small><strong data-exam-structure-total>{{ $totalRequested }}</strong></span><span><small>@lang('Mindigo-exam-management::app.total_points')</small><strong data-exam-structure-points>0</strong></span><span><small>@lang('Mindigo-exam-management::app.objective_ratio')</small><strong data-exam-objective-ratio>0%</strong></span></div>
 
                 @if($editing)
                     <label class="exam-toggle mt-5"><input type="checkbox" name="regenerate_questions" value="1"><span></span><strong>@lang('Mindigo-exam-management::app.regenerate_questions')</strong></label>
