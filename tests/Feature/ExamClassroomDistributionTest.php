@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mindigo\ExamManagement\Models\Exam;
+use Mindigo\ExamManagement\Services\ExamService as ExamManagementService;
 use Mindigo\StudentExam\Services\ExamService;
 use Mindigo\TeacherClassroom\Models\Classroom;
 use Tests\TestCase;
@@ -50,5 +51,25 @@ class ExamClassroomDistributionTest extends TestCase
         ]);
 
         $this->assertFalse(app(ExamService::class)->isEnrolledInExamClassroom($exam, $student->id));
+    }
+
+    public function test_exam_builder_lists_only_owned_active_classrooms_with_active_student_count(): void
+    {
+        $teacher = $this->createUser(['role' => 'teacher']);
+        $otherTeacher = $this->createUser(['role' => 'teacher']);
+        $activeStudent = $this->createUser(['role' => 'student']);
+        $inactiveStudent = $this->createUser(['role' => 'student']);
+
+        $owned = Classroom::query()->create(['created_by' => $teacher->id, 'teacher_id' => $teacher->id, 'name' => 'Owned active', 'code' => 'OWN-ACTIVE', 'slug' => 'owned-active', 'status' => 'active']);
+        $owned->students()->attach($activeStudent->id, ['status' => 'active', 'joined_at' => now()]);
+        $owned->students()->attach($inactiveStudent->id, ['status' => 'inactive', 'joined_at' => now()]);
+        Classroom::query()->create(['created_by' => $teacher->id, 'teacher_id' => $teacher->id, 'name' => 'Owned inactive', 'code' => 'OWN-INACTIVE', 'slug' => 'owned-inactive', 'status' => 'inactive']);
+        Classroom::query()->create(['created_by' => $otherTeacher->id, 'teacher_id' => $otherTeacher->id, 'name' => 'Foreign active', 'code' => 'FOREIGN-ACTIVE', 'slug' => 'foreign-active', 'status' => 'active']);
+
+        $classrooms = app(ExamManagementService::class)->formData($teacher)['classrooms'];
+
+        $this->assertCount(1, $classrooms);
+        $this->assertTrue($classrooms->first()->is($owned));
+        $this->assertSame(1, $classrooms->first()->students_count);
     }
 }

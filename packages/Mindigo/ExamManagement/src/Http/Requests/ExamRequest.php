@@ -37,7 +37,14 @@ class ExamRequest extends FormRequest
             'shuffle_answers' => ['nullable', 'boolean'],
             'show_results' => ['nullable', 'boolean'],
             'classroom_ids' => ['required', 'array', 'min:1'],
-            'classroom_ids.*' => ['integer', 'distinct', 'exists:classrooms,id'],
+            'classroom_ids.*' => [
+                'integer',
+                'distinct',
+                Rule::exists('classrooms', 'id')->where(fn ($query) => $query
+                    ->where('teacher_id', $this->user()?->getAuthIdentifier())
+                    ->where('status', 'active')
+                    ->whereNull('deleted_at')),
+            ],
             'folder_id' => ['nullable', 'exists:question_bank_folders,id'],
             'generation_subject' => ['nullable', 'string', 'max:150'],
             'generation_topic' => ['nullable', 'string', 'max:150'],
