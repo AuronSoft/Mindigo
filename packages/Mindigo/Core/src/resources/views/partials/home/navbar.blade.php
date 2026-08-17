@@ -1,32 +1,25 @@
 {{-- Navbar --}}
-<nav class="border-b border-gray-100 bg-white sticky top-0 z-50">
+<nav class="sticky top-0 z-50 bg-[#f7c86f]">
     <div class="max-w-7xl mx-auto flex items-center justify-between px-10 py-3">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
-            <svg width="36" height="36" viewBox="0 0 200 220" fill="none">
-                <path d="M48 160 L22 148 L38 158 L16 152 L35 164" fill="#15803d" stroke="#14532d" stroke-width="1"/>
-                <circle cx="105" cy="145" r="90" fill="#22c55e" stroke="#14532d" stroke-width="3"/>
-                <ellipse cx="115" cy="185" rx="55" ry="38" fill="#86efac" stroke="#14532d" stroke-width="2"/>
-                <ellipse cx="80" cy="170" rx="12" ry="9" fill="#16a34a" opacity="0.5"/>
-                <ellipse cx="110" cy="175" rx="10" ry="7" fill="#16a34a" opacity="0.4"/>
-                <path d="M95 58 Q85 20 105 8 Q118 22 112 58" fill="#16a34a" stroke="#14532d" stroke-width="2.5" stroke-linejoin="round"/>
-                <path d="M108 55 Q100 18 118 10 Q128 26 120 56" fill="#22c55e" stroke="#14532d" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M52 118 L95 108 L88 128 Z" fill="#14532d"/>
-                <path d="M148 118 L108 108 L114 128 Z" fill="#14532d"/>
-                <circle cx="82" cy="135" r="20" fill="white" stroke="#14532d" stroke-width="2"/>
-                <circle cx="86" cy="138" r="12" fill="#14532d"/>
-                <circle cx="91" cy="132" r="5" fill="white"/>
-                <circle cx="128" cy="135" r="20" fill="white" stroke="#14532d" stroke-width="2"/>
-                <circle cx="132" cy="138" r="12" fill="#14532d"/>
-                <circle cx="137" cy="132" r="5" fill="white"/>
-                <path d="M85 158 Q105 148 130 158 L118 175 Q105 180 92 175 Z" fill="#f59e0b" stroke="#14532d" stroke-width="2"/>
-                <path d="M92 175 Q105 182 118 175 L112 190 Q105 195 98 190 Z" fill="#d97706" stroke="#14532d" stroke-width="2"/>
+            <svg class="h-10 w-10" viewBox="0 0 96 96" fill="none" aria-label="Mindigo">
+                <path d="M23 64 7 56l8 13-7 10 19-5" fill="#2563a8" stroke="#0f2346" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M38 22C25 8 40 3 50 19 48 3 64 4 63 24" fill="#5aa9df" stroke="#0f2346" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="49" cy="54" r="37" fill="#4f98d1" stroke="#0f2346" stroke-width="5"/>
+                <path d="M20 61c5 20 21 30 39 29 12-1 22-6 29-15-13 7-28 9-42 5-13-3-21-10-26-19Z" fill="#337fbd"/>
+                <ellipse cx="42" cy="48" rx="15" ry="17" fill="#fff" stroke="#0f2346" stroke-width="4"/>
+                <ellipse cx="64" cy="48" rx="15" ry="17" fill="#fff" stroke="#0f2346" stroke-width="4"/>
+                <circle cx="47" cy="50" r="5" fill="#0f172a"/><circle cx="68" cy="50" r="5" fill="#0f172a"/>
+                <circle cx="49" cy="48" r="1.5" fill="#fff"/><circle cx="70" cy="48" r="1.5" fill="#fff"/>
+                <path d="M33 58c7 5 14 7 20 5l4 17c-12-2-21-9-24-22Z" fill="#e94e1b" stroke="#401b19" stroke-width="4" stroke-linejoin="round"/>
+                <path d="m51 63 38 13-32-25-18 13 18 15" fill="#f9a825" stroke="#401b19" stroke-width="4" stroke-linejoin="round"/>
             </svg>
-            <span class="text-xl font-black text-green-600 tracking-tight">Mindigo</span>
+            <span class="text-xl font-black tracking-tight text-blue-600">Mindigo</span>
         </a>
         <div class="hidden md:flex items-center gap-1">
             <div class="relative group">
                 <button type="button"
-                    class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition flex items-center gap-1.5"
+                    class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition flex items-center gap-1.5"
                     aria-haspopup="true">
                     @lang('core::app.navbar.features')
                     <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -38,11 +31,11 @@
                     <div class="bg-white border border-gray-100 rounded-3xl shadow-[0_24px_70px_rgba(15,23,42,0.18)] overflow-hidden">
                         <div class="px-8 pt-7 pb-5 flex items-start justify-between gap-8 border-b border-gray-100">
                             <div>
-                                <p class="text-[11px] font-black uppercase tracking-[0.16em] text-green-600 mb-1.5">@lang('core::app.navbar.mega.eyebrow')</p>
+                                <p class="text-[11px] font-black uppercase tracking-[0.16em] text-blue-600 mb-1.5">@lang('core::app.navbar.mega.eyebrow')</p>
                                 <h3 class="text-xl font-black text-gray-900">@lang('core::app.navbar.mega.title')</h3>
                                 <p class="text-xs text-gray-500 mt-1.5">@lang('core::app.navbar.mega.subtitle')</p>
                             </div>
-                            <a href="#features" class="shrink-0 flex items-center gap-2 border border-green-200 text-green-700 bg-green-50 hover:bg-green-100 font-black text-xs px-4 py-2.5 rounded-xl transition">
+                            <a href="#features" class="shrink-0 flex items-center gap-2 border border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 font-black text-xs px-4 py-2.5 rounded-xl transition">
                                 @lang('core::app.navbar.mega.overview')
                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </a>
@@ -69,14 +62,14 @@
 
                         <div class="grid grid-cols-4 gap-x-5 gap-y-2 px-7 py-5">
                             @foreach($megaItems as $index => $item)
-                                <a href="#features" class="group/item flex gap-3 p-3 rounded-2xl hover:bg-green-50 transition">
-                                    <span class="w-9 h-9 rounded-xl bg-green-50 border border-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover/item:bg-green-500 group-hover/item:text-white transition">
+                                <a href="#features" class="group/item flex gap-3 p-3 rounded-2xl hover:bg-blue-50 transition">
+                                    <span class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0 group-hover/item:bg-blue-500 group-hover/item:text-white transition">
                                         <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                                             <path d="{{ $megaIcons[$index] }}" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
                                         </svg>
                                     </span>
                                     <span>
-                                        <span class="block text-[13px] font-black text-gray-800 group-hover/item:text-green-700">{{ $item['title'] }}</span>
+                                        <span class="block text-[13px] font-black text-gray-800 group-hover/item:text-blue-700">{{ $item['title'] }}</span>
                                         <span class="block text-[11px] leading-relaxed text-gray-500 mt-0.5">{{ $item['desc'] }}</span>
                                     </span>
                                 </a>
@@ -105,28 +98,28 @@
                     </div>
                 </div>
             </div>
-            <a href="{{ route('courses.index') }}" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.explore')</a>
+            <a href="{{ route('courses.index') }}" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition">@lang('core::app.navbar.explore')</a>
             @if(Route::has('teacher-applications.create'))
-                <a href="{{ route('teacher-applications.create', [], false) }}" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.become_teacher')</a>
+                <a href="{{ route('teacher-applications.create', [], false) }}" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition">@lang('core::app.navbar.become_teacher')</a>
             @endif
-            <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.exam_prep')</a>
-            <a href="#" id="btn-pricing" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.pricing')</a>
-            <a href="#" id="btn-news" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.news')</a>
-            <a href="#" id="btn-contact" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-green-50 hover:text-green-600 transition">@lang('core::app.navbar.contact')</a>
+            <a href="#" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition">@lang('core::app.navbar.exam_prep')</a>
+            <a href="#" id="btn-pricing" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition">@lang('core::app.navbar.pricing')</a>
+            <a href="#" id="btn-news" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition">@lang('core::app.navbar.news')</a>
+            <a href="#" id="btn-contact" class="nav-link text-gray-600 font-bold text-sm px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition">@lang('core::app.navbar.contact')</a>
         </div>
 
         <div class="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
             <a href="{{ route('lang.switch', ['locale' => 'vi'], false) }}"
-               class="text-xs font-black px-3 py-1.5 rounded-lg transition-all {{ app()->getLocale() === 'vi' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-600' }}">
+               class="text-xs font-black px-3 py-1.5 rounded-lg transition-all {{ app()->getLocale() === 'vi' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-400 hover:text-blue-600' }}">
                 VI
             </a>
             <a href="{{ route('lang.switch', ['locale' => 'en'], false) }}"
-               class="text-xs font-black px-3 py-1.5 rounded-lg transition-all {{ app()->getLocale() === 'en' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-400 hover:text-gray-600' }}">
+               class="text-xs font-black px-3 py-1.5 rounded-lg transition-all {{ app()->getLocale() === 'en' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-400 hover:text-blue-600' }}">
                 EN
             </a>
         </div>
 
-        <a href="{{ route('login', [], false) }}" class="bg-green-500 hover:bg-green-400 active:bg-green-600 text-white font-black text-sm px-5 py-2.5 rounded-xl shadow-[0_4px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 active:shadow-none active:translate-y-1 transition-all">
+        <a href="{{ route('login', [], false) }}" class="rounded-full bg-blue-500 px-6 py-2.5 text-sm font-black text-white shadow-[0_5px_0_#9a3412] transition-all hover:-translate-y-0.5 hover:bg-blue-400 hover:shadow-[0_7px_0_#9a3412] active:translate-y-1 active:shadow-none">
             @lang('core::app.navbar.login')
         </a>
     </div>

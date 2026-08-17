@@ -1,6 +1,24 @@
 <?php
 
 return [
+    'home_redesign' => [
+        'courses' => 'khóa học',
+        'hero_line_1' => 'Phát triển',
+        'hero_highlight' => 'kỹ năng',
+        'hero_line_2' => 'từ nguồn học',
+        'hero_line_3' => 'liệu tốt nhất',
+        'hero_description' => 'Mỗi người đều có thể trưởng thành với nền tảng học tập giúp mở rộng kiến thức, rèn luyện kỹ năng và xây dựng tương lai tốt đẹp hơn.',
+        'enroll' => 'Đăng ký khóa học',
+        'illustration_alt' => 'Học viên học tập bên bàn và kệ sách',
+        'features_title' => 'Những tính năng được thiết kế riêng cho bạn',
+        'features_description' => 'Khám phá trải nghiệm học tập tập trung, hỗ trợ cá nhân và khả năng truy cập linh hoạt được thiết kế theo cách bạn học hiệu quả nhất.',
+        'view_courses' => 'Xem tất cả khóa học',
+        'feature_cards' => [
+            ['title' => 'Nhận chứng chỉ và bổ sung vào hồ sơ', 'description' => 'Hoàn thành lộ trình học tập, xác nhận năng lực và củng cố hồ sơ phát triển nghề nghiệp của bạn.'],
+            ['title' => 'Hỗ trợ riêng một-một cho học viên', 'description' => 'Kết nối trực tiếp với giảng viên và nhận hướng dẫn phù hợp trong suốt hành trình học tập.'],
+            ['title' => 'Truy cập trọn đời các khóa học đã đăng ký', 'description' => 'Xem lại học liệu bất cứ lúc nào và tiếp tục tiến bộ theo tốc độ phù hợp với chính bạn.'],
+        ],
+    ],
     'processing' => [
         'label' => 'Hệ thống đang xử lý',
         'loading' => 'Đang tải nội dung...',
