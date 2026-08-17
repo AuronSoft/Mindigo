@@ -43,23 +43,28 @@ if (onboarding) {
             window.setTimeout(() => {
                 nextElement.classList.remove('is-entering');
                 isTransitioning = false;
+                startAutoplay();
             }, reduceMotion ? 0 : 900);
         }, transitionDelay);
     };
 
     const startAutoplay = () => {
         if (reduceMotion) return;
-        window.clearInterval(autoplay);
-        autoplay = window.setInterval(() => showSlide(activeSlide + 1), 6000);
+        window.clearTimeout(autoplay);
+        autoplay = window.setTimeout(() => showSlide(activeSlide + 1), 1500);
     };
 
     dots.forEach((dot, index) => dot.addEventListener('click', () => {
-        showSlide(index);
-        startAutoplay();
+        window.clearTimeout(autoplay);
+        if (index === activeSlide) {
+            startAutoplay();
+        } else {
+            showSlide(index);
+        }
     }));
-    onboarding.addEventListener('mouseenter', () => window.clearInterval(autoplay));
+    onboarding.addEventListener('mouseenter', () => window.clearTimeout(autoplay));
     onboarding.addEventListener('mouseleave', startAutoplay);
-    document.addEventListener('visibilitychange', () => document.hidden ? window.clearInterval(autoplay) : startAutoplay());
+    document.addEventListener('visibilitychange', () => document.hidden ? window.clearTimeout(autoplay) : startAutoplay());
     startAutoplay();
 }
 
