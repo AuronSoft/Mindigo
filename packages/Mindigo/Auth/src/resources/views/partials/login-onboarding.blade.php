@@ -22,6 +22,45 @@
                     <span class="onboarding-orbit onboarding-orbit--one"></span>
                     <span class="onboarding-orbit onboarding-orbit--two"></span>
 
+                    @if ($slide === 'classroom')
+                        <div class="onboarding-two-scene">
+                            <div class="onboarding-two-card onboarding-two-card--activity">
+                                <div class="onboarding-two-card__header">
+                                    <div><small>@lang('Mindigo-auth::app.onboarding.classroom.activity_label')</small><strong><span>●</span> @lang('Mindigo-auth::app.onboarding.classroom.activity_total')</strong></div>
+                                    <button type="button" tabindex="-1" aria-hidden="true">+</button>
+                                </div>
+                                <div class="onboarding-two-course">
+                                    <span class="onboarding-two-course__thumb onboarding-two-course__thumb--one"><i></i><b></b></span>
+                                    <div><strong>@lang('Mindigo-auth::app.onboarding.classroom.course_one')</strong><small>@lang('Mindigo-auth::app.onboarding.classroom.course_one_meta')</small></div>
+                                    <b>@lang('Mindigo-auth::app.onboarding.duration', ['minutes' => 45])</b>
+                                </div>
+                                <div class="onboarding-two-course">
+                                    <span class="onboarding-two-course__thumb onboarding-two-course__thumb--two"><i></i><b></b></span>
+                                    <div><strong>@lang('Mindigo-auth::app.onboarding.classroom.course_two')</strong><small>@lang('Mindigo-auth::app.onboarding.classroom.course_two_meta')</small></div>
+                                    <b>@lang('Mindigo-auth::app.onboarding.duration', ['minutes' => 30])</b>
+                                </div>
+                                <div class="onboarding-two-progress"><span></span></div>
+                            </div>
+
+                            <div class="onboarding-two-card onboarding-two-card--stat">
+                                <small>@lang('Mindigo-auth::app.onboarding.classroom.stat_label')</small>
+                                <strong>103</strong>
+                                <span>@lang('Mindigo-auth::app.onboarding.classroom.stat_unit')</span>
+                                <div class="onboarding-two-chart">
+                                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                                </div>
+                                <b>@lang('Mindigo-auth::app.onboarding.classroom.stat_change')</b>
+                            </div>
+
+                            <div class="onboarding-two-card onboarding-two-card--notice">
+                                <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v18H7zM10 7h4m-4 4h4m-4 4h3"/></svg></span>
+                                <div><strong>@lang('Mindigo-auth::app.onboarding.classroom.notice_title')</strong><small>@lang('Mindigo-auth::app.onboarding.classroom.notice_meta')</small></div>
+                                <i></i>
+                                <img class="onboarding-two-character" src="{{ asset('images/auth/mindigo-onboarding-learner.png') }}" alt="" loading="eager">
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="onboarding-card onboarding-card--main">
                         <span class="onboarding-card__sheet onboarding-card__sheet--one"></span>
                         <span class="onboarding-card__sheet onboarding-card__sheet--two"></span>
@@ -54,7 +93,7 @@
                             <div class="onboarding-card__summary">
                                 <span class="onboarding-card__date">{{ $index === 0 ? '18' : ($index === 1 ? '24' : '92%') }}</span>
                                 <div class="onboarding-card__lines"><i></i><i></i><i></i></div>
-                                <span class="onboarding-card__trend">{{ $index === 2 ? '+8%' : 'Live' }}</span>
+                                <span class="onboarding-card__trend">{{ $index === 2 ? '+8%' : __('Mindigo-auth::app.onboarding.live') }}</span>
                             </div>
                         </div>
                         <div class="onboarding-card__row"><span>1</span><i></i><b>08:00</b></div>

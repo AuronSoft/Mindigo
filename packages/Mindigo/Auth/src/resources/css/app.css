@@ -31,8 +31,30 @@
 .login-onboarding__shape--two { width: 18rem; height: 15rem; right: -7rem; bottom: 8%; border-radius: 6rem 2rem 7rem 3rem; background: #86efac; transform: rotate(24deg); }
 .login-onboarding__shape--three { width: 12rem; height: 5rem; top: 37%; left: 8%; border-radius: 1rem 4rem 1rem 4rem; background: #fef08a; transform: rotate(-32deg); opacity: .08; }
 .login-onboarding__track { position: relative; width: 100%; min-height: 100vh; }
-.login-onboarding__slide { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3.5rem 3rem 5rem; opacity: 0; visibility: hidden; transform: translateX(2rem) scale(.985); transition: opacity .55s ease, transform .55s ease, visibility .55s; }
-.login-onboarding__slide.is-active { opacity: 1; visibility: visible; transform: translateX(0) scale(1); }
+.login-onboarding__slide { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3.5rem 3rem 5rem; opacity: 0; visibility: hidden; transform: scale(.82) rotate(-8deg); transform-origin: 50% 42%; }
+.login-onboarding__slide.is-active { opacity: 1; visibility: visible; transform: scale(1) rotate(0); }
+.login-onboarding__slide.is-leaving { visibility: visible; pointer-events: none; animation: onboarding-slide-out .72s cubic-bezier(.55,.02,.78,.2) forwards; }
+.login-onboarding__slide.is-entering { animation: onboarding-slide-in .88s cubic-bezier(.16,1,.3,1) both; }
+.login-onboarding__slide.is-leaving .onboarding-card--main { animation: onboarding-card-collapse .72s cubic-bezier(.55,.02,.78,.2) forwards; }
+.login-onboarding__slide.is-leaving .onboarding-card--mini-one { animation: onboarding-scatter-left .68s ease-in forwards; }
+.login-onboarding__slide.is-leaving .onboarding-card--mini-two { animation: onboarding-scatter-right .68s ease-in forwards; }
+.login-onboarding__slide.is-leaving .onboarding-brand-mark { animation: onboarding-scatter-top .62s ease-in forwards; }
+.login-onboarding__slide.is-leaving .onboarding-confetti:nth-of-type(odd), .login-onboarding__slide.is-leaving .onboarding-spark { animation: onboarding-particle-burst-left .65s ease-in forwards; }
+.login-onboarding__slide.is-leaving .onboarding-confetti:nth-of-type(even), .login-onboarding__slide.is-leaving .onboarding-ribbon { animation: onboarding-particle-burst-right .65s ease-in forwards; }
+.login-onboarding__slide.is-leaving .onboarding-two-card--activity { animation: onboarding-two-exit-main .68s cubic-bezier(.55,.02,.78,.2) forwards; }
+.login-onboarding__slide.is-leaving .onboarding-two-card--stat { animation: onboarding-two-exit-stat .62s ease-in forwards; }
+.login-onboarding__slide.is-leaving .onboarding-two-card--notice { animation: onboarding-two-exit-notice .58s ease-in forwards; }
+.login-onboarding__slide.is-leaving .onboarding-two-character { animation: onboarding-two-exit-character .62s ease-in forwards; }
+.login-onboarding__slide.is-leaving .login-onboarding__copy { animation: onboarding-copy-out .4s ease-in forwards; }
+.login-onboarding__slide.is-entering .onboarding-card--main { animation: onboarding-enter-main .82s .08s cubic-bezier(.16,1,.3,1) both; }
+.login-onboarding__slide.is-entering .onboarding-card--mini-one { animation: onboarding-enter-left .7s .24s cubic-bezier(.16,1,.3,1) both; }
+.login-onboarding__slide.is-entering .onboarding-card--mini-two { animation: onboarding-enter-right .7s .32s cubic-bezier(.16,1,.3,1) both; }
+.login-onboarding__slide.is-entering .onboarding-brand-mark { animation: onboarding-enter-pop .58s .42s cubic-bezier(.16,1,.3,1) both; }
+.login-onboarding__slide.is-entering .onboarding-two-card--activity { animation: onboarding-two-enter-main .78s .08s cubic-bezier(.16,1,.3,1) both; }
+.login-onboarding__slide.is-entering .onboarding-two-card--stat { animation: onboarding-two-enter-stat .7s .24s cubic-bezier(.16,1,.3,1) both; }
+.login-onboarding__slide.is-entering .onboarding-two-card--notice { animation: onboarding-two-enter-notice .66s .34s cubic-bezier(.16,1,.3,1) both; }
+.login-onboarding__slide.is-entering .onboarding-two-character { animation: onboarding-two-enter-character .72s .3s cubic-bezier(.16,1,.3,1) both; }
+.login-onboarding__slide.is-entering .login-onboarding__copy { animation: onboarding-copy-in .65s .35s cubic-bezier(.16,1,.3,1) both; }
 .onboarding-visual { position: relative; width: min(40vw, 32rem); height: min(47vh, 27rem); min-width: 25rem; min-height: 23rem; margin-bottom: .25rem; perspective: 1100px; }
 .onboarding-card { position: absolute; color: #172033; background: linear-gradient(145deg, #fff, #fbfffc); border: 1px solid rgb(255 255 255 / 88%); box-shadow: 0 1.8rem 4rem rgb(5 46 22 / 25%), 0 .2rem .6rem rgb(5 46 22 / 10%); }
 .onboarding-card--main { top: 2%; left: 46%; width: 18.25rem; min-height: 18rem; padding: 1.05rem; border-radius: 1.25rem; transform: translateX(-53%) rotate(-6deg); animation: onboarding-float 5.6s ease-in-out infinite; }
@@ -90,7 +112,16 @@
 .onboarding-orbit--one { left: 9%; top: 29%; }.onboarding-orbit--two { right: 8%; bottom: 25%; width: 1.4rem; height: 1.4rem; animation-direction: reverse; animation-duration: 5s; }
 .onboarding-pointer { position: absolute; z-index: 5; left: 64%; top: 56%; animation: onboarding-pointer 5.6s ease-in-out infinite; filter: drop-shadow(0 .35rem .45rem rgb(18 32 82 / 28%)); }
 .onboarding-pointer svg { width: 1.75rem; fill: #fff; stroke: #15803d; stroke-width: 1.1; }.onboarding-pointer span { position: absolute; width: 1.5rem; height: 1.5rem; top: .1rem; left: -.25rem; border: 2px solid rgb(255 255 255 / 70%); border-radius: 50%; opacity: 0; animation: onboarding-click 5.6s ease-out infinite; }
-.onboarding-visual--classroom .onboarding-card__hero { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }.onboarding-visual--classroom .onboarding-card__date { color: #2563eb; }
+.onboarding-visual--classroom > .onboarding-card, .onboarding-visual--classroom > .onboarding-brand-mark, .onboarding-visual--classroom > .onboarding-pointer, .onboarding-visual--classroom > .onboarding-orbit { display: none; }
+.onboarding-two-scene { position: absolute; inset: 0; transform: rotate(-2deg); }
+.onboarding-two-card { position: absolute; color: #172033; background: #fff; border: 1px solid rgb(255 255 255 / 88%); box-shadow: 0 1.5rem 3.2rem rgb(5 46 22 / 24%), 0 .2rem .6rem rgb(5 46 22 / 10%); }
+.onboarding-two-card--activity { top: 6%; left: 4%; width: 18.5rem; min-height: 17.5rem; padding: 1.1rem; border-radius: 1.2rem; transform: rotate(-3deg); animation: onboarding-two-card-float 5.4s ease-in-out infinite; }
+.onboarding-two-card__header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: .8rem; border-bottom: 1px solid #eef1f6; }.onboarding-two-card__header div { display: flex; flex-direction: column; gap: .25rem; }.onboarding-two-card__header small, .onboarding-two-card--stat small { color: #94a3b8; font-size: .48rem; font-weight: 900; letter-spacing: .08em; }.onboarding-two-card__header strong { font-size: .72rem; }.onboarding-two-card__header strong span { color: #22c55e; font-size: .55rem; }.onboarding-two-card__header button { display: grid; width: 1.65rem; height: 1.65rem; place-items: center; border: 0; border-radius: .5rem; color: #7c3aed; font-weight: 900; background: #f3e8ff; }
+.onboarding-two-course { display: grid; grid-template-columns: 3.25rem 1fr auto; align-items: center; gap: .65rem; padding: .8rem 0; border-bottom: 1px solid #f1f5f9; }.onboarding-two-course__thumb { position: relative; display: block; width: 3.25rem; height: 2.8rem; overflow: hidden; border-radius: .65rem; background: linear-gradient(145deg, #fef3c7, #fbbf24); }.onboarding-two-course__thumb::before { content: ""; position: absolute; width: 2rem; height: 2rem; left: .2rem; bottom: -.45rem; border-radius: 50%; background: #fb7185; }.onboarding-two-course__thumb i { position: absolute; width: 1.5rem; height: .55rem; right: .2rem; top: .45rem; border-radius: 99px; background: rgb(255 255 255 / 75%); transform: rotate(-18deg); }.onboarding-two-course__thumb b { position: absolute; width: .75rem; height: .75rem; left: .45rem; top: .35rem; border-radius: 50%; background: #86efac; }.onboarding-two-course__thumb--two { background: linear-gradient(145deg, #dcfce7, #4ade80); }.onboarding-two-course__thumb--two::before { background: #8b5cf6; }.onboarding-two-course > div { display: flex; min-width: 0; flex-direction: column; gap: .18rem; }.onboarding-two-course strong { font-size: .62rem; }.onboarding-two-course small { color: #94a3b8; font-size: .46rem; }.onboarding-two-course > b { color: #16a34a; font-size: .48rem; }
+.onboarding-two-progress { margin-top: .9rem; height: .42rem; overflow: hidden; border-radius: 99px; background: #e8f5ec; }.onboarding-two-progress span { display: block; width: 72%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #22c55e, #86efac); animation: onboarding-progress 3.5s ease-in-out infinite; }
+.onboarding-two-card--stat { top: 13%; right: 0; display: flex; width: 9.2rem; min-height: 12rem; flex-direction: column; padding: 1rem; border-radius: 1.05rem; color: #fff; background: linear-gradient(155deg, #fb7185, #ef5f68); transform: rotate(6deg); animation: onboarding-two-stat-float 4.8s ease-in-out infinite; }.onboarding-two-card--stat small { color: #ffe4e6; }.onboarding-two-card--stat > strong { margin-top: .7rem; font-size: 2rem; line-height: 1; }.onboarding-two-card--stat > span { margin-top: .15rem; color: #ffe4e6; font-size: .52rem; }.onboarding-two-chart { display: flex; height: 3.5rem; align-items: end; gap: .24rem; margin: .75rem 0; }.onboarding-two-chart i { width: .45rem; border-radius: 99px; background: rgb(255 255 255 / 48%); }.onboarding-two-chart i:nth-child(1) { height: 35%; }.onboarding-two-chart i:nth-child(2) { height: 68%; }.onboarding-two-chart i:nth-child(3) { height: 50%; }.onboarding-two-chart i:nth-child(4) { height: 88%; }.onboarding-two-chart i:nth-child(5) { height: 62%; }.onboarding-two-chart i:nth-child(6) { height: 76%; }.onboarding-two-chart i:nth-child(7) { height: 45%; }.onboarding-two-card--stat > b { font-size: .48rem; }
+.onboarding-two-card--notice { left: 23%; bottom: 2%; display: flex; width: 17rem; min-height: 5.25rem; align-items: center; gap: .65rem; padding: .8rem 6.4rem .8rem .8rem; overflow: visible; border-radius: 1rem; transform: rotate(1deg); animation: onboarding-float-small 4.5s ease-in-out infinite; }.onboarding-two-card--notice > span { display: grid; width: 2rem; height: 2rem; place-items: center; flex: none; border-radius: .6rem; color: #fff; background: linear-gradient(145deg, #8b5cf6, #6d28d9); }.onboarding-two-card--notice svg { width: 1rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }.onboarding-two-card--notice div { display: flex; min-width: 0; flex: 1; flex-direction: column; }.onboarding-two-card--notice strong { font-size: .58rem; line-height: 1.35; }.onboarding-two-card--notice small { color: #94a3b8; font-size: .44rem; }.onboarding-two-card--notice > i { position: absolute; top: .75rem; right: .75rem; width: .45rem; height: .45rem; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 .2rem #dcfce7; }
+.onboarding-two-character { position: absolute; z-index: 3; right: -.55rem; bottom: 0; width: 7.1rem; max-height: 8.8rem; object-fit: contain; object-position: bottom right; filter: drop-shadow(0 .8rem 1rem rgb(5 46 22 / 18%)); transform-origin: 60% 100%; animation: onboarding-character 4.8s ease-in-out infinite; }
 .onboarding-visual--progress .onboarding-card__hero { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }.onboarding-visual--progress .onboarding-card__date { color: #15803d; }
 .login-onboarding__copy { max-width: 28rem; text-align: center; }
 .login-onboarding__eyebrow { margin-bottom: .6rem; color: #bbf7d0 !important; font-size: .68rem !important; font-weight: 900; letter-spacing: .15em; text-transform: uppercase; }
@@ -108,6 +139,32 @@
 @keyframes onboarding-pointer { 0%, 18%, 100% { transform: translate(2.5rem, 2.2rem) rotate(-8deg); } 42%, 58% { transform: translate(0, 0) rotate(-8deg); } 72% { transform: translate(-1.1rem, 1rem) rotate(-8deg); } }
 @keyframes onboarding-click { 0%, 43% { opacity: 0; transform: scale(.45); } 48% { opacity: .85; transform: scale(.75); } 62% { opacity: 0; transform: scale(1.65); } 100% { opacity: 0; } }
 @keyframes onboarding-spark { 0%,100% { transform: scale(.78) rotate(0); opacity: .55; } 50% { transform: scale(1.12) rotate(45deg); opacity: 1; } }
+@keyframes onboarding-slide-out { 0% { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); } 55% { opacity: .9; transform: scale(.72) rotate(9deg); filter: blur(0); } 100% { opacity: 0; transform: scale(.08) rotate(28deg); filter: blur(5px); } }
+@keyframes onboarding-slide-in { 0% { opacity: 0; transform: scale(.18) rotate(-22deg); filter: blur(7px); } 62% { opacity: 1; transform: scale(1.035) rotate(1.5deg); filter: blur(0); } 100% { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); } }
+@keyframes onboarding-card-collapse { to { opacity: 0; transform: translateX(-53%) scale(.12) rotate(48deg); } }
+@keyframes onboarding-scatter-left { to { opacity: 0; transform: translate(-9rem, 4rem) rotate(-34deg) scale(.55); } }
+@keyframes onboarding-scatter-right { to { opacity: 0; transform: translate(10rem, 3rem) rotate(42deg) scale(.55); } }
+@keyframes onboarding-scatter-top { to { opacity: 0; transform: translate(3rem, -8rem) rotate(38deg) scale(.4); } }
+@keyframes onboarding-particle-burst-left { to { opacity: 0; translate: -8rem -4rem; rotate: -120deg; scale: .35; } }
+@keyframes onboarding-particle-burst-right { to { opacity: 0; translate: 8rem -5rem; rotate: 140deg; scale: .35; } }
+@keyframes onboarding-two-card-float { 0%,100% { transform: rotate(-3deg) translateY(0); } 50% { transform: rotate(-1.5deg) translateY(-.55rem); } }
+@keyframes onboarding-two-stat-float { 0%,100% { transform: rotate(6deg) translateY(0); } 50% { transform: rotate(3deg) translateY(-.7rem); } }
+@keyframes onboarding-character { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-.45rem) rotate(1.5deg); } }
+@keyframes onboarding-progress { 0%,100% { width: 62%; } 50% { width: 82%; } }
+@keyframes onboarding-enter-main { from { opacity: 0; transform: translateX(-53%) scale(.25) rotate(-28deg); } to { opacity: 1; transform: translateX(-53%) scale(1) rotate(-6deg); } }
+@keyframes onboarding-enter-left { from { opacity: 0; transform: translate(-7rem, 3rem) rotate(-24deg) scale(.5); } to { opacity: 1; transform: translate(0) rotate(-3deg) scale(1); } }
+@keyframes onboarding-enter-right { from { opacity: 0; transform: translate(8rem, 2rem) rotate(28deg) scale(.5); } to { opacity: 1; transform: translate(0) rotate(6deg) scale(1); } }
+@keyframes onboarding-enter-pop { from { opacity: 0; transform: scale(.1) rotate(-45deg); } 72% { opacity: 1; transform: scale(1.14) rotate(5deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes onboarding-two-exit-main { to { opacity: 0; transform: translate(-5rem, 2rem) rotate(-28deg) scale(.25); } }
+@keyframes onboarding-two-exit-stat { to { opacity: 0; transform: translate(7rem, -3rem) rotate(38deg) scale(.35); } }
+@keyframes onboarding-two-exit-notice { to { opacity: 0; transform: translateY(7rem) rotate(18deg) scale(.45); } }
+@keyframes onboarding-two-exit-character { to { opacity: 0; transform: translate(6rem, 5rem) rotate(18deg) scale(.5); } }
+@keyframes onboarding-two-enter-main { from { opacity: 0; transform: translate(-6rem, -2rem) rotate(-25deg) scale(.35); } to { opacity: 1; transform: translate(0) rotate(-3deg) scale(1); } }
+@keyframes onboarding-two-enter-stat { from { opacity: 0; transform: translate(7rem, -3rem) rotate(34deg) scale(.4); } to { opacity: 1; transform: translate(0) rotate(6deg) scale(1); } }
+@keyframes onboarding-two-enter-notice { from { opacity: 0; transform: translateY(6rem) rotate(-12deg) scale(.45); } to { opacity: 1; transform: translateY(0) rotate(1deg) scale(1); } }
+@keyframes onboarding-two-enter-character { from { opacity: 0; transform: translate(5rem, 4rem) rotate(12deg) scale(.5); } to { opacity: 1; transform: translate(0) rotate(0) scale(1); } }
+@keyframes onboarding-copy-out { to { opacity: 0; transform: translateY(1rem); } }
+@keyframes onboarding-copy-in { from { opacity: 0; transform: translateY(1.5rem); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-height: 760px) {
     .onboarding-visual { height: 21rem; min-height: 20rem; transform: scale(.82); margin: -1rem 0 -1.5rem; }
