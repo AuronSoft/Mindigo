@@ -242,6 +242,8 @@ return [
     ],
 
     'validation' => [
+        'credentials' => 'Email hoặc mật khẩu không chính xác.',
+        'throttle' => 'Quá nhiều lần thử. Vui lòng thử lại sau :seconds giây.',
         'email' => [
             'required' => 'Vui lòng nhập email.',
             'email' => 'Email không hợp lệ.',
@@ -259,6 +261,14 @@ return [
         'type' => [
             'in' => 'Loại xác thực không hợp lệ.',
         ],
+    ],
+
+    'processing' => [
+        'label' => 'Đang xác thực tài khoản',
+        'processing' => 'Đang đăng nhập...',
+        'success' => 'Đăng nhập thành công!',
+        'failed' => 'Đăng nhập chưa thành công',
+        'returning' => 'Đang quay lại màn hình đăng nhập...',
     ],
 
     'mail' => [

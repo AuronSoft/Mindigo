@@ -27,7 +27,7 @@ class LoginService
         if (RateLimiter::tooManyAttempts($key, $this->maxAttempts)) {
             $seconds = RateLimiter::availableIn($key);
             throw ValidationException::withMessages([
-                'email' => "Quá nhiều lần thử. Vui lòng thử lại sau {$seconds} giây.",
+                'email' => __('Mindigo-auth::app.validation.throttle', ['seconds' => $seconds]),
             ]);
         }
     }
@@ -43,7 +43,7 @@ class LoginService
             RateLimiter::hit($key, $this->decaySeconds);
 
             throw ValidationException::withMessages([
-                'email' => 'Email hoặc mật khẩu không chính xác.',
+                'email' => __('Mindigo-auth::app.validation.credentials'),
             ]);
         }
 
