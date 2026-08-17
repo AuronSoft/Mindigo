@@ -7,6 +7,20 @@
     <div class="login-processing__backdrop login-processing__backdrop--one"></div>
     <div class="login-processing__backdrop login-processing__backdrop--two"></div>
     <div class="login-processing__backdrop login-processing__backdrop--three"></div>
+    <div class="login-processing__academic" aria-hidden="true">
+        <i class="login-processing__cap login-processing__cap--one"></i>
+        <i class="login-processing__cap login-processing__cap--two"></i>
+        <i class="login-processing__cap login-processing__cap--three"></i>
+        <i class="login-processing__cap login-processing__cap--four"></i>
+        <i class="login-processing__cap login-processing__cap--five"></i>
+        <i class="login-processing__cap login-processing__cap--six"></i>
+        <span class="login-processing__wave login-processing__wave--one"></span>
+        <span class="login-processing__wave login-processing__wave--two"></span>
+        <span class="login-processing__book"><b></b></span>
+        <span class="login-processing__pencil"></span>
+        <span class="login-processing__orbit login-processing__orbit--one"></span>
+        <span class="login-processing__orbit login-processing__orbit--two"></span>
+    </div>
 
     <div class="login-processing__center" role="status" aria-live="polite">
         <div class="login-processing__indicator">

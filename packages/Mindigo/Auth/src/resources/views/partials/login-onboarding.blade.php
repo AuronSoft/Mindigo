@@ -6,6 +6,17 @@
     <div class="login-onboarding__backdrop login-onboarding__backdrop--left"></div>
     <div class="login-onboarding__backdrop login-onboarding__backdrop--right"></div>
     <div class="login-onboarding__backdrop login-onboarding__backdrop--bottom"></div>
+    <div class="login-onboarding__backdrop login-onboarding__backdrop--upper-right"></div>
+    <div class="login-onboarding__backdrop login-onboarding__backdrop--middle-left"></div>
+    <div class="login-onboarding__backdrop login-onboarding__backdrop--lower-left"></div>
+    <div class="login-onboarding__backdrop login-onboarding__backdrop--lower-right"></div>
+    <div class="login-onboarding__backdrop login-onboarding__backdrop--center-top"></div>
+    <div class="login-onboarding__backdrop login-onboarding__backdrop--center-bottom"></div>
+    <div class="login-onboarding__tool login-onboarding__tool--book"><i></i></div>
+    <div class="login-onboarding__tool login-onboarding__tool--pencil"></div>
+    <div class="login-onboarding__tool login-onboarding__tool--ruler"></div>
+    <div class="login-onboarding__tool login-onboarding__tool--note"><i></i><i></i><i></i></div>
+    <div class="login-onboarding__tool login-onboarding__tool--center-book"><i></i></div>
 
     <div class="login-onboarding__track">
         @foreach (['schedule', 'classroom', 'progress'] as $index => $slide)

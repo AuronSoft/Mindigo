@@ -49,7 +49,6 @@ if (onboarding) {
     };
 
     const startAutoplay = () => {
-        if (reduceMotion) return;
         window.clearTimeout(autoplay);
         autoplay = window.setTimeout(() => showSlide(activeSlide + 1), 1500);
     };
@@ -62,8 +61,6 @@ if (onboarding) {
             showSlide(index);
         }
     }));
-    onboarding.addEventListener('mouseenter', () => window.clearTimeout(autoplay));
-    onboarding.addEventListener('mouseleave', startAutoplay);
     document.addEventListener('visibilitychange', () => document.hidden ? window.clearTimeout(autoplay) : startAutoplay());
     startAutoplay();
 }
