@@ -58,15 +58,15 @@
         if (isContact) {
             contactSection.classList.add('hidden');
             homeSections.classList.remove('hidden');
-            this.classList.remove('bg-green-50', 'text-green-600');
+            this.classList.remove('bg-blue-50', 'text-blue-600');
         } else {
             homeSections.classList.add('hidden');
             newsSection.classList.add('hidden');
             pricingSection.classList.add('hidden');
             contactSection.classList.remove('hidden');
-            this.classList.add('bg-green-50', 'text-green-600');
-            if (btnNews) btnNews.classList.remove('bg-green-50', 'text-green-600');
-            if (btnPricing) btnPricing.classList.remove('bg-green-50', 'text-green-600'); 
+            this.classList.add('bg-blue-50', 'text-blue-600');
+            if (btnNews) btnNews.classList.remove('bg-blue-50', 'text-blue-600');
+            if (btnPricing) btnPricing.classList.remove('bg-blue-50', 'text-blue-600');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
@@ -86,15 +86,15 @@
         if (isNews) {
             newsSection.classList.add('hidden');
             homeSections.classList.remove('hidden');
-            this.classList.remove('bg-green-50', 'text-green-600');
+            this.classList.remove('bg-blue-50', 'text-blue-600');
         } else {
             homeSections.classList.add('hidden');
             contactSection.classList.add('hidden');
             pricingSection.classList.add('hidden'); 
             newsSection.classList.remove('hidden');
-            this.classList.add('bg-green-50', 'text-green-600');
-            if (btnContact) btnContact.classList.remove('bg-green-50', 'text-green-600');
-            if (btnPricing) btnPricing.classList.remove('bg-green-50', 'text-green-600'); 
+            this.classList.add('bg-blue-50', 'text-blue-600');
+            if (btnContact) btnContact.classList.remove('bg-blue-50', 'text-blue-600');
+            if (btnPricing) btnPricing.classList.remove('bg-blue-50', 'text-blue-600');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
@@ -114,15 +114,15 @@
         if (isPricing) {
             pricingSection.classList.add('hidden');
             homeSections.classList.remove('hidden');
-            this.classList.remove('bg-green-50', 'text-green-600');
+            this.classList.remove('bg-blue-50', 'text-blue-600');
         } else {
             homeSections.classList.add('hidden');
             contactSection.classList.add('hidden');
             newsSection.classList.add('hidden');
             pricingSection.classList.remove('hidden');
-            this.classList.add('bg-green-50', 'text-green-600');
-            if (btnContact) btnContact.classList.remove('bg-green-50', 'text-green-600');
-            if (btnNews) btnNews.classList.remove('bg-green-50', 'text-green-600');
+            this.classList.add('bg-blue-50', 'text-blue-600');
+            if (btnContact) btnContact.classList.remove('bg-blue-50', 'text-blue-600');
+            if (btnNews) btnNews.classList.remove('bg-blue-50', 'text-blue-600');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });

@@ -1,6 +1,24 @@
 <?php
 
 return [
+    'home_redesign' => [
+        'courses' => 'courses',
+        'hero_line_1' => 'Develop',
+        'hero_highlight' => 'skills',
+        'hero_line_2' => 'from the best',
+        'hero_line_3' => 'source',
+        'hero_description' => 'Everyone grows with a learning platform designed to expand knowledge, strengthen skills and build a better future.',
+        'enroll' => 'Enroll course',
+        'illustration_alt' => 'Student learning beside a desk and bookshelf',
+        'features_title' => 'Specially features are only for you',
+        'features_description' => 'Discover focused learning experiences, personal support and flexible access designed around the way you learn best.',
+        'view_courses' => 'View all courses',
+        'feature_cards' => [
+            ['title' => 'Get your certificate and add to your resume', 'description' => 'Complete structured learning paths, validate your skills and strengthen your professional profile.'],
+            ['title' => 'Premium one-to-one support for students', 'description' => 'Connect directly with instructors and receive focused guidance throughout your learning journey.'],
+            ['title' => 'Lifetime access to all your enrolled courses', 'description' => 'Return to your learning materials whenever you need and continue progressing at your own pace.'],
+        ],
+    ],
     'processing' => [
         'label' => 'The system is processing',
         'loading' => 'Loading content...',
