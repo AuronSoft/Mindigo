@@ -241,6 +241,8 @@ return [
     ],
 
     'validation' => [
+        'credentials' => 'The email or password is incorrect.',
+        'throttle' => 'Too many attempts. Please try again in :seconds seconds.',
         'email' => [
             'required' => 'Please enter your email address.',
             'email' => 'Please enter a valid email address.',
@@ -258,6 +260,14 @@ return [
         'type' => [
             'in' => 'Invalid verification type.',
         ],
+    ],
+
+    'processing' => [
+        'label' => 'Authenticating your account',
+        'processing' => 'Signing you in...',
+        'success' => 'Signed in successfully!',
+        'failed' => 'Sign-in unsuccessful',
+        'returning' => 'Returning to the sign-in screen...',
     ],
 
     'mail' => [

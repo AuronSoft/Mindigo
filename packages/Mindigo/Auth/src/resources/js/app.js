@@ -76,10 +76,79 @@ pwToggle?.addEventListener('click', () => {
         : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
 });
 
-document.getElementById('loginForm')?.addEventListener('submit', () => {
-    const btn = document.getElementById('loginBtn');
-    btn?.classList.add('loading');
-    if (btn) btn.disabled = true;
+const loginForm = document.getElementById('loginForm');
+const loginProcessing = document.querySelector('[data-login-processing]');
+const processingMessage = loginProcessing?.querySelector('[data-login-processing-message]');
+const processingDetail = loginProcessing?.querySelector('[data-login-processing-detail]');
+const wait = duration => new Promise(resolve => window.setTimeout(resolve, duration));
+
+const setProcessingState = (state, detail = '') => {
+    if (!loginProcessing || !processingMessage || !processingDetail) return;
+
+    const messageKeys = {
+        processing: 'processingMessage',
+        success: 'successMessage',
+        error: 'failedMessage',
+    };
+    loginProcessing.classList.remove('is-processing', 'is-success', 'is-error');
+    loginProcessing.classList.add(`is-${state}`);
+    processingMessage.textContent = loginProcessing.dataset[messageKeys[state]] || '';
+    processingDetail.textContent = detail;
+};
+
+loginForm?.addEventListener('submit', async event => {
+    if (!loginProcessing) return;
+
+    event.preventDefault();
+    const button = document.getElementById('loginBtn');
+    button?.classList.add('loading');
+    if (button) button.disabled = true;
+
+    loginProcessing.classList.add('is-visible');
+    loginProcessing.setAttribute('aria-hidden', 'false');
+    setProcessingState('processing');
+    const minimumProcessingTime = wait(1200);
+
+    try {
+        const response = await fetch(loginForm.action, {
+            method: 'POST',
+            body: new FormData(loginForm),
+            credentials: 'same-origin',
+            headers: {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        });
+        const payload = await response.json().catch(() => ({}));
+        await minimumProcessingTime;
+
+        if (!response.ok) {
+            const error = Object.values(payload.errors || {}).flat()[0]
+                || payload.message
+                || loginProcessing.dataset.failedMessage;
+            setProcessingState('error', error);
+            await wait(1100);
+            loginProcessing.classList.remove('is-visible');
+            loginProcessing.setAttribute('aria-hidden', 'true');
+            MindigoToast(error, 'error', 4500);
+            return;
+        }
+
+        setProcessingState('success', payload.message || '');
+        await wait(1250);
+        window.location.assign(payload.redirect);
+    } catch (error) {
+        await minimumProcessingTime;
+        const message = loginProcessing.dataset.failedMessage;
+        setProcessingState('error', message);
+        await wait(1100);
+        loginProcessing.classList.remove('is-visible');
+        loginProcessing.setAttribute('aria-hidden', 'true');
+        MindigoToast(message, 'error', 4500);
+    } finally {
+        button?.classList.remove('loading');
+        if (button) button.disabled = false;
+    }
 });
 
 if (window.__loginSuccess) {

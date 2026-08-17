@@ -36,11 +36,18 @@ class LoginController extends Controller
             abort(401, 'Unauthenticated after login attempt.');
         }
 
-        if ($user->role === 'admin') {
-            return redirect()->intended('/dashboard')->with('login_success', true);
+        $response = $user->role === 'admin'
+            ? redirect()->intended('/dashboard')
+            : RoleRedirector::redirectAfterLoginFor($user);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => __('Mindigo-auth::app.processing.success'),
+                'redirect' => $response->getTargetUrl(),
+            ]);
         }
 
-        return RoleRedirector::redirectAfterLoginFor($user)->with('login_success', true);
+        return $response->with('login_success', true);
     }
 
     public function destroy(Request $request)

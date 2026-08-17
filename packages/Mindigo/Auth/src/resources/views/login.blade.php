@@ -721,6 +721,8 @@
 
     @endif
 
+@include('Mindigo-auth::partials.login-processing')
+
 @if(session('login_success'))
     <script>window.__loginSuccess = true;</script>
 @endif
