@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'processing' => [
+        'label' => 'The system is processing',
+        'loading' => 'Loading content...',
+        'please_wait' => 'Please wait a moment',
+    ],
     'meta' => ['description' => 'Mindigo learning management platform for courses, practice, and exams.'],
     'trust' => [
         'heading_1' => 'Trusted by students, universities and',

@@ -1,6 +1,121 @@
 import '../../../../Core/src/resources/js/mindigo-ui.js';
 import './echo.js';
 
+(() => {
+    const overlay = document.querySelector('[data-system-processing]');
+    const message = overlay?.querySelector('[data-system-processing-message]');
+
+    if (!overlay) {
+        return;
+    }
+
+    const defaultMessage = message?.textContent?.trim() || '';
+    const minimumVisibleDuration = 850;
+    let activeOperations = 0;
+    let visibleSince = window.performance.now();
+    let hideTimer = null;
+
+    const show = (nextMessage = defaultMessage) => {
+        window.clearTimeout(hideTimer);
+
+        if (!overlay.classList.contains('is-visible')) {
+            visibleSince = window.performance.now();
+        }
+
+        activeOperations += 1;
+
+        if (message) {
+            message.textContent = nextMessage || defaultMessage;
+        }
+
+        document.body.classList.remove('system-page-ready');
+        document.body.classList.add('system-page-transitioning');
+        overlay.classList.add('is-visible');
+        overlay.setAttribute('aria-hidden', 'false');
+    };
+
+    const hide = ({ force = false } = {}) => {
+        activeOperations = force ? 0 : Math.max(0, activeOperations - 1);
+
+        if (activeOperations > 0) {
+            return;
+        }
+
+        const finish = () => {
+            if (activeOperations > 0) {
+                return;
+            }
+
+            overlay.classList.remove('is-visible');
+            overlay.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('system-page-transitioning');
+            document.body.classList.add('system-page-ready');
+
+            if (message) {
+                message.textContent = defaultMessage;
+            }
+        };
+        const remainingDuration = Math.max(0, minimumVisibleDuration - (window.performance.now() - visibleSince));
+
+        window.clearTimeout(hideTimer);
+        hideTimer = window.setTimeout(finish, remainingDuration);
+    };
+
+    const run = async (operation, nextMessage = defaultMessage) => {
+        show(nextMessage);
+
+        try {
+            return await (typeof operation === 'function' ? operation() : operation);
+        } finally {
+            hide();
+        }
+    };
+
+    window.MindigoProcessing = Object.freeze({ show, hide, run });
+
+    document.addEventListener('mindigo:processing:start', (event) => {
+        show(event.detail?.message);
+    });
+    document.addEventListener('mindigo:processing:end', () => hide());
+
+    document.addEventListener('click', (event) => {
+        const link = event.target.closest('a[href]');
+
+        if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
+            || link.hasAttribute('download') || link.target === '_blank' || link.closest('[data-no-processing]')) {
+            return;
+        }
+
+        const destination = new URL(link.href, window.location.href);
+        const samePageAnchor = destination.origin === window.location.origin
+            && destination.pathname === window.location.pathname
+            && destination.search === window.location.search
+            && destination.hash;
+
+        if (destination.origin === window.location.origin && !samePageAnchor) {
+            show();
+        }
+    });
+
+    document.addEventListener('submit', (event) => {
+        if (!event.defaultPrevented && !event.target.closest('[data-no-processing]')) {
+            show();
+        }
+    });
+
+    window.addEventListener('pageshow', () => hide({ force: true }));
+
+    const reveal = () => window.setTimeout(() => hide({ force: true }), 180);
+
+    if (document.fonts?.ready) {
+        document.fonts.ready.then(reveal, reveal);
+    } else if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', reveal, { once: true });
+    } else {
+        reveal();
+    }
+})();
+
 const dashboardMessages = window.__dashboardMessages || {};
 const dashboardChartLabels = window.__dashboardChartLabels || {};
 const dashboardRuntime = window.__dashboardRuntime || {};

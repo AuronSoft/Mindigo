@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'processing' => [
+        'label' => 'Hệ thống đang xử lý',
+        'loading' => 'Đang tải nội dung...',
+        'please_wait' => 'Vui lòng chờ trong giây lát',
+    ],
     'meta' => ['description' => 'Nền tảng quản lý học tập Mindigo dành cho khóa học, luyện tập và thi trực tuyến.'],
     'trust' => [
         'heading_1' => 'Được cộng đồng sinh viên, trường đại học và',
