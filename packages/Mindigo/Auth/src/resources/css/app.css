@@ -1,1 +1,98 @@
 @import "tailwindcss";
+
+.login-onboarding {
+    position: relative;
+    display: none;
+    flex: 1 1 0%;
+    min-height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+    color: #fff;
+    background: linear-gradient(145deg, #14532d 0%, #16803d 46%, #22a854 100%);
+}
+
+@media (min-width: 1024px) {
+    .login-onboarding { display: flex; }
+}
+
+.login-onboarding::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: .42;
+    background:
+        linear-gradient(125deg, transparent 8%, rgb(255 255 255 / 3%) 8% 19%, transparent 19% 74%, rgb(255 255 255 / 4%) 74% 86%, transparent 86%),
+        repeating-linear-gradient(145deg, transparent 0 84px, rgb(255 255 255 / 2.5%) 84px 86px);
+}
+
+.login-onboarding__shape { position: absolute; z-index: -1; opacity: .13; background: #bbf7d0; }
+.login-onboarding__shape--one { width: 22rem; height: 12rem; top: -5rem; left: -6rem; border-radius: 2.5rem 6rem 3rem 7rem; transform: rotate(-13deg); }
+.login-onboarding__shape--two { width: 18rem; height: 15rem; right: -7rem; bottom: 8%; border-radius: 6rem 2rem 7rem 3rem; background: #86efac; transform: rotate(24deg); }
+.login-onboarding__shape--three { width: 12rem; height: 5rem; top: 37%; left: 8%; border-radius: 1rem 4rem 1rem 4rem; background: #fef08a; transform: rotate(-32deg); opacity: .08; }
+.login-onboarding__track { position: relative; width: 100%; min-height: 100vh; }
+.login-onboarding__slide { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3.5rem 3rem 5rem; opacity: 0; visibility: hidden; transform: translateX(2rem) scale(.985); transition: opacity .55s ease, transform .55s ease, visibility .55s; }
+.login-onboarding__slide.is-active { opacity: 1; visibility: visible; transform: translateX(0) scale(1); }
+.onboarding-visual { position: relative; width: min(40vw, 32rem); height: min(47vh, 27rem); min-width: 25rem; min-height: 23rem; margin-bottom: .25rem; perspective: 1100px; }
+.onboarding-card { position: absolute; color: #172033; background: #fff; border: 1px solid rgb(255 255 255 / 65%); box-shadow: 0 1.6rem 3.5rem rgb(21 38 95 / 25%); }
+.onboarding-card--main { top: 5%; left: 50%; width: 17rem; padding: 1rem; border-radius: 1.2rem; transform: translateX(-53%) rotate(-7deg); animation: onboarding-float 5.6s ease-in-out infinite; }
+.onboarding-card__top { display: flex; align-items: center; gap: .55rem; }
+.onboarding-card__avatar { display: grid; width: 1.9rem; height: 1.9rem; place-items: center; flex: none; border-radius: .6rem; color: #fff; font-size: .7rem; font-weight: 900; background: #35b968; }
+.onboarding-card__top div { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+.onboarding-card strong { overflow: hidden; color: #172033; font-size: .65rem; text-overflow: ellipsis; white-space: nowrap; }
+.onboarding-card small { color: #8892a8; font-size: .48rem; }
+.onboarding-card__status { width: .45rem; height: .45rem; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 .22rem #dcfce7; }
+.onboarding-card__hero { display: flex; align-items: center; gap: .65rem; margin: .8rem 0; padding: .7rem; border-radius: .8rem; background: linear-gradient(135deg, #fff4b8, #ffe581); }
+.onboarding-card__date { color: #9a6900; font-size: 1.45rem; font-weight: 900; }
+.onboarding-card__lines { display: grid; flex: 1; gap: .28rem; }
+.onboarding-card__lines i, .onboarding-card__row i { display: block; height: .28rem; border-radius: 99px; background: rgb(154 105 0 / 22%); }
+.onboarding-card__lines i:nth-child(2) { width: 75%; }.onboarding-card__lines i:nth-child(3) { width: 52%; }
+.onboarding-card__row { display: flex; align-items: center; gap: .45rem; padding: .36rem .1rem; border-top: 1px solid #eef1f6; }
+.onboarding-card__row span { width: .45rem; height: .45rem; border-radius: 50%; background: #8b5cf6; }.onboarding-card__row i { width: 68%; background: #e3e7ef; }
+.onboarding-card__footer { display: flex; align-items: center; justify-content: space-between; margin-top: .35rem; padding-top: .65rem; border-top: 1px solid #eef1f6; }
+.onboarding-card__footer > span { display: flex; gap: .2rem; }.onboarding-card__footer i { width: .35rem; height: .35rem; border-radius: 50%; background: #86efac; }.onboarding-card__footer b { color: #15803d; font-size: .58rem; }
+.onboarding-card--mini { display: flex; width: 11.5rem; align-items: center; gap: .6rem; padding: .72rem .8rem; border-radius: .9rem; animation: onboarding-float-small 4.8s ease-in-out infinite; }
+.onboarding-card--mini-one { left: 0; bottom: 5%; transform: rotate(-3deg); }
+.onboarding-card--mini-two { right: -1%; bottom: 11%; transform: rotate(6deg); animation-delay: -1.2s; }
+.onboarding-mini-icon { display: grid; width: 1.7rem; height: 1.7rem; place-items: center; flex: none; border-radius: .55rem; color: #fff; font-size: .7rem; font-weight: 900; background: #8b5cf6; }
+.onboarding-card--mini-two .onboarding-mini-icon { background: #f97373; }
+.onboarding-card--mini div { display: flex; min-width: 0; flex-direction: column; }
+.onboarding-brand-mark { position: absolute; top: 16%; right: 8%; display: grid; width: 3.35rem; height: 3.35rem; place-items: center; border-radius: 1rem; background: #fff; box-shadow: 0 1rem 2.5rem rgb(21 38 95 / 24%); animation: onboarding-pulse 3.6s ease-in-out infinite; }
+.onboarding-brand-mark span { display: grid; width: 1.75rem; height: 1.75rem; place-items: center; border-radius: 50% 50% 50% 20%; color: #fff; font-size: 1rem; font-weight: 900; background: #35b968; transform: rotate(-12deg); }
+.onboarding-confetti { position: absolute; width: .75rem; height: .75rem; border-radius: 50%; background: #fb7185; animation: onboarding-drift 4s ease-in-out infinite; }
+.onboarding-confetti--one { top: 16%; left: 5%; }.onboarding-confetti--two { top: 2%; right: 26%; width: .55rem; height: 1.4rem; border-radius: 99px; background: #fde047; transform: rotate(-35deg); animation-delay: -.7s; }
+.onboarding-confetti--three { right: 2%; top: 48%; background: #86efac; animation-delay: -1.4s; }.onboarding-confetti--four { left: 15%; bottom: 20%; width: 1.25rem; height: .35rem; border-radius: 99px; background: #c084fc; transform: rotate(28deg); animation-delay: -2s; }
+.onboarding-confetti--five { left: 25%; top: 2%; width: .48rem; height: .95rem; border-radius: 99px; background: #86efac; transform: rotate(8deg); animation-delay: -2.5s; }
+.onboarding-confetti--six { right: 19%; bottom: 3%; width: .42rem; height: .42rem; background: #fda4af; animation-delay: -.3s; }
+.onboarding-confetti--seven { left: 3%; top: 55%; width: .9rem; height: .32rem; border-radius: 99px; background: #fbbf24; transform: rotate(-18deg); animation-delay: -1.1s; }
+.onboarding-orbit { position: absolute; width: 2.15rem; height: 2.15rem; border: 1px solid rgb(255 255 255 / 38%); border-radius: 50%; animation: onboarding-orbit 7s linear infinite; }
+.onboarding-orbit::after { content: ""; position: absolute; width: .4rem; height: .4rem; top: -.2rem; left: 50%; border-radius: 50%; background: #fef08a; box-shadow: 0 0 .8rem rgb(254 240 138 / 75%); }
+.onboarding-orbit--one { left: 9%; top: 29%; }.onboarding-orbit--two { right: 8%; bottom: 25%; width: 1.4rem; height: 1.4rem; animation-direction: reverse; animation-duration: 5s; }
+.onboarding-pointer { position: absolute; z-index: 5; left: 64%; top: 56%; animation: onboarding-pointer 5.6s ease-in-out infinite; filter: drop-shadow(0 .35rem .45rem rgb(18 32 82 / 28%)); }
+.onboarding-pointer svg { width: 1.75rem; fill: #fff; stroke: #15803d; stroke-width: 1.1; }.onboarding-pointer span { position: absolute; width: 1.5rem; height: 1.5rem; top: .1rem; left: -.25rem; border: 2px solid rgb(255 255 255 / 70%); border-radius: 50%; opacity: 0; animation: onboarding-click 5.6s ease-out infinite; }
+.onboarding-visual--classroom .onboarding-card__hero { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }.onboarding-visual--classroom .onboarding-card__date { color: #2563eb; }
+.onboarding-visual--progress .onboarding-card__hero { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }.onboarding-visual--progress .onboarding-card__date { color: #15803d; }
+.login-onboarding__copy { max-width: 28rem; text-align: center; }
+.login-onboarding__eyebrow { margin-bottom: .6rem; color: #bbf7d0 !important; font-size: .68rem !important; font-weight: 900; letter-spacing: .15em; text-transform: uppercase; }
+.login-onboarding__copy h2 { margin: 0; font-size: clamp(1.65rem, 2.5vw, 2.25rem); font-weight: 900; line-height: 1.18; letter-spacing: -.025em; text-shadow: 0 .35rem 1.2rem rgb(25 43 105 / 22%); }
+.login-onboarding__copy > p { margin: .8rem auto 0; max-width: 24rem; color: #dcfce7; font-size: .86rem; line-height: 1.65; }
+.login-onboarding__dots { position: absolute; bottom: 2.5rem; left: 50%; z-index: 5; display: flex; align-items: center; gap: .4rem; transform: translateX(-50%); }
+.login-onboarding__dot { width: .42rem; height: .42rem; padding: 0; cursor: pointer; border: 0; border-radius: 99px; background: rgb(255 255 255 / 45%); transition: width .25s ease, background .25s ease; }
+.login-onboarding__dot.is-active { width: 1.45rem; background: #fff; }
+
+@keyframes onboarding-float { 0%,100% { transform: translateX(-53%) rotate(-7deg) translateY(0); } 50% { transform: translateX(-53%) rotate(-5deg) translateY(-.55rem); } }
+@keyframes onboarding-float-small { 0%,100% { translate: 0 0; } 50% { translate: 0 -.55rem; } }
+@keyframes onboarding-pulse { 0%,100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.06) rotate(4deg); } }
+@keyframes onboarding-drift { 0%,100% { translate: 0 0; } 50% { translate: .35rem -.6rem; } }
+@keyframes onboarding-orbit { to { transform: rotate(360deg); } }
+@keyframes onboarding-pointer { 0%, 18%, 100% { transform: translate(2.5rem, 2.2rem) rotate(-8deg); } 42%, 58% { transform: translate(0, 0) rotate(-8deg); } 72% { transform: translate(-1.1rem, 1rem) rotate(-8deg); } }
+@keyframes onboarding-click { 0%, 43% { opacity: 0; transform: scale(.45); } 48% { opacity: .85; transform: scale(.75); } 62% { opacity: 0; transform: scale(1.65); } 100% { opacity: 0; } }
+
+@media (max-height: 760px) {
+    .onboarding-visual { height: 21rem; min-height: 20rem; transform: scale(.82); margin: -1rem 0 -1.5rem; }
+    .login-onboarding__slide { padding-block: 2rem 4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-onboarding *, .login-onboarding *::before, .login-onboarding *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
