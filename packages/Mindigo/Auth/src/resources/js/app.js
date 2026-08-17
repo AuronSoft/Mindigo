@@ -15,19 +15,36 @@ if (onboarding) {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let activeSlide = 0;
     let autoplay;
+    let isTransitioning = false;
 
     const showSlide = index => {
-        activeSlide = (index + slides.length) % slides.length;
-        slides.forEach((slide, slideIndex) => {
-            const isActive = slideIndex === activeSlide;
-            slide.classList.toggle('is-active', isActive);
-            slide.setAttribute('aria-hidden', String(!isActive));
-        });
+        const nextSlide = (index + slides.length) % slides.length;
+        if (nextSlide === activeSlide || isTransitioning) return;
+
+        const currentElement = slides[activeSlide];
+        const nextElement = slides[nextSlide];
+        const transitionDelay = reduceMotion ? 0 : 720;
+        isTransitioning = true;
+        currentElement.classList.add('is-leaving');
+
         dots.forEach((dot, dotIndex) => {
-            const isActive = dotIndex === activeSlide;
+            const isActive = dotIndex === nextSlide;
             dot.classList.toggle('is-active', isActive);
             dot.setAttribute('aria-selected', String(isActive));
         });
+
+        window.setTimeout(() => {
+            currentElement.classList.remove('is-active', 'is-leaving');
+            currentElement.setAttribute('aria-hidden', 'true');
+            activeSlide = nextSlide;
+            nextElement.classList.add('is-active', 'is-entering');
+            nextElement.setAttribute('aria-hidden', 'false');
+
+            window.setTimeout(() => {
+                nextElement.classList.remove('is-entering');
+                isTransitioning = false;
+            }, reduceMotion ? 0 : 900);
+        }, transitionDelay);
     };
 
     const startAutoplay = () => {
