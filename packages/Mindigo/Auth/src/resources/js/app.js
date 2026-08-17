@@ -7,6 +7,45 @@ const pwToggle = document.getElementById('pwToggle');
 const pwInput = document.getElementById('password');
 const eyeIcon = document.getElementById('eyeIcon');
 
+const onboarding = document.querySelector('[data-login-onboarding]');
+
+if (onboarding) {
+    const slides = [...onboarding.querySelectorAll('[data-onboarding-slide]')];
+    const dots = [...onboarding.querySelectorAll('[data-onboarding-dot]')];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let activeSlide = 0;
+    let autoplay;
+
+    const showSlide = index => {
+        activeSlide = (index + slides.length) % slides.length;
+        slides.forEach((slide, slideIndex) => {
+            const isActive = slideIndex === activeSlide;
+            slide.classList.toggle('is-active', isActive);
+            slide.setAttribute('aria-hidden', String(!isActive));
+        });
+        dots.forEach((dot, dotIndex) => {
+            const isActive = dotIndex === activeSlide;
+            dot.classList.toggle('is-active', isActive);
+            dot.setAttribute('aria-selected', String(isActive));
+        });
+    };
+
+    const startAutoplay = () => {
+        if (reduceMotion) return;
+        window.clearInterval(autoplay);
+        autoplay = window.setInterval(() => showSlide(activeSlide + 1), 6000);
+    };
+
+    dots.forEach((dot, index) => dot.addEventListener('click', () => {
+        showSlide(index);
+        startAutoplay();
+    }));
+    onboarding.addEventListener('mouseenter', () => window.clearInterval(autoplay));
+    onboarding.addEventListener('mouseleave', startAutoplay);
+    document.addEventListener('visibilitychange', () => document.hidden ? window.clearInterval(autoplay) : startAutoplay());
+    startAutoplay();
+}
+
 pwToggle?.addEventListener('click', () => {
     const isText = pwInput.type === 'text';
     pwInput.type = isText ? 'password' : 'text';

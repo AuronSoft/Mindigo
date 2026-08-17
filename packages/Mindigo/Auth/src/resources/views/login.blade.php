@@ -159,7 +159,10 @@
         </div>
     </div>
 
-    {{-- RIGHT: Visual --}}
+    @include('Mindigo-auth::partials.login-onboarding')
+
+    @if (false)
+    {{-- Legacy visual retained temporarily for rollback safety. --}}
     <div class="hidden lg:flex flex-1 relative overflow-hidden" style="background:linear-gradient(160deg,#dcfce7 0%,#bbf7d0 30%,#4ade80 70%,#16a34a 100%)">
 
         <div id="floatStage" class="absolute inset-0" style="pointer-events:none"></div>
@@ -715,6 +718,8 @@
 
 })();
 </script>
+
+    @endif
 
 @if(session('login_success'))
     <script>window.__loginSuccess = true;</script>
