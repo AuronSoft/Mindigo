@@ -20,6 +20,7 @@
     @yield('styles')
 </head>
 <body class="bg-slate-50 font-[Inter,'Segoe_UI',Arial,ui-sans-serif,system-ui,sans-serif] text-slate-900 antialiased" data-user-id="{{ auth()->id() }}">
+@include('core::partials.system-processing')
 @php
     $currentUser = Auth::user();
     $useNewExamModule = app(\Mindigo\ExamManagement\Services\ExamCutoverService::class)->prefersNew($currentUser);
