@@ -8,9 +8,9 @@
     </svg>
     <span class="pointer-events-none absolute right-[2%] bottom-[16%] h-5 w-5 rounded-full border-4 border-blue-400"></span>
 
-    <div class="mx-auto grid max-w-7xl items-center gap-4 lg:min-h-[720px] lg:grid-cols-[0.9fr_1.1fr]">
-        <div class="relative z-10 max-w-[580px] self-start pb-12 pt-24 lg:translate-y-16 lg:pb-12 lg:pt-28">
-            <h1 class="relative z-10 text-[3.1rem] font-black leading-[1.01] tracking-[-0.045em] text-slate-950 sm:text-[3.85rem] lg:-mt-10 lg:text-[4.25rem]">
+    <div class="mx-auto grid w-full max-w-7xl items-center gap-4 lg:min-h-[calc(100svh-4.75rem)] lg:grid-cols-[0.9fr_1.1fr] 2xl:max-w-[1480px] 2xl:grid-cols-[0.92fr_1.08fr]">
+        <div class="relative z-10 max-w-[580px] self-start pb-12 pt-24 lg:translate-y-16 lg:pb-12 lg:pt-28 2xl:max-w-[650px] 2xl:translate-y-32">
+            <h1 class="relative z-10 text-[3.1rem] font-black leading-[1.01] tracking-[-0.045em] text-slate-950 sm:text-[3.85rem] lg:-mt-10 lg:text-[4.25rem] 2xl:text-[4.75rem]">
                 <span class="block whitespace-nowrap">
                     @lang('core::app.home_redesign.hero_line_1')
                     <span class="relative -ml-1 inline-block rounded-[2.5rem] bg-[#ffe3a6] px-4 pb-2 pt-0.5 text-orange-600">
@@ -28,11 +28,11 @@
                 <span class="block">@lang('core::app.home_redesign.hero_line_2')</span>
                 <span class="block">@lang('core::app.home_redesign.hero_line_3')</span>
             </h1>
-            <p class="mt-8 max-w-[480px] text-base font-semibold leading-7 text-slate-700">@lang('core::app.home_redesign.hero_description')</p>
-            <a href="{{ route('courses.index') }}" class="mt-7 inline-flex rounded-full bg-orange-500 px-8 py-3.5 text-base font-black text-white shadow-[0_5px_0_#c2410c] transition hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_8px_0_#c2410c]">@lang('core::app.home_redesign.enroll')</a>
+            <p class="mt-8 max-w-[480px] text-base font-semibold leading-7 text-slate-700 2xl:max-w-[560px] 2xl:text-lg 2xl:leading-8">@lang('core::app.home_redesign.hero_description')</p>
+            <a href="{{ route('courses.index') }}" class="mt-7 inline-flex rounded-full bg-orange-500 px-8 py-3.5 text-base font-black text-white shadow-[0_5px_0_#c2410c] transition hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_8px_0_#c2410c] 2xl:px-9 2xl:py-4 2xl:text-lg">@lang('core::app.home_redesign.enroll')</a>
         </div>
 
-        <div class="relative -ml-8 h-[390px] w-[calc(100%+2rem)] self-end sm:h-[520px] lg:-ml-10 lg:h-[600px] lg:w-[760px]">
+        <div class="relative -ml-8 h-[390px] w-[calc(100%+2rem)] self-end sm:h-[520px] lg:-ml-10 lg:h-[600px] lg:w-[760px] 2xl:-ml-14 2xl:h-[680px] 2xl:w-[850px]">
             <img src="{{ asset('image/home/hero-learning-studio.png') }}"
                 alt="@lang('core::app.home_redesign.illustration_alt')"
                 class="block h-full w-full object-contain object-bottom"

@@ -1,181 +1,47 @@
-{{-- Virtual Exam Room section --}}
-<section class="py-20 px-10 bg-green-50 border-t border-green-100">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col lg:flex-row items-center gap-20">
+{{-- Instant test results section --}}
+<section class="relative -mt-px overflow-hidden bg-[#fbfdf9] px-5 sm:px-8 lg:px-12">
+    <span class="pointer-events-none absolute bottom-16 left-[4%] h-4 w-4 rounded-full border-[3px] border-orange-400" aria-hidden="true"></span>
 
-            {{-- LEFT: Text content --}}
-            <div class="flex-1 flex flex-col gap-6">
-                <span class="bg-green-500 text-white text-xs font-black px-3 py-1 rounded-lg w-fit">@lang('core::app.virtual_exam.badge')</span>
-                <h2 class="text-4xl font-black text-gray-900 leading-tight">
-                    <span class="text-green-600">@lang('core::app.virtual_exam.title_1')</span> @lang('core::app.virtual_exam.title_2')
-                </h2>
-                <div class="flex flex-col gap-5">
-                    <div class="flex items-start gap-4">
-                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="12" rx="2" stroke="#16a34a" stroke-width="1.3"/><path d="M4 7h8M4 10h5" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg>
-                        </div>
-                        <p class="text-gray-500 text-sm leading-relaxed">@lang('core::app.virtual_exam.desc_1')</p>
-                    </div>
-                    <div class="flex items-start gap-4">
-                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M2 10V6a6 6 0 1112 0v4" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/><rect x="1" y="10" width="4" height="5" rx="1" stroke="#16a34a" stroke-width="1.3"/><rect x="11" y="10" width="4" height="5" rx="1" stroke="#16a34a" stroke-width="1.3"/></svg>
-                        </div>
-                        <p class="text-gray-500 text-sm leading-relaxed">@lang('core::app.virtual_exam.desc_2')</p>
-                    </div>
-                </div>
-                <a href="#" class="bg-green-500 hover:bg-green-400 text-white font-black text-sm px-7 py-3.5 rounded-xl shadow-[0_4px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 transition-all w-fit">
-                    @lang('core::app.virtual_exam.cta')
-                </a>
-            </div>
+    <div class="mx-auto grid min-h-[620px] w-full max-w-7xl items-center gap-10 py-16 lg:min-h-screen lg:grid-cols-[0.86fr_1.14fr] lg:gap-12 lg:py-12 2xl:max-w-[1480px]">
+        <div class="relative z-10 mx-auto w-full max-w-[520px] text-center lg:mx-0 lg:text-left">
+            <svg class="pointer-events-none absolute -right-1 -top-14 h-20 w-20 text-amber-400 sm:right-5 lg:-right-5" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+                <path d="M18 42c-7.8-7.2-12.8-13.8-13.3-18.1-.2-2 1.1-2.7 2.8-1.4 3.8 2.9 8.3 9.5 12.6 17.9" stroke="currentColor" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M35.5 33.5c-2.1-10.4-2.1-18.7.1-22.5 1-1.7 2.5-1.5 3.2.5 1.7 4.5 1.2 12.4-.1 21.5" stroke="currentColor" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M51 39.5c5.6-9 11.2-15.2 15.3-16.8 1.9-.7 2.8.4 1.9 2.3-2 4.3-7.8 9.8-14.9 15.7" stroke="currentColor" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
 
-            {{-- RIGHT: Desktop mockups --}}
-            <div class="flex-1 relative flex items-end justify-center min-h-115">
+            <h2 class="text-[2.85rem] font-black leading-[0.96] tracking-[-0.045em] text-slate-950 sm:text-[3.45rem] lg:text-[3.75rem]">
+                <span class="block">@lang('core::app.home_redesign.test_title_1')</span>
+                <span class="block">@lang('core::app.home_redesign.test_title_2')</span>
+                <span class="relative mt-1 inline-flex -rotate-[1.5deg] p-1.5 sm:mt-2 sm:p-2">
+                    <span class="absolute inset-x-0 bottom-0 top-1 rotate-2 rounded-[2.2rem_1.7rem_2.4rem_1.8rem] bg-[#f4d8b2]" aria-hidden="true"></span>
+                    <span class="absolute -inset-x-1 inset-y-0 -rotate-1 rounded-[1.8rem_2.35rem_1.9rem_2.25rem] bg-[#e2b987]" aria-hidden="true"></span>
+                    <span class="relative rounded-[1.35rem_1.8rem_1.45rem_1.7rem] bg-[#4f8f72] px-6 pb-2.5 pt-1.5 text-[0.82em] leading-none tracking-[-0.035em] text-white shadow-[inset_0_-5px_0_rgba(30,74,56,0.2),0_3px_0_rgba(111,73,37,0.12)] sm:px-8">
+                        <span class="inline-block -rotate-1">@lang('core::app.home_redesign.test_highlight')</span>
+                    </span>
+                </span>
+            </h2>
 
-                {{-- Decorative --}}
-                <div class="absolute top-4 left-1/3 w-4 h-4 bg-green-400 rounded-full opacity-50 pointer-events-none" style="animation:floatStar 3s ease-in-out infinite"></div>
-                <div class="absolute bottom-4 right-4 text-green-400 text-3xl pointer-events-none" style="animation:floatStar 4s ease-in-out infinite">✦</div>
-                <div class="absolute top-8 right-12 text-green-300 text-xl pointer-events-none" style="animation:floatStar 3s .6s ease-in-out infinite">✦</div>
-                <div class="absolute bottom-16 left-0 w-3 h-3 bg-green-300 rotate-45 opacity-60 pointer-events-none" style="animation:floatStar 4s .4s ease-in-out infinite"></div>
+            <p class="mx-auto mt-7 max-w-lg text-base font-medium leading-7 text-slate-700 sm:text-lg sm:leading-8 lg:mx-0">
+                @lang('core::app.home_redesign.test_description')
+            </p>
 
-                {{-- Browser mockup 1 (back - Phòng thi ảo) --}}
-                <div class="absolute top-0 right-0 w-105 bg-white rounded-2xl shadow-2xl border border-gray-100 z-0 rotate-1">
-                    <div class="bg-gray-50 border-b border-gray-100 px-4 py-2.5 flex items-center gap-2 rounded-t-2xl">
-                        <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
-                        <div class="flex-1 bg-white rounded-md h-5 mx-3 border border-gray-200 flex items-center px-2 gap-1.5">
-                            <svg width="8" height="8" fill="none" viewBox="0 0 8 8"><rect x="0.5" y="0.5" width="7" height="7" rx="1" stroke="#d1d5db"/></svg>
-                            <span class="text-[9px] text-gray-400">@lang('core::app.virtual_exam.url_room')</span>
-                        </div>
-                    </div>
-                    <div class="p-3">
-                        {{-- Top bar --}}
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 bg-green-500 rounded-md flex items-center justify-center">
-                                    <span class="text-white text-[7px] font-black">M</span>
-                                </div>
-                                <span class="text-[9px] font-black text-gray-700">@lang('core::app.virtual_exam.exam_name')</span>
-                                <span class="bg-green-100 text-green-600 text-[7px] font-black px-1.5 py-0.5 rounded-full">@lang('core::app.virtual_exam.live')</span>
-                            </div>
-                            <button class="bg-green-500 text-white text-[8px] font-black px-2.5 py-1 rounded-lg shadow-[0_2px_0_#15803d]">@lang('core::app.virtual_exam.enter')</button>
-                        </div>
-                        {{-- Search --}}
-                        <div class="flex gap-2 mb-3">
-                            <div class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 flex items-center gap-1.5">
-                                <svg width="9" height="9" fill="none" viewBox="0 0 9 9"><circle cx="4" cy="4" r="3" stroke="#9ca3af" stroke-width="1"/><path d="M6.5 6.5l1.5 1.5" stroke="#9ca3af" stroke-width="1" stroke-linecap="round"/></svg>
-                                <span class="text-[8px] text-gray-400">@lang('core::app.virtual_exam.search_candidate')</span>
-                            </div>
-                            <div class="flex gap-1">
-                                <button class="bg-green-500 text-white text-[8px] font-black px-2.5 py-1.5 rounded-lg shadow-[0_2px_0_#15803d]">@lang('core::app.virtual_exam.grid_view')</button>
-                                <button class="bg-gray-100 text-gray-500 text-[8px] font-semibold px-2.5 py-1.5 rounded-lg">@lang('core::app.virtual_exam.list_view')</button>
-                            </div>
-                        </div>
-                        {{-- Room grid --}}
-                        <div class="grid grid-cols-4 gap-2">
-                            @foreach(__('core::app.virtual_exam.rooms') as $r)
-                            <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm">
-                                <div class="h-16 {{ $r['bg'] }} flex items-center justify-center relative">
-                                    <svg width="28" height="20" fill="none" viewBox="0 0 28 20">
-                                        <rect x="0" y="4" width="28" height="16" rx="2" fill="#d1d5db"/>
-                                        <rect x="3" y="7" width="22" height="10" rx="1" fill="#f9fafb"/>
-                                        <rect x="5" y="9" width="7" height="6" rx="0.5" fill="#e5e7eb"/>
-                                        <rect x="16" y="9" width="7" height="6" rx="0.5" fill="#e5e7eb"/>
-                                        <rect x="10" y="0" width="8" height="4" rx="1" fill="#9ca3af"/>
-                                        <rect x="12" y="18" width="4" height="2" rx="0.5" fill="#9ca3af"/>
-                                    </svg>
-                                    <span class="absolute top-1 right-1.5 text-[7px] font-black text-gray-500">{{ $r['number'] }}</span>
-                                </div>
-                                <div class="p-1.5 bg-white">
-                                    <p class="text-[7px] font-black text-gray-700">@lang('core::app.virtual_exam.room', ['number' => $r['number']])</p>
-                                    <div class="flex items-center justify-between mt-0.5">
-                                        <span class="text-[6px] text-gray-400">@lang('core::app.virtual_exam.candidates')</span>
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                        {{-- Info rows --}}
-                        <div class="mt-3 space-y-1">
-                            @foreach(__('core::app.virtual_exam.subjects') as $s)
-                            <div class="flex items-center gap-2 text-[8px] py-1.5 border-b border-gray-50">
-                                <span class="text-gray-700 font-bold w-16 truncate">{{ $s['name'] }}</span>
-                                <span class="text-gray-400 w-20">{{ $s['date'] }}</span>
-                                <span class="text-gray-500 w-8 text-center">{{ $s['total'] }}</span>
-                                <span class="text-gray-500 w-8 text-center">{{ $s['done'] }}</span>
-                                <span class="{{ $s['btn_bg'] }} text-white text-[7px] font-black px-2 py-0.5 rounded-md ml-auto">{{ $s['label'] }}</span>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+            <a
+                href="{{ route('login') }}"
+                class="mt-8 inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-4 text-sm font-black text-white shadow-[0_6px_0_#c2410c] transition duration-200 hover:-translate-y-0.5 hover:bg-orange-400 hover:shadow-[0_8px_0_#c2410c] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-200"
+            >
+                @lang('core::app.home_redesign.enroll')
+            </a>
+        </div>
 
-                {{-- Browser mockup 2 (front - Quản lý kỳ thi table) --}}
-                <div class="relative z-10 w-100 mt-36 -ml-10 bg-white rounded-2xl shadow-2xl border border-gray-100 -rotate-1">
-                    <div class="bg-gray-50 border-b border-gray-100 px-4 py-2.5 flex items-center gap-2 rounded-t-2xl">
-                        <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
-                        <div class="flex-1 bg-white rounded-md h-5 mx-3 border border-gray-200 flex items-center px-2 gap-1.5">
-                            <svg width="8" height="8" fill="none" viewBox="0 0 8 8"><rect x="0.5" y="0.5" width="7" height="7" rx="1" stroke="#d1d5db"/></svg>
-                            <span class="text-[9px] text-gray-400">@lang('core::app.virtual_exam.url_manage')</span>
-                        </div>
-                    </div>
-                    <div class="p-3">
-                        {{-- Header --}}
-                        <div class="flex items-center justify-between mb-2.5">
-                            <span class="text-[10px] font-black text-gray-800">@lang('core::app.virtual_exam.manage_title')</span>
-                            <div class="flex gap-1.5">
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 flex items-center gap-1">
-                                    <svg width="8" height="8" fill="none" viewBox="0 0 8 8"><circle cx="3.5" cy="3.5" r="2.5" stroke="#9ca3af" stroke-width="1"/><path d="M5.5 5.5l2 2" stroke="#9ca3af" stroke-width="1" stroke-linecap="round"/></svg>
-                                    <span class="text-[8px] text-gray-400">@lang('core::app.virtual_exam.search_exam')</span>
-                                </div>
-                                <button class="bg-green-500 text-white text-[8px] font-black px-2.5 py-1 rounded-lg shadow-[0_2px_0_#15803d]">@lang('core::app.virtual_exam.add_new')</button>
-                            </div>
-                        </div>
-                        {{-- Table header --}}
-                        <div class="grid gap-1 mb-1" style="grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1.5fr 1fr;">
-                            @foreach(__('core::app.virtual_exam.table_headers') as $h)
-                            <span class="text-[7px] font-black text-gray-400 uppercase">{{ $h }}</span>
-                            @endforeach
-                        </div>
-                        {{-- Table rows --}}
-                        @foreach(__('core::app.virtual_exam.exams') as $e)
-                        <div class="grid gap-1 py-1.5 border-b border-gray-50 items-center" style="grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1.5fr 1fr;">
-                            <span class="text-[8px] font-bold text-gray-700 truncate">{{ $e['name'] }}</span>
-                            <span class="text-[7px] text-gray-400 leading-tight">{{ $e['date'] }}</span>
-                            <span class="text-[8px] text-gray-500 text-center">{{ $e['questions'] }}</span>
-                            <span class="text-[8px] text-gray-500 text-center">{{ $e['joined'] }}</span>
-                            <span class="text-[8px] text-gray-500 text-center">{{ $e['done'] }}</span>
-                            <span class="text-[7px] font-black px-1.5 py-0.5 rounded-md text-center
-                                {{ $e['color'] === 'green'  ? 'bg-green-500 text-white'  : '' }}
-                                {{ $e['color'] === 'blue'   ? 'bg-blue-400 text-white'   : '' }}
-                                {{ $e['color'] === 'orange' ? 'bg-orange-400 text-white' : '' }}
-                                {{ $e['color'] === 'red'    ? 'bg-red-400 text-white'    : '' }}
-                            ">{{ $e['status'] }}</span>
-                            <div class="flex gap-1 justify-center">
-                                <button class="w-5 h-5 bg-green-50 border border-green-100 rounded flex items-center justify-center">
-                                    <svg width="9" height="9" fill="none" viewBox="0 0 9 9"><path d="M1 8l1.5-1.5M7.5 1.5l-5 5L1 8l1.5-1.5 5-5z" stroke="#16a34a" stroke-width="0.9" stroke-linecap="round"/></svg>
-                                </button>
-                                <button class="w-5 h-5 bg-red-50 border border-red-100 rounded flex items-center justify-center">
-                                    <svg width="9" height="9" fill="none" viewBox="0 0 9 9"><path d="M2 2l5 5M7 2L2 7" stroke="#f87171" stroke-width="0.9" stroke-linecap="round"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                        @endforeach
-                        {{-- Pagination --}}
-                        <div class="flex items-center justify-between mt-2.5">
-                            <span class="text-[7px] text-gray-400">{!! __('core::app.virtual_exam.pagination') !!}</span>
-                            <div class="flex items-center gap-1">
-                                <button class="w-5 h-5 bg-gray-100 rounded text-[8px] text-gray-400">‹</button>
-                                <button class="w-5 h-5 bg-green-500 rounded text-[8px] text-white font-black shadow-[0_1px_0_#15803d]">1</button>
-                                <button class="w-5 h-5 bg-gray-100 rounded text-[8px] text-gray-400">›</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="relative flex min-h-[360px] items-center justify-center sm:min-h-[460px] lg:min-h-[540px] lg:justify-end">
+            <img
+                src="{{ asset('image/home/instant-test-results.png') }}"
+                alt="@lang('core::app.home_redesign.test_illustration_alt')"
+                class="relative z-10 h-auto w-full max-w-[500px] object-contain sm:max-w-[570px] lg:max-w-[610px]"
+                loading="lazy"
+                decoding="async"
+            >
         </div>
     </div>
 </section>

@@ -1,6 +1,6 @@
 {{-- Personalization section --}}
-<section class="-mt-px bg-[#fbfdf9] px-5 py-20 sm:px-8 lg:px-12">
-    <div class="max-w-7xl mx-auto">
+<section class="-mt-px bg-[#fbfdf9] px-5 py-20 sm:px-8 lg:flex lg:min-h-screen lg:items-center lg:px-12 lg:py-12">
+    <div class="mx-auto w-full max-w-7xl 2xl:max-w-[1480px]">
         <div class="flex flex-col lg:flex-row items-center gap-20">
 
             {{-- LEFT: Phone mockups --}}

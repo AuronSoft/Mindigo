@@ -1,12 +1,12 @@
 {{-- New feature section --}}
-<section id="features" class="relative -mt-0.5 overflow-hidden bg-[#d9f4e9] px-5 pb-20 pt-10 sm:px-8 lg:px-12 lg:pb-28 lg:pt-14">
+<section id="features" class="relative z-10 -mt-1 overflow-hidden bg-[#d9f4e9] px-5 pb-20 pt-10 sm:px-8 lg:flex lg:min-h-screen lg:items-center lg:px-12 lg:py-14">
     <span class="pointer-events-none absolute right-8 top-12 rotate-12 text-5xl font-black text-blue-500">〰</span>
     <svg class="pointer-events-none absolute right-0 top-0 z-10 h-24 w-28" viewBox="0 0 112 96" fill="none" aria-hidden="true">
         <rect width="112" height="96" fill="#d9f4e9"/>
         <path d="M107 3c-15 6-7 23-16 29-9 7-18-8-11-15 7-8 17 6 11 18-7 15-23 21-33 12-9-8-3-19 5-14 8 6-1 19-14 25-12 6-24 3-29-7" stroke="#4f83e5" stroke-width="4" stroke-linecap="round"/>
     </svg>
     <span class="pointer-events-none absolute left-9 top-16 h-4 w-4 rounded-full border-4 border-orange-400"></span>
-    <div class="mx-auto max-w-7xl">
+    <div class="mx-auto w-full max-w-7xl 2xl:max-w-[1480px]">
         <div class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
             <div class="relative max-w-[650px]">
                 @php

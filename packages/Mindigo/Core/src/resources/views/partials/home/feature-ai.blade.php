@@ -9,7 +9,7 @@
         <path d="M16 56c10-21 21-27 31-17 8 8 1 17-8 12-9-5-3-18 14-19 7 0 12 2 16 6" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
     </svg>
 
-    <div class="mx-auto grid min-h-[610px] max-w-7xl items-center gap-10 py-16 lg:grid-cols-[0.88fr_1.12fr] lg:gap-4 lg:py-0">
+    <div class="mx-auto grid min-h-[610px] w-full max-w-7xl items-center gap-10 py-16 lg:min-h-screen lg:grid-cols-[0.88fr_1.12fr] lg:gap-4 lg:py-12 2xl:max-w-[1480px]">
         <div class="relative z-10 max-w-[570px] lg:pl-4">
             <h2 class="text-[3.1rem] font-black leading-[1.01] tracking-[-0.045em] text-slate-950 sm:text-[3.85rem] lg:text-[4.25rem]">
                 <span class="block">@lang('core::app.home_redesign.private_title_1')</span>
