@@ -1,14 +1,14 @@
 {{-- Feature section --}}
-<section id="features" class="scroll-mt-20 border-t border-green-100 bg-green-50 px-6 py-20 lg:px-10">
-    <div class="mx-auto max-w-7xl">
-        <div class="mb-16 text-center">
+<section id="features" class="scroll-mt-20 border-t border-green-100 bg-green-50 px-6 py-16 lg:flex lg:min-h-[calc(100svh-5rem)] lg:items-center lg:px-10 lg:py-12">
+    <div class="mx-auto w-full max-w-7xl">
+        <div class="mb-10 text-center lg:mb-12">
             <p class="text-3xl font-black text-green-600">@lang('core::app.feature.section_title')</p>
         </div>
 
         <div class="flex flex-col items-center gap-16 lg:flex-row lg:gap-20">
             <div class="flex flex-1 flex-col gap-6">
                 <span class="w-fit rounded-lg bg-green-500 px-3 py-1 text-xs font-black text-white">@lang('core::app.feature.badge')</span>
-                <h2 class="text-4xl font-black leading-tight text-gray-900">
+                <h2 class="text-[2.65rem] font-black leading-[1.02] tracking-[-0.045em] text-slate-950 sm:text-[3.2rem] lg:text-[3.65rem]">
                     <span class="text-green-600">@lang('core::app.feature.heading_highlight')</span> @lang('core::app.feature.heading_rest')
                 </h2>
                 <div class="flex flex-col gap-5">

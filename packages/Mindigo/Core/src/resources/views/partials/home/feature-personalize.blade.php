@@ -1,6 +1,6 @@
 {{-- Personalization section --}}
-<section class="py-20 px-10 bg-white border-t border-gray-100">
-    <div class="max-w-7xl mx-auto">
+<section class="border-t border-gray-100 bg-white px-6 py-16 lg:flex lg:min-h-[calc(100svh-5rem)] lg:items-center lg:px-10 lg:py-12">
+    <div class="mx-auto w-full max-w-7xl">
         <div class="flex flex-col lg:flex-row items-center gap-20">
 
             {{-- LEFT: Phone mockups --}}
@@ -203,7 +203,7 @@
             {{-- RIGHT: Text content --}}
             <div class="flex-1 flex flex-col gap-6">
                 <span class="bg-green-500 text-white text-xs font-black px-3 py-1 rounded-lg w-fit">@lang('core::app.personalization.badge')</span>
-                <h2 class="text-4xl font-black text-gray-900 leading-tight">
+                <h2 class="text-[2.65rem] font-black leading-[1.02] tracking-[-0.045em] text-slate-950 sm:text-[3.2rem] lg:text-[3.65rem]">
                     @lang('core::app.personalization.title_1')<br>
                     <span class="text-green-600">@lang('core::app.personalization.title_2')</span> @lang('core::app.personalization.title_3')
                 </h2>

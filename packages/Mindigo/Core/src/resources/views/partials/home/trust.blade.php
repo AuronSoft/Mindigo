@@ -1,6 +1,6 @@
 {{-- Trust section --}}
-<section class="py-20 px-10 border-t border-gray-100 bg-white">
-    <div class="max-w-7xl mx-auto">
+<section class="border-t border-gray-100 bg-white px-6 py-16 lg:flex lg:min-h-[calc(100svh-5rem)] lg:items-center lg:px-10 lg:py-12">
+    <div class="mx-auto w-full max-w-7xl">
         <div class="text-center mb-14">
             <p class="text-green-600 font-black text-3xl leading-snug">@lang('core::app.trust.heading_1')</p>
             <p class="text-green-600 font-black text-3xl leading-snug">@lang('core::app.trust.heading_2')</p>

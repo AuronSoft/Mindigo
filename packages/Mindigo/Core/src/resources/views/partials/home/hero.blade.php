@@ -1,23 +1,23 @@
 {{-- Hero --}}
-<section class="bg-green-50 relative overflow-hidden">
+<section class="relative overflow-hidden bg-green-50 lg:flex lg:min-h-[calc(100svh-5rem)] lg:items-center">
     <div class="absolute top-0 right-0 h-125 w-125 bg-green-200 rounded-full opacity-30 translate-x-1/3 -translate-y-1/3 pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 w-80 h-80 bg-green-200 rounded-full opacity-20 -translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
 
-    <div class="max-w-7xl mx-auto px-10 py-20 flex flex-col lg:flex-row items-center gap-16 relative z-10">
+    <div class="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center gap-12 px-6 py-16 sm:px-8 lg:flex-row lg:gap-10 lg:px-10 lg:py-12">
 
         {{-- LEFT --}}
-        <div class="flex flex-1 flex-col items-start gap-5 lg:flex-[0.88]">
+        <div class="flex w-full flex-1 flex-col items-start gap-5 lg:flex-[1.02]">
             <span class="bg-white border border-green-200 text-green-700 text-xs font-black px-4 py-1.5 rounded-full">
                 @lang('core::app.hero.badge')
             </span>
-            <div>
-                <h1 class="text-5xl font-black text-gray-900 leading-tight">
+            <div class="w-full max-w-2xl text-balance">
+                <h1 class="text-[2.75rem] font-black leading-[1.03] tracking-[-0.045em] text-slate-950 sm:text-[3.2rem] lg:text-[3.45rem] xl:text-[3.7rem]">
                     @lang('core::app.hero.heading_1')
                 </h1>
-                <h2 class="text-5xl font-black leading-tight text-green-600">
-                    <span id="typewriter">@lang('core::app.hero.heading_2')</span><span class="ml-1 inline-block h-[0.85em] w-0.5 align-[-0.08em] bg-green-500 animate-pulse" aria-hidden="true"></span>
+                <h2 class="min-h-12 text-[2.75rem] font-black leading-[1.03] tracking-[-0.045em] text-green-600 sm:min-h-14 sm:text-[3.2rem] lg:min-h-16 lg:whitespace-nowrap lg:text-[3.45rem] xl:text-[3.7rem]">
+                    <span id="typewriter" class="inline">@lang('core::app.hero.heading_2')</span><span class="ml-1 inline-block h-[0.82em] w-0.5 align-[-0.06em] bg-green-500 animate-pulse" aria-hidden="true"></span>
                 </h2>
-                <h3 class="text-5xl font-black text-gray-900 leading-tight">
+                <h3 class="text-[2.75rem] font-black leading-[1.03] tracking-[-0.045em] text-slate-950 sm:text-[3.2rem] lg:text-[3.45rem] xl:text-[3.7rem]">
                     @lang('core::app.hero.heading_3')
                 </h3>
             </div>
@@ -48,32 +48,25 @@
         </div>
 
         {{-- RIGHT --}}
-        <div class="relative flex min-h-120 flex-1 items-center justify-center lg:-mr-20 lg:translate-x-8 lg:flex-[1.2]">
+        <div class="relative flex min-h-132 flex-1 items-center justify-center lg:-mr-14 lg:min-h-140 lg:translate-x-5 lg:flex-[1.08]">
 
-            {{-- Floating AI badge --}}
-            <div class="absolute -top-4 left-6 bg-white border-2 border-green-200 rounded-2xl px-4 py-2.5 flex items-center gap-3 z-20"
-                style="box-shadow: 0 8px 32px rgba(22,163,74,0.18), 0 2px 8px rgba(0,0,0,0.08); animation: floatBadge 3s ease-in-out infinite;">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 border border-purple-100 shadow-inner" aria-label="Gemini">
-                    <svg class="w-7 h-7" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="gemini-logo-gradient" x1="5" y1="27" x2="27" y2="5" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#1A73E8"/>
-                                <stop offset="0.38" stop-color="#7B61FF"/>
-                                <stop offset="0.68" stop-color="#D965C5"/>
-                                <stop offset="1" stop-color="#F7A43A"/>
-                            </linearGradient>
-                        </defs>
-                        <path d="M16 3.5C17.25 10.63 21.37 14.75 28.5 16C21.37 17.25 17.25 21.37 16 28.5C14.75 21.37 10.63 17.25 3.5 16C10.63 14.75 14.75 10.63 16 3.5Z" fill="url(#gemini-logo-gradient)"/>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-green-700 font-black text-xs leading-none">@lang('core::app.hero.ai_powered')</p>
-                    <p class="text-green-400 text-[10px] font-semibold mt-0.5">@lang('core::app.hero.ai_subtitle')</p>
+            {{-- Floating learner community card --}}
+            <div class="hero-floating-card absolute -top-5 left-5 z-30 hidden cursor-grab touch-none select-none sm:block active:cursor-grabbing" aria-hidden="true">
+                <div class="relative flex -rotate-8 items-center gap-2 rounded-2xl border border-slate-100 bg-white px-3.5 py-3 pr-9 shadow-[0_18px_40px_rgba(15,23,42,0.16)] transition-transform duration-300 hover:-rotate-5 hover:scale-[1.03]">
+                    <div class="flex -space-x-2">
+                        @foreach([12, 32, 44, 47] as $portrait)
+                            <img src="https://randomuser.me/api/portraits/{{ $portrait % 2 === 0 ? 'women' : 'men' }}/{{ $portrait }}.jpg" alt="" class="h-8 w-8 rounded-full border-2 border-white object-cover shadow-sm">
+                        @endforeach
+                    </div>
+                    <span class="whitespace-nowrap text-[10px] font-black text-slate-800">@lang('core::app.hero.floating_students_joined')</span>
+                    <span class="absolute -right-4 -top-7 grid h-12 w-12 rotate-12 place-items-center rounded-xl bg-pink-500 text-white shadow-[0_8px_18px_rgba(236,72,153,0.3)]">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none"><path d="m12 3 2 2.1 2.9-.2.8 2.8 2.5 1.6-1.1 2.7 1.1 2.7-2.5 1.6-.8 2.8-2.9-.2-2 2.1-2-2.1-2.9.2-.8-2.8-2.5-1.6 1.1-2.7-1.1-2.7 2.5-1.6.8-2.8 2.9.2L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9.5 12 1.7 1.7 3.5-3.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
                 </div>
             </div>
 
             {{-- Stats pill top right --}}
-            <div class="absolute top-0 right-0 bg-green-500 text-white text-xs font-black px-4 py-2 rounded-2xl z-20 flex items-center gap-2"
+            <div class="hero-floating-card absolute right-0 top-0 z-20 flex cursor-grab touch-none select-none items-center gap-2 rounded-2xl bg-green-500 px-4 py-2 text-xs font-black text-white active:cursor-grabbing"
                 style="box-shadow: 0 4px 0 #15803d, 0 8px 20px rgba(22,163,74,0.3);">
                 <svg width="14" height="14" fill="none" viewBox="0 0 14 14">
                     <rect x="1" y="1" width="12" height="12" rx="3" stroke="white" stroke-width="1.5"/>
@@ -82,8 +75,39 @@
                  @lang('core::app.hero.advanced')
             </div>
 
+            {{-- Floating e-learning context cards --}}
+            <div class="hero-floating-card absolute -right-7 top-20 z-30 hidden w-40 cursor-grab touch-none select-none flex-col items-center rounded-2xl border border-slate-100 bg-white/95 px-3 pb-3 pt-4 text-center shadow-[0_18px_40px_rgba(15,23,42,0.16)] backdrop-blur xl:flex active:cursor-grabbing" aria-hidden="true">
+                <div class="relative h-14 w-14 rounded-full bg-linear-to-br from-blue-100 to-violet-100 p-0.5 shadow-sm">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="" class="h-full w-full rounded-full object-cover">
+                    <span class="absolute bottom-0 right-0 h-4 w-4 rounded-full border-[3px] border-white bg-green-500"></span>
+                </div>
+                <p class="mt-2.5 max-w-full truncate text-[10px] font-black text-slate-800">@lang('core::app.hero.floating_instructor_name')</p>
+                <p class="mt-0.5 text-[8px] font-bold text-slate-400">@lang('core::app.hero.floating_instructor')</p>
+                <span class="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-violet-600 px-2 py-1.5 text-[8px] font-black text-white shadow-[0_2px_0_#6d28d9]">@lang('core::app.hero.floating_profile')</span>
+                <div class="mt-2.5 w-full space-y-1.5 border-t border-slate-100 pt-2">
+                    <div class="flex items-center justify-between gap-2"><span class="truncate text-[7px] font-bold text-slate-500">@lang('core::app.hero.floating_live_class')</span><span class="rounded-full bg-green-50 px-1.5 py-0.5 text-[6px] font-black text-green-700">@lang('core::app.hero.floating_active')</span></div>
+                    <div class="flex items-center justify-between gap-2"><span class="truncate text-[7px] font-bold text-slate-500">@lang('core::app.hero.floating_students')</span><span class="text-[7px] font-black text-blue-600">24</span></div>
+                </div>
+            </div>
+
+            <div class="hero-floating-card absolute -right-5 bottom-16 z-30 hidden cursor-grab touch-none select-none items-center gap-2 rounded-2xl border border-amber-100 bg-white/95 px-3 py-2.5 shadow-[0_14px_30px_rgba(15,23,42,0.12)] backdrop-blur lg:flex active:cursor-grabbing" aria-hidden="true">
+                <span class="grid h-8 w-8 place-items-center rounded-xl bg-amber-100 text-amber-600">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M4 12.5 9 17l11-11" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <div>
+                    <p class="text-[9px] font-black text-slate-800">@lang('core::app.hero.floating_progress')</p>
+                    <div class="mt-1.5 h-1.5 w-20 overflow-hidden rounded-full bg-amber-100"><span class="block h-full w-3/4 rounded-full bg-amber-400"></span></div>
+                </div>
+                <strong class="text-xs font-black text-amber-600">76%</strong>
+            </div>
+
+            <div class="hero-floating-card absolute bottom-20 left-7 z-20 hidden cursor-grab touch-none select-none items-center gap-2 rounded-xl border border-violet-100 bg-white/95 px-3 py-2 shadow-[0_12px_28px_rgba(15,23,42,0.12)] backdrop-blur xl:flex active:cursor-grabbing" aria-hidden="true">
+                <span class="relative flex h-2.5 w-2.5"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400 opacity-50"></span><span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-violet-600"></span></span>
+                <span class="whitespace-nowrap text-[9px] font-black text-slate-700">@lang('core::app.hero.floating_online')</span>
+            </div>
+
             {{-- Main card with 3D effect --}}
-            <div class="hero-lms-demo relative mt-10 w-full overflow-hidden rounded-3xl bg-white"
+            <div class="hero-lms-demo relative mt-12 min-h-126 w-full overflow-hidden rounded-3xl bg-white"
                 style="
                 box-shadow:
                     0 1px 2px rgba(15,23,42,0.08),
@@ -106,9 +130,9 @@
                     </div>
                 </div>
 
-                <div class="p-5">
+                <div class="p-6">
                     {{-- Upload bar --}}
-                    <div class="flex items-center gap-3 mb-4">
+                    <div class="mb-5 flex items-center gap-3">
                         <div class="hero-upload-zone flex flex-1 cursor-pointer items-center gap-2 rounded-xl border-2 border-dashed border-green-300 bg-green-50 px-3 py-2.5 text-xs font-bold text-green-700 transition hover:bg-green-100"
                             style="box-shadow: inset 0 2px 4px rgba(22,163,74,0.06);">
                             <svg width="14" height="14" fill="none" viewBox="0 0 14 14">
@@ -124,7 +148,7 @@
                     </div>
 
                     {{-- Action pills --}}
-                    <div class="flex gap-2 mb-5">
+                    <div class="mb-6 flex gap-2">
                         <span class="bg-red-50 text-red-400 border border-red-100 text-xs font-black px-3 py-1 rounded-lg">@lang('core::app.hero.return')</span>
                         <span class="hero-save-action rounded-lg px-3 py-1 text-xs font-black text-white"
                             style="background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 3px 0 #15803d;">
@@ -135,7 +159,7 @@
                     <div class="flex gap-5">
 
                         {{-- Left sidebar --}}
-                        <div class="w-44 shrink-0 space-y-3">
+                        <div class="w-44 shrink-0 space-y-4">
                             <div>
                                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-wide mb-2">@lang('core::app.hero.section_list')</p>
                                 <div class="space-y-1.5">
@@ -184,11 +208,11 @@
                                 <div class="hidden shrink-0 gap-1.5 sm:flex"><span class="rounded-lg bg-blue-50 px-2 py-1 text-[8px] font-black text-blue-600">248 @lang('core::app.hero.learners_label')</span><span class="rounded-lg bg-violet-50 px-2 py-1 text-[8px] font-black text-violet-600">76% @lang('core::app.hero.completion_label')</span></div>
                             </div>
 
-                            <article class="hero-lesson-one rounded-xl border border-green-100 bg-linear-to-br from-green-50 to-white p-3 shadow-sm">
+                            <article class="hero-lesson-one rounded-xl border border-green-100 bg-linear-to-br from-green-50 to-white p-4 shadow-sm">
                                 <div class="flex items-start gap-3"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-green-500 text-white shadow-[0_2px_0_#15803d]"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></svg></span><div class="min-w-0 flex-1"><div class="flex items-start justify-between gap-2"><div><p class="text-xs font-black text-gray-800">@lang('core::app.hero.lesson_1_name')</p><p class="mt-0.5 text-[9px] font-bold text-blue-500">@lang('core::app.hero.lesson_1_meta')</p></div><span class="shrink-0 rounded-full border border-green-200 bg-green-100 px-2 py-0.5 text-[8px] font-black text-green-700">@lang('core::app.hero.has_answer')</span></div><p class="mt-2 text-[9px] leading-relaxed text-gray-500">@lang('core::app.hero.lesson_1_desc')</p></div></div>
                             </article>
 
-                            <article class="hero-lesson-two rounded-xl border border-gray-100 bg-gray-50 p-3 shadow-sm">
+                            <article class="hero-lesson-two rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-sm">
                                 <div class="flex items-start gap-3"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-100 text-amber-600"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l5 5v11a2 2 0 0 1-2 2Z"/></svg></span><div class="min-w-0 flex-1"><div class="flex items-start justify-between gap-2"><div><p class="text-xs font-black text-gray-800">@lang('core::app.hero.lesson_2_name')</p><p class="mt-0.5 text-[9px] font-bold text-amber-500">@lang('core::app.hero.lesson_2_meta')</p></div><span class="hero-publish-state shrink-0 rounded-full border px-2 py-0.5 text-[8px] font-black">@lang('core::app.hero.has_answer')</span></div><p class="mt-2 text-[9px] leading-relaxed text-gray-500">@lang('core::app.hero.lesson_2_desc')</p></div></div>
                             </article>
                         </div>
@@ -201,7 +225,7 @@
             </div>
 
             {{-- Phone mockup --}}
-            <div class="absolute -bottom-4 -left-20 z-10" style="transform: perspective(800px) rotateY(20deg) rotateX(4deg) rotate(-6deg); width: 160px;">
+            <div class="absolute -bottom-8 -left-16 z-10 lg:-bottom-10 lg:-left-14" style="transform: perspective(800px) rotateY(20deg) rotateX(4deg) rotate(-6deg); width: 160px;">
                 <div class="relative rounded-[2.8rem] p-1"
                     style="background: linear-gradient(145deg, #e2e8f0, #cbd5e1); box-shadow: 0 25px 50px rgba(0,0,0,0.22), 0 8px 0 #94a3b8, inset 0 1px 0 rgba(255,255,255,0.9);">
                     <div class="absolute top-16 h-5 bg-slate-300 rounded-l-full" style="left:-4px; width:4px;"></div>

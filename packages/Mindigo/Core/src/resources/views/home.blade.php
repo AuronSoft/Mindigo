@@ -10,8 +10,8 @@
         @include('core::partials.home.hero')
         @include('core::partials.home.trust')
         @if(isset($featuredCourses) && $featuredCourses->isNotEmpty())
-            <section class="border-y border-slate-100 bg-slate-50 px-5 py-12 sm:px-8">
-                <div class="mx-auto max-w-7xl">
+            <section class="border-y border-slate-100 bg-slate-50 px-5 py-12 sm:px-8 lg:flex lg:min-h-[calc(100svh-5rem)] lg:items-center">
+                <div class="mx-auto w-full max-w-7xl">
                     <div class="mb-5 flex items-end justify-between gap-4"><div><p class="text-xs font-black uppercase tracking-widest text-green-700">@lang('teacher-course::catalog.eyebrow')</p><h2 class="mt-1 text-2xl font-black text-slate-950">@lang('teacher-course::discovery.featured')</h2><p class="mt-1 text-sm font-semibold text-slate-500">@lang('teacher-course::discovery.featured_description')</p></div><a href="{{ route('courses.index') }}" class="shrink-0 text-sm font-black text-green-700 no-underline">@lang('core::app.home.cta_search')</a></div>
                     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">@foreach($featuredCourses->take(4) as $course) @include('teacher-course::catalog.partials.course-card', ['course' => $course]) @endforeach</div>
                 </div>
@@ -177,6 +177,64 @@
             setTimeout(type, speed);
         }
         type();
+    })();
+
+    // Draggable hero cards; reset to their designed positions when scrolling.
+    (function() {
+        const cards = Array.from(document.querySelectorAll('.hero-floating-card'));
+        if (!cards.length) return;
+
+        cards.forEach((card) => {
+            let originX = 0;
+            let originY = 0;
+            let startX = 0;
+            let startY = 0;
+            let dragging = false;
+
+            card.addEventListener('pointerdown', (event) => {
+                if (event.button !== 0) return;
+                dragging = true;
+                startX = event.clientX;
+                startY = event.clientY;
+                card.style.transition = 'none';
+                card.setPointerCapture(event.pointerId);
+            });
+
+            card.addEventListener('pointermove', (event) => {
+                if (!dragging) return;
+                const nextX = originX + event.clientX - startX;
+                const nextY = originY + event.clientY - startY;
+                card.style.transform = `translate3d(${nextX}px, ${nextY}px, 0)`;
+            });
+
+            const finishDrag = (event) => {
+                if (!dragging) return;
+                dragging = false;
+                originX += event.clientX - startX;
+                originY += event.clientY - startY;
+                if (card.hasPointerCapture(event.pointerId)) card.releasePointerCapture(event.pointerId);
+            };
+
+            card.addEventListener('pointerup', finishDrag);
+            card.addEventListener('pointercancel', finishDrag);
+
+            card.addEventListener('hero-card-reset', () => {
+                dragging = false;
+                originX = 0;
+                originY = 0;
+                card.style.transition = 'transform 420ms cubic-bezier(.22, 1, .36, 1)';
+                card.style.transform = 'translate3d(0, 0, 0)';
+            });
+        });
+
+        let resetFrame = null;
+        window.addEventListener('scroll', () => {
+            if (resetFrame !== null) return;
+            resetFrame = window.requestAnimationFrame(() => {
+                cards.forEach((card) => card.dispatchEvent(new Event('hero-card-reset')));
+                resetFrame = null;
+            });
+        }, { passive: true });
     })();
 </script>
 

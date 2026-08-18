@@ -1,5 +1,5 @@
 {{-- Learning community section --}}
-<section class="relative -mt-px overflow-hidden bg-[#fbfdf9] px-5 py-16 sm:px-8 lg:flex lg:min-h-screen lg:items-center lg:px-12 lg:py-14">
+<section class="relative -mt-px overflow-hidden bg-[#fbfdf9] px-5 py-16 sm:px-8 lg:flex lg:min-h-[calc(100svh-5rem)] lg:items-center lg:px-12 lg:py-12">
     <span class="pointer-events-none absolute -right-8 top-36 h-24 w-36 rotate-12 rounded-[48%] bg-[#fff1d2]" aria-hidden="true"></span>
     <span class="pointer-events-none absolute left-[7%] top-[34%] h-3 w-12 -rotate-12 border-y-4 border-blue-400" aria-hidden="true"></span>
     <span class="pointer-events-none absolute bottom-[28%] right-[7%] text-3xl font-black text-orange-500" aria-hidden="true">✦</span>

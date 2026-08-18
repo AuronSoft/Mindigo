@@ -1,12 +1,12 @@
 {{-- Virtual Exam Room section --}}
-<section class="py-20 px-10 bg-green-50 border-t border-green-100">
-    <div class="max-w-7xl mx-auto">
+<section class="border-t border-green-100 bg-green-50 px-6 py-16 lg:flex lg:min-h-[calc(100svh-5rem)] lg:items-center lg:px-10 lg:py-12">
+    <div class="mx-auto w-full max-w-7xl">
         <div class="flex flex-col lg:flex-row items-center gap-20">
 
             {{-- LEFT: Text content --}}
             <div class="flex-1 flex flex-col gap-6">
                 <span class="bg-green-500 text-white text-xs font-black px-3 py-1 rounded-lg w-fit">@lang('core::app.virtual_exam.badge')</span>
-                <h2 class="text-4xl font-black text-gray-900 leading-tight">
+                <h2 class="text-[2.65rem] font-black leading-[1.02] tracking-[-0.045em] text-slate-950 sm:text-[3.2rem] lg:text-[3.65rem]">
                     <span class="text-green-600">@lang('core::app.virtual_exam.title_1')</span> @lang('core::app.virtual_exam.title_2')
                 </h2>
                 <div class="flex flex-col gap-5">
