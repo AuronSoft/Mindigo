@@ -31,6 +31,16 @@ return [
         'title' => 'Customer Feedback',
         'customers' => '200,000+ customers',
         'read_more' => 'Read more',
+        'community_title_1' => 'Join the biggest',
+        'community_title_2' => 'community of learning',
+        'community_title_prefix' => 'Join the biggest',
+        'community_title_accent' => 'community',
+        'community_title_suffix' => 'of learning',
+        'community_description' => 'Learn alongside a growing global community, exchange knowledge and build meaningful progress together on Mindigo.',
+        'community_map_alt' => 'Mindigo learners connected around the world',
+        'learners' => 'Learners',
+        'join_now' => 'Join now',
+        'member_avatar' => 'Mindigo community member',
         'reviews' => [
             [
                 'name' => 'Nguyễn Thư',
