@@ -42,37 +42,44 @@
                 @endforeach
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
-                        <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><circle cx="10" cy="7" r="4" stroke="#16a34a" stroke-width="1.5"/><path d="M2 17c0-3.866 3.582-7 8-7s8 3.134 8 7" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round"/></svg>
-                    </div>
-                    <span class="font-black text-gray-800 text-lg">@lang('core::app.trust.student.title')</span>
-                </div>
-                <p class="text-gray-500 text-sm leading-relaxed mb-5">@lang('core::app.trust.student.desc')</p>
-                <a href="#" class="text-green-600 font-black text-sm flex items-center gap-1 hover:gap-2 transition-all">@lang('core::app.trust.student.cta')<svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-            </div>
-            <div>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
-                        <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><rect x="2" y="3" width="16" height="12" rx="2" stroke="#16a34a" stroke-width="1.5"/><path d="M7 18h6M10 15v3" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round"/></svg>
-                    </div>
-                    <span class="font-black text-gray-800 text-lg">@lang('core::app.trust.lecturer.title')</span>
-                </div>
-                <p class="text-gray-500 text-sm leading-relaxed mb-5">@lang('core::app.trust.lecturer.desc')</p>
-                <a href="#" class="text-green-600 font-black text-sm flex items-center gap-1 hover:gap-2 transition-all">@lang('core::app.trust.lecturer.cta')<svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-            </div>
-            <div>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
-                        <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M3 17V8l7-5 7 5v9" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="7" y="11" width="6" height="6" rx="1" stroke="#16a34a" stroke-width="1.5"/></svg>
-                    </div>
-                    <span class="font-black text-gray-800 text-lg">@lang('core::app.trust.training.title')</span>
-                </div>
-                <p class="text-gray-500 text-sm leading-relaxed mb-5">@lang('core::app.trust.training.desc')</p>
-                <a href="#" class="text-green-600 font-black text-sm flex items-center gap-1 hover:gap-2 transition-all">@lang('core::app.trust.training.cta')<svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M3 7h8M8 4l3 3-3 3" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-            </div>
+        @php
+            $trustCards = [
+                [
+                    'icon' => asset('images/home/certificate.svg'),
+                    'title' => __('core::app.trust.student.title'),
+                    'description' => __('core::app.trust.student.desc'),
+                ],
+                [
+                    'icon' => asset('images/home/headphones.svg'),
+                    'title' => __('core::app.trust.lecturer.title'),
+                    'description' => __('core::app.trust.lecturer.desc'),
+                ],
+                [
+                    'icon' => asset('images/home/training.svg'),
+                    'title' => __('core::app.trust.training.title'),
+                    'description' => __('core::app.trust.training.desc'),
+                ],
+            ];
+        @endphp
+
+        <div class="grid grid-cols-1 gap-7 md:grid-cols-3 lg:gap-10">
+            @foreach($trustCards as $card)
+                <article class="group relative min-h-72 overflow-hidden rounded-sm bg-[#fff8e8] px-7 pb-8 pt-7 transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_38px_rgba(72,57,29,0.10)] sm:px-8 sm:pb-9 sm:pt-8">
+                    <svg class="pointer-events-none absolute -right-1 -top-1 h-16 w-16 text-[#efb94e] transition-transform duration-300 group-hover:rotate-6" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                        <path d="M23 2C9 13 5 28 8 43M38 1C22 17 17 34 20 54" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                    </svg>
+
+                    <img src="{{ $card['icon'] }}" alt="" class="h-16 w-16 object-contain" aria-hidden="true">
+
+                    <h3 class="mt-5 max-w-xs text-xl font-black leading-[1.15] tracking-[-0.025em] text-slate-950 sm:text-[1.35rem]">
+                        {{ $card['title'] }}
+                    </h3>
+
+                    <p class="mt-4 max-w-sm text-sm font-medium leading-6 text-slate-600">
+                        {{ $card['description'] }}
+                    </p>
+                </article>
+            @endforeach
         </div>
     </div>
 </section>
