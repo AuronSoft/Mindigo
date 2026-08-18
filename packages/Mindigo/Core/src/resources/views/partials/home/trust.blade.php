@@ -7,15 +7,24 @@
     </svg>
     <span class="pointer-events-none absolute left-9 top-16 h-4 w-4 rounded-full border-4 border-orange-400"></span>
     <div class="mx-auto max-w-7xl">
-        <div class="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-            <div class="relative max-w-[440px]">
-                <svg class="absolute left-[15.25rem] -top-3 hidden h-[4.75rem] w-14 lg:block" viewBox="0 0 70 100" fill="none" aria-hidden="true">
-                    <path d="M35 18C20 18 10 29 11 44c.5 10 5 17 12 23 4 3 5 7 5 11h14c0-4 1-8 5-11 7-6 11.5-13 12-23 1-15-9-26-24-26Z" fill="#f4ce6a" stroke="#172033" stroke-width="2.7" stroke-linejoin="round"/>
-                    <path d="M28 77h14v5H28zM29 82h12v5H29zM32 87h6l-1.5 5h-3L32 87Z" fill="#e7b94b" stroke="#172033" stroke-width="2.3" stroke-linejoin="round"/>
-                    <path d="M27 47c2 5 5 8 8 8s6-3 8-8M35 55v19" stroke="#75501b" stroke-width="2.1" stroke-linecap="round"/>
-                    <path d="M35 2v9M11 12l6 7M59 12l-6 7M1 39h9M60 39h9" stroke="#75501b" stroke-width="2.3" stroke-linecap="round"/>
-                </svg>
-                <h2 class="max-w-[400px] text-[3.25rem] font-black leading-[0.94] tracking-[-0.045em] text-slate-950 sm:text-[3.75rem]">@lang('core::app.home_redesign.features_title')</h2>
+        <div class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+            <div class="relative max-w-[650px]">
+                @php
+                    $featureTitleLines = __('core::app.home_redesign.features_title_lines');
+                @endphp
+                <h2 class="text-[3.1rem] font-black leading-[1.01] tracking-[-0.045em] text-slate-950 sm:text-[3.85rem] lg:text-[4.25rem]">
+                    <span class="relative block w-fit pr-12 sm:inline-flex sm:items-start sm:gap-1 sm:whitespace-nowrap sm:pr-0">
+                        {{ $featureTitleLines[0] }}
+                        <svg class="absolute right-0 top-0 h-14 w-10 sm:static sm:-mt-4 sm:h-[4.75rem] sm:w-14 sm:shrink-0" viewBox="0 0 64 92" fill="none" aria-hidden="true">
+                            <path d="M32 17C18.6 17 9.7 27.1 10.5 40.7c.5 9.7 4.8 16.4 11.1 21.8 3.7 3.1 4.8 6.7 4.8 10.8h11.2c0-4.1 1.1-7.7 4.8-10.8 6.3-5.4 10.6-12.1 11.1-21.8C54.3 27.1 45.4 17 32 17Z" fill="#f4ce6a" stroke="#172033" stroke-width="2.5" stroke-linejoin="round"/>
+                            <path d="M26.5 72.8h11v4.7h-11zM27.4 77.5h9.2v4.5h-9.2zM29.2 82h5.6l-1.3 4.4h-3L29.2 82Z" fill="#e7b94b" stroke="#172033" stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M23.9 40.8c1.8 4.7 4.7 7.4 8.1 7.4s6.3-2.7 8.1-7.4M32 48.2v21.5" stroke="#75501b" stroke-width="1.9" stroke-linecap="round"/>
+                            <path d="M32 2.5v8M10.2 10.7l5.3 6M53.8 10.7l-5.3 6M1.5 35.5h7.8M54.7 35.5h7.8" stroke="#8a5b17" stroke-width="2.2" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <span class="block">{{ $featureTitleLines[1] }}</span>
+                    <span class="block">{{ $featureTitleLines[2] }}</span>
+                </h2>
             </div>
             <div class="max-w-lg lg:justify-self-end">
                 <p class="text-sm font-semibold leading-7 text-slate-700">@lang('core::app.home_redesign.features_description')</p>

@@ -9,6 +9,7 @@
     <div id="home-sections">
         @include('core::partials.home.hero')
         @include('core::partials.home.trust')
+        @include('core::partials.home.feature-ai')
         @if(isset($featuredCourses) && $featuredCourses->isNotEmpty())
             <section class="border-y border-slate-100 bg-slate-50 px-5 py-12 sm:px-8">
                 <div class="mx-auto max-w-7xl">
@@ -17,7 +18,6 @@
                 </div>
             </section>
         @endif
-        @include('core::partials.home.feature-ai')
         @include('core::partials.home.feature-personalize')
         @include('core::partials.home.feature-virtual-exam')
         @include('core::partials.home.feature-anytime')
