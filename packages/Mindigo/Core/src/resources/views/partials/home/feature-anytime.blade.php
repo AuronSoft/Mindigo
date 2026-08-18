@@ -1,10 +1,31 @@
 {{-- Anytime Anywhere section --}}
-<section class="py-20 px-10 bg-white border-t border-gray-100">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col lg:flex-row items-center gap-20">
+<section class="relative -mt-px overflow-hidden bg-[#fbfdf9] px-5 py-16 sm:px-8 lg:min-h-screen lg:px-12 lg:py-14">
+    <div class="mx-auto w-full max-w-7xl 2xl:max-w-[1480px]">
+        <div class="grid items-start gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+            <div class="relative max-w-[680px]">
+                <h2 class="text-[3.1rem] font-black leading-[1.01] tracking-[-0.045em] text-slate-950 sm:text-[3.85rem] lg:text-[4.25rem]">
+                    @lang('core::app.anytime_anywhere.heading')
+                </h2>
+                <svg class="pointer-events-none absolute -right-3 top-0 h-14 w-28 -rotate-6 text-blue-500 sm:right-6" viewBox="0 0 112 56" fill="none" aria-hidden="true">
+                    <path d="M7 34c20-13 45-18 78-16M13 42c25-12 52-15 91-11M24 48c20-7 40-8 65-5" stroke="currentColor" stroke-width="6" stroke-linecap="round" opacity=".88"/>
+                </svg>
+            </div>
+
+            <div class="max-w-xl lg:pt-3">
+                <p class="text-base font-medium leading-7 text-slate-700 sm:text-lg sm:leading-8">
+                    @lang('core::app.anytime_anywhere.feature_1')
+                    @lang('core::app.anytime_anywhere.feature_2')
+                </p>
+                <a href="{{ route('courses.index') }}" class="mt-6 inline-flex rounded-full bg-blue-500 px-8 py-3.5 text-sm font-black text-white shadow-[0_5px_0_#1d4ed8] transition hover:-translate-y-0.5 hover:bg-blue-400 hover:shadow-[0_7px_0_#1d4ed8] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200">
+                    @lang('core::app.anytime_anywhere.cta')
+                </a>
+            </div>
+        </div>
+
+        <div class="relative mt-8 flex items-center justify-center lg:mt-4">
 
             {{-- LEFT: Desktop + Phone mockups --}}
-            <div class="flex-1 relative flex items-center justify-center min-h-120">
+            <div class="relative flex min-h-120 w-full max-w-[900px] items-center justify-center">
 
                 {{-- Dashed orbit circle --}}
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -218,30 +239,6 @@
                 </div>
             </div>
 
-            {{-- RIGHT: Text content --}}
-            <div class="flex-1 flex flex-col gap-6">
-                <span class="bg-green-500 text-white text-xs font-black px-3 py-1 rounded-lg w-fit">@lang('core::app.anytime_anywhere.badge')</span>
-                <h2 class="text-4xl font-black text-gray-900 leading-tight">
-                    @lang('core::app.anytime_anywhere.heading')
-                </h2>
-                <div class="flex flex-col gap-5">
-                    <div class="flex items-start gap-4">
-                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 1C4.134 1 1 4.134 1 8s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7z" stroke="#16a34a" stroke-width="1.3"/><path d="M1 8h14M8 1a10.5 10.5 0 010 14M8 1a10.5 10.5 0 000 14" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg>
-                        </div>
-                        <p class="text-gray-500 text-sm leading-relaxed">@lang('core::app.anytime_anywhere.feature_1')</p>
-                    </div>
-                    <div class="flex items-start gap-4">
-                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><rect x="1" y="3" width="10" height="8" rx="1.5" stroke="#16a34a" stroke-width="1.3"/><path d="M3 11v1.5M8 11v1.5M1.5 12.5h8" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/><rect x="11" y="6" width="4" height="6" rx="1" stroke="#16a34a" stroke-width="1.3"/><path d="M13 13v1" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg>
-                        </div>
-                        <p class="text-gray-500 text-sm leading-relaxed">@lang('core::app.anytime_anywhere.feature_2')</p>
-                    </div>
-                </div>
-                <a href="#" class="bg-green-500 hover:bg-green-400 text-white font-black text-sm px-7 py-3.5 rounded-xl shadow-[0_4px_0_#15803d] hover:shadow-[0_2px_0_#15803d] hover:translate-y-0.5 transition-all w-fit">
-                    @lang('core::app.anytime_anywhere.cta')
-                </a>
-            </div>
         </div>
     </div>
 </section>
