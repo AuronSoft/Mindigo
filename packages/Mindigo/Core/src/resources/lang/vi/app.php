@@ -31,6 +31,16 @@ return [
         'title' => 'Phản hồi của khách hàng',
         'customers' => '200,000+ khách hàng',
         'read_more' => 'Xem thêm',
+        'community_title_1' => 'Tham gia cộng đồng',
+        'community_title_2' => 'học tập lớn mạnh',
+        'community_title_prefix' => 'Tham gia',
+        'community_title_accent' => 'cộng đồng',
+        'community_title_suffix' => 'học tập lớn mạnh',
+        'community_description' => 'Đồng hành cùng cộng đồng học tập toàn cầu, trao đổi kiến thức và cùng nhau tạo nên những tiến bộ ý nghĩa trên Mindigo.',
+        'community_map_alt' => 'Cộng đồng học viên Mindigo kết nối trên toàn thế giới',
+        'learners' => 'Học viên',
+        'join_now' => 'Tham gia ngay',
+        'member_avatar' => 'Thành viên cộng đồng Mindigo',
         'reviews' => [
             [
                 'name' => 'Nguyễn Thư',

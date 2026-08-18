@@ -1,101 +1,52 @@
-{{-- Testimonials section --}}
-<section class="py-20 bg-green-50 border-t border-green-100 overflow-hidden">
-    <div class="max-w-7xl mx-auto px-10">
-        {{-- Title --}}
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-black text-green-600">@lang('core::app.testimonials.title')</h2>
+{{-- Learning community section --}}
+<section class="relative -mt-px overflow-hidden bg-[#fbfdf9] px-5 py-16 sm:px-8 lg:flex lg:min-h-screen lg:items-center lg:px-12 lg:py-14">
+    <span class="pointer-events-none absolute -right-8 top-36 h-24 w-36 rotate-12 rounded-[48%] bg-[#fff1d2]" aria-hidden="true"></span>
+    <span class="pointer-events-none absolute left-[7%] top-[34%] h-3 w-12 -rotate-12 border-y-4 border-blue-400" aria-hidden="true"></span>
+    <span class="pointer-events-none absolute bottom-[28%] right-[7%] text-3xl font-black text-orange-500" aria-hidden="true">✦</span>
+    <span class="pointer-events-none absolute bottom-[20%] left-[8%] h-4 w-4 rounded-full border-[3px] border-fuchsia-400" aria-hidden="true"></span>
+
+    <div class="mx-auto w-full max-w-7xl text-center 2xl:max-w-[1480px]">
+        <div class="mx-auto max-w-4xl">
+            <h2 class="text-[3rem] font-black leading-[1.01] tracking-[-0.045em] text-slate-950 sm:text-[3.8rem] lg:text-[4.35rem]">
+                <span class="block">@lang('core::app.testimonials.community_title_prefix')</span>
+                <span class="inline-flex flex-wrap justify-center gap-x-[.22em]">
+                    <span class="relative inline-block">
+                        @lang('core::app.testimonials.community_title_accent')
+                        <svg class="absolute -bottom-4 left-0 h-5 w-full text-orange-500" viewBox="0 0 360 24" fill="none" preserveAspectRatio="none" aria-hidden="true">
+                            <path d="M5 15c55-19 104 7 159-4 55-10 105 7 190-3" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <span>@lang('core::app.testimonials.community_title_suffix')</span>
+                </span>
+            </h2>
+
+            <p class="mx-auto mt-8 max-w-2xl text-sm font-medium leading-6 text-slate-600 sm:text-base sm:leading-7">
+                @lang('core::app.testimonials.community_description')
+            </p>
         </div>
 
-        {{-- Center rating card + floating avatars --}}
-        <div class="relative flex items-center justify-center mb-14 h-36">
-            {{-- Floating avatars left --}}
-            <div class="absolute left-1/4 -top-2 w-16 h-16 rounded-2xl overflow-hidden shadow-lg border-2 border-white rotate-3">
-                <img src="https://api.dicebear.com/9.x/personas/svg?seed=Thu&backgroundColor=d1fae5" class="w-full h-full object-cover bg-green-100" alt="user">
-            </div>
-            <div class="absolute left-1/3 top-8 w-14 h-14 rounded-2xl overflow-hidden shadow-lg border-2 border-white -rotate-2">
-                <img src="https://api.dicebear.com/9.x/personas/svg?seed=Linh&backgroundColor=bbf7d0" class="w-full h-full object-cover bg-green-200" alt="user">
-            </div>
+        <div class="relative mx-auto mt-8 h-[310px] w-full max-w-6xl sm:h-[430px] lg:mt-5 lg:h-[500px]">
+            <img
+                src="{{ asset('image/learning-community-map.png') }}"
+                alt="@lang('core::app.testimonials.community_map_alt')"
+                class="absolute inset-0 h-full w-full object-contain"
+                loading="lazy"
+                decoding="async"
+            >
 
-            {{-- Floating avatars right --}}
-            <div class="absolute right-1/4 -top-2 w-16 h-16 rounded-2xl overflow-hidden shadow-lg border-2 border-white -rotate-3">
-                <img src="https://api.dicebear.com/9.x/personas/svg?seed=Hoa&backgroundColor=86efac" class="w-full h-full object-cover bg-green-300" alt="user">
-            </div>
-            <div class="absolute right-1/3 top-8 w-14 h-14 rounded-2xl overflow-hidden shadow-lg border-2 border-white rotate-2">
-                <img src="https://api.dicebear.com/9.x/personas/svg?seed=Mai&backgroundColor=4ade80" class="w-full h-full object-cover bg-green-400" alt="user">
-            </div>
-
-            {{-- Decorative shapes --}}
-            <div class="absolute left-8 top-4 text-green-400 text-4xl opacity-60 pointer-events-none" style="animation:floatStar 4s ease-in-out infinite">✦</div>
-            <div class="absolute right-8 top-0 text-green-300 text-3xl opacity-50 pointer-events-none" style="animation:floatStar 3s .5s ease-in-out infinite">✦</div>
-            <div class="absolute left-16 bottom-0 w-4 h-4 bg-green-300 rounded-full opacity-50 pointer-events-none" style="animation:floatStar 3s ease-in-out infinite"></div>
-            <div class="absolute right-20 bottom-2 w-3 h-3 bg-green-400 rotate-45 opacity-40 pointer-events-none" style="animation:floatStar 4s .3s ease-in-out infinite"></div>
-
-            {{-- Center rating card --}}
-            <div class="relative z-10 bg-white rounded-2xl shadow-xl border border-green-100 px-8 py-4 flex items-center gap-5">
-                <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-green-200 shrink-0">
-                    <img src="https://api.dicebear.com/9.x/personas/svg?seed=Khanh&backgroundColor=d1fae5" class="w-full h-full object-cover bg-green-100" alt="user">
-                </div>
-                <div>
-                    <div class="flex gap-1 text-yellow-400 text-xl mb-1.5">★★★★★</div>
-                    <p class="text-gray-700 font-black text-sm">@lang('core::app.testimonials.customers')</p>
-                    <div class="w-full bg-green-100 rounded-full h-1.5 mt-1.5">
-                        <div class="bg-green-500 h-1.5 rounded-full" style="width: 92%"></div>
-                    </div>
-                </div>
+            <div class="pointer-events-none absolute left-1/2 top-[45%] flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center text-slate-950" aria-hidden="true">
+                <strong class="text-[2.55rem] font-black leading-[.88] tracking-[-0.055em] drop-shadow-[0_2px_0_rgba(255,255,255,.28)] sm:text-[3.75rem] lg:text-[4.35rem]">
+                    10K<span class="text-[.72em] align-[.12em]">+</span>
+                </strong>
+                <span class="mt-2 text-[1.55rem] font-black leading-none tracking-[-0.045em] drop-shadow-[0_2px_0_rgba(255,255,255,.28)] sm:mt-3 sm:text-[2.25rem] lg:text-[2.65rem]">
+                    @lang('core::app.testimonials.learners')
+                </span>
+                <span class="mt-4 h-1 w-12 rounded-full bg-orange-500/90 sm:mt-5 sm:w-16"></span>
             </div>
         </div>
 
-        {{-- Scrolling testimonials --}}
-        <div class="relative">
-            {{-- Fade edges --}}
-            <div class="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style="background: linear-gradient(to right, #f0fdf4, transparent)"></div>
-            <div class="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style="background: linear-gradient(to left, #f0fdf4, transparent)"></div>
-
-            <div class="flex gap-5 overflow-hidden">
-                <div class="flex gap-5 animate-marquee" style="animation: marquee 30s linear infinite;">
-                    @foreach(__('core::app.testimonials.reviews') as $r)
-                    <div class="bg-white rounded-2xl border-2 border-green-100 shadow-md p-5 shrink-0 w-72 hover:border-green-300 hover:shadow-lg transition-all">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-green-200 shrink-0">
-                                <img src="https://api.dicebear.com/9.x/personas/svg?seed={{ $r['seed'] }}&backgroundColor=d1fae5" class="w-full h-full object-cover bg-green-100" alt="{{ $r['name'] }}">
-                            </div>
-                            <div>
-                                <p class="text-sm font-black text-gray-800">{{ $r['name'] }}</p>
-                                <p class="text-xs text-gray-400 leading-tight">{{ $r['school'] }}</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-0.5 text-yellow-400 text-sm mb-2">★★★★★</div>
-                        <p class="text-gray-500 text-xs leading-relaxed">
-                            {{ Str::limit($r['review'], 120) }}
-                            @if(strlen($r['review']) > 120)
-                            <a href="#" class="text-green-600 font-black">@lang('core::app.testimonials.read_more')</a>
-                            @endif
-                        </p>
-                    </div>
-                    @endforeach
-                    {{-- Duplicate for seamless loop --}}
-                    @foreach(__('core::app.testimonials.reviews') as $r)
-                    <div class="bg-white rounded-2xl border-2 border-green-100 shadow-md p-5 shrink-0 w-72 hover:border-green-300 hover:shadow-lg transition-all">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-green-200 shrink-0">
-                                <img src="https://api.dicebear.com/9.x/personas/svg?seed={{ $r['seed'] }}&backgroundColor=d1fae5" class="w-full h-full object-cover bg-green-100" alt="{{ $r['name'] }}">
-                            </div>
-                            <div>
-                                <p class="text-sm font-black text-gray-800">{{ $r['name'] }}</p>
-                                <p class="text-xs text-gray-400 leading-tight">{{ $r['school'] }}</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-0.5 text-yellow-400 text-sm mb-2">★★★★★</div>
-                        <p class="text-gray-500 text-xs leading-relaxed">
-                            {{ Str::limit($r['review'], 120) }}
-                            @if(strlen($r['review']) > 120)
-                            <a href="#" class="text-green-600 font-black">@lang('core::app.testimonials.read_more')</a>
-                            @endif
-                        </p>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
+        <a href="{{ route('login', [], false) }}" class="relative z-20 -mt-2 inline-flex rounded-full bg-green-500 px-9 py-4 text-sm font-black text-white shadow-[0_6px_0_#15803d] transition hover:-translate-y-0.5 hover:bg-green-400 hover:shadow-[0_8px_0_#15803d] active:translate-y-0.5 active:bg-green-600 active:shadow-[0_3px_0_#15803d] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-200 sm:text-base">
+            @lang('core::app.testimonials.join_now')
+        </a>
     </div>
 </section>
